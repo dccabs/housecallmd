@@ -1,10 +1,32 @@
-import { Typography } from "@material-ui/core";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import Home from "./components/pages/Home";
+import Insurance from "./components/pages/Insurance";
+import ChooseProvider from "./components/pages/Insurance/ChooseProvider";
+import CardInformation from "./components/pages/Insurance/CardInformation";
+import SignUp from "./components/pages/SignUp";
+import Login from "./components/pages/Login";
+import Pharmacy from "./components/pages/Pharmacy";
+import VisitChoice from "./components/pages/VisitChoice";
+import PageNotFound from "./components/pages/404";
 
 function App() {
   return (
-    <div className="App">
-      <Typography>House Call MD</Typography>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Switch>
+        <Route component={Home} exact path="/" />
+        <Route component={Insurance} exact path="/insurance" />
+        <Route component={ChooseProvider} path="/insurance/choose-provider" />
+        <Route component={CardInformation} path="/insurance/card-information" />
+        <Route component={Pharmacy} path="/pharmacy" />
+        <Route component={VisitChoice} path="/visit-choice" />
+        <Route component={SignUp} path="/sign-up" />
+        <Route component={Login} path="/login" />
+        <Route component={PageNotFound} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 
