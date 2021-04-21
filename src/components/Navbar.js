@@ -1,6 +1,18 @@
-import { AppBar, Toolbar, Typography, Box, Button } from "@material-ui/core";
+import { useState, Fragment } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Button,
+  IconButton,
+  Drawer,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
+
+import MobileNavDrawer from "./MobileNavDrawer";
 
 const useStyles = makeStyles((theme) => ({
   toolBar: {
@@ -9,8 +21,6 @@ const useStyles = makeStyles((theme) => ({
   },
   navLinks: {
     "& button": {
-      border: `1px solid ${theme.palette.primary.main}`,
-      borderRadius: "50px",
       fontWeight: 600,
 
       "&:hover": {
@@ -22,50 +32,76 @@ const useStyles = makeStyles((theme) => ({
       color: "white",
       margin: "0 1rem",
     },
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
   },
   authLinks: {
     "& a": {
       margin: "0 0.5rem",
     },
   },
+  burgerNav: {
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+    },
+  },
 }));
 
 const Navbar = () => {
+  const [drawerToggle, setDrawerToggle] = useState(false);
   const classes = useStyles();
 
   return (
-    <AppBar position="static">
-      <Toolbar className={classes.toolBar}>
-        <Typography variant="h6">
-          <strong>House Call MD</strong>
-        </Typography>
+    <Fragment>
+      <Drawer
+        anchor="right"
+        open={drawerToggle}
+        onClose={() => setDrawerToggle(false)}
+      >
+        <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
+      </Drawer>
 
-        <Box display="flex" className={classes.navLinks}>
-          <Box mr="2em">
-            <Link to="/">
-              <Button color="inherit">Home</Button>
-            </Link>
-            <Link to="/insurance">
-              <Button color="inherit">Insurance</Button>
-            </Link>
-            <Link to="/pharmacy">
-              <Button color="inherit">Pharmacy</Button>
-            </Link>
-            <Link to="/visit-choice">
-              <Button color="inherit">Visit Choice</Button>
-            </Link>
+      <AppBar position="static">
+        <Toolbar className={classes.toolBar}>
+          <Typography variant="h6">
+            <strong>House Call MD</strong>
+          </Typography>
+
+          <Box display="flex" className={classes.navLinks}>
+            <Box mr="2em">
+              <Link to="/">
+                <Button color="inherit">Home</Button>
+              </Link>
+              <Link to="/pharmacy">
+                <Button color="inherit">Pharmacy</Button>
+              </Link>
+              <Link to="/visit-choice">
+                <Button color="inherit">Visit Choice</Button>
+              </Link>
+            </Box>
+            <Box className={classes.authLinks}>
+              <Link to="/login">
+                <Button color="inherit">Login</Button>
+              </Link>
+              <Link to="/sign-up">
+                <Button color="inherit">Sign Up</Button>
+              </Link>
+            </Box>
           </Box>
-          <Box className={classes.authLinks}>
-            <Link to="/login">
-              <Button color="inherit">Login</Button>
-            </Link>
-            <Link to="/sign-up">
-              <Button color="inherit">Sign Up</Button>
-            </Link>
+
+          <Box display="none" className={classes.burgerNav}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setDrawerToggle(!drawerToggle)}
+            >
+              <MenuIcon />
+            </IconButton>
           </Box>
-        </Box>
-      </Toolbar>
-    </AppBar>
+        </Toolbar>
+      </AppBar>
+    </Fragment>
   );
 };
 

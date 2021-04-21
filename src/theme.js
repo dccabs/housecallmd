@@ -21,6 +21,16 @@ const theme = createMuiTheme({
     color: "#1a1a1a",
     p: {
       lineHeight: 29,
+      fontSize: 20,
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 768,
+      md: 900,
+      lg: 1420,
+      xl: 1920,
     },
   },
 });
