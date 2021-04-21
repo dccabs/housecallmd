@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme) => ({
   ctaButton: {
     fontSize: 24,
     width: "100%",
+
+    "&:hover": {
+      backgroundColor: theme.palette.primary.main,
+    },
   },
   linkButton: {
     textDecoration: "none",
@@ -51,7 +55,7 @@ const Home = () => {
             <Link to="/insurance" className={classes.linkButton}>
               <Button
                 className={classes.ctaButton}
-                color="primary"
+                color="secondary"
                 variant="contained"
               >
                 Get Started
@@ -64,7 +68,7 @@ const Home = () => {
         <Link to="/insurance" className={classes.linkButton}>
           <Button
             className={classes.ctaButton}
-            color="primary"
+            color="secondary"
             variant="contained"
           >
             Get Started

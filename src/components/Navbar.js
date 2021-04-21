@@ -18,8 +18,13 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     display: "flex",
     justifyContent: "space-between",
+
+    "& a": {
+      textDecoration: "none",
+      color: "white",
+    },
   },
-  navLinks: {
+  authLinks: {
     "& button": {
       fontWeight: 600,
 
@@ -30,15 +35,10 @@ const useStyles = makeStyles((theme) => ({
     "& a": {
       textDecoration: "none",
       color: "white",
-      margin: "0 1rem",
+      margin: "0 0.5rem",
     },
     [theme.breakpoints.down("xs")]: {
       display: "none",
-    },
-  },
-  authLinks: {
-    "& a": {
-      margin: "0 0.5rem",
     },
   },
   burgerNav: {
@@ -64,30 +64,19 @@ const Navbar = () => {
 
       <AppBar position="static">
         <Toolbar className={classes.toolBar}>
-          <Typography variant="h6">
-            <strong>House Call MD</strong>
-          </Typography>
+          <Link to="/">
+            <Typography variant="h6">
+              <strong>House Call MD</strong>
+            </Typography>
+          </Link>
 
-          <Box display="flex" className={classes.navLinks}>
-            <Box mr="2em">
-              <Link to="/">
-                <Button color="inherit">Home</Button>
-              </Link>
-              <Link to="/pharmacy">
-                <Button color="inherit">Pharmacy</Button>
-              </Link>
-              <Link to="/visit-choice">
-                <Button color="inherit">Visit Choice</Button>
-              </Link>
-            </Box>
-            <Box className={classes.authLinks}>
-              <Link to="/login">
-                <Button color="inherit">Login</Button>
-              </Link>
-              <Link to="/sign-up">
-                <Button color="inherit">Sign Up</Button>
-              </Link>
-            </Box>
+          <Box className={classes.authLinks}>
+            <Link to="/login">
+              <Button color="inherit">Login</Button>
+            </Link>
+            <Link to="/sign-up">
+              <Button color="inherit">Sign Up</Button>
+            </Link>
           </Box>
 
           <Box display="none" className={classes.burgerNav}>

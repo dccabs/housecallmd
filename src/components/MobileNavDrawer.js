@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
-  navLinks: {
+  authLinks: {
     "& a": {
       textDecoration: "none",
       color: theme.palette.primary.main,
@@ -40,26 +40,13 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         onKeyDown={() => setDrawerToggle(false)}
         minWidth="12rem"
       >
-        <List className={classes.navLinks}>
-          <Box mb="1em">
-            <Link to="/">
-              <ListItem button>Home</ListItem>
-            </Link>
-            <Link to="/pharmacy">
-              <ListItem button>Pharmacy</ListItem>
-            </Link>
-            <Link to="/visit-choice">
-              <ListItem button>Visit Choice</ListItem>
-            </Link>
-          </Box>
-          <Box className={classes.authLinks}>
-            <Link to="/login">
-              <ListItem button>Login</ListItem>
-            </Link>
-            <Link to="/sign-up">
-              <ListItem button>Sign Up</ListItem>
-            </Link>
-          </Box>
+        <List className={classes.authLinks}>
+          <Link to="/login">
+            <ListItem button>Login</ListItem>
+          </Link>
+          <Link to="/sign-up">
+            <ListItem button>Sign Up</ListItem>
+          </Link>
         </List>
       </Box>
     </Fragment>
