@@ -19,6 +19,7 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: "'Manrope', sans-serif",
     color: "#1a1a1a",
+
     h2: {
       "@media screen and (max-width: 768px)": {
         fontSize: "48px",

@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Typography, Box, Button, TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
@@ -29,12 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChooseProvider = () => {
-  const fieldInput = useRef(null);
   const classes = useStyles();
-
-  const checkInput = () => {
-    console.log(fieldInput.current.value);
-  };
 
   return (
     <Box p="4em">
@@ -67,7 +61,6 @@ const ChooseProvider = () => {
                   margin="normal"
                   color="secondary"
                   variant="outlined"
-                  inputRef={fieldInput}
                   InputProps={{ ...params.InputProps, type: "search" }}
                   required
                 />
@@ -92,7 +85,6 @@ const ChooseProvider = () => {
               color="secondary"
               variant="contained"
               size="large"
-              onClick={checkInput}
             >
               Continue
             </Button>
