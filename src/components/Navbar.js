@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     "& a": {
       textDecoration: "none",
       color: "blue",
+      marginLeft: 10,
     },
   },
   authLinks: {
