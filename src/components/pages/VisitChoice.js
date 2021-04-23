@@ -47,7 +47,7 @@ const VisitChoice = () => {
       <Typography variant="h2">Visit Choice</Typography>
       <form action="/">
         <Box
-          mt="4em"
+          mt="2em"
           display="flex"
           flexDirection="column"
           alignItems="center"

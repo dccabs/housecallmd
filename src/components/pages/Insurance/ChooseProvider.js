@@ -34,7 +34,7 @@ const ChooseProvider = () => {
       <Typography variant="h2">Insurance</Typography>
       <form action="/insurance/card-information">
         <Box
-          mt="4em"
+          mt="2em"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -76,7 +76,7 @@ const ChooseProvider = () => {
           >
             <Box m="1em" className={classes.buttonLinks}>
               <Link to="/insurance">
-                <Button color="secondary" variant="contained" size="large">
+                <Button color="secondary" variant="contained" >
                   Back
                 </Button>
               </Link>
@@ -86,7 +86,6 @@ const ChooseProvider = () => {
                 type="submit"
                 color="secondary"
                 variant="contained"
-                size="large"
               >
                 Continue
               </Button>

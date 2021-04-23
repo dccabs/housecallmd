@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "60rem",
   },
   ctaButton: {
-    fontSize: 24,
+    // fontSize: 24,
     width: "100%",
 
     "&:hover": {
@@ -37,19 +37,17 @@ const Home = () => {
       <Box>
         <img src={`${banner}`} alt="banner" className={classes.image} />
         <Box mt="2em" display="flex" justifyContent="center">
-          <Box width="75%">
             <Link to="/insurance" className={classes.linkButton}>
               <Button
-                className={classes.ctaButton}
                 color="secondary"
                 variant="contained"
+                size="large"
               >
                 Get Started
               </Button>
             </Link>
-          </Box>
         </Box>
-        <Box mt="2em">
+        <Box mt="1em">
           <Typography className={classes.textBody}>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. In quidem
             aut accusamus ab? Enim perferendis quidem suscipit vitae tempora
@@ -68,8 +66,10 @@ const Home = () => {
         <Link to="/insurance" className={classes.linkButton}>
           <Button
             className={classes.ctaButton}
+            type="submit"
             color="secondary"
             variant="contained"
+            size="large"
           >
             Get Started
           </Button>

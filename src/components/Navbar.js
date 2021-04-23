@@ -18,7 +18,8 @@ import logo_heart from '../assets/images/logo_heart.png'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
+    boxShadow: 'none',
   },
   toolBar: {
     display: "flex",
@@ -28,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     "& a": {
       textDecoration: "none",
       color: "blue",
-      marginLeft: 10,
     },
   },
   authLinks: {

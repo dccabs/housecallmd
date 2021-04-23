@@ -22,7 +22,7 @@ const theme = createMuiTheme({
 
     h2: {
       "@media screen and (max-width: 768px)": {
-        fontSize: "34px",
+        fontSize: 30,
         marginTop: "1em",
       },
     },
@@ -30,7 +30,7 @@ const theme = createMuiTheme({
     h4: {
       textAlign: 'center',
       fontWeight: 'normal',
-      fontSize: 26,
+      fontSize: 24,
     },
 
     p: {

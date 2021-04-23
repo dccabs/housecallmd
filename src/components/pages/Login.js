@@ -37,15 +37,7 @@ const Login = () => {
     <>
       <Typography variant="h2">Login</Typography>
       <form action="/">
-        <Box
-          mt="1em"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
           <Box
-            mt="1em"
             display="flex"
             flexDirection="column"
             alignItems="center"
@@ -88,7 +80,6 @@ const Login = () => {
               </Button>
             </Box>
           </Box>
-        </Box>
       </form>
     </>
   );

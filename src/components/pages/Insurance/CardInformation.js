@@ -38,7 +38,7 @@ const CardInformation = () => {
       <Typography variant="h2">Insurance</Typography>
       <form action="/sign-up">
         <Box
-          mt="4em"
+          mt="2em"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -70,7 +70,7 @@ const CardInformation = () => {
               required
             />
           </Box>
-          <Box mt="3em" display="flex" justifyContent="center" flexWrap="wrap">
+          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
               <Link to="/insurance/choose-provider">
                 <Button color="secondary" variant="contained" size="large">

@@ -3,38 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
-    width: "100%",
     marginTop: "2em",
-    maxWidth: "34rem",
-  },
-  nameFields: {
-    marginTop: "2em",
-    width: "100%",
-
-    "& div": {
-      width: "100%",
-      maxWidth: "16rem",
-
-      "@media screen and (max-width: 680px)": {
-        maxWidth: "100%",
-      },
-    },
-  },
-  nameField1: {
-    margin: "1rem 1rem 1rem 0",
-
-    "@media screen and (max-width: 680px)": {
-      width: "100%",
-      margin: "1rem 0",
-    },
-  },
-  nameField2: {
-    margin: "1rem 0 1rem 1rem",
-
-    "@media screen and (max-width: 680px)": {
-      width: "100%",
-      margin: "1rem 0",
-    },
   },
   buttonLinks: {
     "& button": {
@@ -55,83 +24,79 @@ const SignUp = () => {
   return (
     <>
       <Typography variant="h2">Sign Up</Typography>
-      <form action="/">
+      <form action="/" style={{width: '100%'}}>
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
         >
-          <Box
-            mt="1em"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            width="100%"
-          >
-            <Box
-              className={classes.nameFields}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              flexWrap="wrap"
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="text"
+            label="First Name"
+            variant="outlined"
+            color="secondary"
+            required
+          />
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="text"
+            label="Last Name"
+            variant="outlined"
+            color="secondary"
+            required
+          />
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="email"
+            label="Email"
+            variant="outlined"
+            color="secondary"
+            required
+          />
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="password"
+            label="Password"
+            variant="outlined"
+            color="secondary"
+            required
+          />
+          <TextField
+            fullWidth
+            className={classes.textFields}
+            type="password"
+            label="Confirm Password"
+            variant="outlined"
+            color="secondary"
+            required
+          />
+        </Box>
+        <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+          <Box m="1em" className={classes.buttonLinks}>
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              size="large"
             >
-              <Box className={classes.nameField1}>
-                <TextField
-                  type="text"
-                  label="First Name"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                />
-              </Box>
-              <Box className={classes.nameField2}>
-                <TextField
-                  type="text"
-                  label="Last Name"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                />
-              </Box>
-            </Box>
-            <TextField
-              className={classes.textFields}
-              type="email"
-              label="Email"
-              variant="outlined"
-              color="secondary"
-              required
-            />
-            <TextField
-              className={classes.textFields}
-              type="password"
-              label="Password"
-              variant="outlined"
-              color="secondary"
-              required
-            />
-            <TextField
-              className={classes.textFields}
-              type="password"
-              label="Confirm Password"
-              variant="outlined"
-              color="secondary"
-              required
-            />
+              Submit
+            </Button>
           </Box>
-          <Box mt="3em">
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                size="large"
-              >
-                Submit
-              </Button>
-            </Box>
+          <Box m="1em" className={classes.buttonLinks}>
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              size="large"
+            >
+              Back
+            </Button>
           </Box>
         </Box>
       </form>

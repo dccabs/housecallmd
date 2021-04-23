@@ -1,4 +1,4 @@
-import { Typography, Box, Button, TextField } from "@material-ui/core";
+import { Typography, Box, Button, TextField, Paper } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
@@ -34,7 +34,7 @@ const Pharmacy = () => {
       <Typography variant="h2">Pharmacy</Typography>
       <form action="/visit-choice">
         <Box
-          mt="4em"
+          mt="2em"
           display="flex"
           flexDirection="column"
           alignItems="center"
