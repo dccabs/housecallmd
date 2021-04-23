@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
     // fontSize: 24,
     width: "100%",
 
-    "&:hover": {
-      backgroundColor: theme.palette.primary.main,
-    },
+    // "&:hover": {
+    //   backgroundColor: theme.palette.primary.main,
+    // },
   },
   linkButton: {
     textDecoration: "none",
@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
+  backgroundContainer: {
+    backgroundImage: banner,
+  }
 }));
 
 const Home = () => {
@@ -34,14 +37,17 @@ const Home = () => {
 
   return (
     <>
-      <Box>
-        <img src={`${banner}`} alt="banner" className={classes.image} />
+      <Box className={classes.backgroundContainer}>
+        <Box mt="1em">
+          <h1>Schedule a housecall or telemedicine visit with a healthcare professional in minutes.</h1>
+        </Box>
         <Box mt="2em" display="flex" justifyContent="center">
             <Link to="/insurance" className={classes.linkButton}>
               <Button
                 color="secondary"
                 variant="contained"
                 size="large"
+                fullWidth
               >
                 Get Started
               </Button>

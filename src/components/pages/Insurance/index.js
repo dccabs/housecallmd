@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
       margin: "1em",
     },
   },
+  disclaimer: {
+    color: '#666',
+  }
 }));
 
 const Insurance = () => {
@@ -51,6 +54,9 @@ const Insurance = () => {
               No
             </Button>
           </Link>
+          <p className={classes.disclaimer}>
+            You do not need to have insurance to use this service.
+          </p>
         </Box>
       </Box>
     </>
