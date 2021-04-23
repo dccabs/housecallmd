@@ -1,7 +1,97 @@
-import React from "react";
+import { Typography, Box, Button, TextField } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
+
+const useStyles = makeStyles((theme) => ({
+  textFields: {
+    width: "100%",
+    marginTop: "2em",
+    maxWidth: "34rem",
+  },
+  buttonLinks: {
+    "@media screen and (max-width: 700px)": {
+      "&:nth-child(2)": {
+        order: -1,
+      },
+    },
+
+    "& button": {
+      padding: "1em",
+      fontWeight: 600,
+      width: "16rem",
+
+      "&:hover": {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+    "& a": {
+      textDecoration: "none",
+    },
+  },
+}));
 
 const Login = () => {
-  return <div>Login</div>;
+  const classes = useStyles();
+
+  return (
+    <Box p="4em">
+      <Typography variant="h2">Login</Typography>
+      <form action="/">
+        <Box
+          mt="4em"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Box
+            mt="1em"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            width="100%"
+          >
+            <TextField
+              className={classes.textFields}
+              type="email"
+              label="Email"
+              variant="outlined"
+              color="secondary"
+              required
+            />
+            <TextField
+              className={classes.textFields}
+              type="password"
+              label="Password"
+              variant="outlined"
+              color="secondary"
+              required
+            />
+          </Box>
+          <Box mt="3em" display="flex" justifyContent="center" flexWrap="wrap">
+            <Box m="1em" className={classes.buttonLinks}>
+              <Link to="#">
+                <Button color="secondary" variant="contained" size="large">
+                  Forgot Password
+                </Button>
+              </Link>
+            </Box>
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                Login
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </form>
+    </Box>
+  );
 };
 
 export default Login;
