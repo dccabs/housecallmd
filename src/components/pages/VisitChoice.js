@@ -43,11 +43,11 @@ const VisitChoice = () => {
   };
 
   return (
-    <Box p="4em">
+    <>
       <Typography variant="h2">Visit Choice</Typography>
       <form action="/">
         <Box
-          mt="8em"
+          mt="4em"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -111,7 +111,7 @@ const VisitChoice = () => {
           </Box>
         </Box>
       </form>
-    </Box>
+    </>
   );
 };
 

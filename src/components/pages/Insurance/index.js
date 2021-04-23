@@ -24,10 +24,10 @@ const Insurance = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em">
+    <>
       <Typography variant="h2">Insurance</Typography>
       <Box
-        mt="8em"
+        mt="4em"
         display="flex"
         flexDirection="column"
         alignItems="center"
@@ -53,7 +53,7 @@ const Insurance = () => {
           </Link>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

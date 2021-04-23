@@ -33,9 +33,22 @@ const Home = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em" display="flex" justifyContent="center" flexWrap="wrap">
+    <>
       <Box>
         <img src={`${banner}`} alt="banner" className={classes.image} />
+        <Box mt="2em" display="flex" justifyContent="center">
+          <Box width="75%">
+            <Link to="/insurance" className={classes.linkButton}>
+              <Button
+                className={classes.ctaButton}
+                color="secondary"
+                variant="contained"
+              >
+                Get Started
+              </Button>
+            </Link>
+          </Box>
+        </Box>
         <Box mt="2em">
           <Typography className={classes.textBody}>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. In quidem
@@ -50,19 +63,6 @@ const Home = () => {
             officiis iure vel voluptatum blanditiis illum ipsam.
           </Typography>
         </Box>
-        <Box mt="2em" display="flex" justifyContent="center">
-          <Box width="75%">
-            <Link to="/insurance" className={classes.linkButton}>
-              <Button
-                className={classes.ctaButton}
-                color="secondary"
-                variant="contained"
-              >
-                Get Started
-              </Button>
-            </Link>
-          </Box>
-        </Box>
       </Box>
       <Box mx="4em" className={classes.divRight}>
         <Link to="/insurance" className={classes.linkButton}>
@@ -75,7 +75,7 @@ const Home = () => {
           </Button>
         </Link>
       </Box>
-    </Box>
+    </>
   );
 };
 

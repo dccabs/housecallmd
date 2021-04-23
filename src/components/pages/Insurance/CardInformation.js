@@ -34,11 +34,11 @@ const CardInformation = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em">
+    <>
       <Typography variant="h2">Insurance</Typography>
       <form action="/sign-up">
         <Box
-          mt="8em"
+          mt="4em"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -91,7 +91,7 @@ const CardInformation = () => {
           </Box>
         </Box>
       </form>
-    </Box>
+    </>
   );
 };
 

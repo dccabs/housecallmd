@@ -53,11 +53,10 @@ const SignUp = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em">
+    <>
       <Typography variant="h2">Sign Up</Typography>
       <form action="/">
         <Box
-          mt="4em"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -136,7 +135,7 @@ const SignUp = () => {
           </Box>
         </Box>
       </form>
-    </Box>
+    </>
   );
 };
 

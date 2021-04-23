@@ -30,11 +30,11 @@ const Pharmacy = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em">
+    <>
       <Typography variant="h2">Pharmacy</Typography>
       <form action="/visit-choice">
         <Box
-          mt="8em"
+          mt="4em"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -96,7 +96,7 @@ const Pharmacy = () => {
           </Box>
         </Box>
       </form>
-    </Box>
+    </>
   );
 };
 

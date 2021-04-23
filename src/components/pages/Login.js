@@ -34,11 +34,11 @@ const Login = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em">
+    <>
       <Typography variant="h2">Login</Typography>
       <form action="/">
         <Box
-          mt="4em"
+          mt="1em"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -69,7 +69,7 @@ const Login = () => {
               required
             />
           </Box>
-          <Box mt="3em" display="flex" justifyContent="center" flexWrap="wrap">
+          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
               <Link to="#">
                 <Button color="secondary" variant="contained" size="large">
@@ -90,7 +90,7 @@ const Login = () => {
           </Box>
         </Box>
       </form>
-    </Box>
+    </>
   );
 };
 
