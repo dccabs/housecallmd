@@ -9,9 +9,14 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "34rem",
   },
   buttonLinks: {
+    "@media screen and (max-width: 700px)": {
+      "&:nth-child(2)": {
+        order: -1,
+      },
+    },
+
     "& button": {
       padding: "1em",
-      margin: "1em",
       fontWeight: 600,
       width: "16rem",
 
@@ -21,12 +26,6 @@ const useStyles = makeStyles((theme) => ({
     },
     "& a": {
       textDecoration: "none",
-
-      "@media screen and (max-width: 700px)": {
-        "&:nth-child(2)": {
-          order: -1,
-        },
-      },
     },
   },
 }));
@@ -71,26 +70,24 @@ const CardInformation = () => {
               required
             />
           </Box>
-          <Box
-            className={classes.buttonLinks}
-            mt="3em"
-            display="flex"
-            justifyContent="center"
-            flexWrap="wrap"
-          >
-            <Link to="/insurance/choose-provider">
-              <Button color="secondary" variant="contained" size="large">
-                Back
+          <Box mt="3em" display="flex" justifyContent="center" flexWrap="wrap">
+            <Box m="1em" className={classes.buttonLinks}>
+              <Link to="/insurance/choose-provider">
+                <Button color="secondary" variant="contained" size="large">
+                  Back
+                </Button>
+              </Link>
+            </Box>
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                Continue
               </Button>
-            </Link>
-            <Button
-              type="submit"
-              color="secondary"
-              variant="contained"
-              size="large"
-            >
-              Continue
-            </Button>
+            </Box>
           </Box>
         </Box>
       </form>

@@ -5,9 +5,14 @@ import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
+    "@media screen and (max-width: 700px)": {
+      "&:nth-child(2)": {
+        order: -1,
+      },
+    },
+
     "& button": {
       padding: "1em",
-      margin: "1em",
       fontWeight: 600,
       width: "16rem",
 
@@ -17,12 +22,6 @@ const useStyles = makeStyles((theme) => ({
     },
     "& a": {
       textDecoration: "none",
-
-      "@media screen and (max-width: 700px)": {
-        "&:nth-child(2)": {
-          order: -1,
-        },
-      },
     },
   },
 }));
@@ -68,26 +67,30 @@ const ChooseProvider = () => {
             />
           </Box>
           <Box
-            className={classes.buttonLinks}
             mt="1em"
             display="flex"
             justifyContent="center"
+            alignItems="center"
             flexWrap="wrap"
             width="100%"
           >
-            <Link to="/insurance">
-              <Button color="secondary" variant="contained" size="large">
-                Back
+            <Box m="1em" className={classes.buttonLinks}>
+              <Link to="/insurance">
+                <Button color="secondary" variant="contained" size="large">
+                  Back
+                </Button>
+              </Link>
+            </Box>
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                Continue
               </Button>
-            </Link>
-            <Button
-              type="submit"
-              color="secondary"
-              variant="contained"
-              size="large"
-            >
-              Continue
-            </Button>
+            </Box>
           </Box>
         </Box>
       </form>

@@ -6,7 +6,6 @@ const useStyles = makeStyles((theme) => ({
   buttonLinks: {
     "& button": {
       padding: "1em",
-      margin: "1em",
       fontWeight: 600,
       width: "16rem",
 
@@ -16,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& a": {
       textDecoration: "none",
+      margin: "1em",
     },
   },
 }));
