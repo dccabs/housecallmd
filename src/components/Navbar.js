@@ -14,14 +14,20 @@ import { Link } from "react-router-dom";
 
 import MobileNavDrawer from "./MobileNavDrawer";
 
+import logo_heart from '../assets/images/logo_heart.png'
+
 const useStyles = makeStyles((theme) => ({
+  appBar: {
+    backgroundColor: '#ffffff'
+  },
   toolBar: {
     display: "flex",
     justifyContent: "space-between",
 
+
     "& a": {
       textDecoration: "none",
-      color: "white",
+      color: "blue",
     },
   },
   authLinks: {
@@ -46,6 +52,17 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
     },
   },
+  logoText: {
+    marginLeft: 10,
+    color: '#494b4b',
+    fontWeight: 900,
+    '& span': {
+      color: '#0092b8'
+    }
+  },
+  logoH6: {
+    display: 'flex',
+  }
 }));
 
 const Navbar = () => {
@@ -62,27 +79,27 @@ const Navbar = () => {
         <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
       </Drawer>
 
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
           <Link to="/">
-            <Typography variant="h6">
-              <strong>House Call MD</strong>
+            <Typography variant="h6" className={classes.logoH6}>
+              <img style={{height: 30}} src={logo_heart} /><strong className={classes.logoText}>HouseCall<span>MD</span></strong>
             </Typography>
           </Link>
 
           <Box className={classes.authLinks}>
             <Link to="/login">
-              <Button color="inherit">Login</Button>
+              <Button>Login</Button>
             </Link>
             <Link to="/sign-up">
-              <Button color="inherit">Sign Up</Button>
+              <Button>Sign Up</Button>
             </Link>
           </Box>
 
           <Box display="none" className={classes.burgerNav}>
             <IconButton
               edge="start"
-              color="inherit"
+              // color="inherit"
               onClick={() => setDrawerToggle(!drawerToggle)}
             >
               <MenuIcon />
