@@ -30,7 +30,7 @@ const Pharmacy = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box p="1em">
       <Typography variant="h2">Pharmacy</Typography>
       <form action="/visit-choice">
         <Box
@@ -96,7 +96,7 @@ const Pharmacy = () => {
           </Box>
         </Box>
       </form>
-    </>
+    </Box>
   );
 };
 

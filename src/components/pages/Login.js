@@ -34,7 +34,7 @@ const Login = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box p="1em">
       <Typography variant="h2">Login</Typography>
       <form action="/">
           <Box
@@ -81,7 +81,7 @@ const Login = () => {
             </Box>
           </Box>
       </form>
-    </>
+    </Box>
   );
 };
 

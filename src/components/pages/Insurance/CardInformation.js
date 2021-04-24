@@ -34,7 +34,7 @@ const CardInformation = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box p="1em">
       <Typography variant="h2">Insurance</Typography>
       <form action="/sign-up">
         <Box
@@ -91,7 +91,7 @@ const CardInformation = () => {
           </Box>
         </Box>
       </form>
-    </>
+    </Box>
   );
 };
 

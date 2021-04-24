@@ -30,7 +30,7 @@ const ChooseProvider = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box p="1em">
       <Typography variant="h2">Insurance</Typography>
       <form action="/insurance/card-information">
         <Box
@@ -93,7 +93,7 @@ const ChooseProvider = () => {
           </Box>
         </Box>
       </form>
-    </>
+    </Box>
   );
 };
 

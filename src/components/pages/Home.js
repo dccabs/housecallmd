@@ -1,7 +1,7 @@
 import { Box, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
-import banner from "../../assets/images/banner.jpg";
+import banner_phone from "../../assets/images/banner_phone.png";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -28,7 +28,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   backgroundContainer: {
-    backgroundImage: banner,
+    backgroundImage: `url(${banner_phone})`,
+    backgroundPosition: '-140px 0px',
+    height: 350,
+    color: '#ffffff'
   }
 }));
 
@@ -37,22 +40,24 @@ const Home = () => {
 
   return (
     <>
-      <Box className={classes.backgroundContainer}>
-        <Box mt="1em">
+      <Box p="1em" className={classes.backgroundContainer}>
+        <Box mt="4em">
           <h1>Schedule a housecall or telemedicine visit with a healthcare professional in minutes.</h1>
         </Box>
         <Box mt="2em" display="flex" justifyContent="center">
-            <Link to="/insurance" className={classes.linkButton}>
-              <Button
-                color="secondary"
-                variant="contained"
-                size="large"
-                fullWidth
-              >
-                Get Started
-              </Button>
-            </Link>
+          <Link to="/insurance" className={classes.linkButton}>
+            <Button
+              color="secondary"
+              variant="contained"
+              size="large"
+              fullWidth
+            >
+              Get Started
+            </Button>
+          </Link>
         </Box>
+      </Box>
+        <Box p="1em">
         <Box mt="1em">
           <Typography className={classes.textBody}>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. In quidem

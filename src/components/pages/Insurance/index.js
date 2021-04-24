@@ -27,7 +27,7 @@ const Insurance = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box p="1em">
       <Typography variant="h2">Insurance</Typography>
       <Box
         mt="2em"
@@ -59,7 +59,7 @@ const Insurance = () => {
           </p>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 

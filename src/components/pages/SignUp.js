@@ -22,7 +22,7 @@ const SignUp = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box p="1em">
       <Typography variant="h2">Sign Up</Typography>
       <form action="/" style={{width: '100%'}}>
         <Box
@@ -100,7 +100,7 @@ const SignUp = () => {
           </Box>
         </Box>
       </form>
-    </>
+    </Box>
   );
 };
 
