@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 const Insurance = () => {
   const classes = useStyles();
 
+  
   return (
     <Box p="1em">
       <Typography variant="h2">Insurance</Typography>
