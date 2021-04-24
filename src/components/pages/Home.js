@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   backgroundContainer: {
-    backgroundImage: `url(${banner_phone})`,
     backgroundPosition: '-140px 0px',
     height: 350,
     color: '#ffffff'
@@ -47,7 +46,7 @@ const Home = () => {
 
   return (
     <>
-      <Box p="1em" className={classes.backgroundContainer}>
+      <Box p="1em" className={classes.backgroundContainer} style={{    backgroundImage: `url(${banner_phone})`}}>
         <Box mt="4em">
           <h1 className={classes.h1}>Schedule a housecall or telemedicine visit with a healthcare professional in minutes.</h1>
         </Box>
