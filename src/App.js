@@ -13,7 +13,6 @@ import PageNotFound from "./components/pages/404";
 import { Box } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
-import banner_phone from "./assets/images/banner_phone.png";
 
 const useStyles = makeStyles((theme) => ({
   container: {
