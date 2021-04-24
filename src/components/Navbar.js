@@ -84,7 +84,7 @@ const Navbar = () => {
         <Toolbar className={classes.toolBar}>
           <Link to="/">
             <Typography variant="h6" className={classes.logoH6}>
-              <img style={{height: 30}} src={logo_heart} /><strong className={classes.logoText}>HouseCall<span>MD</span></strong>
+              <img alt="Housecall MD" style={{height: 30}} src={logo_heart} /><strong className={classes.logoText}>HouseCall<span>MD</span></strong>
             </Typography>
           </Link>
 
