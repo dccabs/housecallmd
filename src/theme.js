@@ -26,7 +26,6 @@ const theme = createMuiTheme({
         marginTop: "1em",
       },
     },
-
     h4: {
       textAlign: 'center',
       fontWeight: 'normal',
