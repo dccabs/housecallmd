@@ -54,9 +54,9 @@ const Insurance = () => {
               No
             </Button>
           </Link>
-          <p className={classes.disclaimer}>
-            You do not need to have insurance to use this service.
-          </p>
+        </Box>
+        <Box className={classes.disclaimer}>
+          You do not need to have insurance to use this service.
         </Box>
       </Box>
     </Box>

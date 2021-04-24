@@ -80,19 +80,19 @@ const Home = () => {
           </Typography>
         </Box>
       </Box>
-      <Box mx="4em" className={classes.divRight}>
-        <Link to="/insurance" className={classes.linkButton}>
-          <Button
-            className={classes.ctaButton}
-            type="submit"
-            color="secondary"
-            variant="contained"
-            size="large"
-          >
-            Get Started
-          </Button>
-        </Link>
-      </Box>
+      {/*<Box mx="4em" className={classes.divRight}>*/}
+      {/*  <Link to="/insurance" className={classes.linkButton}>*/}
+      {/*    <Button*/}
+      {/*      className={classes.ctaButton}*/}
+      {/*      type="submit"*/}
+      {/*      color="secondary"*/}
+      {/*      variant="contained"*/}
+      {/*      size="large"*/}
+      {/*    >*/}
+      {/*      Get Started*/}
+      {/*    </Button>*/}
+      {/*  </Link>*/}
+      {/*</Box>*/}
     </>
   );
 };
