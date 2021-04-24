@@ -16,7 +16,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Box p="0" display="flex" flexWrap="wrap">
+      <Box p="0" display="flex" flexWrap="wrap" style={{background: '#fff', minHeight: 500}}>
         <Switch>
           <Route component={Home} exact path="/" />
           <Route component={Insurance} exact path="/insurance" />

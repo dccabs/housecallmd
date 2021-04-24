@@ -32,6 +32,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: '-140px 0px',
     height: 350,
     color: '#ffffff'
+  },
+  h1: {
+    textAlign: 'center',
+  },
+  content: {
+    background: '#e1215b',
+    color: '#fff',
   }
 }));
 
@@ -42,7 +49,7 @@ const Home = () => {
     <>
       <Box p="1em" className={classes.backgroundContainer}>
         <Box mt="4em">
-          <h1>Schedule a housecall or telemedicine visit with a healthcare professional in minutes.</h1>
+          <h1 className={classes.h1}>Schedule a housecall or telemedicine visit with a healthcare professional in minutes.</h1>
         </Box>
         <Box mt="2em" display="flex" justifyContent="center">
           <Link to="/insurance" className={classes.linkButton}>
@@ -57,7 +64,7 @@ const Home = () => {
           </Link>
         </Box>
       </Box>
-        <Box p="1em">
+      <Box p="1em" className={classes.content}>
         <Box mt="1em">
           <Typography className={classes.textBody}>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. In quidem
