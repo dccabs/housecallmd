@@ -12,27 +12,11 @@ import VisitChoice from "./components/pages/VisitChoice";
 import PageNotFound from "./components/pages/404";
 import { Box } from "@material-ui/core";
 
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    background: "#fff",
-    minHeight: 500,
-    [theme.breakpoints.up("sm")]: {
-      margin: "auto",
-      maxWidth: 1100,
-      justifyContent: "center",
-    },
-  },
-}));
-
 function App() {
-  const classes = useStyles();
 
   return (
     <BrowserRouter>
       <Navbar />
-      {/* <Box p="0" display="flex" flexWrap="wrap" className={classes.container}> */}
       <Box>
         <Switch>
           <Route component={Home} exact path="/" />
