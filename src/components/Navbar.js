@@ -87,6 +87,7 @@ const Navbar = () => {
               <img alt="Housecall MD" style={{height: 30}} src={logo_heart} /><strong className={classes.logoText}>HouseCall<span>MD</span></strong>
             </Typography>
           </Link>
+          
 
           <Box className={classes.authLinks}>
             <Link to="/login">
