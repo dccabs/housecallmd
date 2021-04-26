@@ -71,7 +71,7 @@ const Login = () => {
           </Box>
           <Box mt="3em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
-              <Link to="#">
+              <Link to="/">
                 <Button color="secondary" variant="contained" size="large">
                   Forgot Password
                 </Button>
