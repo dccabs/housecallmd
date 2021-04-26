@@ -60,9 +60,7 @@ const Login = () => {
                 type="password"
                 label="Password"
                 variant="outlined"
-                color="secondary"
-                required
-              />
+                />
             </Box>
             <Box
               mt="2em"
