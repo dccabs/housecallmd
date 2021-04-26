@@ -8,6 +8,7 @@ import {
   FormControl,
   FormControlLabel,
 } from "@material-ui/core";
+import Container from "../Container";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
@@ -43,75 +44,83 @@ const VisitChoice = () => {
   };
 
   return (
-    <Box p="1em">
-      <Typography variant="h2">Visit Choice</Typography>
-      <form action="/">
-        <Box
-          mt="2em"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Typography variant="h4">
-            What type of visit would you like?
-          </Typography>
-          <Box
-            mt="1em"
-            width="100%"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <FormControl component="fieldset">
-              <RadioGroup name="visit" value={value} onChange={handleChange}>
-                <FormControlLabel
-                  value="Video/Telemedicine Visit"
-                  control={<Radio />}
-                  label="Video/Telemedicine Visit"
-                />
-                <FormControlLabel
-                  value="Phone Visit"
-                  control={<Radio />}
-                  label="Phone Visit"
-                />
-                <FormControlLabel
-                  value="Housecall (In person visit at home)"
-                  control={<Radio />}
-                  label="Housecall (In person visit at home)"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Box>
-          <Box
-            mt="1em"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            flexWrap="wrap"
-            width="100%"
-          >
-            <Box m="1em" className={classes.buttonLinks}>
-              <Link to="/pharmacy">
-                <Button color="secondary" variant="contained" size="large">
-                  Back
-                </Button>
-              </Link>
-            </Box>
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                size="large"
+    <Container>
+      <Box p="1em">
+        <Typography variant="h2">Visit Choice</Typography>
+        <Container>
+          <form action="/">
+            <Box
+              mt="2em"
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography variant="h4">
+                What type of visit would you like?
+              </Typography>
+              <Box
+                mt="1em"
+                width="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               >
-                Continue
-              </Button>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    name="visit"
+                    value={value}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value="Video/Telemedicine Visit"
+                      control={<Radio />}
+                      label="Video/Telemedicine Visit"
+                    />
+                    <FormControlLabel
+                      value="Phone Visit"
+                      control={<Radio />}
+                      label="Phone Visit"
+                    />
+                    <FormControlLabel
+                      value="Housecall (In person visit at home)"
+                      control={<Radio />}
+                      label="Housecall (In person visit at home)"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Box>
+              <Box
+                mt="1em"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flexWrap="wrap"
+                width="100%"
+              >
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Link to="/pharmacy">
+                    <Button color="secondary" variant="contained" size="large">
+                      Back
+                    </Button>
+                  </Link>
+                </Box>
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                    size="large"
+                  >
+                    Continue
+                  </Button>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-      </form>
-    </Box>
+          </form>
+        </Container>
+      </Box>
+    </Container>
   );
 };
 

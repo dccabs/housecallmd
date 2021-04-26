@@ -1,6 +1,7 @@
 import { Typography, Box, Button, TextField } from "@material-ui/core";
+import Container from "../../Container";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -32,66 +33,78 @@ const useStyles = makeStyles((theme) => ({
 
 const CardInformation = () => {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
-    <Box p="1em">
-      <Typography variant="h2">Insurance</Typography>
-      <form action="/sign-up">
-        <Box
-          mt="2em"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Typography variant="h4">
-            Please fill out your insurance card information
-          </Typography>
-          <Box
-            mt="1em"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            width="100%"
-          >
-            <TextField
-              className={classes.textFields}
-              label="Plan number"
-              variant="outlined"
-              color="secondary"
-              required
-            />
-            <TextField
-              className={classes.textFields}
-              label="Group number"
-              variant="outlined"
-              color="secondary"
-              required
-            />
-          </Box>
-          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
-            <Box m="1em" className={classes.buttonLinks}>
-              <Link to="/insurance/choose-provider">
-                <Button color="secondary" variant="contained" size="large">
-                  Back
-                </Button>
-              </Link>
-            </Box>
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                size="large"
+    <Container>
+      <Box p="1em">
+        <Typography variant="h2">Insurance</Typography>
+        <Container>
+          <form action="/sign-up">
+            <Box
+              mt="2em"
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography variant="h4">
+                Please fill out your insurance card information
+              </Typography>
+              <Box
+                mt="1em"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                width="100%"
               >
-                Continue
-              </Button>
+                <TextField
+                  className={classes.textFields}
+                  label="Plan number"
+                  variant="outlined"
+                  color="secondary"
+                  required
+                />
+                <TextField
+                  className={classes.textFields}
+                  label="Group number"
+                  variant="outlined"
+                  color="secondary"
+                  required
+                />
+              </Box>
+              <Box
+                mt="2em"
+                display="flex"
+                justifyContent="center"
+                flexWrap="wrap"
+              >
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    onClick={() => history.goBack()}
+                    color="secondary"
+                    variant="contained"
+                  >
+                    Back
+                  </Button>
+                </Box>
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                    size="large"
+                  >
+                    Continue
+                  </Button>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-      </form>
-    </Box>
+          </form>
+        </Container>
+      </Box>
+    </Container>
   );
 };
 

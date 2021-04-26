@@ -14,17 +14,21 @@ import { Link } from "react-router-dom";
 
 import MobileNavDrawer from "./MobileNavDrawer";
 
-import logo_heart from '../assets/images/logo_heart.png'
+import logo_heart from "../assets/images/logo_heart.png";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: '#ffffff',
-    boxShadow: 'none',
+    backgroundColor: "#fff",
+    boxShadow: "none",
+
+    [theme.breakpoints.up("sm")]: {
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      position: "absolute",
+    },
   },
   toolBar: {
     display: "flex",
     justifyContent: "space-between",
-
 
     "& a": {
       textDecoration: "none",
@@ -55,15 +59,15 @@ const useStyles = makeStyles((theme) => ({
   },
   logoText: {
     marginLeft: 10,
-    color: '#494b4b',
+    color: "#494b4b",
     fontWeight: 900,
-    '& span': {
-      color: '#0092b8'
-    }
+    "& span": {
+      color: "#0092b8",
+    },
   },
   logoH6: {
-    display: 'flex',
-  }
+    display: "flex",
+  },
 }));
 
 const Navbar = () => {
@@ -84,7 +88,10 @@ const Navbar = () => {
         <Toolbar className={classes.toolBar}>
           <Link to="/">
             <Typography variant="h6" className={classes.logoH6}>
-              <img alt="Housecall MD" style={{height: 30}} src={logo_heart} /><strong className={classes.logoText}>HouseCall<span>MD</span></strong>
+              <img alt="Housecall MD" style={{ height: 30 }} src={logo_heart} />
+              <strong className={classes.logoText}>
+                HouseCall<span>MD</span>
+              </strong>
             </Typography>
           </Link>
           

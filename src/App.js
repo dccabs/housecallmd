@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       margin: "auto",
       maxWidth: 1100,
-      justifyContent: 'center'
+      justifyContent: "center",
     },
   },
 }));
@@ -32,12 +32,16 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Box p="0" display="flex" flexWrap="wrap" className={classes.container}>
+      {/* <Box p="0" display="flex" flexWrap="wrap" className={classes.container}> */}
+      <Box>
         <Switch>
           <Route component={Home} exact path="/" />
           <Route component={Insurance} exact path="/insurance" />
           <Route component={ChooseProvider} path="/insurance/choose-provider" />
-          <Route component={CardInformation} path="/insurance/card-information" />
+          <Route
+            component={CardInformation}
+            path="/insurance/card-information"
+          />
           <Route component={Pharmacy} path="/pharmacy" />
           <Route component={VisitChoice} path="/visit-choice" />
           <Route component={SignUp} path="/sign-up" />

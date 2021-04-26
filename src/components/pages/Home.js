@@ -1,6 +1,7 @@
 import { Box, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
+import banner from "../../assets/images/banner.jpg";
 import banner_phone from "../../assets/images/banner_phone.png";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,17 +29,46 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   backgroundContainer: {
-    backgroundPosition: '-140px 0px',
+    backgroundImage: `url(${banner_phone})`,
+    backgroundPosition: "top center",
+    backgroundAttachment: "cover",
+    backgroundRepeat: "no-repeat",
     height: 350,
-    color: '#ffffff'
+    color: "#ffffff",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+
+    [theme.breakpoints.up("sm")]: {
+      backgroundImage: `url(${banner})`,
+      backgroundPosition: "center center",
+      alignItems: "flex-start",
+      padding: "20em 6em",
+      color: theme.typography.color,
+    },
   },
-  h1: {
-    textAlign: 'center',
+  h4: {
+    textAlign: "center",
+
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: "40rem",
+      textAlign: "left",
+    },
+  },
+  mainHeading: {
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: "40vw",
+    },
   },
   content: {
-    background: '#e1215b',
-    color: '#fff',
-  }
+    background: "#e1215b",
+    color: "#fff",
+
+    [theme.breakpoints.up("sm")]: {
+      padding: "6em",
+    },
+  },
 }));
 
 const Home = () => {
@@ -46,9 +76,12 @@ const Home = () => {
 
   return (
     <>
-      <Box p="1em" className={classes.backgroundContainer} style={{    backgroundImage: `url(${banner_phone})`}}>
-        <Box mt="4em">
-          <h1 className={classes.h1}>Schedule a housecall or telemedicine visit with a healthcare professional in minutes.</h1>
+      <Box p="1em" className={classes.backgroundContainer}>
+        <Box className={classes.mainHeading}>
+          <Typography variant="h4" className={classes.h4}>
+            Schedule a housecall or telemedicine visit with a healthcare
+            professional in minutes.
+          </Typography>
         </Box>
         <Box mt="2em" display="flex" justifyContent="center">
           <Link to="/insurance" className={classes.linkButton}>
