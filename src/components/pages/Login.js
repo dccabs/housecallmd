@@ -1,4 +1,5 @@
 import { Typography, Box, Button, TextField } from "@material-ui/core";
+import Container from "../Container";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
@@ -34,63 +35,61 @@ const Login = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em">
-      <Typography variant="h2">Login</Typography>
-      <form action="/">
-        <Box
-          mt="4em"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Box
-            mt="1em"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            width="100%"
-          >
-            <TextField
-              className={classes.textFields}
-              type="email"
-              label="Email"
-              variant="outlined"
-              color="secondary"
-              required
-            />
-            <TextField
-              className={classes.textFields}
-              type="password"
-              label="Password"
-              variant="outlined"
-              color="secondary"
-              required
-            />
-          </Box>
-          <Box mt="3em" display="flex" justifyContent="center" flexWrap="wrap">
-            <Box m="1em" className={classes.buttonLinks}>
-              <Link to="/">
-                <Button color="secondary" variant="contained" size="large">
-                  Forgot Password
-                </Button>
-              </Link>
-            </Box>
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                type="submit"
+    <Container>
+      <Box p="1em">
+        <Typography variant="h2">Login</Typography>
+        <Container>
+          <form action="/">
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              width="100%"
+            >
+              <TextField
+                className={classes.textFields}
+                type="email"
+                label="Email"
+                variant="outlined"
                 color="secondary"
-                variant="contained"
-                size="large"
-              >
-                Login
-              </Button>
+                required
+              />
+              <TextField
+                className={classes.textFields}
+                type="password"
+                label="Password"
+                variant="outlined"
+                />
             </Box>
-          </Box>
-        </Box>
-      </form>
-    </Box>
+            <Box
+              mt="2em"
+              display="flex"
+              justifyContent="center"
+              flexWrap="wrap"
+            >
+              <Box m="1em" className={classes.buttonLinks}>
+                <Link to="#">
+                  <Button color="secondary" variant="contained" size="large">
+                    Forgot Password
+                  </Button>
+                </Link>
+              </Box>
+              <Box m="1em" className={classes.buttonLinks}>
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  size="large"
+                >
+                  Login
+                </Button>
+              </Box>
+            </Box>
+          </form>
+        </Container>
+      </Box>
+    </Container>
   );
 };
 

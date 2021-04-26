@@ -1,5 +1,7 @@
 import { Typography, Box, Button, TextField } from "@material-ui/core";
+import Container from "../Container";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -7,36 +9,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "2em",
     maxWidth: "34rem",
   },
-  nameFields: {
-    marginTop: "2em",
-    width: "100%",
-
-    "& div": {
-      width: "100%",
-      maxWidth: "16rem",
-
-      "@media screen and (max-width: 680px)": {
-        maxWidth: "100%",
+  buttonLinks: {
+    "@media screen and (max-width: 700px)": {
+      "&:nth-child(2)": {
+        order: -1,
       },
     },
-  },
-  nameField1: {
-    margin: "1rem 1rem 1rem 0",
 
-    "@media screen and (max-width: 680px)": {
-      width: "100%",
-      margin: "1rem 0",
-    },
-  },
-  nameField2: {
-    margin: "1rem 0 1rem 1rem",
-
-    "@media screen and (max-width: 680px)": {
-      width: "100%",
-      margin: "1rem 0",
-    },
-  },
-  buttonLinks: {
     "& button": {
       padding: "1em",
       fontWeight: 600,
@@ -51,54 +30,40 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
-    <Box p="4em">
-      <Typography variant="h2">Sign Up</Typography>
-      <form action="/">
-        <Box
-          mt="4em"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
+    <Container>
+      <Box p="1em">
+        <Typography variant="h2">Sign Up</Typography>
+        <form action="/" style={{ width: "100%" }}>
           <Box
-            mt="1em"
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            width="100%"
           >
-            <Box
-              className={classes.nameFields}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box className={classes.nameField1}>
-                <TextField
-                  type="text"
-                  label="First Name"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                />
-              </Box>
-              <Box className={classes.nameField2}>
-                <TextField
-                  type="text"
-                  label="Last Name"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                />
-              </Box>
-            </Box>
             <TextField
               className={classes.textFields}
+              fullWidth
+              type="text"
+              label="First Name"
+              variant="outlined"
+              color="secondary"
+              required
+            />
+            <TextField
+              className={classes.textFields}
+              fullWidth
+              type="text"
+              label="Last Name"
+              variant="outlined"
+              color="secondary"
+              required
+            />
+            <TextField
+              className={classes.textFields}
+              fullWidth
               type="email"
               label="Email"
               variant="outlined"
@@ -107,6 +72,7 @@ const SignUp = () => {
             />
             <TextField
               className={classes.textFields}
+              fullWidth
               type="password"
               label="Password"
               variant="outlined"
@@ -114,6 +80,7 @@ const SignUp = () => {
               required
             />
             <TextField
+              fullWidth
               className={classes.textFields}
               type="password"
               label="Confirm Password"
@@ -122,7 +89,17 @@ const SignUp = () => {
               required
             />
           </Box>
-          <Box mt="3em">
+          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                onClick={() => history.goBack()}
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                Back
+              </Button>
+            </Box>
             <Box m="1em" className={classes.buttonLinks}>
               <Button
                 type="submit"
@@ -134,9 +111,9 @@ const SignUp = () => {
               </Button>
             </Box>
           </Box>
-        </Box>
-      </form>
-    </Box>
+        </form>
+      </Box>
+    </Container>
   );
 };
 

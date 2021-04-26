@@ -2,6 +2,7 @@ import { Box, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import banner from "../../assets/images/banner.jpg";
+import banner_phone from "../../assets/images/banner_phone.png";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -12,12 +13,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "60rem",
   },
   ctaButton: {
-    fontSize: 24,
+    // fontSize: 24,
     width: "100%",
 
-    "&:hover": {
-      backgroundColor: theme.palette.primary.main,
-    },
+    // "&:hover": {
+    //   backgroundColor: theme.palette.primary.main,
+    // },
   },
   linkButton: {
     textDecoration: "none",
@@ -27,16 +28,76 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
+  backgroundContainer: {
+    backgroundImage: `url(${banner_phone})`,
+    backgroundPosition: "top center",
+    backgroundAttachment: "cover",
+    backgroundRepeat: "no-repeat",
+    height: 350,
+    color: "#ffffff",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+
+    [theme.breakpoints.up("sm")]: {
+      backgroundImage: `url(${banner})`,
+      backgroundPosition: "center center",
+      alignItems: "flex-start",
+      padding: "20em 6em",
+      color: theme.typography.color,
+    },
+  },
+  h4: {
+    textAlign: "center",
+
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: "40rem",
+      textAlign: "left",
+    },
+  },
+  mainHeading: {
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: "40vw",
+    },
+  },
+  content: {
+    background: "#e1215b",
+    color: "#fff",
+
+    [theme.breakpoints.up("sm")]: {
+      padding: "6em",
+    },
+  },
 }));
 
 const Home = () => {
   const classes = useStyles();
 
   return (
-    <Box p="4em" display="flex" justifyContent="center" flexWrap="wrap">
-      <Box>
-        <img src={`${banner}`} alt="banner" className={classes.image} />
-        <Box mt="2em">
+    <>
+      <Box p="1em" className={classes.backgroundContainer}>
+        <Box className={classes.mainHeading}>
+          <Typography variant="h4" className={classes.h4}>
+            Schedule a housecall or telemedicine visit with a healthcare
+            professional in minutes.
+          </Typography>
+        </Box>
+        <Box mt="2em" display="flex" justifyContent="center">
+          <Link to="/insurance" className={classes.linkButton}>
+            <Button
+              color="secondary"
+              variant="contained"
+              size="large"
+              fullWidth
+            >
+              Get Started
+            </Button>
+          </Link>
+        </Box>
+      </Box>
+      <Box p="1em" className={classes.content}>
+        <Box mt="1em">
           <Typography className={classes.textBody}>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. In quidem
             aut accusamus ab? Enim perferendis quidem suscipit vitae tempora
@@ -50,32 +111,21 @@ const Home = () => {
             officiis iure vel voluptatum blanditiis illum ipsam.
           </Typography>
         </Box>
-        <Box mt="2em" display="flex" justifyContent="center">
-          <Box width="75%">
-            <Link to="/insurance" className={classes.linkButton}>
-              <Button
-                className={classes.ctaButton}
-                color="secondary"
-                variant="contained"
-              >
-                Get Started
-              </Button>
-            </Link>
-          </Box>
-        </Box>
       </Box>
-      <Box mx="4em" className={classes.divRight}>
-        <Link to="/insurance" className={classes.linkButton}>
-          <Button
-            className={classes.ctaButton}
-            color="secondary"
-            variant="contained"
-          >
-            Get Started
-          </Button>
-        </Link>
-      </Box>
-    </Box>
+      {/*<Box mx="4em" className={classes.divRight}>*/}
+      {/*  <Link to="/insurance" className={classes.linkButton}>*/}
+      {/*    <Button*/}
+      {/*      className={classes.ctaButton}*/}
+      {/*      type="submit"*/}
+      {/*      color="secondary"*/}
+      {/*      variant="contained"*/}
+      {/*      size="large"*/}
+      {/*    >*/}
+      {/*      Get Started*/}
+      {/*    </Button>*/}
+      {/*  </Link>*/}
+      {/*</Box>*/}
+    </>
   );
 };
 
