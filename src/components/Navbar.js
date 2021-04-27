@@ -4,7 +4,6 @@ import {
   Toolbar,
   Typography,
   Box,
-  Button,
   IconButton,
   Drawer,
 } from "@material-ui/core";
@@ -36,17 +35,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   authLinks: {
-    "& button": {
-      fontWeight: 600,
-
-      "&:hover": {
-        textDecoration: "underline",
-      },
-    },
     "& a": {
+      fontWeight: 600,
       textDecoration: "none",
-      color: "white",
-      margin: "0 0.5rem",
+      color: theme.typography.color,
+      marginLeft: "2rem",
     },
     [theme.breakpoints.down("xs")]: {
       display: "none",
@@ -94,14 +87,16 @@ const Navbar = () => {
               </strong>
             </Typography>
           </Link>
-          
 
-          <Box className={classes.authLinks}>
+          <Box className={classes.authLinks} display="flex">
+            <Link to="/contact">
+              <Typography>Contact</Typography>
+            </Link>
             <Link to="/login">
-              <Button>Login</Button>
+              <Typography>Login</Typography>
             </Link>
             <Link to="/sign-up">
-              <Button>Sign Up</Button>
+              <Typography>Sign Up</Typography>
             </Link>
           </Box>
 

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Box } from "@material-ui/core";
 
 import Navbar from "./components/Navbar";
 import Home from "./components/pages/Home";
@@ -9,11 +10,11 @@ import SignUp from "./components/pages/SignUp";
 import Login from "./components/pages/Login";
 import Pharmacy from "./components/pages/Pharmacy";
 import VisitChoice from "./components/pages/VisitChoice";
+import Contact from "./components/pages/Contact";
 import PageNotFound from "./components/pages/404";
-import { Box } from "@material-ui/core";
+import Footer from "./components/Footer";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Navbar />
@@ -28,11 +29,13 @@ function App() {
           />
           <Route component={Pharmacy} path="/pharmacy" />
           <Route component={VisitChoice} path="/visit-choice" />
+          <Route component={Contact} path="/contact" />
           <Route component={SignUp} path="/sign-up" />
           <Route component={Login} path="/login" />
           <Route component={PageNotFound} />
         </Switch>
       </Box>
+      <Footer />
     </BrowserRouter>
   );
 }
