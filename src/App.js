@@ -18,7 +18,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Box>
+      <Box role="main" id="main">
         <Switch>
           <Route component={Home} exact path="/" />
           <Route component={Insurance} exact path="/insurance" />
