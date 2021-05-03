@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.primary.main,
     padding: '2em',
+    width: '100%',
 
     '& a': {
       fontWeight: 600,

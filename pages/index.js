@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
@@ -73,7 +74,7 @@ const Home = () => {
   const classes = useStyles()
 
   return (
-    <>
+    <Fragment>
       <Box p="1em" className={classes.backgroundContainer}>
         <Box className={classes.mainHeading}>
           <Typography variant="h4" className={classes.h4}>
@@ -110,20 +111,7 @@ const Home = () => {
           </Typography>
         </Box>
       </Box>
-      {/*<Box mx="4em" className={classes.divRight}>*/}
-      {/*  <Link to="/insurance" className={classes.linkButton}>*/}
-      {/*    <Button*/}
-      {/*      className={classes.ctaButton}*/}
-      {/*      type="submit"*/}
-      {/*      color="secondary"*/}
-      {/*      variant="contained"*/}
-      {/*      size="large"*/}
-      {/*    >*/}
-      {/*      Get Started*/}
-      {/*    </Button>*/}
-      {/*  </Link>*/}
-      {/*</Box>*/}
-    </>
+    </Fragment>
   )
 }
 

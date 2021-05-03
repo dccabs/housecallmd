@@ -5,9 +5,16 @@ import Footer from '../Footer'
 
 const Layout = ({ children }) => {
   return (
-    <Box display="flex" flexDirection="column">
-      <Navbar />
-      <Box>{children}</Box>
+    <Box
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
+    >
+      <Box>
+        <Navbar />
+        <Box>{children}</Box>
+      </Box>
       <Footer />
     </Box>
   )
