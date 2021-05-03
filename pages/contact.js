@@ -1,42 +1,40 @@
-import { Typography, Box, Button, TextField } from "@material-ui/core";
-import Container from "../Container";
-import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
+import { Typography, Box, Button, TextField } from '@material-ui/core'
+import Container from '../components/Container'
+import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
-    width: "100%",
-    marginTop: "2em",
-    maxWidth: "34rem",
+    width: '100%',
+    marginTop: '2em',
+    maxWidth: '34rem',
   },
   buttonLinks: {
-    "@media screen and (max-width: 700px)": {
-      "&:nth-child(2)": {
+    '@media screen and (max-width: 700px)': {
+      '&:nth-child(2)': {
         order: -1,
       },
     },
 
-    "& button": {
-      padding: "1em",
+    '& button': {
+      padding: '1em',
       fontWeight: 600,
-      width: "16rem",
+      width: '16rem',
 
-      "&:hover": {
+      '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
     },
   },
-}));
+}))
 
-const SignUp = () => {
-  const classes = useStyles();
-  const history = useHistory();
+const Contact = () => {
+  const classes = useStyles()
 
   return (
     <Container>
       <Box p="1em">
-        <Typography variant="h2">Sign Up</Typography>
-        <form action="/" style={{ width: "100%" }}>
+        <Typography variant="h2">Contact Us</Typography>
+        <form action="/" style={{ width: '100%' }}>
           <Box
             display="flex"
             flexDirection="column"
@@ -47,7 +45,7 @@ const SignUp = () => {
               className={classes.textFields}
               fullWidth
               type="text"
-              label="First Name"
+              label="Enter full name here"
               variant="outlined"
               color="secondary"
               required
@@ -56,7 +54,7 @@ const SignUp = () => {
               className={classes.textFields}
               fullWidth
               type="text"
-              label="Last Name"
+              label="Enter address here"
               variant="outlined"
               color="secondary"
               required
@@ -65,7 +63,7 @@ const SignUp = () => {
               className={classes.textFields}
               fullWidth
               type="email"
-              label="Email"
+              label="Enter email address here"
               variant="outlined"
               color="secondary"
               required
@@ -73,8 +71,8 @@ const SignUp = () => {
             <TextField
               className={classes.textFields}
               fullWidth
-              type="password"
-              label="Password"
+              type="text"
+              label="Enter phone here"
               variant="outlined"
               color="secondary"
               required
@@ -82,24 +80,15 @@ const SignUp = () => {
             <TextField
               fullWidth
               className={classes.textFields}
-              type="password"
-              label="Confirm Password"
+              multiline
+              rows={4}
+              label="Enter your question or comment here"
               variant="outlined"
               color="secondary"
               required
             />
           </Box>
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                onClick={() => history.goBack()}
-                color="secondary"
-                variant="contained"
-                size="large"
-              >
-                Back
-              </Button>
-            </Box>
             <Box m="1em" className={classes.buttonLinks}>
               <Button
                 type="submit"
@@ -114,7 +103,7 @@ const SignUp = () => {
         </form>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default SignUp;
+export default Contact
