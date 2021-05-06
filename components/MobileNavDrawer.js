@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
-import { Box, List, ListItem } from '@material-ui/core'
+import { Box, List, ListItem, Link as MuiLink } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { useAuth0 } from '@auth0/auth0-react'
 import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MobileNavDrawer = ({ setDrawerToggle }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
   const classes = useStyles()
 
   useEffect(() => {
@@ -41,12 +43,18 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         minWidth="12rem"
       >
         <List className={classes.authLinks}>
-          <Link href="/login">
-            <ListItem button>Login</ListItem>
+          <Link href="/contact">
+            <ListItem button>Contact</ListItem>
           </Link>
-          <Link href="/sign-up">
-            <ListItem button>Sign Up</ListItem>
-          </Link>
+          {isAuthenticated ? (
+            <MuiLink onClick={logout}>
+              <ListItem button>Logout</ListItem>
+            </MuiLink>
+          ) : (
+            <MuiLink onClick={loginWithRedirect}>
+              <ListItem button>Login</ListItem>
+            </MuiLink>
+          )}
         </List>
       </Box>
     </Fragment>
