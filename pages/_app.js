@@ -6,6 +6,7 @@ import {
   createGenerateClassName,
 } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import { Auth0Provider } from '@auth0/auth0-react'
 import theme from '../theme'
 
 import Layout from '../components/Layout'
@@ -37,9 +38,15 @@ export default function MyApp(props) {
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <Auth0Provider
+            domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN}
+            clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}
+            redirectUri={process.env.NEXT_PUBLIC_REDIRECT_URI}
+          >
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </Auth0Provider>
         </ThemeProvider>
       </StylesProvider>
     </Fragment>

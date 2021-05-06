@@ -6,9 +6,11 @@ import {
   Box,
   IconButton,
   Drawer,
+  Link as MuiLink,
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles'
+import { useAuth0 } from '@auth0/auth0-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -64,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
   const classes = useStyles()
 
   return (
@@ -102,22 +105,26 @@ const Navbar = () => {
                 <Typography>Contact</Typography>
               </a>
             </Link>
-            <Link href="/login">
-              <a>
+            {isAuthenticated ? (
+              <MuiLink
+                onClick={logout}
+                style={{ textDecoration: 'none', cursor: 'pointer' }}
+              >
+                <Typography>Logout</Typography>
+              </MuiLink>
+            ) : (
+              <MuiLink
+                onClick={loginWithRedirect}
+                style={{ textDecoration: 'none', cursor: 'pointer' }}
+              >
                 <Typography>Login</Typography>
-              </a>
-            </Link>
-            <Link href="/sign-up">
-              <a>
-                <Typography>Sign Up</Typography>
-              </a>
-            </Link>
+              </MuiLink>
+            )}
           </Box>
 
           <Box display="none" className={classes.burgerNav}>
             <IconButton
               edge="start"
-              // color="inherit"
               onClick={() => setDrawerToggle(!drawerToggle)}
             >
               <MenuIcon />
