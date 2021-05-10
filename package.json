@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start next build"
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.5.0",
