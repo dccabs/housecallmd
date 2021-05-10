@@ -1,39 +1,39 @@
-import { Typography, Box, Button, TextField } from "@material-ui/core";
-import Container from "../../Container";
-import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
+import { Typography, Box, Button, TextField } from '@material-ui/core'
+import Container from '../../components/Container'
+import { makeStyles } from '@material-ui/core/styles'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
-    width: "100%",
-    marginTop: "2em",
-    maxWidth: "34rem",
+    width: '100%',
+    marginTop: '2em',
+    maxWidth: '34rem',
   },
   buttonLinks: {
-    "@media screen and (max-width: 700px)": {
-      "&:nth-child(2)": {
+    '@media screen and (max-width: 700px)': {
+      '&:nth-child(2)': {
         order: -1,
       },
     },
 
-    "& button": {
-      padding: "1em",
+    '& button': {
+      padding: '1em',
       fontWeight: 600,
-      width: "16rem",
+      width: '16rem',
 
-      "&:hover": {
+      '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
     },
-    "& a": {
-      textDecoration: "none",
+    '& a': {
+      textDecoration: 'none',
     },
   },
-}));
+}))
 
 const CardInformation = () => {
-  const classes = useStyles();
-  const history = useHistory();
+  const classes = useStyles()
+  const router = useRouter()
 
   return (
     <Container>
@@ -82,7 +82,7 @@ const CardInformation = () => {
               >
                 <Box m="1em" className={classes.buttonLinks}>
                   <Button
-                    onClick={() => history.goBack()}
+                    onClick={() => router.back()}
                     color="secondary"
                     variant="contained"
                   >
@@ -105,7 +105,7 @@ const CardInformation = () => {
         </Container>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default CardInformation;
+export default CardInformation

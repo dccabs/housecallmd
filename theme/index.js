@@ -1,29 +1,29 @@
-import { red } from "@material-ui/core/colors";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme } from '@material-ui/core/styles'
+import { red } from '@material-ui/core/colors'
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#e1215b",
+      main: '#e1215b',
     },
     secondary: {
-      main: "#0092b8",
+      main: '#0092b8',
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: "#fff",
+      default: '#fff',
     },
   },
   typography: {
     fontFamily: "'Manrope', sans-serif",
-    color: "#1a1a1a",
+    color: '#1a1a1a',
 
     h2: {
-      "@media screen and (max-width: 768px)": {
+      '@media screen and (max-width: 768px)': {
         fontSize: 30,
-        marginTop: "1em",
+        marginTop: '1em',
       },
     },
     h4: {
@@ -46,6 +46,6 @@ const theme = createMuiTheme({
       xl: 1920,
     },
   },
-});
+})
 
-export default theme;
+export default theme

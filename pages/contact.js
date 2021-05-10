@@ -1,40 +1,40 @@
-import { Typography, Box, Button, TextField } from "@material-ui/core";
-import Container from "../Container";
-import { makeStyles } from "@material-ui/core/styles";
+import { Typography, Box, Button, TextField } from '@material-ui/core'
+import Container from '../components/Container'
+import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
-    width: "100%",
-    marginTop: "2em",
-    maxWidth: "34rem",
+    width: '100%',
+    marginTop: '2em',
+    maxWidth: '34rem',
   },
   buttonLinks: {
-    "@media screen and (max-width: 700px)": {
-      "&:nth-child(2)": {
+    '@media screen and (max-width: 700px)': {
+      '&:nth-child(2)': {
         order: -1,
       },
     },
 
-    "& button": {
-      padding: "1em",
+    '& button': {
+      padding: '1em',
       fontWeight: 600,
-      width: "16rem",
+      width: '16rem',
 
-      "&:hover": {
+      '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
     },
   },
-}));
+}))
 
 const Contact = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Container>
       <Box p="1em">
         <Typography variant="h2">Contact Us</Typography>
-        <form action="/" style={{ width: "100%" }}>
+        <form action="/" style={{ width: '100%' }}>
           <Box
             display="flex"
             flexDirection="column"
@@ -103,7 +103,7 @@ const Contact = () => {
         </form>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default Contact;
+export default Contact

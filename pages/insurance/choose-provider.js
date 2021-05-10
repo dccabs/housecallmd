@@ -1,41 +1,42 @@
-import { Typography, Box, Button, TextField } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
-import Container from "../Container";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import { Typography, Box, Button, TextField } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
+import Container from '../../components/Container'
+import { makeStyles } from '@material-ui/core/styles'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
-    "@media screen and (max-width: 700px)": {
-      "&:nth-child(2)": {
+    '@media screen and (max-width: 700px)': {
+      '&:nth-child(2)': {
         order: -1,
       },
     },
 
-    "& button": {
-      padding: "1em",
+    '& button': {
+      padding: '1em',
       fontWeight: 600,
-      width: "16rem",
+      width: '16rem',
 
-      "&:hover": {
+      '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
     },
-    "& a": {
-      textDecoration: "none",
+    '& a': {
+      textDecoration: 'none',
     },
   },
-}));
+}))
 
-const Pharmacy = () => {
-  const classes = useStyles();
+const ChooseProvider = () => {
+  const classes = useStyles()
+  const router = useRouter()
 
   return (
     <Container>
       <Box p="1em">
-        <Typography variant="h2">Pharmacy</Typography>
+        <Typography variant="h2">Insurance</Typography>
         <Container>
-          <form action="/visit-choice">
+          <form action="/insurance/card-information">
             <Box
               mt="2em"
               display="flex"
@@ -43,9 +44,7 @@ const Pharmacy = () => {
               alignItems="center"
               justifyContent="center"
             >
-              <Typography variant="h4">
-                Please tell us what pharmacy you use
-              </Typography>
+              <Typography variant="h4">Please choose your provider</Typography>
               <Box
                 mt="1em"
                 width="100%"
@@ -56,18 +55,16 @@ const Pharmacy = () => {
                 <Autocomplete
                   freeSolo
                   disableClearable
-                  options={[
-                    "Wallgreens 1011 Blue bonnet lane, Austin, TX 78704",
-                  ]}
-                  style={{ width: "100%", maxWidth: "34rem" }}
+                  options={['Blue Cross Blue Shielf', 'Cigna', 'Athena']}
+                  style={{ width: '100%', maxWidth: '34rem' }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Type pharmacy name here"
+                      label="Type to select provider"
                       margin="normal"
                       color="secondary"
                       variant="outlined"
-                      InputProps={{ ...params.InputProps, type: "search" }}
+                      InputProps={{ ...params.InputProps, type: 'search' }}
                       required
                     />
                   )}
@@ -82,19 +79,16 @@ const Pharmacy = () => {
                 width="100%"
               >
                 <Box m="1em" className={classes.buttonLinks}>
-                  <Link to="/sign-up">
-                    <Button color="secondary" variant="contained" size="large">
-                      Back
-                    </Button>
-                  </Link>
-                </Box>
-                <Box m="1em" className={classes.buttonLinks}>
                   <Button
-                    type="submit"
+                    onClick={() => router.back()}
                     color="secondary"
                     variant="contained"
-                    size="large"
                   >
+                    Back
+                  </Button>
+                </Box>
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button type="submit" color="secondary" variant="contained">
                     Continue
                   </Button>
                 </Box>
@@ -104,7 +98,7 @@ const Pharmacy = () => {
         </Container>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default Pharmacy;
+export default ChooseProvider

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react'
 import {
   Typography,
   Box,
@@ -7,41 +7,42 @@ import {
   RadioGroup,
   FormControl,
   FormControlLabel,
-} from "@material-ui/core";
-import Container from "../Container";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+} from '@material-ui/core'
+import Container from '../components/Container'
+import { makeStyles } from '@material-ui/core/styles'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
-    "@media screen and (max-width: 700px)": {
-      "&:nth-child(2)": {
+    '@media screen and (max-width: 700px)': {
+      '&:nth-child(2)': {
         order: -1,
       },
     },
 
-    "& button": {
-      padding: "1em",
+    '& button': {
+      padding: '1em',
       fontWeight: 600,
-      width: "16rem",
+      width: '16rem',
 
-      "&:hover": {
+      '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
     },
-    "& a": {
-      textDecoration: "none",
+    '& a': {
+      textDecoration: 'none',
     },
   },
-}));
+}))
 
 const VisitChoice = () => {
-  const [value, setValue] = useState("Video/Telemedicine Visit");
-  const classes = useStyles();
+  const [value, setValue] = useState('Video/Telemedicine Visit')
+  const classes = useStyles()
+  const router = useRouter()
 
   const handleChange = (event) => {
-    setValue(event.target.value);
-  };
+    setValue(event.target.value)
+  }
 
   return (
     <Container>
@@ -99,11 +100,13 @@ const VisitChoice = () => {
                 width="100%"
               >
                 <Box m="1em" className={classes.buttonLinks}>
-                  <Link to="/pharmacy">
-                    <Button color="secondary" variant="contained" size="large">
-                      Back
-                    </Button>
-                  </Link>
+                  <Button
+                    onClick={() => router.back()}
+                    color="secondary"
+                    variant="contained"
+                  >
+                    Back
+                  </Button>
                 </Box>
                 <Box m="1em" className={classes.buttonLinks}>
                   <Button
@@ -121,7 +124,7 @@ const VisitChoice = () => {
         </Container>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default VisitChoice;
+export default VisitChoice

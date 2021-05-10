@@ -1,31 +1,31 @@
-import { Typography, Box, Button } from "@material-ui/core";
-import Container from "../../Container";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import { Typography, Box, Button } from '@material-ui/core'
+import Container from '../../components/Container'
+import { makeStyles } from '@material-ui/core/styles'
+import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
-    "& button": {
-      padding: "1em",
+    '& button': {
+      padding: '1em',
       fontWeight: 600,
-      width: "16rem",
+      width: '16rem',
 
-      "&:hover": {
+      '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
     },
-    "& a": {
-      textDecoration: "none",
-      margin: "1em",
+    '& a': {
+      textDecoration: 'none',
+      margin: '1em',
     },
   },
   disclaimer: {
-    color: "#666",
+    color: '#666',
   },
-}));
+}))
 
 const Insurance = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Container>
@@ -47,15 +47,19 @@ const Insurance = () => {
               justifyContent="center"
               flexWrap="wrap"
             >
-              <Link to="/insurance/choose-provider">
-                <Button color="secondary" variant="contained">
-                  Yes
-                </Button>
+              <Link href="/insurance/choose-provider">
+                <a>
+                  <Button color="secondary" variant="contained">
+                    Yes
+                  </Button>
+                </a>
               </Link>
-              <Link to="/sign-up">
-                <Button color="secondary" variant="contained">
-                  No
-                </Button>
+              <Link href="/sign-up">
+                <a>
+                  <Button color="secondary" variant="contained">
+                    No
+                  </Button>
+                </a>
               </Link>
             </Box>
             <Box className={classes.disclaimer}>
@@ -65,7 +69,7 @@ const Insurance = () => {
         </Container>
       </Box>
     </Container>
-  );
-};
+  )
+}
 
-export default Insurance;
+export default Insurance
