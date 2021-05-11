@@ -9,6 +9,8 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import { Auth0Provider } from '@auth0/auth0-react'
 import theme from '../theme'
 
+import '../global-styles.css';
+
 import Layout from '../components/Layout'
 
 const generateClassName = createGenerateClassName()
