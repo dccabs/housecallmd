@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
+import useStore from '../../zustand/store'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -28,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ChooseProvider = () => {
+  const { provider, setProvider } = useStore()
   const classes = useStyles()
   const router = useRouter()
 
@@ -55,8 +58,9 @@ const ChooseProvider = () => {
                 <Autocomplete
                   freeSolo
                   disableClearable
-                  options={['Blue Cross Blue Shielf', 'Cigna', 'Athena']}
+                  options={['Blue Cross Blue Shield', 'Cigna', 'Athena']}
                   style={{ width: '100%', maxWidth: '34rem' }}
+                  onChange={(event, value) => setProvider(value)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -64,6 +68,7 @@ const ChooseProvider = () => {
                       margin="normal"
                       color="secondary"
                       variant="outlined"
+                      onChange={(e) => setProvider(e.target.value)}
                       InputProps={{ ...params.InputProps, type: 'search' }}
                       required
                     />

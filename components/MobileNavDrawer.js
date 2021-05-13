@@ -5,21 +5,20 @@ import { useAuth0 } from '@auth0/auth0-react'
 import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
-  authLinks: {
+  navLinks: {
+    color: theme.typography.color,
+    textDecoration: 'none',
+    fontWeight: '600',
+
     '& a': {
-      textDecoration: 'none',
-      color: theme.palette.primary.main,
-      fontWeight: '600',
+      color: theme.typography.color,
     },
-  },
-  '.MuiListItem-gutters': {
-    padding: '2em',
   },
 }))
 
 const MobileNavDrawer = ({ setDrawerToggle }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
   const classes = useStyles()
 
   useEffect(() => {
@@ -42,7 +41,12 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         onKeyDown={() => setDrawerToggle(false)}
         minWidth="12rem"
       >
-        <List className={classes.authLinks}>
+        <List className={classes.navLinks}>
+          {isAuthenticated && (
+            <ListItem>
+              <strong>Hello, {user.nickname}</strong>
+            </ListItem>
+          )}
           <Link href="/contact">
             <ListItem button>Contact</ListItem>
           </Link>

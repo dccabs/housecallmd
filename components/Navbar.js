@@ -29,26 +29,10 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
 
     '& a': {
       textDecoration: 'none',
-      color: 'blue',
-    },
-  },
-  authLinks: {
-    '& a': {
-      fontWeight: 600,
-      textDecoration: 'none',
-      color: theme.typography.color,
-      marginLeft: '2rem',
-    },
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
-    },
-  },
-  burgerNav: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'flex',
     },
   },
   logoText: {
@@ -62,11 +46,39 @@ const useStyles = makeStyles((theme) => ({
   logoH6: {
     display: 'flex',
   },
+  navigation: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
+  navLinks: {
+    color: theme.typography.color,
+
+    '& a': {
+      color: theme.typography.color,
+      textDecoration: 'none',
+      marginLeft: '2rem',
+    },
+  },
+  authLinks: {
+    color: theme.typography.color,
+    marginLeft: '2rem',
+
+    '& a': {
+      color: theme.typography.color,
+      textDecoration: 'none',
+    },
+  },
+  burgerNav: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
+    },
+  },
 }))
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
   const classes = useStyles()
 
   return (
@@ -99,26 +111,52 @@ const Navbar = () => {
             </a>
           </Link>
 
-          <Box className={classes.authLinks} display="flex">
-            <Link href="/contact">
-              <a>
-                <Typography>Contact</Typography>
-              </a>
-            </Link>
+          <Box
+            className={classes.navigation}
+            display="flex"
+            alignItems="center"
+          >
+            <Box
+              className={classes.navLinks}
+              display="flex"
+              alignItems="center"
+            >
+              <Link href="/contact">
+                <a>
+                  <Typography>Contact</Typography>
+                </a>
+              </Link>
+            </Box>
             {isAuthenticated ? (
-              <MuiLink
-                onClick={logout}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
+              <Box
+                ml="2rem"
+                className={classes.authLinks}
+                display="flex"
+                alignItems="center"
               >
-                <Typography>Logout</Typography>
-              </MuiLink>
+                <Typography>
+                  <strong>Hello, {user.nickname}</strong>
+                </Typography>
+                <MuiLink
+                  onClick={logout}
+                  style={{
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    marginLeft: '5px',
+                  }}
+                >
+                  <Typography>(Logout)</Typography>
+                </MuiLink>
+              </Box>
             ) : (
-              <MuiLink
-                onClick={loginWithRedirect}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Login</Typography>
-              </MuiLink>
+              <Box ml="2rem" className={classes.authLinks} display="flex">
+                <MuiLink
+                  onClick={loginWithRedirect}
+                  style={{ textDecoration: 'none', cursor: 'pointer' }}
+                >
+                  <Typography>Login</Typography>
+                </MuiLink>
+              </Box>
             )}
           </Box>
 

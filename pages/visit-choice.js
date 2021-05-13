@@ -11,6 +11,7 @@ import {
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
+import useStore from '../zustand/store'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -37,11 +38,13 @@ const useStyles = makeStyles((theme) => ({
 
 const VisitChoice = () => {
   const [value, setValue] = useState('Video/Telemedicine Visit')
+  const { setVisitChoice } = useStore()
   const classes = useStyles()
   const router = useRouter()
 
   const handleChange = (event) => {
     setValue(event.target.value)
+    setVisitChoice(event.target.value)
   }
 
   return (
