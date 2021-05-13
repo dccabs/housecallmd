@@ -30,11 +30,39 @@ const useStyles = makeStyles((theme) => ({
 const Contact = () => {
   const classes = useStyles()
 
+  const sendMailTest = () => {
+    console.log('send Mail Test')
+    const data = JSON.stringify({
+      name_: 'Bob smit',
+      email: 'dccabs@gmail.com',
+      client_message: 'hello world',
+      subject: 'sample message',
+    });
+
+    fetch(`/api/sendMail`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": data.length,
+      },
+      body: data,
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log('data', data)
+      })
+      .catch(error => {
+        console.log('error', error)
+      });
+  }
+
   return (
     <Container>
       <Box p="1em">
         <Typography variant="h2">Contact Us</Typography>
-        <form action="/" style={{ width: '100%' }}>
+        {/*<form action="/" style={{ width: '100%' }}>*/}
           <Box
             display="flex"
             flexDirection="column"
@@ -95,12 +123,13 @@ const Contact = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                onClick={sendMailTest}
               >
                 Submit
               </Button>
             </Box>
           </Box>
-        </form>
+        {/*</form>*/}
       </Box>
     </Container>
   )
