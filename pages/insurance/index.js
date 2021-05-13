@@ -2,6 +2,7 @@ import { Typography, Box, Button } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -9,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
       padding: '1em',
       fontWeight: 600,
       width: '16rem',
+      margin: '1em',
 
       '&:hover': {
         backgroundColor: theme.palette.primary.main,
@@ -16,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
     },
     '& a': {
       textDecoration: 'none',
-      margin: '1em',
     },
   },
   disclaimer: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Insurance = () => {
+  const { loginWithRedirect } = useAuth0()
   const classes = useStyles()
 
   return (
@@ -39,7 +41,7 @@ const Insurance = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Typography variant="h4">Do you have insurance?</Typography>
+            <Typography variant="h4">Will you be using insurance?</Typography>
             <Box
               className={classes.buttonLinks}
               mt="2em"
@@ -54,13 +56,13 @@ const Insurance = () => {
                   </Button>
                 </a>
               </Link>
-              <Link href="/sign-up">
-                <a>
-                  <Button color="secondary" variant="contained">
-                    No
-                  </Button>
-                </a>
-              </Link>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={loginWithRedirect}
+              >
+                No
+              </Button>
             </Box>
             <Box className={classes.disclaimer}>
               You do not need to have insurance to use this service.

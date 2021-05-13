@@ -27,16 +27,6 @@ const Footer = () => {
           <Typography>Contact</Typography>
         </a>
       </Link>
-      <Link href="/login">
-        <a>
-          <Typography>Login</Typography>
-        </a>
-      </Link>
-      <Link href="/sign-up">
-        <a>
-          <Typography>Sign Up</Typography>
-        </a>
-      </Link>
     </Box>
   )
 }
