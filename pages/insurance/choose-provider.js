@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import Container from '../../components/Container'
@@ -30,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ChooseProvider = () => {
-  const { provider, setProvider } = useStore()
+  const { setProvider } = useStore()
   const classes = useStyles()
   const router = useRouter()
 
