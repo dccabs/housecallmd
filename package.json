@@ -13,11 +13,14 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/styles": "^4.11.4",
+    "@stripe/react-stripe-js": "^1.4.0",
+    "@stripe/stripe-js": "^1.14.0",
     "@sendgrid/mail": "^7.4.4",
     "dotenv": "^9.0.0",
     "next": "10.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "stripe": "^8.148.0",
     "zustand": "^3.5.1"
   },
   "devDependencies": {

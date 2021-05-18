@@ -70,7 +70,6 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const { isAuthenticated } = useAuth0()
   const classes = useStyles()
-  const { provider, planNumber, groupNumber, visitChoice } = useStore()
 
   return (
     <Fragment>
