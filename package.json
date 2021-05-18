@@ -15,6 +15,7 @@
     "@material-ui/styles": "^4.11.4",
     "@stripe/react-stripe-js": "^1.4.0",
     "@stripe/stripe-js": "^1.14.0",
+    "@sendgrid/mail": "^7.4.4",
     "dotenv": "^9.0.0",
     "next": "10.2.0",
     "react": "17.0.2",
