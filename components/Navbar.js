@@ -29,10 +29,9 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-
     '& a': {
       textDecoration: 'none',
+      color: 'blue',
     },
   },
   logoText: {
@@ -65,8 +64,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '2rem',
 
     '& a': {
-      color: theme.typography.color,
+      fontWeight: 600,
       textDecoration: 'none',
+      color: theme.typography.color,
+      marginLeft: '2rem',
     },
   },
   burgerNav: {
@@ -74,7 +75,8 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
     },
   },
-}))
+
+}));
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
@@ -82,95 +84,70 @@ const Navbar = () => {
   const classes = useStyles()
 
   return (
-    <Fragment>
-      <Drawer
-        anchor="right"
-        open={drawerToggle}
-        onClose={() => setDrawerToggle(false)}
-      >
-        <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
-      </Drawer>
+      <Fragment>
+        <Drawer
+            anchor="right"
+            open={drawerToggle}
+            onClose={() => setDrawerToggle(false)}
+        >
+          <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
+        </Drawer>
 
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar className={classes.toolBar}>
-          <Link href="/">
-            <a>
-              <Box display="flex">
-                <Image
-                  alt="Housecall MD"
-                  src="/logo_heart.png"
-                  width={35}
-                  height={30}
-                />
-                <Typography variant="h6" className={classes.logoH6}>
-                  <strong className={classes.logoText}>
-                    HouseCall<span>MD</span>
-                  </strong>
-                </Typography>
-              </Box>
-            </a>
-          </Link>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar className={classes.toolBar}>
+            <Link href="/">
+              <a>
+                <Box display="flex">
+                  <Image
+                      alt="Housecall MD"
+                      src="/logo_heart.png"
+                      width={35}
+                      height={30}
+                  />
+                  <Typography variant="h6" className={classes.logoH6}>
+                    <strong className={classes.logoText}>
+                      HouseCall<span>MD</span>
+                    </strong>
+                  </Typography>
+                </Box>
+              </a>
+            </Link>
 
-          <Box
-            className={classes.navigation}
-            display="flex"
-            alignItems="center"
-          >
-            <Box
-              className={classes.navLinks}
-              display="flex"
-              alignItems="center"
-            >
+            <Box className={classes.authLinks} display="flex">
               <Link href="/contact">
                 <a>
                   <Typography>Contact</Typography>
                 </a>
               </Link>
+              {isAuthenticated ? (
+                  <MuiLink
+                      onClick={logout}
+                      style={{ textDecoration: 'none', cursor: 'pointer' }}
+                  >
+                    <Typography>Logout</Typography>
+                  </MuiLink>
+              ) : (
+                  <MuiLink
+                      onClick={loginWithRedirect}
+                      style={{ textDecoration: 'none', cursor: 'pointer' }}
+                  >
+                    <Typography>Login</Typography>
+                  </MuiLink>
+              )
+              }
             </Box>
-            {isAuthenticated ? (
-              <Box
-                ml="2rem"
-                className={classes.authLinks}
-                display="flex"
-                alignItems="center"
-              >
-                <Typography>
-                  <strong>Hello, {user.nickname}</strong>
-                </Typography>
-                <MuiLink
-                  onClick={logout}
-                  style={{
-                    textDecoration: 'none',
-                    cursor: 'pointer',
-                    marginLeft: '5px',
-                  }}
-                >
-                  <Typography>(Logout)</Typography>
-                </MuiLink>
-              </Box>
-            ) : (
-              <Box ml="2rem" className={classes.authLinks} display="flex">
-                <MuiLink
-                  onClick={loginWithRedirect}
-                  style={{ textDecoration: 'none', cursor: 'pointer' }}
-                >
-                  <Typography>Login</Typography>
-                </MuiLink>
-              </Box>
-            )}
-          </Box>
 
-          <Box display="none" className={classes.burgerNav}>
-            <IconButton
-              edge="start"
-              onClick={() => setDrawerToggle(!drawerToggle)}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </Fragment>
+            <Box display="none" className={classes.burgerNav}>
+              <IconButton
+                  edge="start"
+                  onClick={() => setDrawerToggle(!drawerToggle)}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Fragment>
   )
 }
 

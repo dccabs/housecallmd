@@ -57,7 +57,7 @@ const ChooseProvider = () => {
                 <Autocomplete
                   freeSolo
                   disableClearable
-                  options={['Blue Cross Blue Shield', 'Cigna', 'Athena']}
+                  options={['Blue Cross Blue Shielf', 'Cigna', 'Athena']}
                   style={{ width: '100%', maxWidth: '34rem' }}
                   onChange={(event, value) => setProvider(value)}
                   renderInput={(params) => (

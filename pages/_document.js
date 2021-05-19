@@ -8,6 +8,13 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          <style jsx global>{`
+            html,
+            body,
+            #__next {
+              height: 100%;
+            }
+          `}</style>
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link
             rel="stylesheet"

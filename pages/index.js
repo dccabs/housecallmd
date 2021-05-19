@@ -2,8 +2,6 @@ import { Fragment } from 'react'
 import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
-import { useAuth0 } from '@auth0/auth0-react'
-import useStore from '../zustand/store'
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -14,7 +12,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '60rem',
   },
   ctaButton: {
+    // fontSize: 24,
     width: '100%',
+
+    // "&:hover": {
+    //   backgroundColor: theme.palette.primary.main,
+    // },
   },
   linkButton: {
     textDecoration: 'none',
@@ -68,7 +71,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Home = () => {
-  const { isAuthenticated } = useAuth0()
   const classes = useStyles()
 
   return (
@@ -81,10 +83,7 @@ const Home = () => {
           </Typography>
         </Box>
         <Box mt="2em" display="flex" justifyContent="center">
-          <Link
-            href={isAuthenticated ? '/visit-choice' : '/insurance'}
-            className={classes.linkButton}
-          >
+          <Link href="/insurance" className={classes.linkButton}>
             <Button
               color="secondary"
               variant="contained"

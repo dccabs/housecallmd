@@ -5,14 +5,15 @@ import { useAuth0 } from '@auth0/auth0-react'
 import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
-  navLinks: {
-    color: theme.typography.color,
-    textDecoration: 'none',
-    fontWeight: '600',
-
+  authLinks: {
     '& a': {
-      color: theme.typography.color,
+      textDecoration: 'none',
+      color: theme.palette.primary.main,
+      fontWeight: '600',
     },
+  },
+  '.MuiListItem-gutters': {
+    padding: '2em',
   },
 }))
 
@@ -41,7 +42,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         onKeyDown={() => setDrawerToggle(false)}
         minWidth="12rem"
       >
-        <List className={classes.navLinks}>
+        <List className={classes.authLinks}>
           {isAuthenticated && (
             <ListItem>
               <strong>Hello, {user.nickname}</strong>
