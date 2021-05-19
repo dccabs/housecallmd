@@ -93,8 +93,9 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
       },
     },
-  }
-}))
+  },
+}));
+
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
   const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
