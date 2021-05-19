@@ -34,66 +34,46 @@ const useStyles = makeStyles((theme) => ({
       color: 'blue',
     },
   },
-  authLinks: {
-    '& a': {
-      fontWeight: 600,
-      textDecoration: 'none',
-      color: theme.typography.color,
-      marginLeft: '2rem',
+  logoText: {
+    marginLeft: 10,
+    color: '#494b4b',
+    fontWeight: 900,
+    '& span': {
+      color: '#0092b8',
     },
+  },
+  logoH6: {
+    display: 'flex',
+  },
+  navigation: {
     [theme.breakpoints.down('xs')]: {
       display: 'none',
+    },
+  },
+  navLinks: {
+    color: theme.typography.color,
+
+    '& a': {
+      color: theme.typography.color,
+      textDecoration: 'none',
+      marginLeft: '2rem',
+    },
+  },
+  authLinks: {
+    color: theme.typography.color,
+    marginLeft: '2rem',
+
+    '& a': {
+      color: theme.typography.color,
+      textDecoration: 'none',
     },
   },
   burgerNav: {
     [theme.breakpoints.down('xs')]: {
       display: 'flex',
-      alignItems: 'center',
-
-      '& a': {
-        textDecoration: 'none',
-      },
-    },
-    logoText: {
-      marginLeft: 10,
-      color: '#494b4b',
-      fontWeight: 900,
-      '& span': {
-        color: '#0092b8',
-      },
-    },
-    logoH6: {
-      display: 'flex',
-    },
-    navigation: {
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
-      },
-    },
-    navLinks: {
-      color: theme.typography.color,
-
-      '& a': {
-        color: theme.typography.color,
-        textDecoration: 'none',
-        marginLeft: '2rem',
-      },
-    },
-    authLinks: {
-      color: theme.typography.color,
-      marginLeft: '2rem',
-
-      '& a': {
-        color: theme.typography.color,
-        textDecoration: 'none',
-      },
-    },
-    burgerNav: {
-      [theme.breakpoints.down('xs')]: {
-        display: 'flex',
-      },
     },
   },
+
 }));
 
 const Navbar = () => {
@@ -102,70 +82,70 @@ const Navbar = () => {
   const classes = useStyles()
 
   return (
-    <Fragment>
-      <Drawer
-        anchor="right"
-        open={drawerToggle}
-        onClose={() => setDrawerToggle(false)}
-      >
-        <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
-      </Drawer>
+      <Fragment>
+        <Drawer
+            anchor="right"
+            open={drawerToggle}
+            onClose={() => setDrawerToggle(false)}
+        >
+          <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
+        </Drawer>
 
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar className={classes.toolBar}>
-          <Link href="/">
-            <a>
-              <Box display="flex">
-                <Image
-                  alt="Housecall MD"
-                  src="/logo_heart.png"
-                  width={35}
-                  height={30}
-                />
-                <Typography variant="h6" className={classes.logoH6}>
-                  <strong className={classes.logoText}>
-                    HouseCall<span>MD</span>
-                  </strong>
-                </Typography>
-              </Box>
-            </a>
-          </Link>
-
-          <Box className={classes.authLinks} display="flex">
-            <Link href="/contact">
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar className={classes.toolBar}>
+            <Link href="/">
               <a>
-                <Typography>Contact</Typography>
+                <Box display="flex">
+                  <Image
+                      alt="Housecall MD"
+                      src="/logo_heart.png"
+                      width={35}
+                      height={30}
+                  />
+                  <Typography variant="h6" className={classes.logoH6}>
+                    <strong className={classes.logoText}>
+                      HouseCall<span>MD</span>
+                    </strong>
+                  </Typography>
+                </Box>
               </a>
             </Link>
-            {isAuthenticated ? (
-              <MuiLink
-                onClick={logout}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Logout</Typography>
-              </MuiLink>
-            ) : (
-              <MuiLink
-                onClick={loginWithRedirect}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Login</Typography>
-              </MuiLink>
-            )
-            }
-          </Box>
 
-          <Box display="none" className={classes.burgerNav}>
-            <IconButton
-              edge="start"
-              onClick={() => setDrawerToggle(!drawerToggle)}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </Fragment>
+            <Box className={classes.authLinks} display="flex">
+              <Link href="/contact">
+                <a>
+                  <Typography>Contact</Typography>
+                </a>
+              </Link>
+              {isAuthenticated ? (
+                  <MuiLink
+                      onClick={logout}
+                      style={{ textDecoration: 'none', cursor: 'pointer' }}
+                  >
+                    <Typography>Logout</Typography>
+                  </MuiLink>
+              ) : (
+                  <MuiLink
+                      onClick={loginWithRedirect}
+                      style={{ textDecoration: 'none', cursor: 'pointer' }}
+                  >
+                    <Typography>Login</Typography>
+                  </MuiLink>
+              )
+              }
+            </Box>
+
+            <Box display="none" className={classes.burgerNav}>
+              <IconButton
+                  edge="start"
+                  onClick={() => setDrawerToggle(!drawerToggle)}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Fragment>
   )
 }
 
