@@ -88,8 +88,6 @@ const Contact = () => {
             />
             <MuiSelect
                 label="State"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 defaultValue=""
                 // value={age}
                 // onChange={handleChange}
