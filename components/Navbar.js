@@ -64,8 +64,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '2rem',
 
     '& a': {
-      color: theme.typography.color,
+      fontWeight: 600,
       textDecoration: 'none',
+      color: theme.typography.color,
+      marginLeft: '2rem',
     },
   },
   burgerNav: {
