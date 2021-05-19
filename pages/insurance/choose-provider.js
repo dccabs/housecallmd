@@ -66,7 +66,7 @@ const ChooseProvider = () => {
                       label="Type to select provider"
                       margin="normal"
                       color="secondary"
-                      variant="outlined"=======
+                      variant="outlined"
                       onChange={(e) => setProvider(e.target.value)}
                       InputProps={{ ...params.InputProps, type: 'search' }}
                       required
