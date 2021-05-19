@@ -1,7 +1,8 @@
-import { Typography, Box, Button, TextField, Select, FormHelperText, FormControl, InputLabel, MenuItem } from '@material-ui/core'
+import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
+import MuiSelect from '../components/MuiSelect'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -85,31 +86,20 @@ const Contact = () => {
                 color="secondary"
                 required
             />
-            <FormControl
-                fullWidth
-                className={classes.formControl}
-                variant="outlined"
+            <MuiSelect
+                label="State"
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                defaultValue=""
+                // value={age}
+                // onChange={handleChange}
             >
-              <InputLabel
-                  id="demo-simple-select-label"
-                  className={classes.selectLabel}
-              >
-                State
-              </InputLabel>
-              <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  defaultValue=""
-                  // value={age}
-                  // onChange={handleChange}
-              >
-                {STATES.map((state, index) => {
-                  return (
-                      <MenuItem key={index} value={state.abbreviation}>{state.abbreviation}</MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
+              {STATES.map((state, index) => {
+                return (
+                    <MenuItem key={index} value={state.abbreviation}>{state.abbreviation}</MenuItem>
+                )
+              })}
+            </MuiSelect>
             <TextField
                 className={classes.textFields}
                 fullWidth
