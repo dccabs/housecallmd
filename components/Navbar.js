@@ -29,8 +29,6 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     display: 'flex',
     justifyContent: 'space-between',
-<<<<<<< HEAD
-
     '& a': {
       textDecoration: 'none',
       color: 'blue',
@@ -50,12 +48,10 @@ const useStyles = makeStyles((theme) => ({
   burgerNav: {
     [theme.breakpoints.down('xs')]: {
       display: 'flex',
-=======
     alignItems: 'center',
 
     '& a': {
       textDecoration: 'none',
->>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
     },
   },
   logoText: {
@@ -69,8 +65,6 @@ const useStyles = makeStyles((theme) => ({
   logoH6: {
     display: 'flex',
   },
-<<<<<<< HEAD
-=======
   navigation: {
     [theme.breakpoints.down('xs')]: {
       display: 'none',
@@ -99,16 +93,11 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
     },
   },
->>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
 }))
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
-<<<<<<< HEAD
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
-=======
   const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
->>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
   const classes = useStyles()
 
   return (
@@ -141,7 +130,6 @@ const Navbar = () => {
             </a>
           </Link>
 
-<<<<<<< HEAD
           <Box className={classes.authLinks} display="flex">
             <Link href="/contact">
               <a>
@@ -162,55 +150,8 @@ const Navbar = () => {
               >
                 <Typography>Login</Typography>
               </MuiLink>
-=======
-          <Box
-            className={classes.navigation}
-            display="flex"
-            alignItems="center"
-          >
-            <Box
-              className={classes.navLinks}
-              display="flex"
-              alignItems="center"
-            >
-              <Link href="/contact">
-                <a>
-                  <Typography>Contact</Typography>
-                </a>
-              </Link>
-            </Box>
-            {isAuthenticated ? (
-              <Box
-                ml="2rem"
-                className={classes.authLinks}
-                display="flex"
-                alignItems="center"
-              >
-                <Typography>
-                  <strong>Hello, {user.nickname}</strong>
-                </Typography>
-                <MuiLink
-                  onClick={logout}
-                  style={{
-                    textDecoration: 'none',
-                    cursor: 'pointer',
-                    marginLeft: '5px',
-                  }}
-                >
-                  <Typography>(Logout)</Typography>
-                </MuiLink>
-              </Box>
-            ) : (
-              <Box ml="2rem" className={classes.authLinks} display="flex">
-                <MuiLink
-                  onClick={loginWithRedirect}
-                  style={{ textDecoration: 'none', cursor: 'pointer' }}
-                >
-                  <Typography>Login</Typography>
-                </MuiLink>
-              </Box>
->>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
-            )}
+            )
+            }
           </Box>
 
           <Box display="none" className={classes.burgerNav}>
