@@ -114,10 +114,16 @@ const Navbar = () => {
                   </MuiLink>
               ) : (
                   <MuiLink
-                      onClick={loginWithRedirect}
+                      onClick={() => {
+                        loginWithRedirect({
+                          configuration: {
+                            screen_hint: "signup",
+                          }
+                        })
+                      }}
                       style={{ textDecoration: 'none', cursor: 'pointer' }}
                   >
-                    <Typography>Login</Typography>
+                    <Typography>Login aa</Typography>
                   </MuiLink>
               )
               }

@@ -5,6 +5,7 @@ const useStyles = makeStyles((theme) => ({
     formControl: {
         marginTop: '2em',
         marginBottom: 0,
+        maxWidth: '34rem',
     },
     selectLabel: {
         background: '#fff',
