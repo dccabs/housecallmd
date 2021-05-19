@@ -29,9 +29,26 @@ const useStyles = makeStyles((theme) => ({
   toolBar: {
     display: 'flex',
     justifyContent: 'space-between',
+
     '& a': {
       textDecoration: 'none',
       color: 'blue',
+    },
+  },
+  authLinks: {
+    '& a': {
+      fontWeight: 600,
+      textDecoration: 'none',
+      color: theme.typography.color,
+      marginLeft: '2rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
+  burgerNav: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
     },
   },
   logoText: {
@@ -45,38 +62,7 @@ const useStyles = makeStyles((theme) => ({
   logoH6: {
     display: 'flex',
   },
-  navigation: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
-    },
-  },
-  navLinks: {
-    color: theme.typography.color,
-
-    '& a': {
-      color: theme.typography.color,
-      textDecoration: 'none',
-      marginLeft: '2rem',
-    },
-  },
-  authLinks: {
-    color: theme.typography.color,
-    marginLeft: '2rem',
-
-    '& a': {
-      fontWeight: 600,
-      textDecoration: 'none',
-      color: theme.typography.color,
-      marginLeft: '2rem',
-    },
-  },
-  burgerNav: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'flex',
-    },
-  },
-
-}));
+}))
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
@@ -128,10 +114,16 @@ const Navbar = () => {
                   </MuiLink>
               ) : (
                   <MuiLink
-                      onClick={loginWithRedirect}
+                      onClick={() => {
+                        loginWithRedirect({
+                          configuration: {
+                            screen_hint: "signup",
+                          }
+                        })
+                      }}
                       style={{ textDecoration: 'none', cursor: 'pointer' }}
                   >
-                    <Typography>Login</Typography>
+                    <Typography>Login aa</Typography>
                   </MuiLink>
               )
               }
