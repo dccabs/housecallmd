@@ -2,11 +2,8 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
-<<<<<<< HEAD:pages/insurance/card-information.js
-=======
 import useStore from '../../zustand/store'
 import { useAuth0 } from '@auth0/auth0-react'
->>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/card-information.js
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -37,11 +34,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CardInformation = () => {
-<<<<<<< HEAD:pages/insurance/card-information.js
-=======
   const { setPlanNumber, setGroupNumber } = useStore()
   const { loginWithRedirect } = useAuth0()
->>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/card-information.js
   const classes = useStyles()
   const router = useRouter()
 
