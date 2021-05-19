@@ -48,53 +48,53 @@ const useStyles = makeStyles((theme) => ({
   burgerNav: {
     [theme.breakpoints.down('xs')]: {
       display: 'flex',
-    alignItems: 'center',
+      alignItems: 'center',
 
-    '& a': {
-      textDecoration: 'none',
+      '& a': {
+        textDecoration: 'none',
+      },
     },
-  },
-  logoText: {
-    marginLeft: 10,
-    color: '#494b4b',
-    fontWeight: 900,
-    '& span': {
-      color: '#0092b8',
+    logoText: {
+      marginLeft: 10,
+      color: '#494b4b',
+      fontWeight: 900,
+      '& span': {
+        color: '#0092b8',
+      },
     },
-  },
-  logoH6: {
-    display: 'flex',
-  },
-  navigation: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
-    },
-  },
-  navLinks: {
-    color: theme.typography.color,
-
-    '& a': {
-      color: theme.typography.color,
-      textDecoration: 'none',
-      marginLeft: '2rem',
-    },
-  },
-  authLinks: {
-    color: theme.typography.color,
-    marginLeft: '2rem',
-
-    '& a': {
-      color: theme.typography.color,
-      textDecoration: 'none',
-    },
-  },
-  burgerNav: {
-    [theme.breakpoints.down('xs')]: {
+    logoH6: {
       display: 'flex',
     },
-  },
-}))
+    navigation: {
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
+    },
+    navLinks: {
+      color: theme.typography.color,
 
+      '& a': {
+        color: theme.typography.color,
+        textDecoration: 'none',
+        marginLeft: '2rem',
+      },
+    },
+    authLinks: {
+      color: theme.typography.color,
+      marginLeft: '2rem',
+
+      '& a': {
+        color: theme.typography.color,
+        textDecoration: 'none',
+      },
+    },
+    burgerNav: {
+      [theme.breakpoints.down('xs')]: {
+        display: 'flex',
+      },
+    },
+  }
+}))
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
   const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
