@@ -2,6 +2,11 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
+<<<<<<< HEAD:pages/insurance/card-information.js
+=======
+import useStore from '../../zustand/store'
+import { useAuth0 } from '@auth0/auth0-react'
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/card-information.js
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -32,6 +37,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CardInformation = () => {
+<<<<<<< HEAD:pages/insurance/card-information.js
+=======
+  const { setPlanNumber, setGroupNumber } = useStore()
+  const { loginWithRedirect } = useAuth0()
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/card-information.js
   const classes = useStyles()
   const router = useRouter()
 
@@ -40,7 +50,7 @@ const CardInformation = () => {
       <Box p="1em">
         <Typography variant="h2">Insurance</Typography>
         <Container>
-          <form action="/sign-up">
+          <form onSubmit={loginWithRedirect}>
             <Box
               mt="2em"
               display="flex"
@@ -64,6 +74,7 @@ const CardInformation = () => {
                   label="Plan number"
                   variant="outlined"
                   color="secondary"
+                  onChange={(e) => setPlanNumber(e.target.value)}
                   required
                 />
                 <TextField
@@ -71,6 +82,7 @@ const CardInformation = () => {
                   label="Group number"
                   variant="outlined"
                   color="secondary"
+                  onChange={(e) => setGroupNumber(e.target.value)}
                   required
                 />
               </Box>

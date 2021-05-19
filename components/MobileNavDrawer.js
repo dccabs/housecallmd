@@ -5,6 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
+<<<<<<< HEAD
   authLinks: {
     '& a': {
       textDecoration: 'none',
@@ -15,11 +16,26 @@ const useStyles = makeStyles((theme) => ({
   '.MuiListItem-gutters': {
     padding: '2em',
   },
+=======
+  navLinks: {
+    color: theme.typography.color,
+    textDecoration: 'none',
+    fontWeight: '600',
+
+    '& a': {
+      color: theme.typography.color,
+    },
+  },
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
 }))
 
 const MobileNavDrawer = ({ setDrawerToggle }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+<<<<<<< HEAD
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
+=======
+  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
   const classes = useStyles()
 
   useEffect(() => {
@@ -42,7 +58,16 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         onKeyDown={() => setDrawerToggle(false)}
         minWidth="12rem"
       >
+<<<<<<< HEAD
         <List className={classes.authLinks}>
+=======
+        <List className={classes.navLinks}>
+          {isAuthenticated && (
+            <ListItem>
+              <strong>Hello, {user.nickname}</strong>
+            </ListItem>
+          )}
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
           <Link href="/contact">
             <ListItem button>Contact</ListItem>
           </Link>

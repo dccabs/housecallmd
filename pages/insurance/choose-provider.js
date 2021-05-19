@@ -3,6 +3,10 @@ import { Autocomplete } from '@material-ui/lab'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
+<<<<<<< HEAD:pages/insurance/choose-provider.js
+=======
+import useStore from '../../zustand/store'
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/choose-provider.js
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -28,6 +32,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ChooseProvider = () => {
+<<<<<<< HEAD:pages/insurance/choose-provider.js
+=======
+  const { setProvider } = useStore()
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/choose-provider.js
   const classes = useStyles()
   const router = useRouter()
 
@@ -55,8 +63,14 @@ const ChooseProvider = () => {
                 <Autocomplete
                   freeSolo
                   disableClearable
+<<<<<<< HEAD:pages/insurance/choose-provider.js
                   options={['Blue Cross Blue Shielf', 'Cigna', 'Athena']}
                   style={{ width: '100%', maxWidth: '34rem' }}
+=======
+                  options={['Blue Cross Blue Shield', 'Cigna', 'Athena']}
+                  style={{ width: '100%', maxWidth: '34rem' }}
+                  onChange={(event, value) => setProvider(value)}
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/choose-provider.js
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -64,6 +78,10 @@ const ChooseProvider = () => {
                       margin="normal"
                       color="secondary"
                       variant="outlined"
+<<<<<<< HEAD:pages/insurance/choose-provider.js
+=======
+                      onChange={(e) => setProvider(e.target.value)}
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b:pages/insurance/choose-provider.js
                       InputProps={{ ...params.InputProps, type: 'search' }}
                       required
                     />

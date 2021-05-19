@@ -27,6 +27,7 @@ const Footer = () => {
           <Typography>Contact</Typography>
         </a>
       </Link>
+<<<<<<< HEAD
       <Link href="/login">
         <a>
           <Typography>Login</Typography>
@@ -37,6 +38,8 @@ const Footer = () => {
           <Typography>Sign Up</Typography>
         </a>
       </Link>
+=======
+>>>>>>> d566e018494f2fbebc41f68fed896490d1437e2b
     </Box>
   )
 }
