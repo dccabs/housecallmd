@@ -1,4 +1,8 @@
 import { useEffect, Fragment } from 'react'
+import { Auth } from '@supabase/ui'
+import { supabase } from '../utils/initSupabase'
+
+
 import Head from 'next/head'
 import {
   ThemeProvider,
@@ -43,9 +47,11 @@ export default function MyApp(props) {
             clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}
             redirectUri={process.env.NEXT_PUBLIC_REDIRECT_URI}
           >
+            <Auth.UserContextProvider supabaseClient={supabase}>
             <Layout>
               <Component {...pageProps} />
             </Layout>
+            </Auth.UserContextProvider>
           </Auth0Provider>
         </ThemeProvider>
       </StylesProvider>
