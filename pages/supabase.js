@@ -42,25 +42,38 @@ const Index = () => {
     }
   }, [])
 
+  const onClick = ({email, password}) => {
+    supabase.auth
+      .signUp({ email, password })
+      .then((response) => {
+        response.error ? alert(response.error.message) : setToken(response)
+      })
+      .catch((err) => {
+        console.log('err', err);
+        // alert(err.response.text)
+      })
+  }
+
+  const setToken = (response) => {
+    if (response.data.confirmation_sent_at && !response.data.access_token) {
+      alert('Confirmation Email Sent')
+    } else {
+      document.querySelector('#access-token').value = response.data.access_token
+      document.querySelector('#refresh-token').value = response.data.refresh_token
+      alert('Logged in as ' + response.user.email)
+    }
+  }
+
   const View = () => {
     if (!user)
       return (
         <Space direction="vertical" size={8}>
-          <div>
-            <img
-              src="https://app.supabase.io/img/supabase-dark.svg"
-              width="96"
-            />
-            <Typography.Title level={3}>
-              Welcome to Supabase Auth
-            </Typography.Title>
-          </div>
           <Auth
             supabaseClient={supabase}
-            providers={['google', 'github']}
-            view={authView}
-            socialLayout="horizontal"
-            socialButtonSize="xlarge"
+            // providers={['google', 'github']}
+            // view={authView}
+            // socialLayout="horizontal"
+            // socialButtonSize="xlarge"
           />
         </Space>
       )
@@ -112,7 +125,16 @@ const Index = () => {
 
   return (
     <div style={{ maxWidth: '420px', margin: '96px auto' }}>
+
       <Card>
+        <Button
+          onClick={() => {
+            onClick({
+              'email': 'dccabs@gmail.com',
+              password: 'NYmets45!'
+            })
+          }}
+        >Hello world</Button>
         <View />
       </Card>
     </div>
