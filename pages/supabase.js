@@ -20,6 +20,7 @@ const Index = () => {
   const [authView, setAuthView] = useState('sign_in')
 
   useEffect(() => {
+    console.log('hello world')
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'PASSWORD_RECOVERY') setAuthView('update_password')

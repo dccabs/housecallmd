@@ -18,7 +18,7 @@ export default function Profile({ user }) {
           </Typography.Text>
 
           <Typography.Text>
-            <Link href="/">
+            <Link href="/supabase">
               <a>Static example with useSWR</a>
             </Link>
           </Typography.Text>
@@ -31,6 +31,8 @@ export default function Profile({ user }) {
 export async function getServerSideProps({ req }) {
   const { user } = await supabase.auth.api.getUserByCookie(req)
 
+  console.log('user', user);
+  //
   if (!user) {
     // If no user, redirect to index.
     return { props: {}, redirect: { destination: '/', permanent: false } }
