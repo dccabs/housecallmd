@@ -28,6 +28,59 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const providerOptions = [
+  'AARP',
+  'Aetna',
+  'American Family Insurance',
+  'American National Insurance Company',
+  'Amerigroup',
+  'Anthem',
+  'Blue Cross and Blue Shield Association',
+  'CareSource',
+  'Cambia Health Solutions',
+  'Centene Corporation',
+  'Cigna',
+  'Coventry Health Care',
+  'Delta Dental',
+  'EmblemHealth',
+  'Fortis',
+  'Geisinger',
+  'Golden Rule Insurance Company',
+  'Group Health Cooperative',
+  'Group Health Incorporated',
+  'Harvard Pilgrim Health Care',
+  'Health Net',
+  'HealthMarkets',
+  'HealthPartners',
+  'HealthSpring',
+  'Highmark',
+  'Horace Mann Educators Corporation',
+  'Humana',
+  'Independence Blue Cross',
+  'Kaiser Permanente',
+  'Kaleida Health',
+  'Liberty Medical',
+  'LifeWise Health Plan of Oregon',
+  'MassHealth',
+  'Medica',
+  'Medical Mutual of Ohio',
+  'MEGA Life and Health Insurance',
+  'Molina Healthcare',
+  'Oscar Health',
+  'Oxford Health Plans',
+  'Premera Blue Cross',
+  'Principal Financial Group',
+  'Shelter Insurance',
+  'State Farm',
+  'Thrivent Financial for Lutherans',
+  'UnitedHealth Group',
+  'Unitrin',
+  'Universal American Corporation',
+  'US Health Group',
+  'Vantage Health Plan',
+  'WellCare',
+]
+
 const ChooseProvider = () => {
   const { setProvider } = useStore()
   const classes = useStyles()
@@ -57,7 +110,7 @@ const ChooseProvider = () => {
                 <Autocomplete
                   freeSolo
                   disableClearable
-                  options={['Blue Cross Blue Shielf', 'Cigna', 'Athena']}
+                  options={providerOptions}
                   style={{ width: '100%', maxWidth: '34rem' }}
                   onChange={(event, value) => setProvider(value)}
                   renderInput={(params) => (

@@ -40,6 +40,9 @@ const Insurance = () => {
             justifyContent="center"
           >
             <Typography variant="h4">Do you have insurance?</Typography>
+            <Box className={classes.disclaimer} mt="1em">
+              You do not need to have insurance to use this service.
+            </Box>
             <Box
               className={classes.buttonLinks}
               mt="2em"
@@ -61,9 +64,6 @@ const Insurance = () => {
                   </Button>
                 </a>
               </Link>
-            </Box>
-            <Box className={classes.disclaimer}>
-              You do not need to have insurance to use this service.
             </Box>
           </Box>
         </Container>

@@ -3,6 +3,8 @@ import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 
+import Reviews from '../components/Reviews'
+
 const useStyles = makeStyles((theme) => ({
   image: {
     maxHeight: '30rem',
@@ -68,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
       padding: '6em',
     },
   },
+  reviews: {
+    [theme.breakpoints.up('sm')]: {
+      padding: '6em',
+    },
+  },
 }))
 
 const Home = () => {
@@ -110,6 +117,19 @@ const Home = () => {
             officiis iure vel voluptatum blanditiis illum ipsam.
           </Typography>
         </Box>
+      </Box>
+      <Box
+        p="1em"
+        className={classes.reviews}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Box mb="2em">
+          <Typography variant="h2">Reviews</Typography>
+        </Box>
+        <Reviews />
       </Box>
     </Fragment>
   )
