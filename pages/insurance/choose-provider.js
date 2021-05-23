@@ -83,6 +83,8 @@ const providerOptions = [
 
 const ChooseProvider = () => {
   const { setProvider } = useStore()
+
+  console.log('useStore', useStore())
   const classes = useStyles()
   const router = useRouter()
 
@@ -112,7 +114,11 @@ const ChooseProvider = () => {
                   disableClearable
                   options={providerOptions}
                   style={{ width: '100%', maxWidth: '34rem' }}
-                  onChange={(event, value) => setProvider(value)}
+                  onChange={
+                    (event, value) => {
+                      setProvider(value)
+                    }
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
