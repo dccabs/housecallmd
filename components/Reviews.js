@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '20rem',
     minHeight: '25rem',
     height: '100%',
-    margin: '1em',
+    margin: '2em',
   },
   avatar: {
     width: '6rem',
