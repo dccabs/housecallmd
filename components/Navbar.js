@@ -66,73 +66,80 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
   const classes = useStyles()
 
   return (
-    <Fragment>
-      <Drawer
-        anchor="right"
-        open={drawerToggle}
-        onClose={() => setDrawerToggle(false)}
-      >
-        <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
-      </Drawer>
+      <Fragment>
+        <Drawer
+            anchor="right"
+            open={drawerToggle}
+            onClose={() => setDrawerToggle(false)}
+        >
+          <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
+        </Drawer>
 
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar className={classes.toolBar}>
-          <Link href="/">
-            <a>
-              <Box display="flex">
-                <Image
-                  alt="Housecall MD"
-                  src="/logo_heart.png"
-                  width={35}
-                  height={30}
-                />
-                <Typography variant="h6" className={classes.logoH6}>
-                  <strong className={classes.logoText}>
-                    HouseCall<span>MD</span>
-                  </strong>
-                </Typography>
-              </Box>
-            </a>
-          </Link>
-
-          <Box className={classes.authLinks} display="flex">
-            <Link href="/contact">
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar className={classes.toolBar}>
+            <Link href="/">
               <a>
-                <Typography>Contact</Typography>
+                <Box display="flex">
+                  <Image
+                      alt="Housecall MD"
+                      src="/logo_heart.png"
+                      width={35}
+                      height={30}
+                  />
+                  <Typography variant="h6" className={classes.logoH6}>
+                    <strong className={classes.logoText}>
+                      HouseCall<span>MD</span>
+                    </strong>
+                  </Typography>
+                </Box>
               </a>
             </Link>
-            {isAuthenticated ? (
-              <MuiLink
-                onClick={logout}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Logout</Typography>
-              </MuiLink>
-            ) : (
-              <MuiLink
-                onClick={loginWithRedirect}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Login</Typography>
-              </MuiLink>
-            )}
-          </Box>
 
-          <Box display="none" className={classes.burgerNav}>
-            <IconButton
-              edge="start"
-              onClick={() => setDrawerToggle(!drawerToggle)}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </Fragment>
+            <Box className={classes.authLinks} display="flex">
+              <Link href="/contact">
+                <a>
+                  <Typography>Contact</Typography>
+                </a>
+              </Link>
+              {isAuthenticated ? (
+                  <MuiLink
+                      onClick={logout}
+                      style={{ textDecoration: 'none', cursor: 'pointer' }}
+                  >
+                    <Typography>Logout</Typography>
+                  </MuiLink>
+              ) : (
+                  <MuiLink
+                      onClick={() => {
+                        loginWithRedirect({
+                          configuration: {
+                            screen_hint: "signup",
+                          }
+                        })
+                      }}
+                      style={{ textDecoration: 'none', cursor: 'pointer' }}
+                  >
+                    <Typography>Login aa</Typography>
+                  </MuiLink>
+              )
+              }
+            </Box>
+
+            <Box display="none" className={classes.burgerNav}>
+              <IconButton
+                  edge="start"
+                  onClick={() => setDrawerToggle(!drawerToggle)}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Fragment>
   )
 }
 

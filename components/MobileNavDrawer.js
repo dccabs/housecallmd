@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MobileNavDrawer = ({ setDrawerToggle }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
   const classes = useStyles()
 
   useEffect(() => {
@@ -43,6 +43,11 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         minWidth="12rem"
       >
         <List className={classes.authLinks}>
+          {isAuthenticated && (
+            <ListItem>
+              <strong>Hello, {user.nickname}</strong>
+            </ListItem>
+          )}
           <Link href="/contact">
             <ListItem button>Contact</ListItem>
           </Link>
