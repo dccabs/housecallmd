@@ -54,8 +54,15 @@ const Contact = () => {
   const router = useRouter();
 
   const handleSubmit = (e) => {
-    console.log('handle Submit')
     e.preventDefault();
+    setFirstName(localFirstName);
+    setLastName(localLastName);
+    setAddress(localAddress);
+    setCity(localCity);
+    setState(localState);
+    setZip(localZip);
+    setPhone(localPhone);
+
     router.push('/enter-login-information');
   }
 
