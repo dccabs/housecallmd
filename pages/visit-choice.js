@@ -45,7 +45,12 @@ const VisitChoice = () => {
 
   const handleChange = (event) => {
     setValue(event.target.value)
-    setVisitChoice(event.target.value)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setVisitChoice(value)
+    router.push('/payment');
   }
 
   return (
@@ -53,7 +58,7 @@ const VisitChoice = () => {
       <Box p="1em">
         <Typography variant="h2">Visit Choice</Typography>
         <Container>
-          <form action="/">
+          <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
               display="flex"

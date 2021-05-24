@@ -107,7 +107,7 @@ const Contact = () => {
               value={confirmPassword}
               className={classes.textFields}
               fullWidth
-              type="password-confirm"
+              type="password"
               label="Confirm Password"
               variant="outlined"
               color="secondary"
