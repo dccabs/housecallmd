@@ -40,8 +40,13 @@ const ChooseProvider = () => {
   const router = useRouter()
 
   const handleUpdate = (e, fn) => {
-    console.log('e', e)
     fn(e.target.value);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setProvider(localProvider)
+    router.push('/insurance/card-information');
   }
 
   return (
@@ -49,7 +54,7 @@ const ChooseProvider = () => {
       <Box p="1em">
         <Typography variant="h2">Insurance</Typography>
         <Container>
-          <form action="/insurance/card-information">
+          <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
               display="flex"
