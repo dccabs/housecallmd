@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
 import MuiSelect from '../components/MuiSelect'
 import { useRouter } from 'next/router'
+import useStore from '../zustand/store';
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -12,11 +13,11 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '34rem',
   },
   buttonLinks: {
-    '@media screen and (max-width: 700px)': {
-      '&:nth-child(2)': {
-        order: -1,
-      },
-    },
+    // '@media screen and (max-width: 700px)': {
+    //   '&:nth-child(2)': {
+    //     order: -1,
+    //   },
+    // },
 
     '& button': {
       padding: '1em',
@@ -133,7 +134,16 @@ const Contact = () => {
                 variant="contained"
                 size="large"
               >
-                Submit
+                Continue
+              </Button>
+            </Box>
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                onClick={() => router.back()}
+                color="secondary"
+                variant="contained"
+              >
+                Back
               </Button>
             </Box>
           </Box>

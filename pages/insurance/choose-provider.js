@@ -4,6 +4,7 @@ import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
+import providerOptions from '../../public/constants/providerOptions';
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -27,59 +28,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
-
-const providerOptions = [
-  'AARP',
-  'Aetna',
-  'American Family Insurance',
-  'American National Insurance Company',
-  'Amerigroup',
-  'Anthem',
-  'Blue Cross and Blue Shield Association',
-  'CareSource',
-  'Cambia Health Solutions',
-  'Centene Corporation',
-  'Cigna',
-  'Coventry Health Care',
-  'Delta Dental',
-  'EmblemHealth',
-  'Fortis',
-  'Geisinger',
-  'Golden Rule Insurance Company',
-  'Group Health Cooperative',
-  'Group Health Incorporated',
-  'Harvard Pilgrim Health Care',
-  'Health Net',
-  'HealthMarkets',
-  'HealthPartners',
-  'HealthSpring',
-  'Highmark',
-  'Horace Mann Educators Corporation',
-  'Humana',
-  'Independence Blue Cross',
-  'Kaiser Permanente',
-  'Kaleida Health',
-  'Liberty Medical',
-  'LifeWise Health Plan of Oregon',
-  'MassHealth',
-  'Medica',
-  'Medical Mutual of Ohio',
-  'MEGA Life and Health Insurance',
-  'Molina Healthcare',
-  'Oscar Health',
-  'Oxford Health Plans',
-  'Premera Blue Cross',
-  'Principal Financial Group',
-  'Shelter Insurance',
-  'State Farm',
-  'Thrivent Financial for Lutherans',
-  'UnitedHealth Group',
-  'Unitrin',
-  'Universal American Corporation',
-  'US Health Group',
-  'Vantage Health Plan',
-  'WellCare',
-]
 
 const ChooseProvider = () => {
   const { setProvider, provider } = useStore()
