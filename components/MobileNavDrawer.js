@@ -48,6 +48,9 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
               <strong>Hello, {user.nickname}</strong>
             </ListItem>
           )}
+          <Link href="/services">
+            <ListItem button>Services</ListItem>
+          </Link>
           <Link href="/contact">
             <ListItem button>Contact</ListItem>
           </Link>
