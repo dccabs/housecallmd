@@ -5,6 +5,8 @@ import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
+import { supabase } from '../utils/initSupabase'
+
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -46,16 +48,31 @@ const Contact = () => {
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [email, setLocalEmail] = useState('');
-  const { setEmail } = useStore()
+  const [localEmail, setLocalEmail] = useState('');
+  const {
+    hasInsurance,
+    provider,
+    planNumber,
+    groupNumber,
+    visitChoice,
+    firstName,
+    lastName,
+    email,
+    address,
+    city,
+    state,
+    zip,
+    phone,
+    setEmail,
+  } = useStore();
 
   console.log('useStore', useStore());
 
   const handleSubmit = (e) => {
     console.log('handle Submit')
-    setEmail(email);
+    setEmail(localEmail);
     e.preventDefault();
-    router.push('/visit-choice');
+    loginUser();
   }
 
   const handlePasswordUpdate = (e) => {
@@ -70,8 +87,75 @@ const Contact = () => {
     setLocalEmail(e.target.value);
   }
 
+  const fetchUsers = async () => {
+    let { data: users, error } = await supabase.from('UserList').select('*').order('email', true)
+    if (error){
+      console.log('error', error)
+    } else {
+      console.log('users', users)
+    }
+  }
+
+  const addUser = async () => {
+    let newUser = {
+      hasInsurance,
+      provider,
+      planNumber,
+      groupNumber,
+      // visitChoice,
+      firstName,
+      lastName,
+      email,
+      address,
+      city,
+      state,
+      zip,
+      phone: phone.replace(/\s/g, '')
+    }
+
+    const { data, error } = await supabase
+      .from('UserList')
+      .insert([
+        { ...newUser },
+      ])
+    if (error){
+      console.log('error', error)
+    } else {
+      console.log('success')
+    }
+  }
+  const loginUser = () => {
+    console.log('localEmail', localEmail)
+    supabase.auth
+      .signUp({ email: localEmail, password })
+      .then((response) => {
+        response.error ? alert(response.error.message) : setToken(response);
+      })
+      .catch((err) => {
+        console.log('err', err);
+        alert(err.response.text)
+      })
+  }
+
+  const setToken = (response) => {
+    if (response.data.confirmation_sent_at && !response.data.access_token) {
+      alert('Confirmation Email Sent')
+    } else {
+      document.querySelector('#access-token').value = response.data.access_token
+      document.querySelector('#refresh-token').value = response.data.refresh_token
+      alert('Logged in as ' + response.user.email)
+    }
+  }
+
   return (
     <Container>
+      <Button onClick={fetchUsers}>
+        Get Users
+      </Button>
+
+      <Button onClick={addUser}>
+        New User
+      </Button>
       <Box p="1em">
         <Typography variant="h2">Please enter the following to finish creating your account:</Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -82,7 +166,7 @@ const Contact = () => {
             justifyContent="center"
           >
             <TextField
-                value={email}
+                value={localEmail}
                 className={classes.textFields}
                 fullWidth
                 type="email"
@@ -121,7 +205,7 @@ const Contact = () => {
                 disabled={
                   (!password || !confirmPassword) ||
                   (password !== confirmPassword) ||
-                  !email
+                  !localEmail
                 }
                 type="submit"
                 color="secondary"
