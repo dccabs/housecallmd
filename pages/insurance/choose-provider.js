@@ -71,7 +71,7 @@ const ChooseProvider = () => {
                 justifyContent="center"
               >
                 <Autocomplete
-                  value={provider}
+                  value={localProvider}
                   freeSolo
                   disableClearable
                   options={providerOptions}
