@@ -5,6 +5,7 @@ import STATES from '../public/constants/states'
 import MuiSelect from '../components/MuiSelect'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -39,6 +40,16 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Contact = () => {
+  const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone } = useStore();
+  const [localFirstName, setLocalFirstName] = useState('');
+  const [localLastName, setLocalLastName] = useState('');
+
+  const [localAddress, setLocalAddress] = useState('');
+  const [localCity, setLocalCity] = useState('');
+  const [localState, setLocalState] = useState('');
+  const [localZip, setLocalZip] = useState('');
+  const [localPhone, setLocalPhone] = useState('');
+
   const classes = useStyles();
   const router = useRouter();
 
@@ -46,6 +57,10 @@ const Contact = () => {
     console.log('handle Submit')
     e.preventDefault();
     router.push('/enter-login-information');
+  }
+
+  const handleUpdate = (e, fn) => {
+    fn(e.target.value);
   }
 
   return (
@@ -67,6 +82,7 @@ const Contact = () => {
               variant="outlined"
               color="secondary"
               required
+              onChange={(e) => handleUpdate(e, setLocalFirstName)}
             />
             <TextField
                 className={classes.textFields}
@@ -76,6 +92,7 @@ const Contact = () => {
                 variant="outlined"
                 color="secondary"
                 required
+                onChange={(e) => handleUpdate(e, setLocalLastName)}
             />
             <TextField
               className={classes.textFields}
@@ -85,6 +102,7 @@ const Contact = () => {
               variant="outlined"
               color="secondary"
               required
+              onChange={(e) => handleUpdate(e, setLocalAddress)}
             />
             <TextField
                 className={classes.textFields}
@@ -94,6 +112,7 @@ const Contact = () => {
                 variant="outlined"
                 color="secondary"
                 required
+                onChange={(e) => handleUpdate(e, setLocalCity)}
             />
             <MuiSelect
                 label="State"
@@ -108,13 +127,14 @@ const Contact = () => {
               })}
             </MuiSelect>
             <TextField
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Zip Code"
-                variant="outlined"
-                color="secondary"
-                required
+              className={classes.textFields}
+              fullWidth
+              type="text"
+              label="Zip Code"
+              variant="outlined"
+              color="secondary"
+              required
+              onChange={(e) => handleUpdate(e, setLocalZip)}
             />
             <TextField
               className={classes.textFields}
@@ -124,6 +144,7 @@ const Contact = () => {
               variant="outlined"
               color="secondary"
               required
+              onChange={(e) => handleUpdate(e, setLocalPhone)}
             />
           </Box>
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
@@ -133,6 +154,14 @@ const Contact = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                disabled={
+                  !localFirstName ||
+                    !localLastName ||
+                    !localAddress ||
+                    !localCity ||
+                    !localZip ||
+                    !localPhone
+                }
               >
                 Continue
               </Button>
