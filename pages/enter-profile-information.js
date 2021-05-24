@@ -3,6 +3,9 @@ import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
 import MuiSelect from '../components/MuiSelect'
+import "cleave.js/dist/addons/cleave-phone.us";
+import Cleave from 'cleave.js/react';
+
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
 import { useState } from 'react'
@@ -38,6 +41,23 @@ const useStyles = makeStyles((theme) => ({
     background: '#fff',
   },
 }))
+
+const phoneField = (props) => {
+  const { options, inputRef, ...other } = props;
+  return (
+    <Cleave
+      ref={ref => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      placeholder="Enter phone number"
+      options={{
+        phone: true,
+        phoneRegionCode: 'US'
+      }}
+      {...other}
+    />
+  )
+}
 
 const Contact = () => {
   const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone } = useStore();
@@ -145,14 +165,19 @@ const Contact = () => {
               onChange={(e) => handleUpdate(e, setLocalZip)}
             />
             <TextField
+              value={localPhone}
               className={classes.textFields}
               fullWidth
-              type="text"
+              type="tel"
               label="Phone"
               variant="outlined"
               color="secondary"
               required
-              onChange={(e) => handleUpdate(e, setLocalPhone)}
+              onChange={(e) => {
+                handleUpdate(e, setLocalPhone)}}
+              InputProps={{
+                inputComponent: phoneField,
+              }}
             />
           </Box>
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
