@@ -22,6 +22,11 @@ const Footer = () => {
 
   return (
     <Box className={classes.root} display="flex" justifyContent="center">
+      <Link href="/services">
+        <a>
+          <Typography>Services</Typography>
+        </a>
+      </Link>
       <Link href="/contact">
         <a>
           <Typography>Contact</Typography>

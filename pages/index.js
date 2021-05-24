@@ -3,6 +3,7 @@ import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 
+import ContactSection from '../components/ContactSection'
 import Reviews from '../components/Reviews'
 
 const useStyles = makeStyles((theme) => ({
@@ -14,12 +15,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '60rem',
   },
   ctaButton: {
-    // fontSize: 24,
     width: '100%',
-
-    // "&:hover": {
-    //   backgroundColor: theme.palette.primary.main,
-    // },
   },
   linkButton: {
     textDecoration: 'none',
@@ -120,6 +116,7 @@ const Home = () => {
           </Typography>
         </Box>
       </Box>
+            
       <Box
         p="1em"
         className={classes.reviews}
@@ -133,6 +130,8 @@ const Home = () => {
         </Box>
         <Reviews />
       </Box>
+
+      <ContactSection />
     </Fragment>
   )
 }
