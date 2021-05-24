@@ -44,7 +44,7 @@ const Contact = () => {
   const handleSubmit = (e) => {
     console.log('handle Submit')
     e.preventDefault();
-    router.push('/choose-login');
+    router.push('/enter-login-information');
   }
 
   return (

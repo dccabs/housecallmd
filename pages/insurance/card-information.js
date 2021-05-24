@@ -40,7 +40,7 @@ const CardInformation = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.push('/sign-up')
+    router.push('/enter-profile-information')
   }
 
   return (

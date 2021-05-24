@@ -31,7 +31,7 @@ const Insurance = () => {
 
   const handleNoClick = () => {
     setHasInsurance(false);
-    router.push('/sign-up');
+    router.push('/enter-profile-information');
   }
 
   const handleYesClick = () => {
