@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CardInformation = () => {
-  const { setPlanNumber, setGroupNumber } = useStore()
+  const { setPlanNumber, setGroupNumber, groupNumber, planNumber } = useStore()
   const classes = useStyles()
   const router = useRouter()
 
@@ -68,6 +68,7 @@ const CardInformation = () => {
                 width="100%"
               >
                 <TextField
+                  value={planNumber}
                   className={classes.textFields}
                   label="Plan number"
                   variant="outlined"
@@ -76,6 +77,7 @@ const CardInformation = () => {
                   required
                 />
                 <TextField
+                  value={groupNumber}
                   className={classes.textFields}
                   label="Group number"
                   variant="outlined"

@@ -82,7 +82,7 @@ const providerOptions = [
 ]
 
 const ChooseProvider = () => {
-  const { setProvider } = useStore()
+  const { setProvider, provider } = useStore()
 
   console.log('useStore', useStore())
   const classes = useStyles()
@@ -110,6 +110,7 @@ const ChooseProvider = () => {
                 justifyContent="center"
               >
                 <Autocomplete
+                  value={provider}
                   freeSolo
                   disableClearable
                   options={providerOptions}

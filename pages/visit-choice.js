@@ -103,15 +103,15 @@ const VisitChoice = () => {
                 flexWrap="wrap"
                 width="100%"
               >
-                <Box m="1em" className={classes.buttonLinks}>
-                  <Button
-                    onClick={() => router.back()}
-                    color="secondary"
-                    variant="contained"
-                  >
-                    Back
-                  </Button>
-                </Box>
+                {/*<Box m="1em" className={classes.buttonLinks}>*/}
+                {/*  <Button*/}
+                {/*    onClick={() => router.back()}*/}
+                {/*    color="secondary"*/}
+                {/*    variant="contained"*/}
+                {/*  >*/}
+                {/*    Back*/}
+                {/*  </Button>*/}
+                {/*</Box>*/}
                 <Box m="1em" className={classes.buttonLinks}>
                   <Button
                     type="submit"
