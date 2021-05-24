@@ -3,6 +3,7 @@ import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
 import MuiSelect from '../components/MuiSelect'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -37,13 +38,20 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Contact = () => {
-  const classes = useStyles()
+  const classes = useStyles();
+  const router = useRouter();
+
+  const handleSubmit = (e) => {
+    console.log('handle Submit')
+    e.preventDefault();
+    router.push('/enter-login-information');
+  }
 
   return (
     <Container>
       <Box p="1em">
-        <Typography variant="h2">Sign up for an account</Typography>
-        <form action="/" style={{ width: '100%' }}>
+        <Typography variant="h2">Please enter the following information:</Typography>
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box
             display="flex"
             flexDirection="column"
@@ -107,15 +115,6 @@ const Contact = () => {
                 color="secondary"
                 required
             />
-            {/*<TextField*/}
-            {/*  className={classes.textFields}*/}
-            {/*  fullWidth*/}
-            {/*  type="email"*/}
-            {/*  label="Enter email address here"*/}
-            {/*  variant="outlined"*/}
-            {/*  color="secondary"*/}
-            {/*  required*/}
-            {/*/>*/}
             <TextField
               className={classes.textFields}
               fullWidth

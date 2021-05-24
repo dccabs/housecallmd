@@ -23,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.up('sm')]: {
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      position: 'absolute',
+      maxWidth: 1200,
+      margin: 'auto',
     },
   },
   toolBar: {

@@ -13,6 +13,9 @@ export default class MyDocument extends Document {
             body,
             #__next {
               height: 100%;
+            },
+            #main {
+              max-width: 1100px;
             }
           `}</style>
           <meta name="theme-color" content={theme.palette.primary.main} />
@@ -20,6 +23,7 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+          <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Open+Sans&display=swap" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
 
           <link

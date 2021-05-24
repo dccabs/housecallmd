@@ -35,16 +35,20 @@ const useStyles = makeStyles((theme) => ({
 
 const CardInformation = () => {
   const { setPlanNumber, setGroupNumber } = useStore()
-  const { loginWithRedirect } = useAuth0()
   const classes = useStyles()
   const router = useRouter()
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    router.push('/enter-profile-information')
+  }
 
   return (
     <Container>
       <Box p="1em">
         <Typography variant="h2">Insurance</Typography>
         <Container>
-          <form onSubmit={loginWithRedirect}>
+          <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
               display="flex"
