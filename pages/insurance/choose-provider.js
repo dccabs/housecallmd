@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
 import providerOptions from '../../public/constants/providerOptions';
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -32,9 +33,16 @@ const useStyles = makeStyles((theme) => ({
 const ChooseProvider = () => {
   const { setProvider, provider } = useStore()
 
+  const [localProvider, setLocalProvider] = useState('');
+
   console.log('useStore', useStore())
   const classes = useStyles()
   const router = useRouter()
+
+  const handleUpdate = (e, fn) => {
+    console.log('e', e)
+    fn(e.target.value);
+  }
 
   return (
     <Container>
@@ -64,8 +72,8 @@ const ChooseProvider = () => {
                   options={providerOptions}
                   style={{ width: '100%', maxWidth: '34rem' }}
                   onChange={
-                    (event, value) => {
-                      setProvider(value)
+                    (e, value) => {
+                      setLocalProvider(value)
                     }
                   }
                   renderInput={(params) => (
@@ -75,7 +83,9 @@ const ChooseProvider = () => {
                       margin="normal"
                       color="secondary"
                       variant="outlined"
-                      onChange={(e) => setProvider(e.target.value)}
+                      onChange={(e, value) => {
+                        handleUpdate(e, setLocalProvider);
+                      }}
                       InputProps={{ ...params.InputProps, type: 'search' }}
                       required
                     />
@@ -100,7 +110,12 @@ const ChooseProvider = () => {
                   </Button>
                 </Box>
                 <Box m="1em" className={classes.buttonLinks}>
-                  <Button type="submit" color="secondary" variant="contained">
+                  <Button
+                    disabled={!localProvider}
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                  >
                     Continue
                   </Button>
                 </Box>
