@@ -122,14 +122,15 @@ const Contact = () => {
                 onChange={(e) => handleUpdate(e, setLocalCity)}
             />
             <MuiSelect
+                name="state"
                 label="State"
                 defaultValue=""
-                // value={age}
-                // onChange={handleChange}
+                value={localState}
+                onChange={(e) => { handleUpdate(e, setLocalState)}}
             >
               {STATES.map((state, index) => {
                 return (
-                    <MenuItem key={index} value={state.abbreviation}>{state.abbreviation}</MenuItem>
+                    <MenuItem key={index} value={state.abbreviation}>{state.name}</MenuItem>
                 )
               })}
             </MuiSelect>
