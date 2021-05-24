@@ -2,6 +2,9 @@ import { Typography, Box, Button } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
+import useStore from '../../zustand/store'
+import { useRouter } from 'next/router'
+
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -9,14 +12,11 @@ const useStyles = makeStyles((theme) => ({
       padding: '1em',
       fontWeight: 600,
       width: '16rem',
+      margin: '1em',
 
       '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
-    },
-    '& a': {
-      textDecoration: 'none',
-      margin: '1em',
     },
   },
   disclaimer: {
@@ -26,6 +26,18 @@ const useStyles = makeStyles((theme) => ({
 
 const Insurance = () => {
   const classes = useStyles()
+  const { setHasInsurance } = useStore()
+  const router = useRouter()
+
+  const handleNoClick = () => {
+    setHasInsurance(false);
+    router.push('/sign-up');
+  }
+
+  const handleYesClick = () => {
+    setHasInsurance(true);
+    router.push('/insurance/choose-provider');
+  }
 
   return (
     <Container>
@@ -50,20 +62,21 @@ const Insurance = () => {
               justifyContent="center"
               flexWrap="wrap"
             >
-              <Link href="/insurance/choose-provider">
-                <a>
-                  <Button color="secondary" variant="contained">
-                    Yes
-                  </Button>
-                </a>
-              </Link>
-              <Link href="/sign-up">
-                <a>
-                  <Button color="secondary" variant="contained">
-                    No
-                  </Button>
-                </a>
-              </Link>
+
+              <Button
+                onClick={handleYesClick}
+                color="secondary"
+                variant="contained"
+              >
+                Yes
+              </Button>
+              <Button
+                onClick={handleNoClick}
+                color="secondary"
+                variant="contained"
+              >
+                No
+              </Button>
             </Box>
           </Box>
         </Container>
