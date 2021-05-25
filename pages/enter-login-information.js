@@ -6,6 +6,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
 import { supabase } from '../utils/initSupabase'
+import { Auth } from '@supabase/ui'
+import useSWR from 'swr'
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,11 +43,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-
+const fetcher = (url, token) =>
+  fetch(url, {
+    method: 'GET',
+    headers: new Headers({ 'Content-Type': 'application/json', token }),
+    credentials: 'same-origin',
+  }).then((res) => res.json())
 
 const Contact = () => {
   const classes = useStyles();
   const router = useRouter();
+  const { session } = Auth.useUser()
+
+  // const { data, error } = useSWR(
+  //   session ? ['/api/getAllUsers', session.access_token] : null,
+  //   fetcher
+  // )
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -66,10 +80,8 @@ const Contact = () => {
     setEmail,
   } = useStore();
 
-  console.log('useStore', useStore());
 
   const handleSubmit = (e) => {
-    console.log('handle Submit')
     setEmail(localEmail);
     e.preventDefault();
     loginUser();
@@ -88,12 +100,24 @@ const Contact = () => {
   }
 
   const fetchUsers = async () => {
-    let { data: users, error } = await supabase.from('UserList').select('*').order('email', true)
-    if (error){
-      console.log('error', error)
-    } else {
-      console.log('users', users)
-    }
+    // const { data, error } = useSWR(
+    //   session ? ['/api/getAllUsers', session.access_token] : null,
+    //   fetcher
+    // )
+
+    const token = session.access_token;
+
+    fetch('/api/getAllUsers', {
+      method: 'GET',
+      headers: new Headers({ 'Content-Type': 'application/json', token }),
+      credentials: 'same-origin',
+    }).then((res) => res.json())
+    // let { data: users, error } = await supabase.from('UserList').select('*').order('email', true)
+    // if (error){
+    //   console.log('error', error)
+    // } else {
+    //   console.log('users', users)
+    // }
   }
 
   const addUser = async () => {

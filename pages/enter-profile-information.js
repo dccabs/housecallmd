@@ -60,10 +60,11 @@ const phoneField = (props) => {
 }
 
 const Contact = () => {
+
   const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone } = useStore();
+
   const [localFirstName, setLocalFirstName] = useState('');
   const [localLastName, setLocalLastName] = useState('');
-
   const [localAddress, setLocalAddress] = useState('');
   const [localCity, setLocalCity] = useState('');
   const [localState, setLocalState] = useState('');
