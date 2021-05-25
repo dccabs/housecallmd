@@ -42,17 +42,11 @@ export default function MyApp(props) {
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <Auth0Provider
-            domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN}
-            clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}
-            redirectUri={process.env.NEXT_PUBLIC_REDIRECT_URI}
-          >
-            <Auth.UserContextProvider supabaseClient={supabase}>
+          <Auth.UserContextProvider supabaseClient={supabase}>
             <Layout>
               <Component {...pageProps} />
             </Layout>
-            </Auth.UserContextProvider>
-          </Auth0Provider>
+          </Auth.UserContextProvider>
         </ThemeProvider>
       </StylesProvider>
     </Fragment>
