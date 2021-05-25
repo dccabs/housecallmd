@@ -3,6 +3,7 @@ import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 
+import ContactSection from '../components/ContactSection'
 import Reviews from '../components/Reviews'
 
 const useStyles = makeStyles((theme) => ({
@@ -14,12 +15,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '60rem',
   },
   ctaButton: {
-    // fontSize: 24,
     width: '100%',
-
-    // "&:hover": {
-    //   backgroundColor: theme.palette.primary.main,
-    // },
   },
   linkButton: {
     textDecoration: 'none',
@@ -30,31 +26,33 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   backgroundContainer: {
-    backgroundImage: `url('/media/banner_phone.png')`,
-    backgroundPosition: 'top center',
-    backgroundAttachment: 'cover',
-    backgroundRepeat: 'no-repeat',
-    height: 350,
-    color: '#ffffff',
+    padding: '2em 1em',
+    maxWidth: 1200,
+    margin: 'auto',
+    // backgroundImage: `url('/media/banner_phone.png')`,
+    // backgroundPosition: 'top center',
+    // backgroundAttachment: 'cover',
+    // backgroundRepeat: 'no-repeat',
+    color: '#000',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
 
-    [theme.breakpoints.up('sm')]: {
-      backgroundImage: `url('/media/banner.jpg')`,
-      backgroundPosition: 'center center',
-      alignItems: 'flex-start',
-      padding: '20em 6em',
-      color: theme.typography.color,
-    },
+    // [theme.breakpoints.up('sm')]: {
+    //   backgroundImage: `url('/media/banner.jpg')`,
+    //   backgroundPosition: 'center center',
+    //   alignItems: 'flex-start',
+    //   padding: '20em 6em',
+    //   color: theme.typography.color,
+    // },
   },
   h4: {
-    textAlign: 'center',
-
+    fontSize: '2.5em',
+    fontWeight: 900,
+    lineHeight: '1.5em',
     [theme.breakpoints.up('sm')]: {
       maxWidth: '40rem',
-      textAlign: 'left',
     },
   },
   mainHeading: {
@@ -63,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   content: {
+    padding: '2em',
     background: '#e1215b',
     color: '#fff',
 
@@ -84,9 +83,8 @@ const Home = () => {
     <Fragment>
       <Box p="1em" className={classes.backgroundContainer}>
         <Box className={classes.mainHeading}>
-          <Typography variant="h4" className={classes.h4}>
-            Schedule a housecall or telemedicine visit with a healthcare
-            professional in minutes.
+          <Typography className={classes.h4}>
+            Schedule a housecall or telemedicine visit in minutes.
           </Typography>
         </Box>
         <Box mt="2em" display="flex" justifyContent="center">
@@ -118,6 +116,7 @@ const Home = () => {
           </Typography>
         </Box>
       </Box>
+            
       <Box
         p="1em"
         className={classes.reviews}
@@ -131,6 +130,8 @@ const Home = () => {
         </Box>
         <Reviews />
       </Box>
+
+      <ContactSection />
     </Fragment>
   )
 }

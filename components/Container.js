@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    padding: '1em',
+
     [theme.breakpoints.up('sm')]: {
       padding: '6em',
     },

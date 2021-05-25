@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -35,16 +36,30 @@ const useStyles = makeStyles((theme) => ({
 
 const CardInformation = () => {
   const { setPlanNumber, setGroupNumber } = useStore()
-  const { loginWithRedirect } = useAuth0()
+  const [localPlanNumber, setLocalPlanNumber] = useState('');
+  const [localGroupNumber, setLocalGroupNumber] = useState('');
+
+
   const classes = useStyles()
   const router = useRouter()
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setPlanNumber(localPlanNumber);
+    setGroupNumber(localGroupNumber);
+    router.push('/enter-profile-information')
+  }
+
+  const handleUpdate = (e, fn) => {
+    fn(e.target.value);
+  }
 
   return (
     <Container>
       <Box p="1em">
         <Typography variant="h2">Insurance</Typography>
         <Container>
-          <form onSubmit={loginWithRedirect}>
+          <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
               display="flex"
@@ -64,19 +79,21 @@ const CardInformation = () => {
                 width="100%"
               >
                 <TextField
+                  value={localPlanNumber}
                   className={classes.textFields}
                   label="Plan number"
                   variant="outlined"
                   color="secondary"
-                  onChange={(e) => setPlanNumber(e.target.value)}
+                  onChange={(e) => handleUpdate(e, setLocalPlanNumber)}
                   required
                 />
                 <TextField
+                  value={localGroupNumber}
                   className={classes.textFields}
                   label="Group number"
                   variant="outlined"
                   color="secondary"
-                  onChange={(e) => setGroupNumber(e.target.value)}
+                  onChange={(e) => handleUpdate(e, setLocalGroupNumber)}
                   required
                 />
               </Box>
@@ -101,6 +118,10 @@ const CardInformation = () => {
                     color="secondary"
                     variant="contained"
                     size="large"
+                    disabled={
+                      !localGroupNumber ||
+                        !localPlanNumber
+                    }
                   >
                     Continue
                   </Button>

@@ -45,7 +45,12 @@ const VisitChoice = () => {
 
   const handleChange = (event) => {
     setValue(event.target.value)
-    setVisitChoice(event.target.value)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setVisitChoice(value)
+    router.push('/payment');
   }
 
   return (
@@ -53,7 +58,7 @@ const VisitChoice = () => {
       <Box p="1em">
         <Typography variant="h2">Visit Choice</Typography>
         <Container>
-          <form action="/">
+          <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
               display="flex"
@@ -103,15 +108,15 @@ const VisitChoice = () => {
                 flexWrap="wrap"
                 width="100%"
               >
-                <Box m="1em" className={classes.buttonLinks}>
-                  <Button
-                    onClick={() => router.back()}
-                    color="secondary"
-                    variant="contained"
-                  >
-                    Back
-                  </Button>
-                </Box>
+                {/*<Box m="1em" className={classes.buttonLinks}>*/}
+                {/*  <Button*/}
+                {/*    onClick={() => router.back()}*/}
+                {/*    color="secondary"*/}
+                {/*    variant="contained"*/}
+                {/*  >*/}
+                {/*    Back*/}
+                {/*  </Button>*/}
+                {/*</Box>*/}
                 <Box m="1em" className={classes.buttonLinks}>
                   <Button
                     type="submit"

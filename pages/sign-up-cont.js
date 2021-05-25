@@ -42,7 +42,7 @@ const Contact = () => {
   return (
     <Container>
       <Box p="1em">
-        <Typography variant="h2">Sign up for an account</Typography>
+        <Typography variant="h2">Please enter your email and create a password</Typography>
         <form action="/" style={{ width: '100%' }}>
           <Box
             display="flex"
@@ -53,74 +53,26 @@ const Contact = () => {
             <TextField
               className={classes.textFields}
               fullWidth
-              type="text"
-              label="First Name"
+              type="email"
+              label="Email"
               variant="outlined"
               color="secondary"
               required
             />
             <TextField
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Last Name"
-                variant="outlined"
-                color="secondary"
-                required
-            />
-            <TextField
               className={classes.textFields}
               fullWidth
-              type="text"
-              label="Address"
+              type="password"
+              label="Password"
               variant="outlined"
               color="secondary"
               required
             />
             <TextField
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="City"
-                variant="outlined"
-                color="secondary"
-                required
-            />
-            <MuiSelect
-                label="State"
-                defaultValue=""
-                // value={age}
-                // onChange={handleChange}
-            >
-              {STATES.map((state, index) => {
-                return (
-                    <MenuItem key={index} value={state.abbreviation}>{state.abbreviation}</MenuItem>
-                )
-              })}
-            </MuiSelect>
-            <TextField
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Zip Code"
-                variant="outlined"
-                color="secondary"
-                required
-            />
-            {/*<TextField*/}
-            {/*  className={classes.textFields}*/}
-            {/*  fullWidth*/}
-            {/*  type="email"*/}
-            {/*  label="Enter email address here"*/}
-            {/*  variant="outlined"*/}
-            {/*  color="secondary"*/}
-            {/*  required*/}
-            {/*/>*/}
-            <TextField
               className={classes.textFields}
               fullWidth
-              type="text"
-              label="Phone"
+              type="password-confirm"
+              label="Confirm Password"
               variant="outlined"
               color="secondary"
               required

@@ -4,6 +4,8 @@ import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
+import providerOptions from '../../public/constants/providerOptions';
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -28,70 +30,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const providerOptions = [
-  'AARP',
-  'Aetna',
-  'American Family Insurance',
-  'American National Insurance Company',
-  'Amerigroup',
-  'Anthem',
-  'Blue Cross and Blue Shield Association',
-  'CareSource',
-  'Cambia Health Solutions',
-  'Centene Corporation',
-  'Cigna',
-  'Coventry Health Care',
-  'Delta Dental',
-  'EmblemHealth',
-  'Fortis',
-  'Geisinger',
-  'Golden Rule Insurance Company',
-  'Group Health Cooperative',
-  'Group Health Incorporated',
-  'Harvard Pilgrim Health Care',
-  'Health Net',
-  'HealthMarkets',
-  'HealthPartners',
-  'HealthSpring',
-  'Highmark',
-  'Horace Mann Educators Corporation',
-  'Humana',
-  'Independence Blue Cross',
-  'Kaiser Permanente',
-  'Kaleida Health',
-  'Liberty Medical',
-  'LifeWise Health Plan of Oregon',
-  'MassHealth',
-  'Medica',
-  'Medical Mutual of Ohio',
-  'MEGA Life and Health Insurance',
-  'Molina Healthcare',
-  'Oscar Health',
-  'Oxford Health Plans',
-  'Premera Blue Cross',
-  'Principal Financial Group',
-  'Shelter Insurance',
-  'State Farm',
-  'Thrivent Financial for Lutherans',
-  'UnitedHealth Group',
-  'Unitrin',
-  'Universal American Corporation',
-  'US Health Group',
-  'Vantage Health Plan',
-  'WellCare',
-]
-
 const ChooseProvider = () => {
-  const { setProvider } = useStore()
+  const { setProvider, provider } = useStore()
+
+  const [localProvider, setLocalProvider] = useState('');
+
+  console.log('useStore', useStore())
   const classes = useStyles()
   const router = useRouter()
+
+  const handleUpdate = (e, fn) => {
+    fn(e.target.value);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setProvider(localProvider)
+    router.push('/insurance/card-information');
+  }
 
   return (
     <Container>
       <Box p="1em">
         <Typography variant="h2">Insurance</Typography>
         <Container>
-          <form action="/insurance/card-information">
+          <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
               display="flex"
@@ -108,11 +71,16 @@ const ChooseProvider = () => {
                 justifyContent="center"
               >
                 <Autocomplete
+                  //value={localProvider}
                   freeSolo
                   disableClearable
                   options={providerOptions}
                   style={{ width: '100%', maxWidth: '34rem' }}
-                  onChange={(event, value) => setProvider(value)}
+                  onChange={
+                    (e, value) => {
+                      setLocalProvider(value)
+                    }
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -120,7 +88,9 @@ const ChooseProvider = () => {
                       margin="normal"
                       color="secondary"
                       variant="outlined"
-                      onChange={(e) => setProvider(e.target.value)}
+                      onChange={(e, value) => {
+                        handleUpdate(e, setLocalProvider);
+                      }}
                       InputProps={{ ...params.InputProps, type: 'search' }}
                       required
                     />
@@ -145,7 +115,12 @@ const ChooseProvider = () => {
                   </Button>
                 </Box>
                 <Box m="1em" className={classes.buttonLinks}>
-                  <Button type="submit" color="secondary" variant="contained">
+                  <Button
+                    disabled={!localProvider}
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                  >
                     Continue
                   </Button>
                 </Box>

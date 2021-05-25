@@ -50,7 +50,7 @@ const Index = () => {
       })
       .catch((err) => {
         console.log('err', err);
-        // alert(err.response.text)
+        alert(err.response.text)
       })
   }
 
