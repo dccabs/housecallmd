@@ -57,8 +57,8 @@ const Index = () => {
         response.error ? alert(response.error.message) : setToken(response)
       })
       .catch((err) => {
-        console.log('err', err)
-        // alert(err.response.text)
+        console.log('err', err);
+        alert(err.response.text)
       })
   }
 

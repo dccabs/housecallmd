@@ -3,7 +3,12 @@ import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
 import MuiSelect from '../components/MuiSelect'
+import "cleave.js/dist/addons/cleave-phone.us";
+import Cleave from 'cleave.js/react';
+
 import { useRouter } from 'next/router'
+import useStore from '../zustand/store';
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -12,11 +17,11 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '34rem',
   },
   buttonLinks: {
-    '@media screen and (max-width: 700px)': {
-      '&:nth-child(2)': {
-        order: -1,
-      },
-    },
+    // '@media screen and (max-width: 700px)': {
+    //   '&:nth-child(2)': {
+    //     order: -1,
+    //   },
+    // },
 
     '& button': {
       padding: '1em',
@@ -37,14 +42,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const phoneField = (props) => {
+  const { options, inputRef, ...other } = props;
+  return (
+    <Cleave
+      ref={ref => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      placeholder="Enter phone number"
+      options={{
+        phone: true,
+        phoneRegionCode: 'US'
+      }}
+      {...other}
+    />
+  )
+}
+
 const Contact = () => {
+
+  const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone } = useStore();
+
+  const [localFirstName, setLocalFirstName] = useState('');
+  const [localLastName, setLocalLastName] = useState('');
+  const [localAddress, setLocalAddress] = useState('');
+  const [localCity, setLocalCity] = useState('');
+  const [localState, setLocalState] = useState('');
+  const [localZip, setLocalZip] = useState('');
+  const [localPhone, setLocalPhone] = useState('');
+
   const classes = useStyles();
   const router = useRouter();
 
   const handleSubmit = (e) => {
-    console.log('handle Submit')
     e.preventDefault();
+    setFirstName(localFirstName);
+    setLastName(localLastName);
+    setAddress(localAddress);
+    setCity(localCity);
+    setState(localState);
+    setZip(localZip);
+    setPhone(localPhone);
+
     router.push('/enter-login-information');
+  }
+
+  const handleUpdate = (e, fn) => {
+    fn(e.target.value);
   }
 
   return (
@@ -66,6 +110,7 @@ const Contact = () => {
               variant="outlined"
               color="secondary"
               required
+              onChange={(e) => handleUpdate(e, setLocalFirstName)}
             />
             <TextField
                 className={classes.textFields}
@@ -75,6 +120,7 @@ const Contact = () => {
                 variant="outlined"
                 color="secondary"
                 required
+                onChange={(e) => handleUpdate(e, setLocalLastName)}
             />
             <TextField
               className={classes.textFields}
@@ -84,6 +130,7 @@ const Contact = () => {
               variant="outlined"
               color="secondary"
               required
+              onChange={(e) => handleUpdate(e, setLocalAddress)}
             />
             <TextField
                 className={classes.textFields}
@@ -93,36 +140,45 @@ const Contact = () => {
                 variant="outlined"
                 color="secondary"
                 required
+                onChange={(e) => handleUpdate(e, setLocalCity)}
             />
             <MuiSelect
+                name="state"
                 label="State"
                 defaultValue=""
-                // value={age}
-                // onChange={handleChange}
+                value={localState}
+                onChange={(e) => { handleUpdate(e, setLocalState)}}
             >
               {STATES.map((state, index) => {
                 return (
-                    <MenuItem key={index} value={state.abbreviation}>{state.abbreviation}</MenuItem>
+                    <MenuItem key={index} value={state.abbreviation}>{state.name}</MenuItem>
                 )
               })}
             </MuiSelect>
             <TextField
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Zip Code"
-                variant="outlined"
-                color="secondary"
-                required
-            />
-            <TextField
               className={classes.textFields}
               fullWidth
               type="text"
+              label="Zip Code"
+              variant="outlined"
+              color="secondary"
+              required
+              onChange={(e) => handleUpdate(e, setLocalZip)}
+            />
+            <TextField
+              value={localPhone}
+              className={classes.textFields}
+              fullWidth
+              type="tel"
               label="Phone"
               variant="outlined"
               color="secondary"
               required
+              onChange={(e) => {
+                handleUpdate(e, setLocalPhone)}}
+              InputProps={{
+                inputComponent: phoneField,
+              }}
             />
           </Box>
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
@@ -132,8 +188,25 @@ const Contact = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                disabled={
+                  !localFirstName ||
+                    !localLastName ||
+                    !localAddress ||
+                    !localCity ||
+                    !localZip ||
+                    !localPhone
+                }
               >
-                Submit
+                Continue
+              </Button>
+            </Box>
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                onClick={() => router.back()}
+                color="secondary"
+                variant="contained"
+              >
+                Back
               </Button>
             </Box>
           </Box>
