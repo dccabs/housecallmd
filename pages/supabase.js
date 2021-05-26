@@ -1,6 +1,14 @@
 import Link from 'next/link'
 import useSWR from 'swr'
-import { Auth, Card, Typography, Space, Button, Icon } from '@supabase/ui'
+import {
+  Auth,
+  Card,
+  Typography,
+  Space,
+  Button,
+  Icon,
+  Checkbox,
+} from '@supabase/ui'
 import { supabase } from '../utils/initSupabase'
 import { useEffect, useState } from 'react'
 
@@ -42,14 +50,14 @@ const Index = () => {
     }
   }, [])
 
-  const onClick = ({email, password}) => {
+  const onClick = ({ email, password }) => {
     supabase.auth
       .signUp({ email, password })
       .then((response) => {
         response.error ? alert(response.error.message) : setToken(response)
       })
       .catch((err) => {
-        console.log('err', err);
+        console.log('err', err)
         // alert(err.response.text)
       })
   }
@@ -59,7 +67,8 @@ const Index = () => {
       alert('Confirmation Email Sent')
     } else {
       document.querySelector('#access-token').value = response.data.access_token
-      document.querySelector('#refresh-token').value = response.data.refresh_token
+      document.querySelector('#refresh-token').value =
+        response.data.refresh_token
       alert('Logged in as ' + response.user.email)
     }
   }
@@ -125,16 +134,17 @@ const Index = () => {
 
   return (
     <div style={{ maxWidth: '420px', margin: '96px auto' }}>
-
       <Card>
         <Button
           onClick={() => {
             onClick({
-              'email': 'dccabs@gmail.com',
-              password: 'NYmets45!'
+              email: 'dccabs@gmail.com',
+              password: 'NYmets45!',
             })
           }}
-        >Hello world</Button>
+        >
+          Hello world
+        </Button>
         <View />
       </Card>
     </div>
