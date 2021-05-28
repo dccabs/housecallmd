@@ -28,22 +28,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ForgotPassword = () => {
-  const [localEmail, setLocalEmail] = useState('')
+const ResetPassword = () => {
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const classes = useStyles()
 
   const handleSubmit = (e) => {
     e.preventDefault()
   }
 
-  const handleEmailUpdate = (e) => {
-    setLocalEmail(e.target.value)
+  const handlePasswordUpdate = (e) => {
+    setPassword(e.target.value)
+  }
+
+  const handleConfirmPasswordUpdate = (e) => {
+    setConfirmPassword(e.target.value)
   }
 
   return (
     <Container>
       <Box p="1em">
-        <Typography variant="h2">Enter your user email</Typography>
+        <Typography variant="h2">Enter new password</Typography>
         <Container>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <Box
@@ -53,15 +58,26 @@ const ForgotPassword = () => {
               justifyContent="center"
             >
               <TextField
-                value={localEmail}
+                value={password}
                 className={classes.textFields}
                 fullWidth
-                type="email"
-                label="Email"
+                type="password"
+                label="Password"
                 variant="outlined"
                 color="secondary"
                 required
-                onChange={handleEmailUpdate}
+                onChange={handlePasswordUpdate}
+              />
+              <TextField
+                value={confirmPassword}
+                className={classes.textFields}
+                fullWidth
+                type="password"
+                label="Confirm Password"
+                variant="outlined"
+                color="secondary"
+                required
+                onChange={handleConfirmPasswordUpdate}
               />
             </Box>
             <Box
@@ -72,13 +88,17 @@ const ForgotPassword = () => {
             >
               <Box m="1em" className={classes.buttonLinks}>
                 <Button
-                  disabled={!localEmail}
+                  disabled={
+                    !password ||
+                    !confirmPassword ||
+                    password !== confirmPassword
+                  }
                   type="submit"
                   color="secondary"
                   variant="contained"
                   size="large"
                 >
-                  Submit
+                  Reset Password
                 </Button>
               </Box>
             </Box>
@@ -89,4 +109,4 @@ const ForgotPassword = () => {
   )
 }
 
-export default ForgotPassword
+export default ResetPassword
