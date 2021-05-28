@@ -27,25 +27,14 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  link: {
-    '& a': {
-      color: theme.palette.secondary.main,
-      textDecoration: 'none',
-    },
-  },
 }))
 
-const login = () => {
-  const [password, setPassword] = useState('')
+const ForgotPassword = () => {
   const [localEmail, setLocalEmail] = useState('')
   const classes = useStyles()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-  }
-
-  const handlePasswordUpdate = (e) => {
-    setPassword(e.target.value)
   }
 
   const handleEmailUpdate = (e) => {
@@ -55,7 +44,7 @@ const login = () => {
   return (
     <Container>
       <Box p="1em">
-        <Typography variant="h2">Login</Typography>
+        <Typography variant="h2">Enter your user email</Typography>
         <Container>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <Box
@@ -75,29 +64,6 @@ const login = () => {
                 required
                 onChange={handleEmailUpdate}
               />
-              <TextField
-                value={password}
-                className={classes.textFields}
-                fullWidth
-                type="password"
-                label="Password"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={handlePasswordUpdate}
-              />
-              <Box
-                className={classes.link}
-                mt="1em"
-                width="100%"
-                maxWidth="34rem"
-              >
-                <Typography align="right">
-                  <Link href="/forgot-password">
-                    <a>Forgot Password</a>
-                  </Link>
-                </Typography>
-              </Box>
             </Box>
             <Box
               mt="2em"
@@ -107,13 +73,13 @@ const login = () => {
             >
               <Box m="1em" className={classes.buttonLinks}>
                 <Button
-                  disabled={!password || !localEmail}
+                  disabled={!localEmail}
                   type="submit"
                   color="secondary"
                   variant="contained"
                   size="large"
                 >
-                  Login
+                  Submit
                 </Button>
               </Box>
             </Box>
@@ -124,4 +90,4 @@ const login = () => {
   )
 }
 
-export default login
+export default ForgotPassword
