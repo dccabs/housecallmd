@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.up('sm')]: {
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      maxWidth: 1200,
+      maxWidth: 1400,
       margin: 'auto',
     },
   },
