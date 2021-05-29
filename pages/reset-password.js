@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Typography, Box, Button, TextField } from '@material-ui/core'
+import { Typography, Box, Button, TextField, Dialog } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -31,10 +31,12 @@ const useStyles = makeStyles((theme) => ({
 const ResetPassword = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [open, setOpen] = useState(false)
   const classes = useStyles()
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setOpen(true)
   }
 
   const handlePasswordUpdate = (e) => {
@@ -103,6 +105,14 @@ const ResetPassword = () => {
               </Box>
             </Box>
           </form>
+
+          <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
+            <Box p="4em">
+              <Typography variant="h4" align="center">
+                Your password has been reset, please login to HouseCallMD
+              </Typography>
+            </Box>
+          </Dialog>
         </Container>
       </Box>
     </Container>
