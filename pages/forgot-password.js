@@ -32,8 +32,12 @@ const ForgotPassword = () => {
   const [localEmail, setLocalEmail] = useState('')
   const classes = useStyles()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    e.preventDefault()
+    const res = await fetch(`/api/requestNewPassword`)
+    const data = await res.json()
+    console.log('data', data)
   }
 
   const handleEmailUpdate = (e) => {
