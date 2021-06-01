@@ -41,7 +41,29 @@ const ResetPassword = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    setOpen(true)
+    //setOpen(true)
+    const payload = {
+      password,
+    }
+    fetch('/api/resetPassword', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json', token: access_token }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error);
+        } else {
+          alert("You successfully changed your password, please login");
+          router.push('/login');
+        }
+      })
+      .catch(error => {
+        alert(error);
+      });
+
   }
 
   const handlePasswordUpdate = (e) => {
