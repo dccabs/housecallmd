@@ -1,9 +1,13 @@
 import { Box } from '@material-ui/core'
+import { Auth } from '@supabase/ui'
 
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 
 const Layout = ({ children }) => {
+  const { user } = Auth.useUser()
+  console.log('user', user)
+
   return (
     <Box
       height="100%"

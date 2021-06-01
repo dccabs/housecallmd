@@ -22,10 +22,7 @@ export default function MyApp(props) {
   const [loading, setLoading] = useState(true);
   const nextRouter = useRouter();
 
-
-
   useEffect(() => {
-    console.log('pageProps', router.asPath)
     const path = router.asPath;
     const paramIndex = path.indexOf('#');
     if (paramIndex !== -1) {
@@ -41,15 +38,7 @@ export default function MyApp(props) {
         pathname: '/reset-password/[access_token]',
         query: { access_token: obj.access_token },
       })
-
-      console.log('params', params);
-      console.log('obj', obj);
-
-      // if (params.indexOf('type=recovery') !==-1) {
-      //   nextRouter.push('/reset-password/')
-      // }
     }
-    // router.push('/reset-password');
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side')
     if (jssStyles) {
