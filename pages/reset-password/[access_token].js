@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Typography, Box, Button, TextField, Dialog } from '@material-ui/core'
-import Container from '../components/Container'
+import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -29,14 +30,40 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ResetPassword = () => {
+  const router = useRouter();
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [open, setOpen] = useState(false)
   const classes = useStyles()
 
+  const { access_token } = router.query;
+  console.log('access_token', access_token)
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    setOpen(true)
+    //setOpen(true)
+    const payload = {
+      password,
+    }
+    fetch('/api/resetPassword', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json', token: access_token }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error);
+        } else {
+          alert("You successfully changed your password, please login");
+          router.push('/login');
+        }
+      })
+      .catch(error => {
+        alert(error);
+      });
+
   }
 
   const handlePasswordUpdate = (e) => {
