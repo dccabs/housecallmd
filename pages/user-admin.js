@@ -9,6 +9,8 @@ import {
   TableCell,
   TableRow,
 } from '@material-ui/core'
+import MaterialTable from 'material-table'
+import { AddBox, ArrowDownward } from '@material-ui/icons'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const profile = () => {
+const UserAdmin = () => {
   const [users, setUsers] = useState()
   const classes = useStyles()
 
@@ -37,8 +39,20 @@ const profile = () => {
     try {
       const res = await fetch(`/api/getAllUsers`)
       const data = await res.json()
-      console.log(data)
-      data && setUsers(data)
+      const users = await data.map((u) => {
+        return {
+          name: `${u.lastName}, ${u.firstName}`,
+          email: u.email,
+          hasInsurance: u.hasInsurance ? 'Yes' : 'No',
+          provider: u.provider,
+          planNumber: u.planNumber,
+          groupNumber: u.groupNumber,
+          phone: u.phone,
+          address: `${u.address}, ${u.city}, ${u.state}, ${u.zip}`,
+        }
+      })
+
+      setUsers(users)
     } catch (err) {
       console.log(err)
     }
@@ -47,7 +61,22 @@ const profile = () => {
   return (
     <Container>
       <Box>
-        <TableContainer>
+        <MaterialTable
+          columns={[
+            { title: 'Name', field: 'name' },
+            { title: 'Email', field: 'email' },
+            { title: 'Has Insurance', field: 'hasInsurance' },
+            { title: 'Provider', field: 'provider' },
+            { title: 'Plan Number', field: 'planNumber' },
+            { title: 'Group Number', field: 'groupNumber' },
+            { title: 'Phone', field: 'phone' },
+            { title: 'Address', field: 'address' },
+          ]}
+          data={users}
+          title="Users"
+        />
+
+        {/* <TableContainer>
           <Table size="small" className={classes.table}>
             <TableHead className={classes.tableHead}>
               <TableRow>
@@ -97,10 +126,10 @@ const profile = () => {
                   : null)}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> */}
       </Box>
     </Container>
   )
 }
 
-export default profile
+export default UserAdmin
