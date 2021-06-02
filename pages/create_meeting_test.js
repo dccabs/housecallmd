@@ -3,6 +3,7 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
+import cuid from 'cuid';
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -35,13 +36,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const getCuid = () => {
+  return cuid();
+}
+
 const login = () => {
   const { session } = Auth.useUser()
   console.log('session', session)
   const classes = useStyles()
   const payload = {
-    id: '1234',
-    timestamp: new Date(),
     creator: 'Dan Cabaniss',
   }
   const handleSubmit = (e) => {
@@ -57,7 +60,7 @@ const login = () => {
         if (data.error) {
           throw Error(data.error);
         } else {
-          alert("You successfully changed your password, please login");
+          alert("You successfully created a meeting");
           // router.push('/login');
         }
       })
@@ -69,7 +72,7 @@ const login = () => {
   return (
     <Container>
       <Box p="1em">
-        <Typography variant="h2">Login</Typography>
+        <Typography variant="h2">Create meeting test page</Typography>
         <Container>
               <Box m="1em" className={classes.buttonLinks}>
                 <Button
