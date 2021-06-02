@@ -3,6 +3,8 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
+import { supabase } from '../utils/initSupabase'
+
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -40,8 +42,25 @@ const login = () => {
   const [localEmail, setLocalEmail] = useState('')
   const classes = useStyles()
 
+
   const handleSubmit = (e) => {
     e.preventDefault()
+    const payload = {
+      email: localEmail,
+      password,
+    }
+    supabase.auth
+      .signIn(payload)
+      .then((response) => {
+        response.error ? alert(response.error.message) : setToken(response)
+      })
+      .catch((err) => {
+        alert(err.response.text)
+      })
+  }
+
+  const setToken = (response) => {
+      alert('Logged in as ' + response.user.email)
   }
 
   const handlePasswordUpdate = (e) => {
