@@ -13,7 +13,8 @@ export default class MyDocument extends Document {
             body,
             #__next {
               height: 100%;
-            },
+            }
+            ,
             #main {
               max-width: 1100px;
             }
@@ -29,6 +30,10 @@ export default class MyDocument extends Document {
           <link
             href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&display=swap"
             rel="stylesheet"
+          />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
         </Head>
         <body>
