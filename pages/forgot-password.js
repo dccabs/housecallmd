@@ -31,9 +31,24 @@ const useStyles = makeStyles((theme) => ({
 const ForgotPassword = () => {
   const [localEmail, setLocalEmail] = useState('')
   const classes = useStyles()
-
-  const handleSubmit = (e) => {
+  const payload = {
+    email: localEmail,
+  }
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    e.preventDefault()
+    fetch('/api/requestNewPassword', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => {
+        console.log('res', res)
+        if (res.ok) {
+          alert(`An email has been sent to ${localEmail} to reset your password.`);
+        }
+      });
   }
 
   const handleEmailUpdate = (e) => {

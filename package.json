@@ -19,6 +19,7 @@
     "@supabase/supabase-js": "^1.11.14",
     "@supabase/ui": "^0.26.1",
     "cleave.js": "^1.6.0",
+    "cuid": "^2.1.8",
     "dotenv": "^9.0.0",
     "material-table": "^1.69.3",
     "material-ui-phone-number": "^2.2.6",
@@ -28,6 +29,8 @@
     "stripe": "^8.148.0",
     "swr": "^0.5.6",
     "twilio": "^3.62.0",
+    "unique-identity": "^2.0.0",
+    "uuid": "^8.3.2",
     "zustand": "^3.5.1"
   },
   "devDependencies": {
