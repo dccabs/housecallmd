@@ -6,7 +6,7 @@ import Footer from '../Footer'
 
 const Layout = ({ children }) => {
   const { user } = Auth.useUser()
-  console.log('user', user)
+  //console.log('user', user)
 
   return (
     <Box

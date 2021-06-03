@@ -3,8 +3,8 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { supabase } from '../utils/initSupabase'
-
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
 const login = () => {
   const [password, setPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
+  const router = useRouter()
   const classes = useStyles()
-
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -60,7 +60,8 @@ const login = () => {
   }
 
   const setToken = (response) => {
-      alert('Logged in as ' + response.user.email)
+    //alert('Logged in as ' + response.user.email)
+    router.push('/')
   }
 
   const handlePasswordUpdate = (e) => {
@@ -111,11 +112,20 @@ const login = () => {
                 width="100%"
                 maxWidth="34rem"
               >
-                <Typography align="right">
-                  <Link href="/forgot-password">
-                    <a>Forgot Password</a>
-                  </Link>
-                </Typography>
+                <Box mt="0.5em">
+                  <Typography align="right">
+                    <Link href="/enter-login-information">
+                      <a>Don't have an account? Click here to sign up</a>
+                    </Link>
+                  </Typography>
+                </Box>
+                <Box mt="0.5em">
+                  <Typography align="right">
+                    <Link href="/forgot-password">
+                      <a>Forgot Password</a>
+                    </Link>
+                  </Typography>
+                </Box>
               </Box>
             </Box>
             <Box
