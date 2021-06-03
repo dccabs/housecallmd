@@ -78,7 +78,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const classes = useStyles()
-
   return (
     <Fragment>
       <Box p="1em" className={classes.backgroundContainer}>

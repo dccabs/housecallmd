@@ -4,7 +4,7 @@ import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { supabase } from '../utils/initSupabase'
-
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -41,7 +41,7 @@ const login = () => {
   const [password, setPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
   const classes = useStyles()
-
+  const router = useRouter();
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -53,6 +53,7 @@ const login = () => {
       .signIn(payload)
       .then((response) => {
         response.error ? alert(response.error.message) : setToken(response)
+        router.push('/visit-choice');
       })
       .catch((err) => {
         alert(err.response.text)
