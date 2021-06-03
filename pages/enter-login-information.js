@@ -137,16 +137,38 @@ const Contact = () => {
       phone: phone.replace(/\s/g, '')
     }
 
-    const { data, error } = await supabase
-      .from('UserList')
-      .insert([
-        { ...newUser },
-      ])
-    if (error){
-      console.log('error', error)
-    } else {
-      console.log('success')
+    //setOpen(true)
+    const payload = {
+      newUser,
     }
+    fetch('/api/addUser', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error);
+        } else {
+          alert("You successfully added a user");
+        }
+      })
+      .catch(error => {
+        alert(error);
+      });
+
+    // const { data, error } = await supabase
+    //   .from('UserList')
+    //   .insert([
+    //     { ...newUser },
+    //   ])
+    // if (error){
+    //   console.log('error', error)
+    // } else {
+    //   console.log('success')
+    // }
   }
   const loginUser = () => {
     console.log('localEmail', localEmail)
@@ -155,9 +177,8 @@ const Contact = () => {
       .then((response) => {
         response.error ? alert(response.error.message) : setToken(response);
       })
-      .catch((err) => {
-        console.log('err', err);
-        alert(err.response.text)
+      .then(() => {
+        addUser();
       })
   }
 
@@ -165,8 +186,6 @@ const Contact = () => {
     if (response.data.confirmation_sent_at && !response.data.access_token) {
       alert('Confirmation Email Sent')
     } else {
-      document.querySelector('#access-token').value = response.data.access_token
-      document.querySelector('#refresh-token').value = response.data.refresh_token
       alert('Logged in as ' + response.user.email)
     }
   }
