@@ -78,9 +78,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const classes = useStyles()
-
   return (
     <Fragment>
+      <Button onClick={() => { clearStore(store)} }>
+        Clear store
+      </Button>
       <Box p="1em" className={classes.backgroundContainer}>
         <Box className={classes.mainHeading}>
           <Typography className={classes.h4}>
