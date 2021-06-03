@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import { Auth } from '@supabase/ui'
 
 import useStore from '../zustand/store'
+import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo';
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -40,11 +41,17 @@ const useStyles = makeStyles((theme) => ({
 
 const VisitChoice = () => {
   const [value, setValue] = useState('Video/Telemedicine Visit')
-  const [firstName, setFirstName] = useState(null)
-  const { setVisitChoice } = useStore()
+  const [firstName, setLocalFirstName] = useState(null)
+  const store = useStore();
+  const {
+    setVisitChoice
+
+  } = store;
   const classes = useStyles()
   const router = useRouter()
   const { user, session } = Auth.useUser()
+
+  console.log('store', store);
 
   useEffect(() => {
     if (user) {
@@ -56,7 +63,11 @@ const VisitChoice = () => {
       })
         .then((res) => res.json())
         .then((res) => {
-          setFirstName(res.firstName)
+          setLocalFirstName(res.firstName)
+          setStoreWithAuthInfo({
+            store,
+            user: res,
+          })
         });
     }
   }, [user])
