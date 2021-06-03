@@ -1,31 +1,17 @@
 const visitPricing = {
-  insurance: [
-    {
-      type: 'video',
-      price: null,
-    },
-    {
-      type: 'phone',
-      price: 50,
-    },
-    {
-      type: 'in_person',
-      price: 100,
+  insurance: {
+    pricing: {
+      video: null,
+      phone: '$50',
+      in_person: '$100',
     }
-  ],
-  noInsurance: [
-    {
-      type: 'video',
-      price: 50,
-    },
-    {
-      type: 'phone',
-      price: 100,
-    },
-    {
-      type: 'in_person',
-      price: 200,
+  },
+  noInsurance: {
+    pricing: {
+      video: '$50',
+      phone: '$100',
+      in_person: '$200',
     }
-  ]
+  },
 }
 export default visitPricing;

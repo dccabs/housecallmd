@@ -51,12 +51,12 @@ const MeetingCreated = ({ setShowOtherContent }) => {
       {!loading ? (
         <Box my="1em">
           <Typography variant="h4">New meeting room created</Typography>
-          <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/${roomId}`}>
+          <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}>
             <a target="_blank">
               <Typography
                 variant="h6"
                 align="center"
-              >{`${process.env.NEXT_PUBLIC_SITE_URL}/${roomId}`}</Typography>
+              >{`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}</Typography>
             </a>
           </Link>
         </Box>

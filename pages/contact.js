@@ -32,7 +32,7 @@ const Contact = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Contact Us</Typography>
         <form action="/" style={{ width: '100%' }}>
           <Box
@@ -45,16 +45,7 @@ const Contact = () => {
               className={classes.textFields}
               fullWidth
               type="text"
-              label="Enter full name here"
-              variant="outlined"
-              color="secondary"
-              required
-            />
-            <TextField
-              className={classes.textFields}
-              fullWidth
-              type="text"
-              label="Enter address here"
+              label="Name"
               variant="outlined"
               color="secondary"
               required
@@ -63,7 +54,7 @@ const Contact = () => {
               className={classes.textFields}
               fullWidth
               type="email"
-              label="Enter email address here"
+              label="Email"
               variant="outlined"
               color="secondary"
               required
@@ -72,10 +63,9 @@ const Contact = () => {
               className={classes.textFields}
               fullWidth
               type="text"
-              label="Enter phone here"
+              label="Phone (optional)"
               variant="outlined"
               color="secondary"
-              required
             />
             <TextField
               fullWidth

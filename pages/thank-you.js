@@ -10,14 +10,19 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
     },
   },
+  text: {
+    fontSize: 18,
+    lineHeight: '1.8em',
+    textAlign: 'center'
+  }
 }))
 
 const ThankYou = () => {
   const classes = useStyles()
 
   return (
-    <Box mt="4em">
       <Container>
+        <Typography variant="h2">Thank You</Typography>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Box
             maxWidth="45rem"
@@ -26,11 +31,11 @@ const ThankYou = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Typography variant="h4" align="center">
+            <Box mt="2em" className={classes.text}>
               Thank you for submitting a request for an appointment. A
               representative from HouseCall MD will be contacting you shortly
               with more information.
-            </Typography>
+            </Box>
             <Box className={classes.link} mt="2em">
               <Link href="/">
                 <a>
@@ -43,7 +48,6 @@ const ThankYou = () => {
           </Box>
         </Box>
       </Container>
-    </Box>
   )
 }
 

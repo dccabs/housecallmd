@@ -15,6 +15,7 @@ import { Auth } from '@supabase/ui'
 
 import useStore from '../zustand/store'
 import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo';
+import visitPricing from '../public/constants/visitPricing'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -44,8 +45,8 @@ const VisitChoice = () => {
   const [firstName, setLocalFirstName] = useState(null)
   const store = useStore();
   const {
-    setVisitChoice
-
+    setVisitChoice,
+    hasInsurance,
   } = store;
   const classes = useStyles()
   const router = useRouter()
@@ -84,85 +85,83 @@ const VisitChoice = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Visit Choice</Typography>
-        <Container>
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          <Box
+            mt="2em"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography variant="h4">
+              {firstName &&
+              <span>Hi {firstName}, </span>
+              }
+              What type of visit would you like?
+            </Typography>
             <Box
-              mt="2em"
+              mt="1em"
+              width="100%"
               display="flex"
-              flexDirection="column"
               alignItems="center"
               justifyContent="center"
             >
-              <Typography variant="h4">
-                {firstName &&
-                  <span>Hi {firstName}, </span>
-                }
-                What type of visit would you like?
-              </Typography>
-              <Box
-                mt="1em"
-                width="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    name="visit"
-                    value={value}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      value="Video/Telemedicine Visit"
-                      control={<Radio />}
-                      label="Video/Telemedicine Visit"
-                    />
-                    <FormControlLabel
-                      value="Phone Visit"
-                      control={<Radio />}
-                      label="Phone Visit"
-                    />
-                    <FormControlLabel
-                      value="Housecall (In person visit at home)"
-                      control={<Radio />}
-                      label="Housecall (In person visit at home)"
-                    />
-                  </RadioGroup>
-                </FormControl>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  name="visit"
+                  value={value}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel
+                    value="video"
+                    control={<Radio />}
+                    label={`Video/Telemedicine Visit ${hasInsurance ? '(No additonal fee with insurance)' : visitPricing.noInsurance.pricing.video}`}
+                  />
+                  <FormControlLabel
+                    value="phone_visit"
+                    control={<Radio />}
+                    label={`Phone Visit (${hasInsurance ? visitPricing.insurance.pricing.phone : visitPricing.noInsurance.pricing.phone})`}
+                  />
+                  <FormControlLabel
+                    value="housecall"
+                    control={<Radio />}
+                    label={`Housecall, In person visit at home (${hasInsurance ? visitPricing.insurance.pricing.in_person : visitPricing.noInsurance.pricing.in_person})`}
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+            <Box
+              mt="1em"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              flexWrap="wrap"
+              width="100%"
+            >
+              <Box m="1em" className={classes.buttonLinks}>
+                <Button
+                  onClick={() => router.back()}
+                  color="secondary"
+                  variant="contained"
+                >
+                  Back
+                </Button>
               </Box>
-              <Box
-                mt="1em"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                flexWrap="wrap"
-                width="100%"
-              >
-                <Box m="1em" className={classes.buttonLinks}>
-                  <Button
-                    onClick={() => router.back()}
-                    color="secondary"
-                    variant="contained"
-                  >
-                    Back
-                  </Button>
-                </Box>
-                <Box m="1em" className={classes.buttonLinks}>
-                  <Button
-                    type="submit"
-                    color="secondary"
-                    variant="contained"
-                    size="large"
-                  >
-                    Continue
-                  </Button>
-                </Box>
+              <Box m="1em" className={classes.buttonLinks}>
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  size="large"
+                >
+                  Continue
+                </Button>
               </Box>
             </Box>
-          </form>
-        </Container>
+          </Box>
+        </form>
       </Box>
     </Container>
   )

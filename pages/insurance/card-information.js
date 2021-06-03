@@ -56,9 +56,8 @@ const CardInformation = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Insurance</Typography>
-        <Container>
           <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
@@ -129,7 +128,6 @@ const CardInformation = () => {
               </Box>
             </Box>
           </form>
-        </Container>
       </Box>
     </Container>
   )
