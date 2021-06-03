@@ -5,6 +5,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  CircularProgress,
 } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
@@ -39,10 +40,12 @@ const UserAdmin = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [rowData, setRowData] = useState({})
   const [rowsToDelete, setRowsToDelete] = useState([])
+  const [loading, setLoading] = useState(false)
   const classes = useStyles()
 
   useEffect(async () => {
     try {
+      setLoading(true)
       const res = await fetch(`/api/getAllUsers`)
       const data = await res.json()
       const users = await data.map((u) => {
@@ -61,6 +64,8 @@ const UserAdmin = () => {
       setUsers(users)
     } catch (err) {
       console.log(err)
+    } finally {
+      setLoading(false)
     }
   }, [])
 
@@ -79,7 +84,7 @@ const UserAdmin = () => {
   return (
     <Container>
       <Box>
-        {users && (
+        {!loading ? (
           <MaterialTable
             title="Users"
             columns={[
@@ -127,6 +132,15 @@ const UserAdmin = () => {
             ]}
             onRowClick={(event, rowData) => rowSelected(rowData)}
           />
+        ) : (
+          <Box
+            my="1em"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <CircularProgress />
+          </Box>
         )}
       </Box>
 

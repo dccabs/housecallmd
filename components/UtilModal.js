@@ -10,6 +10,8 @@ import {
 import PersonIcon from '@material-ui/icons/Person'
 import { makeStyles } from '@material-ui/core/styles'
 
+import MeetingCreated from './MeetingCreated'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: '8em auto',
@@ -95,151 +97,171 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       style={{ overflow: 'scroll' }}
     >
       <Paper elevation={3} className={classes.root}>
-        <Box display="flex" alignItems="center">
-          <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
-          <Typography variant="h4" align="left">
-            Update User Information
-          </Typography>
-        </Box>
-        <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={name}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Name"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setName(e.target.value)}
-              />
+        {!showOtherContent ? (
+          <Box>
+            <Box display="flex" alignItems="center">
+              <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
+              <Typography variant="h4" align="left">
+                Update User Information
+              </Typography>
             </Box>
-
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={email}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Email"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setEmail(e.target.value)}
-                disabled
-              />
-            </Box>
-
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={hasInsurance}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Has Insurance"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setHasInsurance(e.target.value)}
-              />
-            </Box>
-
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={provider}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Provider"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setProvider(e.target.value)}
-              />
-            </Box>
-
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={planNumber}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Plan Number"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setPlanNumber(e.target.value)}
-              />
-            </Box>
-
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={groupNumber}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Group Number"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setGroupNumber(e.target.value)}
-              />
-            </Box>
-
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={phone}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Phone"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </Box>
-
-            <Box className={classes.fieldBox}>
-              <TextField
-                value={address}
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Address"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </Box>
-
             <Box
               mt="2em"
               display="flex"
               justifyContent="center"
               flexWrap="wrap"
             >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  size="large"
+              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={name}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Name"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={email}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Email"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={hasInsurance}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Has Insurance"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setHasInsurance(e.target.value)}
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={provider}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Provider"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setProvider(e.target.value)}
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={planNumber}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Plan Number"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setPlanNumber(e.target.value)}
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={groupNumber}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Group Number"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setGroupNumber(e.target.value)}
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={phone}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Phone"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={address}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Address"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </Box>
+
+                <Box
+                  mt="2em"
+                  display="flex"
+                  justifyContent="center"
+                  flexWrap="wrap"
                 >
-                  Update
-                </Button>
-              </Box>
+                  <Box m="1em" className={classes.buttonLinks}>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      size="large"
+                    >
+                      Update
+                    </Button>
+                  </Box>
+                </Box>
+              </form>
             </Box>
-          </form>
-          <Box m="1em" className={classes.buttonLinks}>
-            <Button type="submit" color="secondary" variant="contained">
-              Create Meeting
-            </Button>
+            <Box
+              m="1em"
+              className={classes.buttonLinks}
+              display="flex"
+              justifyContent="center"
+            >
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => setShowOtherContent(true)}
+              >
+                Create Meeting
+              </Button>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <MeetingCreated setShowOtherContent={setShowOtherContent} />
+        )}
       </Paper>
     </Modal>
   )
