@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import {
   Typography,
@@ -49,13 +49,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const fetcher = (url, token) =>
-  fetch(url, {
-    method: 'GET',
-    headers: new Headers({ 'Content-Type': 'application/json', token }),
-    credentials: 'same-origin',
-  }).then((res) => res.json())
-
 const Contact = () => {
   const classes = useStyles()
   const router = useRouter()
@@ -70,6 +63,9 @@ const Contact = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [localEmail, setLocalEmail] = useState('');
   const {
     hasInsurance,
     provider,
@@ -118,12 +114,6 @@ const Contact = () => {
       headers: new Headers({ 'Content-Type': 'application/json', token }),
       credentials: 'same-origin',
     }).then((res) => res.json())
-    // let { data: users, error } = await supabase.from('UserList').select('*').order('email', true)
-    // if (error){
-    //   console.log('error', error)
-    // } else {
-    //   console.log('users', users)
-    // }
   }
 
   const addUser = async () => {
@@ -150,7 +140,28 @@ const Contact = () => {
       console.log('error', error)
     } else {
       console.log('success')
+    //setOpen(true)
+    const payload = {
+      newUser,
     }
+    fetch('/api/addUser', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error);
+        } else {
+          alert("You successfully added a user");
+          router.push('/visit-choice')
+        }
+      })
+      .catch(error => {
+        alert(error);
+      });
   }
   const loginUser = () => {
     //console.log('localEmail', localEmail)
@@ -174,6 +185,8 @@ const Contact = () => {
         response.data.refresh_token
       //alert('Logged in as ' + response.user.email)
       router.push('/')
+      alert('Logged in as ' + response.user.email);
+      addUser();
     }
   }
 
