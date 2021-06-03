@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AreasCard = ({ media, description }) => {
   const classes = useStyles()
-  console.log(media)
+
   return (
     <Card className={classes.root}>
       <CardMedia className={classes.media} component="img" image={media} />

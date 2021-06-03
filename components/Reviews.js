@@ -35,10 +35,7 @@ const Reviews = () => {
             alignItems="center"
           >
             <Box mb="1em">
-              <Avatar
-                className={classes.avatar}
-                src="/static/images/avatar/1.jpg"
-              />
+              <Avatar className={classes.avatar} />
             </Box>
             <Box mb="1em">
               <Rating value={5} readOnly />
@@ -66,10 +63,7 @@ const Reviews = () => {
             alignItems="center"
           >
             <Box mb="1em">
-              <Avatar
-                className={classes.avatar}
-                src="/static/images/avatar/1.jpg"
-              />
+              <Avatar className={classes.avatar} />
             </Box>
             <Box mb="1em">
               <Rating value={5} readOnly />
@@ -98,10 +92,7 @@ const Reviews = () => {
             alignItems="center"
           >
             <Box mb="1em">
-              <Avatar
-                className={classes.avatar}
-                src="/static/images/avatar/1.jpg"
-              />
+              <Avatar className={classes.avatar} />
             </Box>
             <Box mb="1em">
               <Rating value={5} readOnly />

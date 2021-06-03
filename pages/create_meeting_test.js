@@ -3,7 +3,7 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
-import cuid from 'cuid';
+import cuid from 'cuid'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const getCuid = () => {
-  return cuid();
+  return cuid()
 }
 
 const login = () => {
   const { session } = Auth.useUser()
-  console.log('session', session)
+  //console.log('session', session)
   const classes = useStyles()
   const payload = {
     creator: 'Dan Cabaniss',
@@ -51,22 +51,25 @@ const login = () => {
     e.preventDefault()
     fetch('/api/addMeeting', {
       method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json', token: session.access_token }),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        token: session.access_token,
+      }),
       credentials: 'same-origin',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
-          throw Error(data.error);
+          throw Error(data.error)
         } else {
-          alert("You successfully created a meeting");
+          alert('You successfully created a meeting')
           // router.push('/login');
         }
       })
-      .catch(error => {
-        alert(error);
-      });
+      .catch((error) => {
+        alert(error)
+      })
   }
 
   return (
@@ -74,17 +77,17 @@ const login = () => {
       <Box p="1em">
         <Typography variant="h2">Create meeting test page</Typography>
         <Container>
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  onClick={handleSubmit}
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  size="large"
-                >
-                  Create Meeting
-                </Button>
-            </Box>
+          <Box m="1em" className={classes.buttonLinks}>
+            <Button
+              onClick={handleSubmit}
+              type="submit"
+              color="secondary"
+              variant="contained"
+              size="large"
+            >
+              Create Meeting
+            </Button>
+          </Box>
         </Container>
       </Box>
     </Container>

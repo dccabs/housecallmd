@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -10,9 +10,10 @@ import {
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles'
-import { useAuth0 } from '@auth0/auth0-react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
+import { supabase } from '../utils/initSupabase'
 
 import MobileNavDrawer from './MobileNavDrawer'
 
@@ -63,12 +64,29 @@ const useStyles = makeStyles((theme) => ({
   logoH6: {
     display: 'flex',
   },
+  nextLink: {
+    '& a': {
+      fontWeight: 400,
+    },
+  },
 }))
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
-  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const session = supabase.auth.session()
+  const router = useRouter()
   const classes = useStyles()
+
+  useEffect(() => {
+    session ? setIsAuthenticated(true) : setIsAuthenticated(false)
+  }, [session])
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut()
+    console.log(error)
+    router.push('/')
+  }
 
   return (
     <Fragment>
@@ -113,24 +131,19 @@ const Navbar = () => {
             </Link>
             {isAuthenticated ? (
               <MuiLink
-                onClick={logout}
+                onClick={handleSignOut}
                 style={{ textDecoration: 'none', cursor: 'pointer' }}
               >
                 <Typography>Logout</Typography>
               </MuiLink>
             ) : (
-              <MuiLink
-                onClick={() => {
-                  loginWithRedirect({
-                    configuration: {
-                      screen_hint: 'signup',
-                    },
-                  })
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Login as</Typography>
-              </MuiLink>
+              <Box className={classes.nextLink}>
+                <Link href="/login">
+                  <Typography align="right" style={{ cursor: 'pointer' }}>
+                    <a>Login</a>
+                  </Typography>
+                </Link>
+              </Box>
             )}
           </Box>
 

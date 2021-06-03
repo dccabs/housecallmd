@@ -1,7 +1,8 @@
 import { useState, useEffect, Fragment } from 'react'
 import { Box, List, ListItem, Link as MuiLink } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { useAuth0 } from '@auth0/auth0-react'
+import { supabase } from '../utils/initSupabase'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
@@ -19,8 +20,14 @@ const useStyles = makeStyles((theme) => ({
 
 const MobileNavDrawer = ({ setDrawerToggle }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const router = useRouter()
+  const session = supabase.auth.session()
   const classes = useStyles()
+
+  useEffect(() => {
+    session ? setIsAuthenticated(true) : setIsAuthenticated(false)
+  }, [session])
 
   useEffect(() => {
     window.addEventListener('resize', handleWindowResize)
@@ -35,6 +42,12 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
     setScreenWidth(window.innerWidth)
   }
 
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut()
+    console.log(error)
+    router.push('/')
+  }
+
   return (
     <Fragment>
       <Box
@@ -43,11 +56,6 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         minWidth="12rem"
       >
         <List className={classes.authLinks}>
-          {isAuthenticated && (
-            <ListItem>
-              <strong>Hello, {user.nickname}</strong>
-            </ListItem>
-          )}
           <Link href="/services">
             <ListItem button>Services</ListItem>
           </Link>
@@ -55,13 +63,16 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
             <ListItem button>Contact</ListItem>
           </Link>
           {isAuthenticated ? (
-            <MuiLink onClick={logout}>
+            <MuiLink
+              onClick={handleSignOut}
+              style={{ color: '#000', fontWeight: 400 }}
+            >
               <ListItem button>Logout</ListItem>
             </MuiLink>
           ) : (
-            <MuiLink onClick={loginWithRedirect}>
+            <Link href="/login">
               <ListItem button>Login</ListItem>
-            </MuiLink>
+            </Link>
           )}
         </List>
       </Box>

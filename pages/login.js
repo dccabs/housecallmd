@@ -61,7 +61,7 @@ const login = () => {
   }
 
   const setToken = (response) => {
-      alert('Logged in as ' + response.user.email)
+    alert('Logged in as ' + response.user.email)
   }
 
   const handlePasswordUpdate = (e) => {

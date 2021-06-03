@@ -163,15 +163,15 @@ const Contact = () => {
             justifyContent="center"
           >
             <TextField
-                value={localEmail}
-                className={classes.textFields}
-                fullWidth
-                type="email"
-                label="Email"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={handleEmailUpdate}
+              value={localEmail}
+              className={classes.textFields}
+              fullWidth
+              type="email"
+              label="Email"
+              variant="outlined"
+              color="secondary"
+              required
+              onChange={handleEmailUpdate}
             />
             <TextField
               value={password}
