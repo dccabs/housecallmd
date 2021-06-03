@@ -3,7 +3,6 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { supabase } from '../utils/initSupabase'
 import { useRouter } from 'next/router';
 
@@ -41,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 const login = () => {
   const [password, setPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
-  const router = useRouter()
   const classes = useStyles()
   const router = useRouter();
 
@@ -63,8 +61,7 @@ const login = () => {
   }
 
   const setToken = (response) => {
-    //alert('Logged in as ' + response.user.email)
-    router.push('/')
+    alert('Logged in as ' + response.user.email)
   }
 
   const handlePasswordUpdate = (e) => {
@@ -115,20 +112,11 @@ const login = () => {
                 width="100%"
                 maxWidth="34rem"
               >
-                <Box mt="0.5em">
-                  <Typography align="right">
-                    <Link href="/enter-login-information">
-                      <a>Don't have an account? Click here to sign up</a>
-                    </Link>
-                  </Typography>
-                </Box>
-                <Box mt="0.5em">
-                  <Typography align="right">
-                    <Link href="/forgot-password">
-                      <a>Forgot Password</a>
-                    </Link>
-                  </Typography>
-                </Box>
+                <Typography align="right">
+                  <Link href="/forgot-password">
+                    <a>Forgot Password</a>
+                  </Link>
+                </Typography>
               </Box>
             </Box>
             <Box
