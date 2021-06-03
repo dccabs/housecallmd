@@ -1,21 +1,12 @@
 import { useState } from 'react'
 
-import {
-  Typography,
-  Box,
-  Button,
-  TextField,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-} from '@material-ui/core'
+import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
-import useStore from '../zustand/store'
+import useStore from '../zustand/store';
 import { supabase } from '../utils/initSupabase'
 import { Auth } from '@supabase/ui'
-import useSWR from 'swr'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -50,19 +41,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Contact = () => {
-  const classes = useStyles()
-  const router = useRouter()
+  const classes = useStyles();
+  const router = useRouter();
   const { session } = Auth.useUser()
 
-  // const { data, error } = useSWR(
-  //   session ? ['/api/getAllUsers', session.access_token] : null,
-  //   fetcher
-  // )
-
-  const [checked, setChecked] = useState(false)
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [localEmail, setLocalEmail] = useState('')
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [localEmail, setLocalEmail] = useState('');
@@ -81,33 +63,29 @@ const Contact = () => {
     zip,
     phone,
     setEmail,
-  } = useStore()
+  } = useStore();
+
 
   const handleSubmit = (e) => {
-    setEmail(localEmail)
-    e.preventDefault()
-    loginUser()
+    setEmail(localEmail);
+    e.preventDefault();
+    loginUser();
   }
 
   const handlePasswordUpdate = (e) => {
-    setPassword(e.target.value)
+    setPassword(e.target.value);
   }
 
   const handleConfirmPasswordUpdate = (e) => {
-    setConfirmPassword(e.target.value)
+    setConfirmPassword(e.target.value);
   }
 
   const handleEmailUpdate = (e) => {
-    setLocalEmail(e.target.value)
+    setLocalEmail(e.target.value);
   }
 
   const fetchUsers = async () => {
-    // const { data, error } = useSWR(
-    //   session ? ['/api/getAllUsers', session.access_token] : null,
-    //   fetcher
-    // )
-
-    const token = session.access_token
+    const token = session.access_token;
 
     fetch('/api/getAllUsers', {
       method: 'GET',
@@ -130,16 +108,9 @@ const Contact = () => {
       city,
       state,
       zip,
-      phone: phone.replace(/\s/g, ''),
+      phone: phone.replace(/\s/g, '')
     }
 
-    const { data, error } = await supabase
-      .from('UserList')
-      .insert([{ ...newUser }])
-    if (error) {
-      console.log('error', error)
-    } else {
-      console.log('success')
     //setOpen(true)
     const payload = {
       newUser,
@@ -164,15 +135,10 @@ const Contact = () => {
       });
   }
   const loginUser = () => {
-    //console.log('localEmail', localEmail)
     supabase.auth
       .signUp({ email: localEmail, password })
       .then((response) => {
-        response.error ? alert(response.error.message) : setToken(response)
-      })
-      .catch((err) => {
-        console.log('err', err)
-        alert(err.response.text)
+        response.error ? alert(response.error.message) : setToken(response);
       })
   }
 
@@ -180,11 +146,6 @@ const Contact = () => {
     if (response.data.confirmation_sent_at && !response.data.access_token) {
       alert('Confirmation Email Sent')
     } else {
-      document.querySelector('#access-token').value = response.data.access_token
-      document.querySelector('#refresh-token').value =
-        response.data.refresh_token
-      //alert('Logged in as ' + response.user.email)
-      router.push('/')
       alert('Logged in as ' + response.user.email);
       addUser();
     }
@@ -192,13 +153,8 @@ const Contact = () => {
 
   return (
     <Container>
-      <Button onClick={fetchUsers}>Get Users</Button>
-
-      <Button onClick={addUser}>New User</Button>
       <Box p="1em">
-        <Typography variant="h2">
-          Please enter the following to finish creating your account:
-        </Typography>
+        <Typography variant="h2">Please enter the following to finish creating your account:</Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box
             display="flex"
@@ -239,27 +195,14 @@ const Contact = () => {
               required
               onChange={handleConfirmPasswordUpdate}
             />
-            <Box mt="1em" width="100%" maxWidth="34rem">
-              <FormControl component="fieldset">
-                <FormControlLabel
-                  value="Terms"
-                  control={<Checkbox color="secondary" checked={checked} />}
-                  label="Accept terms and conditions of HousecallMD"
-                  labelPlacement="end"
-                  onChange={() => setChecked(!checked)}
-                />
-              </FormControl>
-            </Box>
           </Box>
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
               <Button
                 disabled={
-                  !password ||
-                  !confirmPassword ||
-                  password !== confirmPassword ||
-                  !localEmail ||
-                  !checked
+                  (!password || !confirmPassword) ||
+                  (password !== confirmPassword) ||
+                  !localEmail
                 }
                 type="submit"
                 color="secondary"
