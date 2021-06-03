@@ -12,7 +12,7 @@ const stripePromise = loadStripe(
 const Payment = () => {
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Payment</Typography>
         <Elements stripe={stripePromise}>
           <PaymentForm />

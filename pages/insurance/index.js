@@ -41,45 +41,43 @@ const Insurance = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Insurance</Typography>
-        <Container>
+        <Box
+          mt="2em"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Typography variant="h4">Will you be using insurance?</Typography>
+          <Box className={classes.disclaimer} mt="1em">
+            You do not need to have insurance to use this service.
+          </Box>
           <Box
+            className={classes.buttonLinks}
             mt="2em"
             display="flex"
-            flexDirection="column"
-            alignItems="center"
             justifyContent="center"
+            flexWrap="wrap"
           >
-            <Typography variant="h4">Will you be using insurance?</Typography>
-            <Box className={classes.disclaimer} mt="1em">
-              You do not need to have insurance to use this service.
-            </Box>
-            <Box
-              className={classes.buttonLinks}
-              mt="2em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
 
-              <Button
-                onClick={handleYesClick}
-                color="secondary"
-                variant="contained"
-              >
-                Yes
-              </Button>
-              <Button
-                onClick={handleNoClick}
-                color="secondary"
-                variant="contained"
-              >
-                No
-              </Button>
-            </Box>
+            <Button
+              onClick={handleYesClick}
+              color="secondary"
+              variant="contained"
+            >
+              Yes
+            </Button>
+            <Button
+              onClick={handleNoClick}
+              color="secondary"
+              variant="contained"
+            >
+              No
+            </Button>
           </Box>
-        </Container>
+        </Box>
       </Box>
     </Container>
   )

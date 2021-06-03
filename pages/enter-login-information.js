@@ -153,7 +153,7 @@ const Contact = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Please enter the following to finish creating your account:</Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box
