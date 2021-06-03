@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
 import Container from '../components/Container'
@@ -7,9 +7,6 @@ import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
 import { supabase } from '../utils/initSupabase'
 import { Auth } from '@supabase/ui'
-import useSWR from 'swr'
-
-
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -43,22 +40,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const fetcher = (url, token) =>
-  fetch(url, {
-    method: 'GET',
-    headers: new Headers({ 'Content-Type': 'application/json', token }),
-    credentials: 'same-origin',
-  }).then((res) => res.json())
-
 const Contact = () => {
   const classes = useStyles();
   const router = useRouter();
   const { session } = Auth.useUser()
-
-  // const { data, error } = useSWR(
-  //   session ? ['/api/getAllUsers', session.access_token] : null,
-  //   fetcher
-  // )
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -100,11 +85,6 @@ const Contact = () => {
   }
 
   const fetchUsers = async () => {
-    // const { data, error } = useSWR(
-    //   session ? ['/api/getAllUsers', session.access_token] : null,
-    //   fetcher
-    // )
-
     const token = session.access_token;
 
     fetch('/api/getAllUsers', {
@@ -112,12 +92,6 @@ const Contact = () => {
       headers: new Headers({ 'Content-Type': 'application/json', token }),
       credentials: 'same-origin',
     }).then((res) => res.json())
-    // let { data: users, error } = await supabase.from('UserList').select('*').order('email', true)
-    // if (error){
-    //   console.log('error', error)
-    // } else {
-    //   console.log('users', users)
-    // }
   }
 
   const addUser = async () => {
@@ -153,25 +127,14 @@ const Contact = () => {
           throw Error(data.error);
         } else {
           alert("You successfully added a user");
+          router.push('/visit-choice')
         }
       })
       .catch(error => {
         alert(error);
       });
-
-    // const { data, error } = await supabase
-    //   .from('UserList')
-    //   .insert([
-    //     { ...newUser },
-    //   ])
-    // if (error){
-    //   console.log('error', error)
-    // } else {
-    //   console.log('success')
-    // }
   }
   const loginUser = () => {
-    console.log('localEmail', localEmail)
     supabase.auth
       .signUp({ email: localEmail, password })
       .then((response) => {
@@ -192,13 +155,6 @@ const Contact = () => {
 
   return (
     <Container>
-      <Button onClick={fetchUsers}>
-        Get Users
-      </Button>
-
-      <Button onClick={addUser}>
-        New User
-      </Button>
       <Box p="1em">
         <Typography variant="h2">Please enter the following to finish creating your account:</Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
