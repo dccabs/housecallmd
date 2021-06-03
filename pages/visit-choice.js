@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Typography,
   Box,
@@ -11,6 +11,7 @@ import {
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
+import { Auth } from '@supabase/ui'
 
 import useStore from '../zustand/store'
 
@@ -39,9 +40,26 @@ const useStyles = makeStyles((theme) => ({
 
 const VisitChoice = () => {
   const [value, setValue] = useState('Video/Telemedicine Visit')
+  const [firstName, setFirstName] = useState(null)
   const { setVisitChoice } = useStore()
   const classes = useStyles()
   const router = useRouter()
+  const { user, session } = Auth.useUser()
+
+  useEffect(() => {
+    if (user) {
+      fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json'}),
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: user.email })
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setFirstName(res.firstName)
+        });
+    }
+  }, [user])
 
   const handleChange = (event) => {
     setValue(event.target.value)
@@ -67,6 +85,9 @@ const VisitChoice = () => {
               justifyContent="center"
             >
               <Typography variant="h4">
+                {firstName &&
+                  <span>Hi {firstName}, </span>
+                }
                 What type of visit would you like?
               </Typography>
               <Box
@@ -108,15 +129,15 @@ const VisitChoice = () => {
                 flexWrap="wrap"
                 width="100%"
               >
-                {/*<Box m="1em" className={classes.buttonLinks}>*/}
-                {/*  <Button*/}
-                {/*    onClick={() => router.back()}*/}
-                {/*    color="secondary"*/}
-                {/*    variant="contained"*/}
-                {/*  >*/}
-                {/*    Back*/}
-                {/*  </Button>*/}
-                {/*</Box>*/}
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    onClick={() => router.back()}
+                    color="secondary"
+                    variant="contained"
+                  >
+                    Back
+                  </Button>
+                </Box>
                 <Box m="1em" className={classes.buttonLinks}>
                   <Button
                     type="submit"
