@@ -15,6 +15,7 @@ import { Auth } from '@supabase/ui'
 
 import useStore from '../zustand/store'
 import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo';
+import visitPricing from '../public/constants/visitPricing'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -44,8 +45,8 @@ const VisitChoice = () => {
   const [firstName, setLocalFirstName] = useState(null)
   const store = useStore();
   const {
-    setVisitChoice
-
+    setVisitChoice,
+    hasInsurance,
   } = store;
   const classes = useStyles()
   const router = useRouter()
@@ -115,19 +116,19 @@ const VisitChoice = () => {
                     onChange={handleChange}
                   >
                     <FormControlLabel
-                      value="Video/Telemedicine Visit"
+                      value="video"
                       control={<Radio />}
-                      label="Video/Telemedicine Visit"
+                      label={`Video/Telemedicine Visit ${hasInsurance ? '(No additonal fee with insurance)' : visitPricing.noInsurance.pricing.video}`}
                     />
                     <FormControlLabel
-                      value="Phone Visit"
+                      value="phone_visit"
                       control={<Radio />}
-                      label="Phone Visit"
+                      label={`Phone Visit (${hasInsurance ? visitPricing.insurance.pricing.phone : visitPricing.noInsurance.pricing.phone})`}
                     />
                     <FormControlLabel
-                      value="Housecall (In person visit at home)"
+                      value="housecall"
                       control={<Radio />}
-                      label="Housecall (In person visit at home)"
+                      label={`Housecall, In person visit at home (${hasInsurance ? visitPricing.insurance.pricing.in_person : visitPricing.noInsurance.pricing.in_person})`}
                     />
                   </RadioGroup>
                 </FormControl>
