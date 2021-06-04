@@ -36,7 +36,6 @@ const ForgotPassword = () => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
-    e.preventDefault()
     fetch('/api/requestNewPassword', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),

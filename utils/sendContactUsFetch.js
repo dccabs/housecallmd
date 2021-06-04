@@ -1,7 +1,7 @@
 const SENDGRID_API_URL = 'https://api.sendgrid.com/v3/mail/send'
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
 
-const sendMailToMe = async (
+const sendContactUsFetch = async (
   {
     recepient_email, // email_address to send mail
     name, // from name on email
@@ -46,7 +46,6 @@ const sendMailToMe = async (
               <p>Phone: ${phone}</p>
               <br />
             </div>
-            <a href="http://www.housecallmd.org/"><button style="background-color: #0092b8; padding: 1em; border: 1px solid #0092b8; border-radius: 50px; color: #fff; cursor: pointer;">Go back to Housecall MD</button></a>
           `,
         },
       ],
@@ -57,4 +56,4 @@ const sendMailToMe = async (
   return sgResponse
 }
 
-export { sendMailToMe }
+export { sendContactUsFetch }
