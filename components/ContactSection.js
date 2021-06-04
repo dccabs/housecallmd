@@ -76,7 +76,7 @@ const ContactSection = () => {
       phone: localPhone,
     }
 
-    fetch('/api/sendMail', {
+    fetch('/api/sendContactUsEmail', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
