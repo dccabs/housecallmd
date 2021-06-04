@@ -1,4 +1,6 @@
 import { sendMailToMe } from '../../utils/sendMailToMe'
+const SENDGRID_DEFAULT_EMAIL = process.env.SENDGRID_DEFAULT_EMAIL
+
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -19,7 +21,7 @@ export default async function handler(req, res) {
         //  Data received as expected
         try {
           const payload = {
-            recepient_email : 'dccabs@gmail.com',
+            recepient_email: SENDGRID_DEFAULT_EMAIL,
             name,
             subject,
             client_message,
