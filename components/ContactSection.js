@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import PhoneIcon from '@material-ui/icons/Phone'
@@ -57,12 +58,36 @@ const useStyles = makeStyles((theme) => ({
 
 const ContactSection = () => {
   const classes = useStyles()
+  const [localName, setLocalName] = useState('')
+  const [localEmail, setLocalEmail] = useState('')
+  const [localPhone, setLocalPhone] = useState('')
+  const [localComment, setLocalComment] = useState('')
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    console.log(e)
-  }
+    const payload = {
+      email: localEmail,
+      name: localName,
+      client_message: localComment,
+      subject: `${localName} filled out the contact us form`,
+      recipient_email: 'dccabs@gmail.com',
+      phone: localPhone,
+    }
+
+    fetch('/api/sendMail', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => {
+        console.log('res', res)
+        if (res.ok) {
+          alert(`An email to HouseCall MD`);
+        }
+      });  }
 
   return (
     <Box className={classes.root}>
@@ -113,15 +138,8 @@ const ContactSection = () => {
                   variant="outlined"
                   color="secondary"
                   required
-                />
-                <TextField
-                  className={classes.textFields}
-                  fullWidth
-                  type="text"
-                  label="Address"
-                  variant="outlined"
-                  color="secondary"
-                  required
+                  value={localName}
+                  onChange={(e) => {setLocalName(e.target.value)}}
                 />
                 <TextField
                   className={classes.textFields}
@@ -131,15 +149,18 @@ const ContactSection = () => {
                   variant="outlined"
                   color="secondary"
                   required
+                  value={localEmail}
+                  onChange={(e) => {setLocalEmail(e.target.value)}}
                 />
                 <TextField
                   className={classes.textFields}
                   fullWidth
                   type="text"
-                  label="Phone"
+                  label="Phone (optional)"
                   variant="outlined"
                   color="secondary"
-                  required
+                  value={localPhone}
+                  onChange={(e) => {setLocalPhone(e.target.value)}}
                 />
                 <TextField
                   fullWidth
@@ -150,6 +171,8 @@ const ContactSection = () => {
                   variant="outlined"
                   color="secondary"
                   required
+                  value={localComment}
+                  onChange={(e) => {setLocalComment(e.target.value)}}
                 />
                 <Box width="100%">
                   <Button type="submit" variant="contained" color="secondary">

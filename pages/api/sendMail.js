@@ -5,10 +5,10 @@ export default async function handler(req, res) {
     // req.body carries all the data
 
     try {
-      const { email, name_, subject, client_message } = req.body
+      const { email, name, subject, client_message, recepient_email, phone } = req.body
 
       if (
-        typeof (email || name_ || subject || client_message) === 'undefined'
+        typeof (email || name || subject || client_message || recepient_email) === 'undefined'
       ) {
         console.log(' ************* Invalid Data received ************ ')
 
@@ -18,15 +18,15 @@ export default async function handler(req, res) {
       } else {
         //  Data received as expected
         try {
-          const sendGridResponse = await sendMailToMe(
-            'brentbagapuro@gmail.com',
-            name_,
+          const payload = {
+            recepient_email : 'dccabs@gmail.com',
+            name,
             subject,
             client_message,
-            email
-          )
-
-          console.log('sendGridResponse', sendGridResponse)
+            email,
+            phone,
+          }
+          const sendGridResponse = await sendMailToMe(payload);
 
           return res.status(200).send({
             sg_response: sendGridResponse,
