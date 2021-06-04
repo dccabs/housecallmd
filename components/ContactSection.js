@@ -5,6 +5,7 @@ import PhoneIcon from '@material-ui/icons/Phone'
 import EmailIcon from '@material-ui/icons/Email'
 
 import Container from '../components/Container'
+import PhoneField from './PhoneField'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -153,14 +154,17 @@ const ContactSection = () => {
                   onChange={(e) => {setLocalEmail(e.target.value)}}
                 />
                 <TextField
+                  value={localPhone}
                   className={classes.textFields}
                   fullWidth
-                  type="text"
+                  type="tel"
                   label="Phone (optional)"
                   variant="outlined"
                   color="secondary"
-                  value={localPhone}
                   onChange={(e) => {setLocalPhone(e.target.value)}}
+                  InputProps={{
+                    inputComponent: PhoneField,
+                  }}
                 />
                 <TextField
                   fullWidth
