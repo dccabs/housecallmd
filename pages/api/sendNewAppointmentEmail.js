@@ -1,4 +1,4 @@
-import { sendContactUsFetch } from '../../utils/sendContactUsFetch'
+import { sendNewAppointmentFetch } from '../../utils/sendNewAppointmentFetch'
 const SENDGRID_DEFAULT_EMAIL = process.env.SENDGRID_DEFAULT_EMAIL
 
 
@@ -7,10 +7,10 @@ export default async function handler(req, res) {
     // req.body carries all the data
 
     try {
-      const { email, name, subject, client_message, recepient_email, phone } = req.body
+      const { newUser } = req.body
 
       if (
-        typeof (email || name || subject || client_message || recepient_email) === 'undefined'
+        typeof newUser === 'undefined'
       ) {
         console.log(' ************* Invalid Data received ************ ')
 
@@ -22,13 +22,10 @@ export default async function handler(req, res) {
         try {
           const payload = {
             recepient_email: SENDGRID_DEFAULT_EMAIL,
-            name,
-            subject,
-            client_message,
-            email,
-            phone,
+            subject: `${newUser.firstName} ${newUser.lastName} just signed up for an appointment`,
+            ...newUser
           }
-          const sendGridResponse = await sendContactUsFetch(payload);
+          const sendGridResponse = await sendNewAppointmentFetch(payload);
 
           return res.status(200).send({
             sg_response: sendGridResponse,
@@ -54,3 +51,4 @@ export default async function handler(req, res) {
 
   res.status(400).send({ error: 'bad request' })
 }
+
