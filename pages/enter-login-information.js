@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
 import Container from '../components/Container'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
@@ -103,7 +104,7 @@ const Contact = () => {
       // visitChoice,
       firstName,
       lastName,
-      email,
+      email: localEmail,
       address,
       city,
       state,
@@ -127,7 +128,8 @@ const Contact = () => {
           throw Error(data.error);
         } else {
           alert("You successfully added a user");
-          router.push('/visit-choice')
+          router.push('/visit-choice');
+          sendEmailToUser(payload);
         }
       })
       .catch(error => {
@@ -140,6 +142,26 @@ const Contact = () => {
       .then((response) => {
         response.error ? alert(response.error.message) : setToken(response);
       })
+  }
+
+  const sendEmailToUser = (payload) => {
+    fetch('/api/sendNewAppointmentEmail', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error);
+        } else {
+          return data;
+        }
+      })
+      .catch(error => {
+        alert(error);
+      });
   }
 
   const setToken = async (response) => {
