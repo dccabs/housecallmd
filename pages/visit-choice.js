@@ -64,6 +64,7 @@ const VisitChoice = () => {
       })
         .then((res) => res.json())
         .then((res) => {
+          console.log('res', res)
           setLocalFirstName(res.firstName)
           setStoreWithAuthInfo({
             store,
@@ -75,6 +76,7 @@ const VisitChoice = () => {
 
   const handleChange = (event) => {
     setValue(event.target.value)
+    console.log('user', user)
   }
 
   const handleSubmit = (e) => {

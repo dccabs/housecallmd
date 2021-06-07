@@ -9,7 +9,7 @@ const visitPricing = {
   noInsurance: {
     pricing: {
       video: '$50',
-      phone: '$100',
+      phone: '$50',
       in_person: '$200',
     }
   },
