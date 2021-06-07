@@ -142,7 +142,8 @@ const Contact = () => {
       })
   }
 
-  const setToken = (response) => {
+  const setToken = async (response) => {
+    await setEmail(localEmail);
     if (response.data.confirmation_sent_at && !response.data.access_token) {
       alert('Confirmation Email Sent')
     } else {
