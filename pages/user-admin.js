@@ -77,18 +77,12 @@ const UserAdmin = () => {
   const deleteRows = async () => {
     const rows = [...users]
     const newRows = rows.filter((r) => !rowsToDelete.includes(r))
-
-    console.log('rowsToDelete', rowsToDelete)
-
+    
     const emails = rowsToDelete.map(row => {
       return {
         email: row.email
       };
     });
-
-    const payload = {
-      emails,
-    }
 
     await emails.forEach((email) => {
       fetch('/api/deleteUser', {
