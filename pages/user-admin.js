@@ -74,9 +74,41 @@ const UserAdmin = () => {
     setOpen(true)
   }
 
-  const deleteRows = () => {
+  const deleteRows = async () => {
     const rows = [...users]
     const newRows = rows.filter((r) => !rowsToDelete.includes(r))
+
+    console.log('rowsToDelete', rowsToDelete)
+
+    const emails = rowsToDelete.map(row => {
+      return {
+        email: row.email
+      };
+    });
+
+    const payload = {
+      emails,
+    }
+
+    await emails.forEach((email) => {
+      fetch('/api/deleteUser', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({email: email.email }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            throw Error(data.error)
+          } else {
+            alert(`You successfully deleted ${rowsToDelete.firstname} ${rowsToDelete.lastName}`);
+          }
+        })
+        .catch((error) => {
+          alert(error)
+        })
+    })
 
     setUsers(newRows)
     setOpenDialog(false)
