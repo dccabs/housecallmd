@@ -77,7 +77,7 @@ const UserAdmin = () => {
   const deleteRows = async () => {
     const rows = [...users]
     const newRows = rows.filter((r) => !rowsToDelete.includes(r))
-    
+
     const emails = rowsToDelete.map(row => {
       return {
         email: row.email

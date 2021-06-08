@@ -58,6 +58,8 @@ const Contact = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
+  const [localId, setLocalId] = useState('')
+
   const {
     hasInsurance,
     provider,
@@ -93,32 +95,7 @@ const Contact = () => {
     setLocalEmail(e.target.value)
   }
 
-  const fetchUsers = async () => {
-    const token = session.access_token
-
-    fetch('/api/getAllUsers', {
-      method: 'GET',
-      headers: new Headers({ 'Content-Type': 'application/json', token }),
-      credentials: 'same-origin',
-    }).then((res) => res.json())
-  }
-
-  const addUser = async () => {
-    let newUser = {
-      hasInsurance,
-      provider,
-      planNumber,
-      groupNumber,
-      // visitChoice,
-      firstName,
-      lastName,
-      email: localEmail,
-      address,
-      city,
-      state,
-      zip,
-      phone: phone.replace(/\s/g, ''),
-    }
+  const addUser = async (newUser) => {
 
     //setOpen(true)
     const payload = {
@@ -171,12 +148,32 @@ const Contact = () => {
   }
 
   const setToken = async (response) => {
-    await setEmail(localEmail);
-    if (response.data.confirmation_sent_at && !response.data.access_token) {
-      alert('Confirmation Email Sent')
+    if (!response.data.access_token) {
+      return;
     } else {
-      alert('Logged in as ' + response.user.email)
-      addUser()
+      console.log('response id', response.data.user.id)
+      await setEmail(response.data.user.email);
+      await setLocalEmail(response.data.user.email);
+      await setLocalId(response.data.user.id);
+      // TODO: fix this timeout
+        alert('Logged in as ' + response.data.user.email)
+        let newUser = {
+          hasInsurance,
+          provider,
+          planNumber,
+          groupNumber,
+          // visitChoice,
+          firstName,
+          lastName,
+          email: response.data.user.email,
+          address,
+          city,
+          state,
+          zip,
+          phone: phone.replace(/\s/g, ''),
+          uuid: response.data.user.id,
+        }
+        addUser(newUser)
     }
   }
 
