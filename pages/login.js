@@ -4,7 +4,7 @@ import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { supabase } from '../utils/initSupabase'
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -41,7 +41,7 @@ const login = () => {
   const [password, setPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
   const classes = useStyles()
-  const router = useRouter();
+  const router = useRouter()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -53,7 +53,7 @@ const login = () => {
       .signIn(payload)
       .then((response) => {
         response.error ? alert(response.error.message) : setToken(response)
-        router.push('/visit-choice');
+        router.push('/visit-choice')
       })
       .catch((err) => {
         alert(err.response.text)
@@ -112,11 +112,20 @@ const login = () => {
                 width="100%"
                 maxWidth="34rem"
               >
-                <Typography align="right">
-                  <Link href="/forgot-password">
-                    <a>Forgot Password</a>
-                  </Link>
-                </Typography>
+                <Box mt="0.5em">
+                  <Typography align="right">
+                    <Link href="/enter-login-information">
+                      <a>Don't have an account? Click here to sign up</a>
+                    </Link>
+                  </Typography>
+                </Box>
+                <Box mt="0.5em">
+                  <Typography align="right">
+                    <Link href="/forgot-password">
+                      <a>Forgot Password</a>
+                    </Link>
+                  </Typography>
+                </Box>
               </Box>
             </Box>
             <Box

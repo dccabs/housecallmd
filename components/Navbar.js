@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react'
+import { useState, Fragment } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import useStore from '../zustand/store'
 import { supabase } from '../utils/initSupabase'
 
 import MobileNavDrawer from './MobileNavDrawer'
@@ -73,14 +74,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const session = supabase.auth.session()
+  const { isAuthenticated } = useStore()
   const router = useRouter()
   const classes = useStyles()
-
-  useEffect(() => {
-    session ? setIsAuthenticated(true) : setIsAuthenticated(false)
-  }, [session])
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()

@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import useStore from '../zustand/store'
 import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
@@ -17,8 +18,10 @@ const useStyles = makeStyles((theme) => ({
   ctaButton: {
     width: '100%',
   },
-  linkButton: {
-    textDecoration: 'none',
+  linkButtons: {
+    '& button': {
+      margin: '0.5em 0',
+    },
   },
   divRight: {
     [theme.breakpoints.down('md')]: {
@@ -51,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '2.5em',
     fontWeight: 900,
     lineHeight: '1.5em',
+    textAlign: 'center',
+
     [theme.breakpoints.up('sm')]: {
       maxWidth: '40rem',
     },
@@ -77,7 +82,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Home = () => {
+  const { isAuthenticated } = useStore()
   const classes = useStyles()
+
   return (
     <Fragment>
       <Box p="1em" className={classes.backgroundContainer}>
@@ -86,8 +93,14 @@ const Home = () => {
             Schedule a housecall or telemedicine visit in minutes.
           </Typography>
         </Box>
-        <Box mt="2em" display="flex" justifyContent="center">
-          <Link href="/insurance" className={classes.linkButton}>
+        <Box
+          className={classes.linkButtons}
+          mt="2em"
+          display="flex"
+          flexDirection="column"
+          alignitems="center"
+        >
+          <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
             <Button
               color="secondary"
               variant="contained"
@@ -97,6 +110,18 @@ const Home = () => {
               Get Started
             </Button>
           </Link>
+          {!isAuthenticated && (
+            <Link href="/login">
+              <Button
+                color="secondary"
+                variant="contained"
+                size="large"
+                fullWidth
+              >
+                Login
+              </Button>
+            </Link>
+          )}
         </Box>
       </Box>
       <Box p="1em" className={classes.content}>
@@ -115,7 +140,7 @@ const Home = () => {
           </Typography>
         </Box>
       </Box>
-            
+
       <Box
         p="1em"
         className={classes.reviews}
