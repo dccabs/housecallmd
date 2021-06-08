@@ -10,6 +10,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core'
 import Container from '../components/Container'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
@@ -111,7 +112,7 @@ const Contact = () => {
       // visitChoice,
       firstName,
       lastName,
-      email,
+      email: localEmail,
       address,
       city,
       state,
@@ -148,7 +149,28 @@ const Contact = () => {
     })
   }
 
-  const setToken = (response) => {
+  const sendEmailToUser = (payload) => {
+    fetch('/api/sendNewAppointmentEmail', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error);
+        } else {
+          return data;
+        }
+      })
+      .catch(error => {
+        alert(error);
+      });
+  }
+
+  const setToken = async (response) => {
+    await setEmail(localEmail);
     if (response.data.confirmation_sent_at && !response.data.access_token) {
       alert('Confirmation Email Sent')
     } else {
