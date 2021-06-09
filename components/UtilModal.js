@@ -90,6 +90,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       address: address.split(', ')[0],
       city: address.split(', ')[1],
       firstName: name.split(', ')[1],
+      email,
       groupNumber,
       hasInsurance: hasInsurance === 'Yes' ? true : false,
       lastName: name.split(', ')[0],
@@ -99,7 +100,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       state: address.split(', ')[2],
       zip: address.split(', ')[3],
     }
-    //console.log(updatedUser)
+
     try {
       const res = await fetch(`/api/updateUser`, {
         method: 'POST',
