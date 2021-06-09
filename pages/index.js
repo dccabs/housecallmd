@@ -70,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
     background: '#e1215b',
     color: '#fff',
 
+    '& a': {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+
     [theme.breakpoints.up('sm')]: {
       padding: '6em',
     },
@@ -79,10 +84,6 @@ const useStyles = makeStyles((theme) => ({
       padding: '6em',
     },
   },
-  linkWhite: {
-    color: 'white',
-    fontWeight: 'bold',
-  }
 }))
 
 const Home = () => {
@@ -131,11 +132,20 @@ const Home = () => {
       <Box p="1em" className={classes.content}>
         <Box mt="1em">
           <Typography className={classes.textBody}>
-            Our team of experienced and qualified care professionals specializes in providing urgent care in Kitsap County, Washington for our patients, whether you are at home or in your office.
-            <br /><br />
-            Wherever you may be, whatever time of day or night it is, whichever ailment you may be suffering from, we will take care of your healthcare needs.
-              <br /><br />
-            <Link href="/insurance" className={classes.linkWhite}>Contact us today</Link> if you need mobile urgent care services.
+            Our team of experienced and qualified care professionals specializes
+            in providing urgent care in Kitsap County, Washington for our
+            patients, whether you are at home or in your office.
+            <br />
+            <br />
+            Wherever you may be, whatever time of day or night it is, whichever
+            ailment you may be suffering from, we will take care of your
+            healthcare needs.
+            <br />
+            <br />
+            <Link href="/insurance">
+              <a>Contact us today</a>
+            </Link>{' '}
+            if you need mobile urgent care services.
           </Typography>
         </Box>
       </Box>

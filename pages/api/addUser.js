@@ -1,16 +1,14 @@
 import { supabase } from '../../utils/initSupabase'
 
 // Example of how to verify and get user data server-side.
-const addMeeting = async (req, res) => {
-  const access_token = req.headers.token;
-  const { newUser } = req.body;
+const addUser = async (req, res) => {
+  const access_token = req.headers.token
+  const { newUser } = req.body
   //
 
   const { data, error } = await supabase
     .from('UserList')
-    .insert([
-      { ...newUser },
-    ])
+    .insert([{ ...newUser }])
   // const { data, error } = await supabase
   //   .from('MeetingList')
   //   .insert([
@@ -24,4 +22,4 @@ const addMeeting = async (req, res) => {
   return res.status(200).json(data)
 }
 
-export default addMeeting
+export default addUser
