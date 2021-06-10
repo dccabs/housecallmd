@@ -10,6 +10,9 @@ import useStore from '../zustand/store';
 import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   textFields: {
     width: '100%',
     marginTop: '2em',
@@ -75,125 +78,123 @@ const Contact = () => {
 
   return (
     <Container>
-      <Box p="1em">
-        <Typography variant="h2">Please enter the following information:</Typography>
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
+      <Typography variant="h2" className={classes.h2}>Please enter the following information:</Typography>
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="text"
+            label="First Name"
+            variant="outlined"
+            color="secondary"
+            required
+            onChange={(e) => handleUpdate(e, setLocalFirstName)}
+          />
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="text"
+            label="Last Name"
+            variant="outlined"
+            color="secondary"
+            required
+            onChange={(e) => handleUpdate(e, setLocalLastName)}
+          />
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="text"
+            label="Address"
+            variant="outlined"
+            color="secondary"
+            required
+            onChange={(e) => handleUpdate(e, setLocalAddress)}
+          />
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="text"
+            label="City"
+            variant="outlined"
+            color="secondary"
+            required
+            onChange={(e) => handleUpdate(e, setLocalCity)}
+          />
+          <MuiSelect
+            name="state"
+            label="State"
+            defaultValue=""
+            value={localState}
+            onChange={(e) => { handleUpdate(e, setLocalState)}}
           >
-            <TextField
-              className={classes.textFields}
-              fullWidth
-              type="text"
-              label="First Name"
-              variant="outlined"
+            {STATES.map((state, index) => {
+              return (
+                <MenuItem key={index} value={state.abbreviation}>{state.name}</MenuItem>
+              )
+            })}
+          </MuiSelect>
+          <TextField
+            className={classes.textFields}
+            fullWidth
+            type="text"
+            label="Zip Code"
+            variant="outlined"
+            color="secondary"
+            required
+            onChange={(e) => handleUpdate(e, setLocalZip)}
+          />
+          <TextField
+            value={localPhone}
+            className={classes.textFields}
+            fullWidth
+            type="tel"
+            label="Phone"
+            variant="outlined"
+            color="secondary"
+            required
+            onChange={(e) => {
+              handleUpdate(e, setLocalPhone)}}
+            InputProps={{
+              inputComponent: PhoneField,
+            }}
+          />
+        </Box>
+        <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+          <Box m="1em" className={classes.buttonLinks}>
+            <Button
+              type="submit"
               color="secondary"
-              required
-              onChange={(e) => handleUpdate(e, setLocalFirstName)}
-            />
-            <TextField
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="Last Name"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => handleUpdate(e, setLocalLastName)}
-            />
-            <TextField
-              className={classes.textFields}
-              fullWidth
-              type="text"
-              label="Address"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={(e) => handleUpdate(e, setLocalAddress)}
-            />
-            <TextField
-                className={classes.textFields}
-                fullWidth
-                type="text"
-                label="City"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={(e) => handleUpdate(e, setLocalCity)}
-            />
-            <MuiSelect
-                name="state"
-                label="State"
-                defaultValue=""
-                value={localState}
-                onChange={(e) => { handleUpdate(e, setLocalState)}}
+              variant="contained"
+              size="large"
+              disabled={
+                !localFirstName ||
+                !localLastName ||
+                !localAddress ||
+                !localCity ||
+                !localZip ||
+                !localPhone
+              }
             >
-              {STATES.map((state, index) => {
-                return (
-                    <MenuItem key={index} value={state.abbreviation}>{state.name}</MenuItem>
-                )
-              })}
-            </MuiSelect>
-            <TextField
-              className={classes.textFields}
-              fullWidth
-              type="text"
-              label="Zip Code"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={(e) => handleUpdate(e, setLocalZip)}
-            />
-            <TextField
-              value={localPhone}
-              className={classes.textFields}
-              fullWidth
-              type="tel"
-              label="Phone"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={(e) => {
-                handleUpdate(e, setLocalPhone)}}
-              InputProps={{
-                inputComponent: PhoneField,
-              }}
-            />
+              Continue
+            </Button>
           </Box>
-          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                size="large"
-                disabled={
-                  !localFirstName ||
-                    !localLastName ||
-                    !localAddress ||
-                    !localCity ||
-                    !localZip ||
-                    !localPhone
-                }
-              >
-                Continue
-              </Button>
-            </Box>
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                onClick={() => router.back()}
-                color="secondary"
-                variant="contained"
-              >
-                Back
-              </Button>
-            </Box>
+          <Box m="1em" className={classes.buttonLinks}>
+            <Button
+              onClick={() => router.back()}
+              color="secondary"
+              variant="contained"
+            >
+              Back
+            </Button>
           </Box>
-        </form>
-      </Box>
+        </Box>
+      </form>
     </Container>
   )
 }

@@ -7,26 +7,8 @@ import ServicesAreas from '../components/ServicesPage/ServicesAreas'
 import ContactSection from '../components/ContactSection'
 
 const useStyles = makeStyles((theme) => ({
-  backgroundContainer: {
-    height: 350,
-    color: theme.typography.color,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  mainHeading: {
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: '40vw',
-    },
-  },
   h2: {
-    textAlign: 'center',
-
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: '40rem',
-      textAlign: 'left',
-    },
+    marginTop: '.5em',
   },
   content: {
     '& p': {
@@ -65,16 +47,14 @@ const ServicesPage = () => {
   const classes = useStyles()
 
   return (
-    <Box>
-      <Box className={classes.backgroundContainer}>
-        <Box className={classes.mainHeading}>
-          <Typography variant="h2" className={classes.h2}>
-            Services
-          </Typography>
-        </Box>
+    <>
+      <Box p="1em">
+        <Typography variant="h2" className={classes.h2}>
+          Services
+        </Typography>
+        <ServicesItems />
       </Box>
 
-      <ServicesItems />
 
       <Box className={classes.cta} display="flex" justifyContent="center">
         <Container>
@@ -114,7 +94,7 @@ const ServicesPage = () => {
 
       <ServicesAreas />
       <ContactSection />
-    </Box>
+    </>
   )
 }
 

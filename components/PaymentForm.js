@@ -27,24 +27,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '2em',
     maxWidth: '34rem',
   },
-  buttonLinks: {
-    '@media screen and (max-width: 700px)': {
-      '&:nth-child(2)': {
-        order: -1,
-      },
-    },
-
-    '& button': {
-      height: '100%',
-      padding: '1em',
-      fontWeight: 600,
-      width: '16rem',
-
-      '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-      },
-    },
-  },
   FormRow: {
     padding: '1rem',
     borderRadius: '4px',
@@ -159,7 +141,7 @@ const PaymentForm = () => {
   }
 
   return (
-    <Box my="4em" width="100%" display="flex" justifyContent="center">
+    <Box my="1em" width="100%" display="flex" justifyContent="center">
       <Box className={classes.wrapper}>
         <Box className={classes.text}>
           <Typography variant="h4">
@@ -221,14 +203,13 @@ const PaymentForm = () => {
           </fieldset>
 
           <Box
-            mt="2em"
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
           >
             <Box
-              mt="2em"
+              mt="1em"
               display="flex"
               justifyContent="center"
               flexWrap="wrap"

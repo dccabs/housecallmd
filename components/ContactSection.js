@@ -11,12 +11,15 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: '#f4f4f4',
   },
+  h2: {
+    marginTop: '.5em',
+  },
   info: {
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'wrap',
     color: theme.palette.primary.main,
-    margin: '2em 0',
+    margin: '1em 0',
 
     '& h4': {
       fontSize: '18px',
@@ -38,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   fields: {
+    marginBottom: '1em',
     maxWidth: '100%',
 
     '& button': {
@@ -55,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
   textFields: {
     margin: '0.5em 0',
   },
+  formButton: {
+    marginTop: '.5em',
+  }
 }))
 
 const ContactSection = () => {
@@ -93,17 +100,16 @@ const ContactSection = () => {
   return (
     <Box className={classes.root}>
       <Container>
-        <Box id="contact" width="100%" display="flex" justifyContent="center">
+        <Box id="contact">
           <Box
             width="100%"
             display="flex"
-            justifyContent="space-evenly"
             flexWrap="wrap"
             maxWidth="1400px"
           >
-            <Box my="1em" display="flex">
+            <Box display="flex">
               <Box>
-                <Typography variant="h2">Contact Us</Typography>
+                <Typography variant="h2" className={classes.h2}>Contact Us</Typography>
                 <Box className={classes.info}>
                   <PhoneIcon />
                   <Typography variant="h4">1-833-432-5633</Typography>
@@ -124,6 +130,7 @@ const ContactSection = () => {
             </Box>
             <Box
               my="1em"
+              mt="0em"
               className={classes.fields}
               width="100%"
               display="flex"
@@ -178,8 +185,8 @@ const ContactSection = () => {
                   value={localComment}
                   onChange={(e) => {setLocalComment(e.target.value)}}
                 />
-                <Box width="100%">
-                  <Button type="submit" variant="contained" color="secondary">
+                <Box width="100%" className={classes.formButton}>
+                  <Button type="submit" variant="contained" color="secondary" size="large">
                     Submit
                   </Button>
                 </Box>

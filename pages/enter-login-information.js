@@ -18,6 +18,9 @@ import { supabase } from '../utils/initSupabase'
 import { Auth } from '@supabase/ui'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   textFields: {
     width: '100%',
     marginTop: '2em',
@@ -180,7 +183,7 @@ const Contact = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2">
+        <Typography variant="h2" className={classes.h2}>
           Please enter the following to finish creating your account:
         </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>

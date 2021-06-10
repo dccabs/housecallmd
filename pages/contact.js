@@ -5,6 +5,9 @@ import { useState } from 'react'
 import PhoneField from '../components/PhoneField'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   textFields: {
     width: '100%',
     marginTop: '2em',
@@ -65,7 +68,7 @@ const Contact = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2">Contact Us</Typography>
+        <Typography variant="h2" className={classes.h2}>Contact Us</Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box
             display="flex"
