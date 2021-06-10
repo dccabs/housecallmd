@@ -11,6 +11,7 @@ import PersonIcon from '@material-ui/icons/Person'
 import { makeStyles } from '@material-ui/core/styles'
 
 import MeetingCreated from './MeetingCreated'
+import SendSMS from './SendSMS'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,7 +54,8 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
   const [groupNumber, setGroupNumber] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
-  const [showOtherContent, setShowOtherContent] = useState(false)
+  const [MeetingContent, setMeetingContent] = useState(false)
+  const [MessageContent, setMessageContent] = useState(false)
   const classes = useStyles()
 
   useEffect(() => {
@@ -90,14 +92,20 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
     setOpen(false)
   }
 
+  const reset = () => {
+    setOpen(false)
+    setMeetingContent(false)
+    setMessageContent(false)
+  }
+
   return (
-    <Modal
-      open={open}
-      onClose={() => setOpen(false)}
-      style={{ overflow: 'scroll' }}
-    >
+    <Modal open={open} onClose={reset} style={{ overflow: 'scroll' }}>
       <Paper elevation={3} className={classes.root}>
-        {!showOtherContent ? (
+        {MeetingContent ? (
+          <MeetingCreated setMeetingContent={setMeetingContent} />
+        ) : MessageContent ? (
+          <SendSMS phone={phone} setMessageContent={setMessageContent} />
+        ) : (
           <Box>
             <Box display="flex" alignItems="center">
               <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
@@ -245,6 +253,20 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
               </form>
             </Box>
             <Box
+              className={classes.buttonLinks}
+              display="flex"
+              justifyContent="center"
+            >
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => setMeetingContent(true)}
+              >
+                Create Meeting
+              </Button>
+            </Box>
+
+            <Box
               m="1em"
               className={classes.buttonLinks}
               display="flex"
@@ -253,14 +275,12 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
               <Button
                 color="secondary"
                 variant="contained"
-                onClick={() => setShowOtherContent(true)}
+                onClick={() => setMessageContent(true)}
               >
-                Create Meeting
+                Send SMS
               </Button>
             </Box>
           </Box>
-        ) : (
-          <MeetingCreated setShowOtherContent={setShowOtherContent} />
         )}
       </Paper>
     </Modal>
