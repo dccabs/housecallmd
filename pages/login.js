@@ -116,7 +116,7 @@ const login = () => {
             >
               <Box mt="0.5em">
                 <Typography align="right">
-                  <Link href="/enter-login-information">
+                  <Link href="/insurance">
                     <a>Sign up for an account</a>
                   </Link>
                 </Typography>

@@ -5,6 +5,9 @@ import Link from 'next/link'
 import Container from '../components/Container'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   link: {
     '& a': {
       color: theme.palette.primary.main,
