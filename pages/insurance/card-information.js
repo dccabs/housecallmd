@@ -6,6 +6,9 @@ import useStore from '../../zustand/store'
 import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   textFields: {
     width: '100%',
     marginTop: '2em',
@@ -55,7 +58,7 @@ const CardInformation = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2">Insurance</Typography>
+        <Typography variant="h2" className={classes.h2}>Insurance</Typography>
           <form onSubmit={handleSubmit}>
             <Box
               mt="2em"

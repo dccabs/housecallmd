@@ -8,6 +8,9 @@ import providerOptions from '../../public/constants/providerOptions';
 import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   buttonLinks: {
     '@media screen and (max-width: 700px)': {
       '&:nth-child(2)': {
@@ -52,7 +55,7 @@ const ChooseProvider = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2">Insurance</Typography>
+        <Typography variant="h2" className={classes.h2}>Insurance</Typography>
         <form onSubmit={handleSubmit}>
           <Box
             mt="2em"

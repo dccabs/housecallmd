@@ -141,7 +141,7 @@ const PaymentForm = () => {
   }
 
   return (
-    <Box my="4em" width="100%" display="flex" justifyContent="center">
+    <Box my="1em" width="100%" display="flex" justifyContent="center">
       <Box className={classes.wrapper}>
         <Box className={classes.text}>
           <Typography variant="h4">
@@ -203,14 +203,13 @@ const PaymentForm = () => {
           </fieldset>
 
           <Box
-            mt="2em"
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
           >
             <Box
-              mt="2em"
+              mt="1em"
               display="flex"
               justifyContent="center"
               flexWrap="wrap"

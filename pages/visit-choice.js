@@ -18,6 +18,9 @@ import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo';
 import visitPricing from '../public/constants/visitPricing'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   buttonLinks: {
     '@media screen and (max-width: 700px)': {
       '&:nth-child(2)': {
@@ -51,8 +54,6 @@ const VisitChoice = () => {
   const classes = useStyles()
   const router = useRouter()
   const { user, session } = Auth.useUser()
-
-  console.log('store', store);
 
   useEffect(() => {
     if (user) {
@@ -88,7 +89,7 @@ const VisitChoice = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2">Visit Choice</Typography>
+        <Typography className={classes.h2} variant="h2">Visit Choice</Typography>
         <form onSubmit={handleSubmit}>
           <Box
             mt="2em"

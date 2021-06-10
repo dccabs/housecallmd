@@ -7,6 +7,9 @@ import { useRouter } from 'next/router'
 
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   buttonLinks: {
     '& button': {
       padding: '1em',
@@ -42,7 +45,7 @@ const Insurance = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2">Insurance</Typography>
+        <Typography variant="h2" className={classes.h2}>Insurance</Typography>
         <Box
           mt="2em"
           display="flex"
