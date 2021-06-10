@@ -16,6 +16,7 @@ const useStore = create(
     state: '',
     zip: '',
     phone: '',
+    isAuthenticated: '',
     setHasInsurance: (hasInsurance) => set({ hasInsurance }),
     setFirstName: (firstName) => set({ firstName }),
     setLastName: (lastName) => set({ lastName }),
@@ -29,6 +30,7 @@ const useStore = create(
     setPlanNumber: (planNumber) => set({ planNumber }),
     setGroupNumber: (groupNumber) => set({ groupNumber }),
     setVisitChoice: (visitChoice) => set({ visitChoice }),
+    setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
   }))
 )
 

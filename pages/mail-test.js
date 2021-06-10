@@ -2,7 +2,6 @@ import { Box, Button } from '@material-ui/core'
 import Container from '../components/Container'
 
 const MailTest = () => {
-
   const sendMailTest = () => {
     console.log('send Mail Test')
     const data = JSON.stringify({
@@ -10,25 +9,25 @@ const MailTest = () => {
       email: 'dccabs@gmail.com',
       client_message: 'hello world',
       subject: 'sample message',
-    });
+    })
 
     fetch(`/api/sendMail`, {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Content-Length": data.length,
+        'Content-Type': 'application/json',
+        'Content-Length': data.length,
       },
       body: data,
     })
-      .then(response => {
-        return response.json();
+      .then((response) => {
+        return response.json()
       })
-      .then(data => {
+      .then((data) => {
         console.log('data', data)
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('error', error)
-      });
+      })
   }
 
   return (

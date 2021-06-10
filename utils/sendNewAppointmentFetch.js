@@ -1,16 +1,23 @@
 const SENDGRID_API_URL = 'https://api.sendgrid.com/v3/mail/send'
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
 
-const sendMailToMe = async (
-  {
+const sendNewAppointmentFetch = async (props) => {
+  const {
     recepient_email, // email_address to send mail
-    name, // from name on email
-    subject = 'sample subject',
+    subject,
+    hasInsurance,
+    provider,
+    planNumber,
+    groupNumber,
+    firstName,
+    lastName,
     email,
-    client_message,
-    phone = "",
-  }
-) => {
+    address,
+    city,
+    state,
+    zip,
+    phone,
+  } = props;
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
     headers: {
@@ -30,7 +37,7 @@ const sendMailToMe = async (
       ],
       from: {
         email: recepient_email,
-        name,
+        name: 'HouseCall MD Appointments',
       },
       content: [
         {
@@ -38,15 +45,25 @@ const sendMailToMe = async (
           value: `
             <img src="http://www.housecallmd.org/wp-content/themes/housecallmd/images/main-logo.png" width="150px" height="100px" /><br />
             <div style="color: #000;">
-              <p>
-                ${client_message}
-              </p>
-              <p>${name}</p>
-              <p>Email: ${email}</p>
-              <p>Phone: ${phone}</p>
+            
+              <div style={{fontSize: '24px', fontWeight: 'bold, marginBottom: '20px'}}>
+                Patient Information
+              </div>
+            
+              <div style={{fontWeight: 'bold'}}>Patient Has Insurance: ${hasInsurance}</div>
+              <div>First Name: ${firstName}</div>
+              <div>Last Name: ${lastName}</div>
+              <div>Provider: ${provider}</div>
+              <div>Plan Number: ${planNumber}</div>
+              <div>Group Number: ${groupNumber}</div>
+              <div>Email: ${email}</div>
+              <div>Address: ${address}</div>
+              <div>City ${city}</div>
+              <div>State: ${state}</div>
+              <div>Zip: ${zip}</div>
+              <div>Phone: ${phone}</div>
               <br />
             </div>
-            <a href="http://www.housecallmd.org/"><button style="background-color: #0092b8; padding: 1em; border: 1px solid #0092b8; border-radius: 50px; color: #fff; cursor: pointer;">Go back to Housecall MD</button></a>
           `,
         },
       ],
@@ -57,4 +74,4 @@ const sendMailToMe = async (
   return sgResponse
 }
 
-export { sendMailToMe }
+export { sendNewAppointmentFetch }

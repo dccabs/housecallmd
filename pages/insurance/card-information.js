@@ -3,7 +3,6 @@ import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
-import { useAuth0 } from '@auth0/auth0-react'
 import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
@@ -36,29 +35,27 @@ const useStyles = makeStyles((theme) => ({
 
 const CardInformation = () => {
   const { setPlanNumber, setGroupNumber } = useStore()
-  const [localPlanNumber, setLocalPlanNumber] = useState('');
-  const [localGroupNumber, setLocalGroupNumber] = useState('');
-
+  const [localPlanNumber, setLocalPlanNumber] = useState('')
+  const [localGroupNumber, setLocalGroupNumber] = useState('')
 
   const classes = useStyles()
   const router = useRouter()
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setPlanNumber(localPlanNumber);
-    setGroupNumber(localGroupNumber);
+    e.preventDefault()
+    setPlanNumber(localPlanNumber)
+    setGroupNumber(localGroupNumber)
     router.push('/enter-profile-information')
   }
 
   const handleUpdate = (e, fn) => {
-    fn(e.target.value);
+    fn(e.target.value)
   }
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Insurance</Typography>
-        <Container>
           <form onSubmit={handleSubmit}>
             <Box
               mt="2em"
@@ -118,10 +115,7 @@ const CardInformation = () => {
                     color="secondary"
                     variant="contained"
                     size="large"
-                    disabled={
-                      !localGroupNumber ||
-                        !localPlanNumber
-                    }
+                    disabled={!localGroupNumber || !localPlanNumber}
                   >
                     Continue
                   </Button>
@@ -129,7 +123,6 @@ const CardInformation = () => {
               </Box>
             </Box>
           </form>
-        </Container>
       </Box>
     </Container>
   )

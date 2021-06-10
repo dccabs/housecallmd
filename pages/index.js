@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import useStore from '../zustand/store'
 import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
@@ -17,8 +18,10 @@ const useStyles = makeStyles((theme) => ({
   ctaButton: {
     width: '100%',
   },
-  linkButton: {
-    textDecoration: 'none',
+  linkButtons: {
+    '& button': {
+      margin: '0.5em 0',
+    },
   },
   divRight: {
     [theme.breakpoints.down('md')]: {
@@ -51,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '2.5em',
     fontWeight: 900,
     lineHeight: '1.5em',
+    textAlign: 'center',
+
     [theme.breakpoints.up('sm')]: {
       maxWidth: '40rem',
     },
@@ -65,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
     background: '#e1215b',
     color: '#fff',
 
+    '& a': {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+
     [theme.breakpoints.up('sm')]: {
       padding: '6em',
     },
@@ -77,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Home = () => {
+  const { isAuthenticated } = useStore()
   const classes = useStyles()
 
   return (
@@ -87,8 +98,14 @@ const Home = () => {
             Schedule a housecall or telemedicine visit in minutes.
           </Typography>
         </Box>
-        <Box mt="2em" display="flex" justifyContent="center">
-          <Link href="/insurance" className={classes.linkButton}>
+        <Box
+          className={classes.linkButtons}
+          mt="2em"
+          display="flex"
+          flexDirection="column"
+          alignitems="center"
+        >
+          <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
             <Button
               color="secondary"
               variant="contained"
@@ -98,25 +115,41 @@ const Home = () => {
               Get Started
             </Button>
           </Link>
+          {!isAuthenticated && (
+            <Link href="/login">
+              <Button
+                color="secondary"
+                variant="contained"
+                size="large"
+                fullWidth
+              >
+                Login
+              </Button>
+            </Link>
+          )}
         </Box>
       </Box>
       <Box p="1em" className={classes.content}>
         <Box mt="1em">
           <Typography className={classes.textBody}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. In quidem
-            aut accusamus ab? Enim perferendis quidem suscipit vitae tempora
-            velit, reprehenderit laborum molestiae itaque culpa numquam dicta
-            incidunt hic adipisci distinctio molestias ipsa modi cum error eum
-            voluptatem odit ut? Fuga, excepturi.
+            Our team of experienced and qualified care professionals specializes
+            in providing urgent care in Kitsap County, Washington for our
+            patients, whether you are at home or in your office.
             <br />
-            <br /> Amet nisi debitis rerum recusandae. Dolorum, id quo dolore
-            blanditiis aliquid sed esse excepturi voluptatem culpa qui sequi
-            reprehenderit consectetur! Eos, delectus deleniti architecto
-            officiis iure vel voluptatum blanditiis illum ipsam.
+            <br />
+            Wherever you may be, whatever time of day or night it is, whichever
+            ailment you may be suffering from, we will take care of your
+            healthcare needs.
+            <br />
+            <br />
+            <Link href="/insurance">
+              <a>Contact us today</a>
+            </Link>{' '}
+            if you need mobile urgent care services.
           </Typography>
         </Box>
       </Box>
-            
+
       <Box
         p="1em"
         className={classes.reviews}

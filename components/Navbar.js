@@ -10,9 +10,11 @@ import {
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles'
-import { useAuth0 } from '@auth0/auth0-react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
+import useStore from '../zustand/store'
+import { supabase } from '../utils/initSupabase'
 
 import MobileNavDrawer from './MobileNavDrawer'
 
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.up('sm')]: {
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      maxWidth: 1200,
+      maxWidth: 1400,
       margin: 'auto',
     },
   },
@@ -37,10 +39,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   authLinks: {
+    color: theme.typography.color,
+
     '& a': {
       fontWeight: 600,
-      textDecoration: 'none',
       color: theme.typography.color,
+      textDecoration: 'none',
       marginLeft: '2rem',
     },
     [theme.breakpoints.down('xs')]: {
@@ -63,12 +67,24 @@ const useStyles = makeStyles((theme) => ({
   logoH6: {
     display: 'flex',
   },
+  nextLink: {
+    '& a': {
+      fontWeight: 400,
+    },
+  },
 }))
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
-  const { user, loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useStore()
+  const router = useRouter()
   const classes = useStyles()
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut()
+    console.log(error)
+    router.push('/')
+  }
 
   return (
     <Fragment>
@@ -112,25 +128,22 @@ const Navbar = () => {
               </a>
             </Link>
             {isAuthenticated ? (
-              <MuiLink
-                onClick={logout}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Logout</Typography>
-              </MuiLink>
+              <Box ml="2rem">
+                <Typography
+                  onClick={handleSignOut}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Logout
+                </Typography>
+              </Box>
             ) : (
-              <MuiLink
-                onClick={() => {
-                  loginWithRedirect({
-                    configuration: {
-                      screen_hint: 'signup',
-                    },
-                  })
-                }}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Login as</Typography>
-              </MuiLink>
+              <Box className={classes.nextLink}>
+                <Link href="/login">
+                  <Typography align="right" style={{ cursor: 'pointer' }}>
+                    <a>Login</a>
+                  </Typography>
+                </Link>
+              </Box>
             )}
           </Box>
 

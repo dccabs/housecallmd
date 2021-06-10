@@ -1,4 +1,4 @@
-import { sendMailToMe } from '../../utils/sendMailToMe'
+import { sendContactUsFetch } from '../../utils/sendContactUsFetch'
 const SENDGRID_DEFAULT_EMAIL = process.env.SENDGRID_DEFAULT_EMAIL
 
 
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
             email,
             phone,
           }
-          const sendGridResponse = await sendMailToMe(payload);
+          const sendGridResponse = await sendContactUsFetch(payload);
 
           return res.status(200).send({
             sg_response: sendGridResponse,

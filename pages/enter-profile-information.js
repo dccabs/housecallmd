@@ -3,8 +3,7 @@ import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
 import MuiSelect from '../components/MuiSelect'
-import "cleave.js/dist/addons/cleave-phone.us";
-import Cleave from 'cleave.js/react';
+import PhoneField from '../components/PhoneField';
 
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
@@ -41,23 +40,6 @@ const useStyles = makeStyles((theme) => ({
     background: '#fff',
   },
 }))
-
-const phoneField = (props) => {
-  const { options, inputRef, ...other } = props;
-  return (
-    <Cleave
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
-      placeholder="Enter phone number"
-      options={{
-        phone: true,
-        phoneRegionCode: 'US'
-      }}
-      {...other}
-    />
-  )
-}
 
 const Contact = () => {
 
@@ -177,7 +159,7 @@ const Contact = () => {
               onChange={(e) => {
                 handleUpdate(e, setLocalPhone)}}
               InputProps={{
-                inputComponent: phoneField,
+                inputComponent: PhoneField,
               }}
             />
           </Box>

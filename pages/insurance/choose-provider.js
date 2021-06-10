@@ -51,83 +51,81 @@ const ChooseProvider = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Insurance</Typography>
-        <Container>
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          <Box
+            mt="2em"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Typography variant="h4">Please choose your provider</Typography>
             <Box
-              mt="2em"
+              mt="1em"
+              width="100%"
               display="flex"
-              flexDirection="column"
               alignItems="center"
               justifyContent="center"
             >
-              <Typography variant="h4">Please choose your provider</Typography>
-              <Box
-                mt="1em"
-                width="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Autocomplete
-                  //value={localProvider}
-                  freeSolo
-                  disableClearable
-                  options={providerOptions}
-                  style={{ width: '100%', maxWidth: '34rem' }}
-                  onChange={
-                    (e, value) => {
-                      setLocalProvider(value)
-                    }
+              <Autocomplete
+                //value={localProvider}
+                freeSolo
+                disableClearable
+                options={providerOptions}
+                style={{ width: '100%', maxWidth: '34rem' }}
+                onChange={
+                  (e, value) => {
+                    setLocalProvider(value)
                   }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Type to select provider"
-                      margin="normal"
-                      color="secondary"
-                      variant="outlined"
-                      onChange={(e, value) => {
-                        handleUpdate(e, setLocalProvider);
-                      }}
-                      InputProps={{ ...params.InputProps, type: 'search' }}
-                      required
-                    />
-                  )}
-                />
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Type to select provider"
+                    margin="normal"
+                    color="secondary"
+                    variant="outlined"
+                    onChange={(e, value) => {
+                      handleUpdate(e, setLocalProvider);
+                    }}
+                    InputProps={{ ...params.InputProps, type: 'search' }}
+                    required
+                  />
+                )}
+              />
+            </Box>
+            <Box
+              mt="1em"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              flexWrap="wrap"
+              width="100%"
+            >
+              <Box m="1em" className={classes.buttonLinks}>
+                <Button
+                  onClick={() => router.back()}
+                  color="secondary"
+                  variant="contained"
+                >
+                  Back
+                </Button>
               </Box>
-              <Box
-                mt="1em"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                flexWrap="wrap"
-                width="100%"
-              >
-                <Box m="1em" className={classes.buttonLinks}>
-                  <Button
-                    onClick={() => router.back()}
-                    color="secondary"
-                    variant="contained"
-                  >
-                    Back
-                  </Button>
-                </Box>
-                <Box m="1em" className={classes.buttonLinks}>
-                  <Button
-                    disabled={!localProvider}
-                    type="submit"
-                    color="secondary"
-                    variant="contained"
-                  >
-                    Continue
-                  </Button>
-                </Box>
+              <Box m="1em" className={classes.buttonLinks}>
+                <Button
+                  disabled={!localProvider}
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                >
+                  Continue
+                </Button>
               </Box>
             </Box>
-          </form>
-        </Container>
+          </Box>
+        </form>
       </Box>
     </Container>
   )
