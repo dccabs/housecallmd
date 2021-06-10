@@ -69,7 +69,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
     setAddress(rowData.address)
   }, [rowData])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     const rows = [...users]
@@ -87,6 +87,34 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       if (r.email === email) r = updatedRow
       return r
     })
+
+    const updatedUser = {
+      address: address.split(', ')[0],
+      city: address.split(', ')[1],
+      firstName: name.split(', ')[1],
+      email,
+      groupNumber,
+      hasInsurance: hasInsurance === 'Yes' ? true : false,
+      lastName: name.split(', ')[0],
+      phone,
+      planNumber,
+      provider,
+      state: address.split(', ')[2],
+      zip: address.split(', ')[3],
+    }
+
+    try {
+      const res = await fetch(`/api/updateUser`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser),
+      })
+    } catch (error) {
+      console.log(error)
+    }
 
     setUsers(newRows)
     setOpen(false)

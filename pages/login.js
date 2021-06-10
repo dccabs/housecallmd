@@ -53,7 +53,6 @@ const login = () => {
       .signIn(payload)
       .then((response) => {
         response.error ? alert(response.error.message) : setToken(response)
-        router.push('/visit-choice')
       })
       .catch((err) => {
         alert(err.response.text)
@@ -62,6 +61,7 @@ const login = () => {
 
   const setToken = (response) => {
     alert('Logged in as ' + response.user.email)
+    router.push('/visit-choice')
   }
 
   const handlePasswordUpdate = (e) => {

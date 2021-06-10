@@ -39,10 +39,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   authLinks: {
+    color: theme.typography.color,
+
     '& a': {
       fontWeight: 600,
-      textDecoration: 'none',
       color: theme.typography.color,
+      textDecoration: 'none',
       marginLeft: '2rem',
     },
     [theme.breakpoints.down('xs')]: {
@@ -126,12 +128,14 @@ const Navbar = () => {
               </a>
             </Link>
             {isAuthenticated ? (
-              <MuiLink
-                onClick={handleSignOut}
-                style={{ textDecoration: 'none', cursor: 'pointer' }}
-              >
-                <Typography>Logout</Typography>
-              </MuiLink>
+              <Box ml="2rem">
+                <Typography
+                  onClick={handleSignOut}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Logout
+                </Typography>
+              </Box>
             ) : (
               <Box className={classes.nextLink}>
                 <Link href="/login">
