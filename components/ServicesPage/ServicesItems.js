@@ -129,21 +129,6 @@ const ServicesItems = () => {
   return (
     <Container>
       <Box display="flex" flexDirection="column" alignItems="center">
-        <Box
-          p="1em"
-          mb="4em"
-          className={classes.content}
-          display="flex"
-          justifyContent="center"
-        >
-          <Typography align="center">
-            Our Housecall MD team comes to you, wherever you may be, to provide
-            healthcare services and urgent care in Kitsap County, Washington. We
-            cater to all patients, regardless of age. Our team specializes in
-            treating most common ailments including:
-          </Typography>
-        </Box>
-
         <Box className={classes.services}>
           <>
             {services.map((s, i) => {
