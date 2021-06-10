@@ -9,10 +9,19 @@ import {
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
+import useStore from '../zustand/store'
 
 import Field from './Field'
 
 const useStyles = makeStyles((theme) => ({
+  text: {
+    marginBottom: '2em',
+    maxWidth: '40rem',
+
+    '& h4': {
+      lineHeight: '1.5em',
+    },
+  },
   textFields: {
     width: '100%',
     marginTop: '2em',
@@ -102,6 +111,8 @@ const PaymentForm = () => {
     phone: '',
     name: '',
   })
+  const amount = 99.99
+  const { visitChoice } = useStore()
   const stripe = useStripe()
   const elements = useElements()
   const classes = useStyles()
@@ -115,8 +126,7 @@ const PaymentForm = () => {
   const handleSubmit = async () => {
     // TODO: remove after stripe fixed.
     router.push('/thank-you')
-    return;
-
+    return
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
@@ -151,12 +161,14 @@ const PaymentForm = () => {
   return (
     <Box my="4em" width="100%" display="flex" justifyContent="center">
       <Box className={classes.wrapper}>
+        <Box className={classes.text}>
+          <Typography variant="h4">
+            You have selected a {visitChoice} appointment. The cost for this
+            service is ${amount}. To proceed please fill out your payment
+            information.
+          </Typography>
+        </Box>
         <form onSubmit={handleSubmit}>
-          <Box mb="2em">
-            <Typography variant="h4">
-              Please fill out your payment information
-            </Typography>
-          </Box>
           <fieldset className={classes.FormGroup}>
             <Field
               label="Name"
@@ -243,9 +255,20 @@ const PaymentForm = () => {
           </Box>
 
           <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
-            <Box p="2em">
-              <Typography variant="h4" align="center">
-                Make Transaction
+            <Box
+              p="4em"
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography
+                variant="h4"
+                align="center"
+                style={{ lineHeight: '1.5em', maxWidth: '25rem' }}
+              >
+                You will be charged ${amount} by HouseCallMD. Please confirm to
+                pay.
               </Typography>
               <DialogContent>
                 <Box

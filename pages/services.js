@@ -8,24 +8,12 @@ import ContactSection from '../components/ContactSection'
 
 const useStyles = makeStyles((theme) => ({
   backgroundContainer: {
-    backgroundImage: `url('/media/banner_phone.png')`,
-    backgroundPosition: 'top center',
-    backgroundAttachment: 'cover',
-    backgroundRepeat: 'no-repeat',
     height: 350,
-    color: '#ffffff',
+    color: theme.typography.color,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-
-    [theme.breakpoints.up('sm')]: {
-      backgroundImage: `url('/media/banner.jpg')`,
-      backgroundPosition: 'center center',
-      alignItems: 'flex-start',
-      padding: '20em 6em',
-      color: theme.typography.color,
-    },
   },
   mainHeading: {
     [theme.breakpoints.up('sm')]: {
@@ -78,7 +66,7 @@ const ServicesPage = () => {
 
   return (
     <Box>
-      <Box p="1em" className={classes.backgroundContainer}>
+      <Box className={classes.backgroundContainer}>
         <Box className={classes.mainHeading}>
           <Typography variant="h2" className={classes.h2}>
             Services

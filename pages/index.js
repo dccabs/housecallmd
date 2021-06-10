@@ -4,6 +4,7 @@ import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 
+import Container from '../components/Container'
 import ContactSection from '../components/ContactSection'
 import Reviews from '../components/Reviews'
 
@@ -29,7 +30,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   backgroundContainer: {
-    padding: '2em 1em',
     maxWidth: 1200,
     margin: 'auto',
     // backgroundImage: `url('/media/banner_phone.png')`,
@@ -50,19 +50,16 @@ const useStyles = makeStyles((theme) => ({
     //   color: theme.typography.color,
     // },
   },
-  h4: {
-    fontSize: '2.5em',
-    fontWeight: 900,
+  h2: {
     lineHeight: '1.5em',
-    textAlign: 'center',
 
     [theme.breakpoints.up('sm')]: {
-      maxWidth: '40rem',
+      maxWidth: '50rem',
     },
   },
   mainHeading: {
     [theme.breakpoints.up('sm')]: {
-      maxWidth: '40vw',
+      maxWidth: '60vw',
     },
   },
   content: {
@@ -92,43 +89,45 @@ const Home = () => {
 
   return (
     <Fragment>
-      <Box p="1em" className={classes.backgroundContainer}>
-        <Box className={classes.mainHeading}>
-          <Typography className={classes.h4}>
-            Schedule a housecall or telemedicine visit in minutes.
-          </Typography>
-        </Box>
-        <Box
-          className={classes.linkButtons}
-          mt="2em"
-          display="flex"
-          flexDirection="column"
-          alignitems="center"
-        >
-          <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
-            <Button
-              color="secondary"
-              variant="contained"
-              size="large"
-              fullWidth
-            >
-              Get Started
-            </Button>
-          </Link>
-          {!isAuthenticated && (
-            <Link href="/login">
+      <Container>
+        <Box p="1em" className={classes.backgroundContainer}>
+          <Box className={classes.mainHeading}>
+            <Typography className={classes.h2} variant="h2" align="center">
+              Schedule a housecall or telemedicine visit in minutes
+            </Typography>
+          </Box>
+          <Box
+            className={classes.linkButtons}
+            mt="2em"
+            display="flex"
+            flexDirection="column"
+            alignitems="center"
+          >
+            <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
               <Button
                 color="secondary"
                 variant="contained"
                 size="large"
                 fullWidth
               >
-                Login
+                Get Started
               </Button>
             </Link>
-          )}
+            {!isAuthenticated && (
+              <Link href="/login">
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
+          </Box>
         </Box>
-      </Box>
+      </Container>
       <Box p="1em" className={classes.content}>
         <Box mt="1em">
           <Typography className={classes.textBody}>
