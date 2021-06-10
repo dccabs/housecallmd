@@ -16,12 +16,10 @@ const useStyles = makeStyles((theme) => ({
   textBody: {
     maxWidth: '60rem',
   },
-  ctaButton: {
-    width: '100%',
-  },
   linkButtons: {
     '& button': {
       margin: '0.5em 0',
+      alignItems: 'center'
     },
   },
   divRight: {
@@ -32,10 +30,6 @@ const useStyles = makeStyles((theme) => ({
   backgroundContainer: {
     maxWidth: 1200,
     margin: 'auto',
-    // backgroundImage: `url('/media/banner_phone.png')`,
-    // backgroundPosition: 'top center',
-    // backgroundAttachment: 'cover',
-    // backgroundRepeat: 'no-repeat',
     color: '#000',
     display: 'flex',
     flexDirection: 'column',
@@ -52,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   h2: {
     lineHeight: '1.5em',
+    marginTop: 0,
 
     [theme.breakpoints.up('sm')]: {
       maxWidth: '50rem',
@@ -81,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
       padding: '6em',
     },
   },
+  reviewH2: {
+    marginTop: '.5em',
+  }
 }))
 
 const Home = () => {
@@ -90,46 +88,41 @@ const Home = () => {
   return (
     <Fragment>
       <Container>
-        <Box p="1em" className={classes.backgroundContainer}>
-          <Box className={classes.mainHeading}>
-            <Typography className={classes.h2} variant="h2" align="center">
-              Schedule a housecall or telemedicine visit in minutes
-            </Typography>
-          </Box>
-          <Box
-            className={classes.linkButtons}
-            mt="2em"
-            display="flex"
-            flexDirection="column"
-            alignitems="center"
-          >
-            <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
+        <Box className={classes.mainHeading}>
+          <Typography className={classes.h2} variant="h2">
+            Schedule a housecall or telemedicine visit in minutes
+          </Typography>
+        </Box>
+        <Box
+          className={classes.linkButtons}
+          mt="1em"
+          display="flex"
+          flexDirection="column"
+          alignitems="center"
+        >
+          <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
+            <Button
+              color="secondary"
+              variant="contained"
+              size="large"
+            >
+              Get Started
+            </Button>
+          </Link>
+          {!isAuthenticated && (
+            <Link href="/login">
               <Button
                 color="secondary"
-                variant="contained"
+                variant="outlined"
                 size="large"
-                fullWidth
               >
-                Get Started
+                Login
               </Button>
             </Link>
-            {!isAuthenticated && (
-              <Link href="/login">
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  size="large"
-                  fullWidth
-                >
-                  Login
-                </Button>
-              </Link>
-            )}
-          </Box>
+          )}
         </Box>
       </Container>
-      <Box p="1em" className={classes.content}>
-        <Box mt="1em">
+      <Box mt="1em" className={classes.content}>
           <Typography className={classes.textBody}>
             Our team of experienced and qualified care professionals specializes
             in providing urgent care in Kitsap County, Washington for our
@@ -146,7 +139,6 @@ const Home = () => {
             </Link>{' '}
             if you need mobile urgent care services.
           </Typography>
-        </Box>
       </Box>
 
       <Box
@@ -158,7 +150,7 @@ const Home = () => {
         justifyContent="center"
       >
         <Box mb="2em">
-          <Typography variant="h2">Reviews</Typography>
+          <Typography variant="h2" className={classes.reviewh2}>Reviews</Typography>
         </Box>
         <Reviews />
       </Box>
