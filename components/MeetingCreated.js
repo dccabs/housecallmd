@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MeetingCreated = ({ setShowOtherContent }) => {
+const MeetingCreated = ({ setMeetingContent }) => {
   const [roomId, setRoomId] = useState()
   const [loading, setLoading] = useState(false)
   const classes = useStyles()
@@ -89,7 +89,7 @@ const MeetingCreated = ({ setShowOtherContent }) => {
         <Button
           color="secondary"
           variant="contained"
-          onClick={() => setShowOtherContent(false)}
+          onClick={() => setMeetingContent(false)}
         >
           Back
         </Button>
