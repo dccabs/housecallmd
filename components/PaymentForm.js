@@ -106,9 +106,9 @@ const PaymentForm = () => {
   }
 
   const handleSubmit = async () => {
-    // TODO: remove after stripe fixed.
-    router.push('/thank-you')
-    return
+    // // TODO: remove after stripe fixed.
+    // router.push('/thank-you')
+    // return
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',

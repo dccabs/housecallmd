@@ -6,9 +6,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import PaymentForm from '../components/PaymentForm'
 import { makeStyles } from '@material-ui/core/styles'
 
-const stripePromise = loadStripe(
-  'pk_live_51IqepQFtNrzuZqBfxnjNvc1UOqAC0LUV1hSfkd5ZXAlV0x8PAqHwbjKKxhaxVo2wZKTJcNFuWaqet1txKfT25jvf00TKny1Ns2'
-)
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 const useStyles = makeStyles((theme) => ({
   h2: {
