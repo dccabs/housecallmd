@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import PhoneIcon from '@material-ui/icons/Phone'
 import EmailIcon from '@material-ui/icons/Email'
+import { SnackBarContext} from '../components/SnackBar'
 
 import Container from '../components/Container'
 import PhoneField from './PhoneField'
@@ -71,6 +72,7 @@ const ContactSection = () => {
   const [localPhone, setLocalPhone] = useState('')
   const [localComment, setLocalComment] = useState('')
 
+  const openSnackBar = useContext(SnackBarContext)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -91,9 +93,8 @@ const ContactSection = () => {
       body: JSON.stringify(payload)
     })
       .then((res) => {
-        console.log('res', res)
         if (res.ok) {
-          alert(`An email to HouseCall MD`);
+          openSnackBar({message: `An email has been sent HouseCall MD`, snackSeverity: 'success'})
         }
       });  }
 
