@@ -1,8 +1,9 @@
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import PhoneField from '../components/PhoneField'
+import { SnackBarContext } from '../components/SnackBar'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -40,6 +41,8 @@ const Contact = () => {
   const [localPhone, setLocalPhone] = useState('')
   const [localComment, setLocalComment] = useState('')
 
+  const openSnackBar = useContext(SnackBarContext)
+
   const handleSubmit = (e) => {
     e.preventDefault()
 
@@ -61,7 +64,9 @@ const Contact = () => {
       .then((res) => {
         console.log('res', res)
         if (res.ok) {
-          alert(`An email to HouseCall MD`);
+          openSnackBar({message: 'An email has been sent to HouseCall MD', snackSeverity: 'success'})
+        } else {
+          openSnackBar({message: 'There was an error.  Please try again later', error: 'error'})
         }
       });  }
 

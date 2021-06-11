@@ -64,7 +64,6 @@ const ForgotPassword = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   return (
-    <Container>
       <Box p="1em">
         <Typography variant="h2" className={classes.h2}>Forgot Password</Typography>
         <Box className={classes.disclaimer} mt="1em">
@@ -110,7 +109,6 @@ const ForgotPassword = () => {
           </Box>
         </form>
       </Box>
-    </Container>
   )
 }
 
