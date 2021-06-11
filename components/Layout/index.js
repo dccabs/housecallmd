@@ -34,12 +34,12 @@ const Layout = ({ children }) => {
       justifyContent="space-between"
     >
       <Box>
-        <Navbar />
         <SnackBar>
-          <Box
-            className={classes.main}
-          >{children}</Box>
-        </SnackBar>
+          <Navbar />
+            <Box
+              className={classes.main}
+            >{children}</Box>
+          </SnackBar>
       </Box>
       <Footer />
     </Box>

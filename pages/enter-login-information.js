@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import {
   Typography,
@@ -10,6 +10,8 @@ import {
   FormControlLabel,
 } from '@material-ui/core'
 import Container from '../components/Container'
+
+import { SnackBarContext } from '../components/SnackBar'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
@@ -56,6 +58,7 @@ const Contact = () => {
   const classes = useStyles()
   const router = useRouter()
   const { session } = Auth.useUser()
+  const openSnackBar = useContext(SnackBarContext)
 
   const [checked, setChecked] = useState(false)
   const [password, setPassword] = useState('')
@@ -115,18 +118,17 @@ const Contact = () => {
         if (data.error) {
           throw Error(data.error)
         } else {
-          alert("You successfully added a user");
           router.push('/visit-choice');
           sendEmailToUser(payload);
         }
       })
       .catch((error) => {
-        alert(error)
+        openSnackBar({message: error, snackSeverity: 'error'})
       })
   }
   const loginUser = () => {
     supabase.auth.signUp({ email: localEmail, password }).then((response) => {
-      response.error ? alert(response.error.message) : setToken(response)
+      response.error ?  openSnackBar({message: response.error.message, snackSeverity: 'error'}) : setToken(response)
     })
   }
 
@@ -146,7 +148,7 @@ const Contact = () => {
         }
       })
       .catch(error => {
-        alert(error);
+        openSnackBar({message: error, snackSeverity: 'error'})
       });
   }
 
@@ -154,12 +156,11 @@ const Contact = () => {
     if (!response.data.access_token) {
       return;
     } else {
-      console.log('response id', response.data.user.id)
       await setEmail(response.data.user.email);
       await setLocalEmail(response.data.user.email);
       await setLocalId(response.data.user.id);
       // TODO: fix this timeout
-        alert('Logged in as ' + response.data.user.email)
+      openSnackBar({message: 'Logged in as ' + response.data.user.email, snackSeverity: 'success'})
         let newUser = {
           hasInsurance,
           provider,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
   Typography,
   Box,
@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Container from '../components/Container'
 import UtilModal from '../components/UtilModal'
+import { SnackBarContext } from '../components/SnackBar'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -42,6 +43,8 @@ const UserAdmin = () => {
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [loading, setLoading] = useState(false)
   const classes = useStyles()
+  const openSnackBar = useContext(SnackBarContext)
+
 
   useEffect(async () => {
     try {
@@ -96,11 +99,11 @@ const UserAdmin = () => {
           if (data.error) {
             throw Error(data.error)
           } else {
-            alert(`You successfully deleted ${rowsToDelete.firstname} ${rowsToDelete.lastName}`);
+            openSnackBar({message: `You successfully deleted a user`, snackSeverity: 'success'})
           }
         })
         .catch((error) => {
-          alert(error)
+          openSnackBar({message: error, snackSeverity: 'error'})
         })
     })
 

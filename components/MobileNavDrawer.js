@@ -1,6 +1,7 @@
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, Fragment, useContext } from 'react'
 import { Box, List, ListItem, Link as MuiLink } from '@material-ui/core'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { SnackBarContext } from './SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
 import { supabase } from '../utils/initSupabase'
 import { useRouter } from 'next/router'
@@ -27,7 +28,10 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
   const session = supabase.auth.session()
+  const user = supabase.auth.user()
   const classes = useStyles()
+
+  const openSnackBar = useContext(SnackBarContext)
 
   useEffect(() => {
     session ? setIsAuthenticated(true) : setIsAuthenticated(false)
@@ -48,7 +52,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
-    console.log(error)
+    openSnackBar({message: `${user.email} has been logged out of the application`, snackSeverity: 'error'})
     router.push('/')
   }
 
