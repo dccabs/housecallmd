@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState , useContext} from 'react'
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
+import { SnackBarContext} from '../components/SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { supabase } from '../utils/initSupabase'
@@ -55,15 +56,15 @@ const login = () => {
     supabase.auth
       .signIn(payload)
       .then((response) => {
-        response.error ? alert(response.error.message) : setToken(response)
+        response.error ? openSnackBar({message: response.error.message, snackSeverity: 'error'}) : setToken(response)
       })
       .catch((err) => {
-        alert(err.response.text)
+        openSnackBar({message: err.response.text, snackSeverity: 'error'})
       })
   }
 
   const setToken = (response) => {
-    alert('Logged in as ' + response.user.email)
+    openSnackBar({message: 'Logged in as ' + response.user.email});
     router.push('/visit-choice')
   }
 
@@ -74,6 +75,8 @@ const login = () => {
   const handleEmailUpdate = (e) => {
     setLocalEmail(e.target.value)
   }
+
+  const openSnackBar = useContext(SnackBarContext)
 
   return (
     <Container>

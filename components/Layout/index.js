@@ -6,6 +6,7 @@ import { Auth } from '@supabase/ui'
 
 import Navbar from '../Navbar'
 import Footer from '../Footer'
+import SnackBar from '../SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -34,9 +35,11 @@ const Layout = ({ children }) => {
     >
       <Box>
         <Navbar />
-        <Box
-          className={classes.main}
-        >{children}</Box>
+        <SnackBar>
+          <Box
+            className={classes.main}
+          >{children}</Box>
+        </SnackBar>
       </Box>
       <Footer />
     </Box>
