@@ -88,6 +88,7 @@ const PaymentForm = () => {
   const [error, setError] = useState(null)
   const [cardComplete, setCardComplete] = useState(false)
   const [processing, setProcessing] = useState(false)
+  const [clientSecret, setClientSecret] = useState(false)
   const [billingDetails, setBillingDetails] = useState({
     email: '',
     phone: '',
@@ -102,10 +103,11 @@ const PaymentForm = () => {
 
   const handleClose = () => {
     setOpen(false)
-    handleSubmit()
+    // handleSubmit()
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     // // TODO: remove after stripe fixed.
     // router.push('/thank-you')
     // return
@@ -117,27 +119,49 @@ const PaymentForm = () => {
     })
 
     if (!error) {
-      try {
-        const { id } = paymentMethod
-        const res = await fetch(`/api/payment`, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id,
-            amount: 1000,
-          }),
-        })
+      const { id } = paymentMethod
+      const res = await fetch(`/api/createPaymentIntent`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          amount: 1000,
+        }),
+      }).then((res) => {
+        return res.json();
+      }).then((data) => {
+        setClientSecret(data.clientSecret);
+        setOpen(true);
+      });
+    } else {
+      console.log(error)
+    }
+  }
 
-        if (res.data.success) {
-          setSuccess(true)
-        }
-      } catch (err) {
-        console.log(err)
+  const handleConfirm = async (e) => {
+    e.preventDefault();
+    // // TODO: remove after stripe fixed.
+    // router.push('/thank-you')
+    // return
+
+    const payload = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
       }
-    } else console.log(error)
+    })
+
+    if (payload.error) {
+      setError(`Payment failed ${payload.error.message}`);
+      setProcessing(false);
+    } else {
+      setError(null);
+      setProcessing(false);
+      setSucceeded(true);
+      router.push('/thank-you')
+    }
   }
 
   return (
@@ -149,6 +173,7 @@ const PaymentForm = () => {
             service is ${amount}. To proceed please fill out your payment
             information.
           </Typography>
+          {clientSecret}
         </Box>
         <form onSubmit={handleSubmit}>
           <fieldset className={classes.FormGroup}>
@@ -227,7 +252,8 @@ const PaymentForm = () => {
                 <Button
                   color="secondary"
                   variant="contained"
-                  onClick={() => setOpen(true)}
+                  type="submit"
+                  // onClick={() => setOpen(true)}
                 >
                   Continue
                 </Button>
@@ -271,7 +297,7 @@ const PaymentForm = () => {
                     <Button
                       color="secondary"
                       variant="contained"
-                      onClick={handleClose}
+                      onClick={handleConfirm}
                     >
                       Confirm
                     </Button>
