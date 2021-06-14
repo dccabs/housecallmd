@@ -184,8 +184,12 @@ const PaymentForm = () => {
     })
 
     if (payload.error) {
-      setError(`Payment failed ${payload.error.message}`);
+      openSnackBar({
+        message: `Payment failed ${payload.error.message}`,
+        snackSeverity: 'error',
+      });
       setProcessing(false);
+      setOpen(false);
     } else {
       setError(null);
       setProcessing(false);
