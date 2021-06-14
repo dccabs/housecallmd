@@ -1,19 +1,31 @@
-import { useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import {
   Typography,
   Box,
   Button,
   Dialog,
   DialogContent,
+  Backdrop,
+  CircularProgress,
 } from '@material-ui/core'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
-
+import { SnackBarContext } from './SnackBar'
+import visitPricing from '../public/constants/visitPricing'
 import Field from './Field'
 
 const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: 9999,
+    color: '#fff',
+  },
+  cardError: {
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   text: {
     marginBottom: '2em',
     maxWidth: '40rem',
@@ -57,6 +69,11 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  visitDescription: {
+    textAlign: 'center',
+    fontSize: 16,
+    margin: '20px 0'
+  }
 }))
 
 const CARD_OPTIONS = {
@@ -88,201 +105,268 @@ const PaymentForm = () => {
   const [error, setError] = useState(null)
   const [cardComplete, setCardComplete] = useState(false)
   const [processing, setProcessing] = useState(false)
+  const [succeeded, setSucceeded] = useState(false);
+  const [clientSecret, setClientSecret] = useState(false)
+  const [amount, setAmount] = useState(0)
   const [billingDetails, setBillingDetails] = useState({
     email: '',
     phone: '',
     name: '',
   })
-  const amount = 99.99
-  const { visitChoice } = useStore()
+
+  const openSnackBar = useContext(SnackBarContext)
+
+  const { visitChoice, hasInsurance } = useStore()
   const stripe = useStripe()
   const elements = useElements()
   const classes = useStyles()
   const router = useRouter()
 
+  useEffect(() => {
+    if (visitChoice === 'video') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.video)
+        : setAmount(visitPricing.noInsurance.pricing.video)
+    } else if (visitChoice === 'phone') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.phone)
+        : setAmount(visitPricing.noInsurance.pricing.phone)
+    } else if (visitChoice === 'in_person') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.in_person)
+        : setAmount(visitPricing.noInsurance.pricing.in_person)
+    }
+  }, [])
+
   const handleClose = () => {
     setOpen(false)
-    handleSubmit()
+    // handleSubmit()
   }
 
-  const handleSubmit = async () => {
-    // TODO: remove after stripe fixed.
-    router.push('/thank-you')
-    return
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (error) {
+      openSnackBar({
+        message: "Please correct the errors in your payment form",
+        snackSeverity: 'error',
+      })
+      return false;
+    }
+    setProcessing(true)
+    await fetch(`/api/createPaymentIntent`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        // id,
+        amount,
+      }),
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      setClientSecret(data.clientSecret);
+      setOpen(true);
+      setProcessing(false)
+    });
+  }
 
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: elements.getElement(CardElement),
-      billing_details: billingDetails,
+  const handleConfirm = async (e) => {
+    e.preventDefault();
+    setProcessing(true)
+
+
+    const payload = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+      }
     })
 
-    if (!error) {
-      try {
-        const { id } = paymentMethod
-        const res = await fetch(`/api/payment`, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id,
-            amount: 1000,
-          }),
-        })
+    if (payload.error) {
+      openSnackBar({
+        message: `Payment failed ${payload.error.message}`,
+        snackSeverity: 'error',
+      });
+      setProcessing(false);
+      setOpen(false);
+    } else {
+      setError(null);
+      setProcessing(false);
+      setSucceeded(true);
+      router.push('/thank-you')
+      setProcessing(false)
 
-        if (res.data.success) {
-          setSuccess(true)
-        }
-      } catch (err) {
-        console.log(err)
-      }
-    } else console.log(error)
+    }
   }
 
   return (
-    <Box my="1em" width="100%" display="flex" justifyContent="center">
-      <Box className={classes.wrapper}>
-        <Box className={classes.text}>
-          <Typography variant="h4">
-            You have selected a {visitChoice} appointment. The cost for this
-            service is ${amount}. To proceed please fill out your payment
-            information.
-          </Typography>
-        </Box>
-        <form onSubmit={handleSubmit}>
-          <fieldset className={classes.FormGroup}>
-            <Field
-              label="Name"
-              id="name"
-              type="text"
-              placeholder="Jane Doe"
-              required
-              autoComplete="name"
-              value={billingDetails.name}
-              onChange={(e) => {
-                setBillingDetails({ ...billingDetails, name: e.target.value })
-              }}
-            />
-            <Field
-              label="Email"
-              id="email"
-              type="email"
-              placeholder="janedoe@gmail.com"
-              required
-              autoComplete="email"
-              value={billingDetails.email}
-              onChange={(e) => {
-                setBillingDetails({ ...billingDetails, email: e.target.value })
-              }}
-            />
-            <Field
-              label="Phone"
-              id="phone"
-              type="tel"
-              placeholder="(941) 555-0123"
-              required
-              autoComplete="tel"
-              value={billingDetails.phone}
-              onChange={(e) => {
-                setBillingDetails({ ...billingDetails, phone: e.target.value })
-              }}
-            />
-          </fieldset>
-
-          <fieldset className={classes.FormGroup}>
-            <div className={classes.FormRow}>
-              <CardElement
-                options={CARD_OPTIONS}
-                // onChange={(e) => {
-                //   setError(e.error)
-                //   setCardComplete(e.complete)
-                // }}
-              />
+    <>
+      <Backdrop className={classes.backdrop} open={processing}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Box my="1em" width="100%" display="flex" justifyContent="center">
+        <Box className={classes.wrapper}>
+          <Box className={classes.text}>
+            <Typography variant="h4">
+              <strong>Cost: ${amount}</strong>
+            </Typography>
+            <div className={classes.visitDescription}>
+              <p>
+                You have chosen a {' '}
+                {visitChoice === 'video'
+                  ? 'Video'
+                  : visitChoice === 'phone'
+                    ? 'Phone'
+                    : visitChoice === 'in_person'
+                      ? 'Housecall, in person'
+                      : ''}{' appointment'}
+              </p>
+              <p>
+                To proceed please fill out your payment information.
+              </p>
             </div>
-          </fieldset>
-
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Box
-              mt="1em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => router.back()}
-                >
-                  Back
-                </Button>
-              </Box>
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => setOpen(true)}
-                >
-                  Continue
-                </Button>
-              </Box>
-            </Box>
           </Box>
+          <form onSubmit={handleSubmit}>
+            <fieldset className={classes.FormGroup}>
+              <Field
+                label="Name"
+                id="name"
+                type="text"
+                placeholder="Jane Doe"
+                required
+                autoComplete="name"
+                value={billingDetails.name}
+                onChange={(e) => {
+                  setBillingDetails({ ...billingDetails, name: e.target.value })
+                }}
+              />
+              <Field
+                label="Email"
+                id="email"
+                type="email"
+                placeholder="janedoe@gmail.com"
+                required
+                autoComplete="email"
+                value={billingDetails.email}
+                onChange={(e) => {
+                  setBillingDetails({ ...billingDetails, email: e.target.value })
+                }}
+              />
+              <Field
+                label="Phone"
+                id="phone"
+                type="tel"
+                placeholder="(941) 555-0123"
+                required
+                autoComplete="tel"
+                value={billingDetails.phone}
+                onChange={(e) => {
+                  setBillingDetails({ ...billingDetails, phone: e.target.value })
+                }}
+              />
+            </fieldset>
 
-          <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
+            <fieldset className={classes.FormGroup}>
+              <div className={classes.FormRow}>
+                <CardElement
+                  options={CARD_OPTIONS}
+                  onChange={(e) => {
+                    setError(e.error?.message)
+                    setCardComplete(e.complete)
+                  }}
+                />
+              </div>
+            </fieldset>
+            {error &&
+            <div className={classes.cardError}>
+              {error}
+            </div>
+            }
+
             <Box
-              p="4em"
               display="flex"
               flexDirection="column"
               alignItems="center"
               justifyContent="center"
             >
-              <Typography
-                variant="h4"
-                align="center"
-                style={{ lineHeight: '1.5em', maxWidth: '25rem' }}
+              <Box
+                mt="1em"
+                display="flex"
+                justifyContent="center"
+                flexWrap="wrap"
               >
-                You will be charged ${amount} by HouseCallMD. Please confirm to
-                pay.
-              </Typography>
-              <DialogContent>
-                <Box
-                  mt="2em"
-                  display="flex"
-                  justifyContent="center"
-                  flexWrap="wrap"
-                >
-                  <Box m="1em" className={classes.buttonLinks}>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={() => setOpen(!open)}
-                    >
-                      Cancel
-                    </Button>
-                  </Box>
-                  <Box m="1em" className={classes.buttonLinks}>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={handleClose}
-                    >
-                      Confirm
-                    </Button>
-                  </Box>
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => router.back()}
+                  >
+                    Back
+                  </Button>
                 </Box>
-              </DialogContent>
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    disabled={!cardComplete || !billingDetails.name || !billingDetails.email || !billingDetails.phone}
+                  >
+                    Continue
+                  </Button>
+                </Box>
+              </Box>
             </Box>
-          </Dialog>
-        </form>
+
+            <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
+              <Box
+                p="4em"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography
+                  variant="h4"
+                  align="center"
+                  style={{ lineHeight: '1.5em', maxWidth: '25rem' }}
+                >
+                  You will be charged ${amount} by HouseCallMD. Please confirm to
+                  pay.
+                </Typography>
+                <DialogContent>
+                  <Box
+                    mt="2em"
+                    display="flex"
+                    justifyContent="center"
+                    flexWrap="wrap"
+                  >
+                    <Box m="1em" className={classes.buttonLinks}>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={() => setOpen(!open)}
+                      >
+                        Cancel
+                      </Button>
+                    </Box>
+                    <Box m="1em" className={classes.buttonLinks}>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={handleConfirm}
+                      >
+                        Confirm
+                      </Button>
+                    </Box>
+                  </Box>
+                </DialogContent>
+              </Box>
+            </Dialog>
+          </form>
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }
 
