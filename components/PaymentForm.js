@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Typography,
   Box,
@@ -10,6 +10,7 @@ import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
+import visitPricing from '../public/constants/visitPricing'
 
 import Field from './Field'
 
@@ -85,20 +86,36 @@ const CARD_OPTIONS = {
 
 const PaymentForm = () => {
   const [open, setOpen] = useState(false)
-  const [error, setError] = useState(null)
-  const [cardComplete, setCardComplete] = useState(false)
-  const [processing, setProcessing] = useState(false)
+  const [amount, setAmount] = useState(0)
+  // const [error, setError] = useState(null)
+  // const [cardComplete, setCardComplete] = useState(false)
+  // const [processing, setProcessing] = useState(false)
   const [billingDetails, setBillingDetails] = useState({
     email: '',
     phone: '',
     name: '',
   })
-  const amount = 99.99
-  const { visitChoice } = useStore()
+  const { visitChoice, hasInsurance } = useStore()
   const stripe = useStripe()
   const elements = useElements()
   const classes = useStyles()
   const router = useRouter()
+
+  useEffect(() => {
+    if (visitChoice === 'video') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.video)
+        : setAmount(visitPricing.noInsurance.pricing.video)
+    } else if (visitChoice === 'phone') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.phone)
+        : setAmount(visitPricing.noInsurance.pricing.phone)
+    } else if (visitChoice === 'in_person') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.in_person)
+        : setAmount(visitPricing.noInsurance.pricing.in_person)
+    }
+  }, [])
 
   const handleClose = () => {
     setOpen(false)
@@ -145,9 +162,16 @@ const PaymentForm = () => {
       <Box className={classes.wrapper}>
         <Box className={classes.text}>
           <Typography variant="h4">
-            You have selected a {visitChoice} appointment. The cost for this
-            service is ${amount}. To proceed please fill out your payment
-            information.
+            You have selected a{' '}
+            {visitChoice === 'video'
+              ? 'Video'
+              : visitChoice === 'phone'
+              ? 'Phone'
+              : visitChoice === 'in_person'
+              ? 'Housecall, in person'
+              : ''}{' '}
+            appointment. The cost for this service is {amount}. To proceed
+            please fill out your payment information.
           </Typography>
         </Box>
         <form onSubmit={handleSubmit}>
