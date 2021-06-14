@@ -69,6 +69,11 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  visitDescription: {
+    textAlign: 'center',
+    fontSize: 16,
+    margin: '20px 0'
+  }
 }))
 
 const CARD_OPTIONS = {
@@ -200,19 +205,23 @@ const PaymentForm = () => {
         <Box className={classes.wrapper}>
           <Box className={classes.text}>
             <Typography variant="h4">
-              <strong>{amount} {' - '}
+              <strong>Cost: ${amount}</strong>
+            </Typography>
+            <div className={classes.visitDescription}>
+              <p>
+                You have chosen a {' '}
                 {visitChoice === 'video'
                   ? 'Video'
                   : visitChoice === 'phone'
                     ? 'Phone'
                     : visitChoice === 'in_person'
                       ? 'Housecall, in person'
-                      : ''}{' appointment'}</strong>
-              <div>
+                      : ''}{' appointment'}
+              </p>
+              <p>
                 To proceed please fill out your payment information.
-              </div>
-            </Typography>
-            {clientSecret}
+              </p>
+            </div>
           </Box>
           <form onSubmit={handleSubmit}>
             <fieldset className={classes.FormGroup}>
