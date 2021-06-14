@@ -1,8 +1,8 @@
-import { useEffect, useState,  Fragment } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { Auth } from '@supabase/ui'
 import { supabase } from '../utils/initSupabase'
-import { useRouter } from 'next/router';
-
+import { useRouter } from 'next/router'
+import './styles.css'
 
 import Head from 'next/head'
 import {
@@ -19,19 +19,19 @@ const generateClassName = createGenerateClassName()
 
 export default function MyApp(props) {
   const { Component, pageProps, router } = props
-  const [loading, setLoading] = useState(true);
-  const nextRouter = useRouter();
+  const [loading, setLoading] = useState(true)
+  const nextRouter = useRouter()
 
   useEffect(() => {
-    const path = router.asPath;
-    const paramIndex = path.indexOf('#');
+    const path = router.asPath
+    const paramIndex = path.indexOf('#')
     if (paramIndex !== -1) {
       const params = path.substring(paramIndex + 1).split('&')
-      let obj = {};
+      let obj = {}
       params.forEach((param) => {
-        const arr = param.split('=');
+        const arr = param.split('=')
         console.log('arr', arr)
-        obj[arr[0]] = arr[1];
+        obj[arr[0]] = arr[1]
       })
 
       nextRouter.push({
@@ -44,7 +44,7 @@ export default function MyApp(props) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-    setLoading(false);
+    setLoading(false)
   }, [])
 
   return (
@@ -63,12 +63,8 @@ export default function MyApp(props) {
           <CssBaseline />
           <Auth.UserContextProvider supabaseClient={supabase}>
             <Layout>
-              {loading &&
-                <di>loading...</di>
-              }
-              {!loading &&
-              <Component {...pageProps} />
-              }
+              {loading && <di>loading...</di>}
+              {!loading && <Component {...pageProps} />}
             </Layout>
           </Auth.UserContextProvider>
         </ThemeProvider>

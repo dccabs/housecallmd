@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import {
   Typography,
   Box,
@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
 import { SnackBarContext } from './SnackBar'
-
+import visitPricing from '../public/constants/visitPricing'
 import Field from './Field'
 
 const useStyles = makeStyles((theme) => ({
@@ -90,6 +90,7 @@ const PaymentForm = () => {
   const [cardComplete, setCardComplete] = useState(false)
   const [processing, setProcessing] = useState(false)
   const [clientSecret, setClientSecret] = useState(false)
+  const [amount, setAmount] = useState(0)
   const [billingDetails, setBillingDetails] = useState({
     email: '',
     phone: '',
@@ -98,12 +99,27 @@ const PaymentForm = () => {
 
   const openSnackBar = useContext(SnackBarContext)
 
-  const amount = 99.99
-  const { visitChoice } = useStore()
+  const { visitChoice, hasInsurance } = useStore()
   const stripe = useStripe()
   const elements = useElements()
   const classes = useStyles()
   const router = useRouter()
+
+  useEffect(() => {
+    if (visitChoice === 'video') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.video)
+        : setAmount(visitPricing.noInsurance.pricing.video)
+    } else if (visitChoice === 'phone') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.phone)
+        : setAmount(visitPricing.noInsurance.pricing.phone)
+    } else if (visitChoice === 'in_person') {
+      hasInsurance
+        ? setAmount(visitPricing.insurance.pricing.in_person)
+        : setAmount(visitPricing.noInsurance.pricing.in_person)
+    }
+  }, [])
 
   const handleClose = () => {
     setOpen(false)
@@ -177,9 +193,17 @@ const PaymentForm = () => {
       <Box className={classes.wrapper}>
         <Box className={classes.text}>
           <Typography variant="h4">
-            You have selected a {visitChoice} appointment. The cost for this
-            service is ${amount}. To proceed please fill out your payment
-            information.
+            <strong>{amount} {' - '}
+            {visitChoice === 'video'
+              ? 'Video'
+              : visitChoice === 'phone'
+              ? 'Phone'
+              : visitChoice === 'in_person'
+              ? 'Housecall, in person'
+                  : ''}{' appointment'}</strong>
+              <div>
+                To proceed please fill out your payment information.
+              </div>
           </Typography>
           {clientSecret}
         </Box>
