@@ -15,6 +15,11 @@ import visitPricing from '../public/constants/visitPricing'
 import Field from './Field'
 
 const useStyles = makeStyles((theme) => ({
+  cardError: {
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   text: {
     marginBottom: '2em',
     maxWidth: '40rem',
@@ -89,6 +94,7 @@ const PaymentForm = () => {
   const [error, setError] = useState(null)
   const [cardComplete, setCardComplete] = useState(false)
   const [processing, setProcessing] = useState(false)
+  const [succeeded, setSucceeded] = useState(false);
   const [clientSecret, setClientSecret] = useState(false)
   const [amount, setAmount] = useState(0)
   const [billingDetails, setBillingDetails] = useState({
@@ -128,41 +134,29 @@ const PaymentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // // TODO: remove after stripe fixed.
-    // router.push('/thank-you')
-    // return
-
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: elements.getElement(CardElement),
-      billing_details: billingDetails,
-    })
-
-    if (!error) {
-      const { id } = paymentMethod
-      const res = await fetch(`/api/createPaymentIntent`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id,
-          amount,
-        }),
-      }).then((res) => {
-        return res.json();
-      }).then((data) => {
-        setClientSecret(data.clientSecret);
-        setOpen(true);
-      });
-    } else {
-      console.log(error)
+    if (error) {
       openSnackBar({
-        message: error.message,
-        snackSeverity: 'error'
+        message: "Please correct the errors in your payment form",
+        snackSeverity: 'error',
       })
+      return false;
     }
+    const res = await fetch(`/api/createPaymentIntent`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        // id,
+        amount,
+      }),
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      setClientSecret(data.clientSecret);
+      setOpen(true);
+    });
   }
 
   const handleConfirm = async (e) => {
@@ -251,13 +245,18 @@ const PaymentForm = () => {
             <div className={classes.FormRow}>
               <CardElement
                 options={CARD_OPTIONS}
-                // onChange={(e) => {
-                //   setError(e.error)
-                //   setCardComplete(e.complete)
-                // }}
+                onChange={(e) => {
+                  setError(e.error?.message)
+                  setCardComplete(e.complete)
+                }}
               />
             </div>
           </fieldset>
+          {error &&
+            <div className={classes.cardError}>
+              {error}
+            </div>
+          }
 
           <Box
             display="flex"
@@ -285,7 +284,7 @@ const PaymentForm = () => {
                   color="secondary"
                   variant="contained"
                   type="submit"
-                  // onClick={() => setOpen(true)}
+                  disabled={!cardComplete || !billingDetails.name || !billingDetails.email || !billingDetails.phone}
                 >
                   Continue
                 </Button>
