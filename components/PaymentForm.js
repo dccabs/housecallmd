@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import {
   Typography,
   Box,
@@ -10,6 +10,7 @@ import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
+import { SnackBarContext } from './SnackBar'
 
 import Field from './Field'
 
@@ -94,6 +95,9 @@ const PaymentForm = () => {
     phone: '',
     name: '',
   })
+
+  const openSnackBar = useContext(SnackBarContext)
+
   const amount = 99.99
   const { visitChoice } = useStore()
   const stripe = useStripe()
@@ -138,6 +142,10 @@ const PaymentForm = () => {
       });
     } else {
       console.log(error)
+      openSnackBar({
+        message: error.message,
+        snackSeverity: 'error'
+      })
     }
   }
 
