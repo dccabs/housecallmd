@@ -5,6 +5,8 @@ import {
   Button,
   Dialog,
   DialogContent,
+  Backdrop,
+  CircularProgress,
 } from '@material-ui/core'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { makeStyles } from '@material-ui/core/styles'
@@ -15,6 +17,10 @@ import visitPricing from '../public/constants/visitPricing'
 import Field from './Field'
 
 const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: 9999,
+    color: '#fff',
+  },
   cardError: {
     color: 'red',
     fontWeight: 'bold',
@@ -141,7 +147,8 @@ const PaymentForm = () => {
       })
       return false;
     }
-    const res = await fetch(`/api/createPaymentIntent`, {
+    setProcessing(true)
+    await fetch(`/api/createPaymentIntent`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -156,14 +163,14 @@ const PaymentForm = () => {
     }).then((data) => {
       setClientSecret(data.clientSecret);
       setOpen(true);
+      setProcessing(false)
     });
   }
 
   const handleConfirm = async (e) => {
     e.preventDefault();
-    // // TODO: remove after stripe fixed.
-    // router.push('/thank-you')
-    // return
+    setProcessing(true)
+
 
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
@@ -179,167 +186,174 @@ const PaymentForm = () => {
       setProcessing(false);
       setSucceeded(true);
       router.push('/thank-you')
+      setProcessing(false)
+
     }
   }
 
   return (
-    <Box my="1em" width="100%" display="flex" justifyContent="center">
-      <Box className={classes.wrapper}>
-        <Box className={classes.text}>
-          <Typography variant="h4">
-            <strong>{amount} {' - '}
-            {visitChoice === 'video'
-              ? 'Video'
-              : visitChoice === 'phone'
-              ? 'Phone'
-              : visitChoice === 'in_person'
-              ? 'Housecall, in person'
-                  : ''}{' appointment'}</strong>
+    <>
+      <Backdrop className={classes.backdrop} open={processing}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Box my="1em" width="100%" display="flex" justifyContent="center">
+        <Box className={classes.wrapper}>
+          <Box className={classes.text}>
+            <Typography variant="h4">
+              <strong>{amount} {' - '}
+                {visitChoice === 'video'
+                  ? 'Video'
+                  : visitChoice === 'phone'
+                    ? 'Phone'
+                    : visitChoice === 'in_person'
+                      ? 'Housecall, in person'
+                      : ''}{' appointment'}</strong>
               <div>
                 To proceed please fill out your payment information.
               </div>
-          </Typography>
-          {clientSecret}
-        </Box>
-        <form onSubmit={handleSubmit}>
-          <fieldset className={classes.FormGroup}>
-            <Field
-              label="Name"
-              id="name"
-              type="text"
-              placeholder="Jane Doe"
-              required
-              autoComplete="name"
-              value={billingDetails.name}
-              onChange={(e) => {
-                setBillingDetails({ ...billingDetails, name: e.target.value })
-              }}
-            />
-            <Field
-              label="Email"
-              id="email"
-              type="email"
-              placeholder="janedoe@gmail.com"
-              required
-              autoComplete="email"
-              value={billingDetails.email}
-              onChange={(e) => {
-                setBillingDetails({ ...billingDetails, email: e.target.value })
-              }}
-            />
-            <Field
-              label="Phone"
-              id="phone"
-              type="tel"
-              placeholder="(941) 555-0123"
-              required
-              autoComplete="tel"
-              value={billingDetails.phone}
-              onChange={(e) => {
-                setBillingDetails({ ...billingDetails, phone: e.target.value })
-              }}
-            />
-          </fieldset>
-
-          <fieldset className={classes.FormGroup}>
-            <div className={classes.FormRow}>
-              <CardElement
-                options={CARD_OPTIONS}
+            </Typography>
+            {clientSecret}
+          </Box>
+          <form onSubmit={handleSubmit}>
+            <fieldset className={classes.FormGroup}>
+              <Field
+                label="Name"
+                id="name"
+                type="text"
+                placeholder="Jane Doe"
+                required
+                autoComplete="name"
+                value={billingDetails.name}
                 onChange={(e) => {
-                  setError(e.error?.message)
-                  setCardComplete(e.complete)
+                  setBillingDetails({ ...billingDetails, name: e.target.value })
                 }}
               />
-            </div>
-          </fieldset>
-          {error &&
+              <Field
+                label="Email"
+                id="email"
+                type="email"
+                placeholder="janedoe@gmail.com"
+                required
+                autoComplete="email"
+                value={billingDetails.email}
+                onChange={(e) => {
+                  setBillingDetails({ ...billingDetails, email: e.target.value })
+                }}
+              />
+              <Field
+                label="Phone"
+                id="phone"
+                type="tel"
+                placeholder="(941) 555-0123"
+                required
+                autoComplete="tel"
+                value={billingDetails.phone}
+                onChange={(e) => {
+                  setBillingDetails({ ...billingDetails, phone: e.target.value })
+                }}
+              />
+            </fieldset>
+
+            <fieldset className={classes.FormGroup}>
+              <div className={classes.FormRow}>
+                <CardElement
+                  options={CARD_OPTIONS}
+                  onChange={(e) => {
+                    setError(e.error?.message)
+                    setCardComplete(e.complete)
+                  }}
+                />
+              </div>
+            </fieldset>
+            {error &&
             <div className={classes.cardError}>
               {error}
             </div>
-          }
+            }
 
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
             <Box
-              mt="1em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => router.back()}
-                >
-                  Back
-                </Button>
-              </Box>
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  type="submit"
-                  disabled={!cardComplete || !billingDetails.name || !billingDetails.email || !billingDetails.phone}
-                >
-                  Continue
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-
-          <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
-            <Box
-              p="4em"
               display="flex"
               flexDirection="column"
               alignItems="center"
               justifyContent="center"
             >
-              <Typography
-                variant="h4"
-                align="center"
-                style={{ lineHeight: '1.5em', maxWidth: '25rem' }}
+              <Box
+                mt="1em"
+                display="flex"
+                justifyContent="center"
+                flexWrap="wrap"
               >
-                You will be charged ${amount} by HouseCallMD. Please confirm to
-                pay.
-              </Typography>
-              <DialogContent>
-                <Box
-                  mt="2em"
-                  display="flex"
-                  justifyContent="center"
-                  flexWrap="wrap"
-                >
-                  <Box m="1em" className={classes.buttonLinks}>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={() => setOpen(!open)}
-                    >
-                      Cancel
-                    </Button>
-                  </Box>
-                  <Box m="1em" className={classes.buttonLinks}>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={handleConfirm}
-                    >
-                      Confirm
-                    </Button>
-                  </Box>
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => router.back()}
+                  >
+                    Back
+                  </Button>
                 </Box>
-              </DialogContent>
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    type="submit"
+                    disabled={!cardComplete || !billingDetails.name || !billingDetails.email || !billingDetails.phone}
+                  >
+                    Continue
+                  </Button>
+                </Box>
+              </Box>
             </Box>
-          </Dialog>
-        </form>
+
+            <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
+              <Box
+                p="4em"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography
+                  variant="h4"
+                  align="center"
+                  style={{ lineHeight: '1.5em', maxWidth: '25rem' }}
+                >
+                  You will be charged ${amount} by HouseCallMD. Please confirm to
+                  pay.
+                </Typography>
+                <DialogContent>
+                  <Box
+                    mt="2em"
+                    display="flex"
+                    justifyContent="center"
+                    flexWrap="wrap"
+                  >
+                    <Box m="1em" className={classes.buttonLinks}>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={() => setOpen(!open)}
+                      >
+                        Cancel
+                      </Button>
+                    </Box>
+                    <Box m="1em" className={classes.buttonLinks}>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={handleConfirm}
+                      >
+                        Confirm
+                      </Button>
+                    </Box>
+                  </Box>
+                </DialogContent>
+              </Box>
+            </Dialog>
+          </form>
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }
 
