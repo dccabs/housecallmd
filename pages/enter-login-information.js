@@ -119,7 +119,6 @@ const Contact = () => {
           throw Error(data.error)
         } else {
           router.push('/visit-choice');
-          sendEmailToUser(payload);
         }
       })
       .catch((error) => {
@@ -130,26 +129,6 @@ const Contact = () => {
     supabase.auth.signUp({ email: localEmail, password }).then((response) => {
       response.error ?  openSnackBar({message: response.error.message, snackSeverity: 'error'}) : setToken(response)
     })
-  }
-
-  const sendEmailToUser = (payload) => {
-    fetch('/api/sendNewAppointmentEmail', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify(payload)
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw Error(data.error);
-        } else {
-          return data;
-        }
-      })
-      .catch(error => {
-        openSnackBar({message: error, snackSeverity: 'error'})
-      });
   }
 
   const setToken = async (response) => {
