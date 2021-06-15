@@ -197,7 +197,7 @@ const Home = () => {
             healthcare needs.
             <br />
             <br />
-            <Link href="/insurance">
+            <Link href="/contact">
               <a>Contact us today</a>
             </Link>{' '}
             if you need mobile urgent care services.
