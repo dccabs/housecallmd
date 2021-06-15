@@ -99,35 +99,32 @@ const ContactSection = () => {
       });  }
 
   return (
-    <Box className={classes.root}>
-      <Container>
+    <Box padding="1em" className={classes.root}>
         <Box id="contact">
           <Box
             width="100%"
             display="flex"
             flexWrap="wrap"
-            maxWidth="1400px"
+            justifyContent="space-around"
           >
-            <Box display="flex">
-              <Box>
-                <Typography variant="h2" className={classes.h2}>Contact Us</Typography>
-                <Box className={classes.info}>
-                  <PhoneIcon />
-                  <Typography variant="h4">1-833-432-5633</Typography>
-                </Box>
-                <Box className={classes.info}>
-                  <EmailIcon />
-                  <Typography variant="h4">contact@housecallmd.org</Typography>
-                </Box>
+            <Box>
+              <Typography variant="h2" className={classes.h2}>Contact Us</Typography>
+              <Box className={classes.info}>
+                <PhoneIcon />
+                <Typography variant="h4">1-833-432-5633</Typography>
               </Box>
-              <Box>
-                <img
-                  className={classes.doctor}
-                  src="/media/doctor.png"
-                  width="100%"
-                  height="100%"
-                />
+              <Box className={classes.info}>
+                <EmailIcon />
+                <Typography variant="h4">contact@housecallmd.org</Typography>
               </Box>
+            </Box>
+            <Box>
+              <img
+                className={classes.doctor}
+                src="/media/doctor.png"
+                width="100%"
+                height="100%"
+              />
             </Box>
             <Box
               my="1em"
@@ -195,7 +192,6 @@ const ContactSection = () => {
             </Box>
           </Box>
         </Box>
-      </Container>
     </Box>
   )
 }
