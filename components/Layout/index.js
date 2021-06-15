@@ -7,12 +7,6 @@ import { Auth } from '@supabase/ui'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 import SnackBar from '../SnackBar'
-import { makeStyles } from '@material-ui/core/styles'
-
-const useStyles = makeStyles((theme) => ({
-  main: {
-  },
-}))
 
 const Layout = ({ children }) => {
   const { setIsAuthenticated } = useStore()
