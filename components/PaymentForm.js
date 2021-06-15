@@ -116,7 +116,21 @@ const PaymentForm = () => {
 
   const openSnackBar = useContext(SnackBarContext)
 
-  const { visitChoice, hasInsurance } = useStore()
+  const {
+    hasInsurance,
+    provider,
+    planNumber,
+    groupNumber,
+    visitChoice,
+    firstName,
+    lastName,
+    email,
+    address,
+    city,
+    state,
+    zip,
+    phone,
+  } = useStore()
   const stripe = useStripe()
   const elements = useElements()
   const classes = useStyles()
@@ -172,6 +186,49 @@ const PaymentForm = () => {
     });
   }
 
+  const sendEmailToUser = async () => {
+    const payload = {
+      newUser: {
+        hasInsurance,
+        provider,
+        planNumber,
+        groupNumber,
+        visitChoice,
+        firstName,
+        lastName,
+        email,
+        address,
+        city,
+        state,
+        zip,
+        phone,
+        amount,
+      }
+    }
+
+    await fetch('/api/sendNewAppointmentEmail', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error);
+        } else {
+          openSnackBar({message: 'Appointment request sent to HouseCallMD', snackSeverity: 'success'})
+          router.push('/thank-you')
+          setProcessing(false)
+        }
+      })
+      .catch(error => {
+        openSnackBar({message: error.toString(), snackSeverity: 'error'})
+        setProcessing(false)
+        setOpen(false);
+      });
+  }
+
   const handleConfirm = async (e) => {
     e.preventDefault();
     setProcessing(true)
@@ -192,11 +249,8 @@ const PaymentForm = () => {
       setOpen(false);
     } else {
       setError(null);
-      setProcessing(false);
       setSucceeded(true);
-      router.push('/thank-you')
-      setProcessing(false)
-
+      sendEmailToUser();
     }
   }
 

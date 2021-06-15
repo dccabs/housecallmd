@@ -17,6 +17,8 @@ const sendNewAppointmentFetch = async (props) => {
     state,
     zip,
     phone,
+    visitChoice,
+    amount,
   } = props;
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
@@ -46,10 +48,12 @@ const sendNewAppointmentFetch = async (props) => {
             <img src="http://www.housecallmd.org/wp-content/themes/housecallmd/images/main-logo.png" width="150px" height="100px" /><br />
             <div style="color: #000;">
             
-              <div style={{fontSize: '24px', fontWeight: 'bold, marginBottom: '20px'}}>
+              <div style="font-weight: bold; font-size: 24px">
                 Patient Information
               </div>
             
+              <div style="font-weight: bold">Visit Choice: ${visitChoice}</div>
+              <div style="font-weight: bold">Amount Paid: ${amount}</div>
               <div style={{fontWeight: 'bold'}}>Patient Has Insurance: ${hasInsurance}</div>
               <div>First Name: ${firstName}</div>
               <div>Last Name: ${lastName}</div>
