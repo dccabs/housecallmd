@@ -79,79 +79,81 @@ const login = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   return (
-    <Box p="1em">
-      <Typography variant="h2" className={classes.h2}>Login</Typography>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <TextField
-            value={localEmail}
-            className={classes.textFields}
-            fullWidth
-            type="email"
-            label="Email"
-            variant="outlined"
-            color="secondary"
-            required
-            onChange={handleEmailUpdate}
-          />
-          <TextField
-            value={password}
-            className={classes.textFields}
-            fullWidth
-            type="password"
-            label="Password"
-            variant="outlined"
-            color="secondary"
-            required
-            onChange={handlePasswordUpdate}
-          />
+    <Container>
+      <Box>
+        <Typography variant="h2" className={classes.h2}>Login</Typography>
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box
-            className={classes.link}
-            mt="1em"
-            width="100%"
-            maxWidth="34rem"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
           >
-            <Box mt="0.5em">
-              <Typography align="right">
-                <Link href="/insurance">
-                  <a>Sign up for an account</a>
-                </Link>
-              </Typography>
-            </Box>
-            <Box mt="0.5em">
-              <Typography align="right">
-                <Link href="/forgot-password">
-                  <a>Forgot Password</a>
-                </Link>
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          mt="2em"
-          display="flex"
-          justifyContent="center"
-          flexWrap="wrap"
-        >
-          <Box m="1em" className={classes.buttonLinks}>
-            <Button
-              disabled={!password || !localEmail}
-              type="submit"
+            <TextField
+              value={localEmail}
+              className={classes.textFields}
+              fullWidth
+              type="email"
+              label="Email"
+              variant="outlined"
               color="secondary"
-              variant="contained"
-              size="large"
+              required
+              onChange={handleEmailUpdate}
+            />
+            <TextField
+              value={password}
+              className={classes.textFields}
+              fullWidth
+              type="password"
+              label="Password"
+              variant="outlined"
+              color="secondary"
+              required
+              onChange={handlePasswordUpdate}
+            />
+            <Box
+              className={classes.link}
+              mt="1em"
+              width="100%"
+              maxWidth="34rem"
             >
-              Login
-            </Button>
+              <Box mt="0.5em">
+                <Typography align="right">
+                  <Link href="/insurance">
+                    <a>Sign up for an account</a>
+                  </Link>
+                </Typography>
+              </Box>
+              <Box mt="0.5em">
+                <Typography align="right">
+                  <Link href="/forgot-password">
+                    <a>Forgot Password</a>
+                  </Link>
+                </Typography>
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </form>
-    </Box>
+          <Box
+            mt="2em"
+            display="flex"
+            justifyContent="center"
+            flexWrap="wrap"
+          >
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                disabled={!password || !localEmail}
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                Login
+              </Button>
+            </Box>
+          </Box>
+        </form>
+      </Box>
+    </Container>
   )
 }
 

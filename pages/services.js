@@ -47,8 +47,8 @@ const ServicesPage = () => {
   const classes = useStyles()
 
   return (
-    <>
-      <Box p="1em">
+    <Container>
+      <Box>
         <Typography variant="h2" className={classes.h2}>
           Services
         </Typography>
@@ -94,7 +94,7 @@ const ServicesPage = () => {
 
       <ServicesAreas />
       <ContactSection />
-    </>
+    </Container>
   )
 }
 

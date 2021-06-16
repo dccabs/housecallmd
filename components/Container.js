@@ -6,7 +6,9 @@ const useStyles = makeStyles((theme) => ({
     padding: '1em',
 
     [theme.breakpoints.up('sm')]: {
-      padding: '6em',
+      padding: '3em 6em',
+      margin: 'auto',
+      maxWidth: 1200
     },
   },
 }))

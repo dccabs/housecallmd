@@ -64,7 +64,8 @@ const ForgotPassword = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   return (
-      <Box p="1em">
+    <Container>
+      <Box>
         <Typography variant="h2" className={classes.h2}>Forgot Password</Typography>
         <Box className={classes.disclaimer} mt="1em">
           Please enter your email.  If you have an account associated with HouseCall MD, you will be sent instructions to reset your password.
@@ -109,6 +110,7 @@ const ForgotPassword = () => {
           </Box>
         </form>
       </Box>
+    </Container>
   )
 }
 

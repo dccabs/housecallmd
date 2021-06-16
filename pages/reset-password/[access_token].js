@@ -79,7 +79,7 @@ const ResetPassword = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Enter new password</Typography>
         <Container>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
