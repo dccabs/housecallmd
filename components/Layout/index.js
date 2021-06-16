@@ -29,7 +29,6 @@ const Layout = ({ children }) => {
         <SnackBar>
           <Navbar />
             <Box
-              className={classes.main}
             >{children}</Box>
           </SnackBar>
       </Box>
