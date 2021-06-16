@@ -7,12 +7,12 @@ import { Auth } from '@supabase/ui'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 import SnackBar from '../SnackBar'
+import { makeStyles } from '@material-ui/core/styles'
+
 
 const Layout = ({ children }) => {
   const { setIsAuthenticated } = useStore()
-  const classes = useStyles()
   const session = supabase.auth.session()
-  const { user } = Auth.useUser()
 
   useEffect(() => {
     session ? setIsAuthenticated(true) : setIsAuthenticated(false)
