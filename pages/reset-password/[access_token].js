@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Typography, Box, Button, TextField, Dialog } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
+import { SnackBarContext } from '../../components/SnackBar'
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -35,6 +36,7 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [open, setOpen] = useState(false)
   const classes = useStyles()
+  const openSnackBar = useContext(SnackBarContext)
 
   const { access_token } = router.query;
   console.log('access_token', access_token)
@@ -56,12 +58,13 @@ const ResetPassword = () => {
         if (data.error) {
           throw Error(data.error);
         } else {
-          alert("You successfully changed your password, please login");
+          openSnackBar({message: 'You successfully changed your password, please login', snackSeverity: 'success'})
           router.push('/login');
         }
       })
       .catch(error => {
-        alert(error);
+        openSnackBar({message: error, snackSeverity: 'error'})
+
       });
 
   }
@@ -76,7 +79,7 @@ const ResetPassword = () => {
 
   return (
     <Container>
-      <Box p="1em">
+      <Box>
         <Typography variant="h2">Enter new password</Typography>
         <Container>
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>

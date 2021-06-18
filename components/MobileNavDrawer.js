@@ -1,5 +1,7 @@
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, Fragment, useContext } from 'react'
 import { Box, List, ListItem, Link as MuiLink } from '@material-ui/core'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { SnackBarContext } from './SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
 import { supabase } from '../utils/initSupabase'
 import { useRouter } from 'next/router'
@@ -16,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
   '.MuiListItem-gutters': {
     padding: '2em',
   },
+  profileEmail: {
+    marginLeft: 5,
+  }
 }))
 
 const MobileNavDrawer = ({ setDrawerToggle }) => {
@@ -23,7 +28,10 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
   const session = supabase.auth.session()
+  const user = supabase.auth.user()
   const classes = useStyles()
+
+  const openSnackBar = useContext(SnackBarContext)
 
   useEffect(() => {
     session ? setIsAuthenticated(true) : setIsAuthenticated(false)
@@ -44,7 +52,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
-    console.log(error)
+    openSnackBar({message: `${user.email} has been logged out of the application`, snackSeverity: 'error'})
     router.push('/')
   }
 
@@ -56,12 +64,11 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         minWidth="12rem"
       >
         <List className={classes.authLinks}>
-          <Link href="/services">
-            <ListItem button>Services</ListItem>
-          </Link>
-          <Link href="/contact">
-            <ListItem button>Contact</ListItem>
-          </Link>
+          {isAuthenticated &&
+            <ListItem>
+              <AccountCircleIcon/> <span className={classes.profileEmail}>dccabs@gmail.com</span>
+            </ListItem>
+          }
           {isAuthenticated ? (
             <MuiLink
               onClick={handleSignOut}
@@ -74,6 +81,12 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
               <ListItem button>Login</ListItem>
             </Link>
           )}
+          <Link href="/services">
+            <ListItem button>Services</ListItem>
+          </Link>
+          <Link href="/contact">
+            <ListItem button>Contact</ListItem>
+          </Link>
         </List>
       </Box>
     </Fragment>

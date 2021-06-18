@@ -7,38 +7,8 @@ import ServicesAreas from '../components/ServicesPage/ServicesAreas'
 import ContactSection from '../components/ContactSection'
 
 const useStyles = makeStyles((theme) => ({
-  backgroundContainer: {
-    backgroundImage: `url('/media/banner_phone.png')`,
-    backgroundPosition: 'top center',
-    backgroundAttachment: 'cover',
-    backgroundRepeat: 'no-repeat',
-    height: 350,
-    color: '#ffffff',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    [theme.breakpoints.up('sm')]: {
-      backgroundImage: `url('/media/banner.jpg')`,
-      backgroundPosition: 'center center',
-      alignItems: 'flex-start',
-      padding: '20em 6em',
-      color: theme.typography.color,
-    },
-  },
-  mainHeading: {
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: '40vw',
-    },
-  },
   h2: {
-    textAlign: 'center',
-
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: '40rem',
-      textAlign: 'left',
-    },
+    marginTop: '.5em',
   },
   content: {
     '& p': {
@@ -77,16 +47,14 @@ const ServicesPage = () => {
   const classes = useStyles()
 
   return (
-    <Box>
-      <Box p="1em" className={classes.backgroundContainer}>
-        <Box className={classes.mainHeading}>
-          <Typography variant="h2" className={classes.h2}>
-            Services
-          </Typography>
-        </Box>
+    <Container>
+      <Box>
+        <Typography variant="h2" className={classes.h2}>
+          Services
+        </Typography>
+        <ServicesItems />
       </Box>
 
-      <ServicesItems />
 
       <Box className={classes.cta} display="flex" justifyContent="center">
         <Container>
@@ -126,7 +94,7 @@ const ServicesPage = () => {
 
       <ServicesAreas />
       <ContactSection />
-    </Box>
+    </Container>
   )
 }
 

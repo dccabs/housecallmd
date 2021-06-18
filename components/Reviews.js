@@ -4,11 +4,10 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    boxShadow: '10px 15px 15px 6px #e6e6e6',
     maxWidth: '20rem',
     minHeight: '25rem',
     height: '100%',
-    margin: '2em',
+    marginBottom: '2em',
   },
   avatar: {
     width: '6rem',

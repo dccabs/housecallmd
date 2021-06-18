@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
   Typography,
   Box,
@@ -12,6 +12,9 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Container from '../components/Container'
 import UtilModal from '../components/UtilModal'
+import { SnackBarContext } from '../components/SnackBar'
+import { Auth } from '@supabase/ui'
+import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const UserAdmin = () => {
+const UserAdmin = (props) => {
   const [users, setUsers] = useState()
   const [open, setOpen] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
@@ -42,8 +45,34 @@ const UserAdmin = () => {
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [loading, setLoading] = useState(false)
   const classes = useStyles()
+  const openSnackBar = useContext(SnackBarContext)
+  const { user } = Auth.useUser();
+
 
   useEffect(async () => {
+    if (user) {
+      fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json'}),
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: user.email })
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.role === 'admin') {
+            getUsers()
+          } else {
+            openSnackBar({
+              message: "you are not authorized to view this page",
+              snackSeverity: 'error',
+            })
+          }
+        });
+      // getUsers();
+    }
+  }, [user])
+
+  const getUsers = async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/getAllUsers`)
@@ -67,7 +96,7 @@ const UserAdmin = () => {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }
 
   const rowSelected = (rowData) => {
     setRowData(rowData)
@@ -96,11 +125,11 @@ const UserAdmin = () => {
           if (data.error) {
             throw Error(data.error)
           } else {
-            alert(`You successfully deleted ${rowsToDelete.firstname} ${rowsToDelete.lastName}`);
+            openSnackBar({message: `You successfully deleted a user`, snackSeverity: 'success'})
           }
         })
         .catch((error) => {
-          alert(error)
+          openSnackBar({message: error, snackSeverity: 'error'})
         })
     })
 

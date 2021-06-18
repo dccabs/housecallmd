@@ -4,6 +4,7 @@ import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 
+import Container from '../components/Container'
 import ContactSection from '../components/ContactSection'
 import Reviews from '../components/Reviews'
 
@@ -12,15 +13,17 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '30rem',
     maxWidth: '100%',
   },
-  textBody: {
-    maxWidth: '60rem',
-  },
-  ctaButton: {
-    width: '100%',
-  },
   linkButtons: {
     '& button': {
       margin: '0.5em 0',
+      alignItems: 'center',
+    },
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+      '& button': {
+        marginRight: '1em',
+        minWidth: 150,
+      },
     },
   },
   divRight: {
@@ -29,41 +32,25 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   backgroundContainer: {
-    padding: '2em 1em',
     maxWidth: 1200,
     margin: 'auto',
-    // backgroundImage: `url('/media/banner_phone.png')`,
-    // backgroundPosition: 'top center',
-    // backgroundAttachment: 'cover',
-    // backgroundRepeat: 'no-repeat',
     color: '#000',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-
-    // [theme.breakpoints.up('sm')]: {
-    //   backgroundImage: `url('/media/banner.jpg')`,
-    //   backgroundPosition: 'center center',
-    //   alignItems: 'flex-start',
-    //   padding: '20em 6em',
-    //   color: theme.typography.color,
-    // },
   },
-  h4: {
-    fontSize: '2.5em',
-    fontWeight: 900,
+  h2: {
     lineHeight: '1.5em',
-    textAlign: 'center',
+    marginTop: 0,
+    fontWeight: 900,
 
     [theme.breakpoints.up('sm')]: {
-      maxWidth: '40rem',
+      lineHeight: '1.2em',
+      fontSize: '3.7em',
     },
   },
   mainHeading: {
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: '40vw',
-    },
   },
   content: {
     padding: '2em',
@@ -74,16 +61,66 @@ const useStyles = makeStyles((theme) => ({
       color: 'white',
       fontWeight: 'bold',
     },
-
     [theme.breakpoints.up('sm')]: {
-      padding: '6em',
+      padding: '1em 0 5em',
     },
   },
   reviews: {
+    backgroundColor: 'rgb(247, 249, 252)',
+  },
+  reviewH2: {
+    margin: '.5em 0',
+    fontSize: '2em,'
+  },
+  contentH2: {
+    margin: '.5em 0',
+    fontSize: '2em,',
+    color: '#ffffff',
+  },
+  container: {
+    padding: '1em',
     [theme.breakpoints.up('sm')]: {
-      padding: '6em',
+      display: 'flex',
+      margin: '6em auto',
+      padding: '0 6em',
+      maxWidth: 1200,
     },
   },
+  mainHeadingContainer: {
+    [theme.breakpoints.up('sm')]: {
+      width: '50%',
+    },
+  },
+  imageContainer: {
+    marginTop: '1em',
+    [theme.breakpoints.up('sm')]: {
+      marginTop: 0,
+    },
+  },
+  contentInner: {
+    [theme.breakpoints.up('sm')]: {
+      margin: 'auto',
+      maxWidth: 1200,
+      width: '100%',
+      padding: '0 6em',
+    },
+  },
+  reviewsInner: {
+    [theme.breakpoints.up('sm')]: {
+      margin: 'auto',
+      padding: '0 6em',
+      maxWidth: 1200,
+      width: '100%',
+    },
+  },
+  reviewsContainer: {
+    marginTop: '1.5em'
+  },
+  textBody: {
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '1.4em'
+    },
+  }
 }))
 
 const Home = () => {
@@ -91,47 +128,65 @@ const Home = () => {
   const classes = useStyles()
 
   return (
-    <Fragment>
-      <Box p="1em" className={classes.backgroundContainer}>
-        <Box className={classes.mainHeading}>
-          <Typography className={classes.h4}>
-            Schedule a housecall or telemedicine visit in minutes.
-          </Typography>
-        </Box>
-        <Box
-          className={classes.linkButtons}
-          mt="2em"
-          display="flex"
-          flexDirection="column"
-          alignitems="center"
-        >
-          <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
-            <Button
-              color="secondary"
-              variant="contained"
-              size="large"
-              fullWidth
-            >
-              Get Started
-            </Button>
-          </Link>
-          {!isAuthenticated && (
-            <Link href="/login">
+    <div className={classes.pageContainer}>
+      <div className={classes.container}>
+        <div className={classes.mainHeadingContainer}>
+          <Box className={classes.mainHeading} fontWeight="fontWeightBold">
+            <Typography className={classes.h2} variant="h2">
+              Housecall,<br />
+              <span style={{color: '#e1215b'}}>ALWAYS ON-CALL</span>
+            </Typography>
+
+            <p style={{color: 'rgb(100, 110, 115)', fontSize: '1.25em', margin: '1.3em 0', fontWeight: 300}}>
+              There is always a care professional from our team who will answer your call. Discover what our team can do for you and your loved ones.
+            </p>
+          </Box>
+          <Box
+            className={classes.linkButtons}
+            mt="1em"
+            display="flex"
+            flexDirection="column"
+            alignitems="center"
+          >
+            <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
               <Button
                 color="secondary"
                 variant="contained"
                 size="large"
-                fullWidth
               >
-                Login
+                Get Started
               </Button>
             </Link>
-          )}
-        </Box>
-      </Box>
-      <Box p="1em" className={classes.content}>
-        <Box mt="1em">
-          <Typography className={classes.textBody}>
+            {!isAuthenticated && (
+              <Link href="/login">
+                <Button
+                  color="secondary"
+                  variant="outlined"
+                  size="large"
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
+          </Box>
+        </div>
+        <div className={classes.imageContainer}>
+          <img
+            className={classes.doctor}
+            src="/media/hospital_bed.png"
+            width="100%"
+            height="100%"
+          />
+        </div>
+      </div>
+      <Box mt="1em" className={classes.content}>
+        <div className={classes.contentInner}>
+          <Typography variant="h2" className={classes.reviewh2}
+                      classes={{
+                        root: classes.contentH2,
+                      }}
+          >What we do</Typography>
+          <Typography classes={{root: classes.textBody}}>
             Our team of experienced and qualified care professionals specializes
             in providing urgent care in Kitsap County, Washington for our
             patients, whether you are at home or in your office.
@@ -142,12 +197,12 @@ const Home = () => {
             healthcare needs.
             <br />
             <br />
-            <Link href="/insurance">
+            <Link href="/contact">
               <a>Contact us today</a>
             </Link>{' '}
             if you need mobile urgent care services.
           </Typography>
-        </Box>
+        </div>
       </Box>
 
       <Box
@@ -158,14 +213,21 @@ const Home = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <Box mb="2em">
-          <Typography variant="h2">Reviews</Typography>
+        <Box mb="2em" className={classes.reviewsInner}>
+          <Typography variant="h2" className={classes.reviewh2}
+            classes={{
+              root: classes.reviewH2,
+            }}
+          >Reviews</Typography>
+
+          <div className={classes.reviewsContainer}>
+            <Reviews />
+          </div>
         </Box>
-        <Reviews />
       </Box>
 
       <ContactSection />
-    </Fragment>
+    </div>
   )
 }
 

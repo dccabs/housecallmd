@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.up('sm')]: {
       backgroundColor: 'rgba(0, 0, 0, 0)',
-      maxWidth: 1400,
       margin: 'auto',
+      border: '1px solid #ccc'
     },
   },
   toolBar: {
@@ -36,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
     '& a': {
       textDecoration: 'none',
       color: 'blue',
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: '100%',
+      maxWidth: 1100,
+      margin: 'auto',
     },
   },
   authLinks: {

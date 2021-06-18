@@ -1,9 +1,14 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import Container from '../components/Container'
+import { SnackBarContext} from '../components/SnackBar'
+
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
   textFields: {
     width: '100%',
     marginTop: '2em',
@@ -45,7 +50,9 @@ const ForgotPassword = () => {
       .then((res) => {
         console.log('res', res)
         if (res.ok) {
-          alert(`An email has been sent to ${localEmail} to reset your password.`);
+          openSnackBar({message: `An email has been sent to ${localEmail} to reset your password.`, snackSeverity: 'success'})
+        } else {
+          openSnackBar({message: `There was an error please try again later.`, snackSeverity: 'error'})
         }
       });
   }
@@ -54,50 +61,54 @@ const ForgotPassword = () => {
     setLocalEmail(e.target.value)
   }
 
+  const openSnackBar = useContext(SnackBarContext)
+
   return (
     <Container>
-      <Box p="1em">
-        <Typography variant="h2">Enter your user email</Typography>
-        <Container>
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <TextField
-                value={localEmail}
-                className={classes.textFields}
-                fullWidth
-                type="email"
-                label="Email"
-                variant="outlined"
+      <Box>
+        <Typography variant="h2" className={classes.h2}>Forgot Password</Typography>
+        <Box className={classes.disclaimer} mt="1em">
+          Please enter your email.  If you have an account associated with HouseCall MD, you will be sent instructions to reset your password.
+        </Box>
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <Box
+            p="0"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <TextField
+              value={localEmail}
+              className={classes.textFields}
+              fullWidth
+              type="email"
+              label="Email"
+              variant="outlined"
+              color="secondary"
+              required
+              onChange={handleEmailUpdate}
+            />
+          </Box>
+          <Box
+            mt="2em"
+            display="flex"
+            justifyContent="center"
+            flexWrap="wrap"
+          >
+            <Box m="1em" className={classes.buttonLinks}>
+              <Button
+                disabled={!localEmail}
+                type="submit"
                 color="secondary"
-                required
-                onChange={handleEmailUpdate}
-              />
+                variant="contained"
+                size="large"
+              >
+                Submit
+              </Button>
             </Box>
-            <Box
-              mt="2em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  disabled={!localEmail}
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  size="large"
-                >
-                  Submit
-                </Button>
-              </Box>
-            </Box>
-          </form>
-        </Container>
+          </Box>
+        </form>
       </Box>
     </Container>
   )
