@@ -8,7 +8,14 @@ import {
   Checkbox,
   FormControl,
   FormControlLabel,
+  FormHelperText,
+  OutlinedInput, 
+  InputLabel, 
+  InputAdornment, 
+  IconButton
 } from '@material-ui/core'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Container from '../components/Container'
 
 import { SnackBarContext } from '../components/SnackBar'
@@ -60,6 +67,9 @@ const Contact = () => {
   const { session } = Auth.useUser()
   const openSnackBar = useContext(SnackBarContext)
 
+  const [fieldType, setFieldType] = useState('password')
+  const [showPassword, setShowPassword] = useState(false)
+  const [passwordNotMatch, setPasswordNotMatch] = useState(false)
   const [checked, setChecked] = useState(false)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -91,14 +101,26 @@ const Contact = () => {
 
   const handlePasswordUpdate = (e) => {
     setPassword(e.target.value)
+
+    if (e.target.value !== confirmPassword) setPasswordNotMatch(true)
+    else setPasswordNotMatch(false)
   }
 
   const handleConfirmPasswordUpdate = (e) => {
     setConfirmPassword(e.target.value)
+
+    if (password !== e.target.value) setPasswordNotMatch(true)
+    else setPasswordNotMatch(false)
   }
 
   const handleEmailUpdate = (e) => {
     setLocalEmail(e.target.value)
+  }
+
+  const handlePasswordClick = () => {
+    if(fieldType === 'password') setFieldType('text')
+    else setFieldType('password')
+    setShowPassword(!showPassword)
   }
 
   const addUser = async (newUser) => {
@@ -184,28 +206,56 @@ const Contact = () => {
               required
               onChange={handleEmailUpdate}
             />
-            <TextField
-              value={password}
-              className={classes.textFields}
-              fullWidth
-              type="password"
-              label="Password"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={handlePasswordUpdate}
-            />
-            <TextField
-              value={confirmPassword}
-              className={classes.textFields}
-              fullWidth
-              type="password"
-              label="Confirm Password"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={handleConfirmPasswordUpdate}
-            />
+            <FormControl className={classes.textFields} variant="outlined">
+              <InputLabel htmlFor="outlined-password" color="secondary" variant="outlined" required>Password</InputLabel>
+              <OutlinedInput
+                id="outlined-password"
+                value={password}
+                type={fieldType}
+                variant="outlined"
+                color="secondary"
+                required
+                onChange={handlePasswordUpdate}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handlePasswordClick}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                labelWidth={70}
+                error={passwordNotMatch}
+              />
+              {passwordNotMatch && <FormHelperText error>Passwords do not match</FormHelperText>}
+            </FormControl>
+            <FormControl className={classes.textFields} variant="outlined">
+              <InputLabel htmlFor="outline-confirm-password" color="secondary" variant="outlined" required>Confirm Password</InputLabel>
+              <OutlinedInput
+                id="outline-confirm-password"
+                value={confirmPassword}
+                type={fieldType}
+                variant="outlined"
+                color="secondary"
+                required
+                onChange={handleConfirmPasswordUpdate}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handlePasswordClick}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                labelWidth={70}
+                error={passwordNotMatch}
+              />
+              {passwordNotMatch && <FormHelperText error>Passwords do not match</FormHelperText>}
+            </FormControl>
             <Box mt="1em" width="100%" maxWidth="34rem">
               <FormControl component="fieldset">
                 <FormControlLabel
