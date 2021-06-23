@@ -9,10 +9,10 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
-  OutlinedInput, 
-  InputLabel, 
-  InputAdornment, 
-  IconButton
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  IconButton,
 } from '@material-ui/core'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
@@ -68,7 +68,9 @@ const Contact = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   const [fieldType, setFieldType] = useState('password')
+  const [confirmFieldType, setConfirmFieldType] = useState('password')
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [passwordNotMatch, setPasswordNotMatch] = useState(false)
   const [checked, setChecked] = useState(false)
   const [password, setPassword] = useState('')
@@ -118,13 +120,18 @@ const Contact = () => {
   }
 
   const handlePasswordClick = () => {
-    if(fieldType === 'password') setFieldType('text')
+    if (fieldType === 'password') setFieldType('text')
     else setFieldType('password')
     setShowPassword(!showPassword)
   }
 
-  const addUser = async (newUser) => {
+  const handleConfirmPasswordClick = () => {
+    if (confirmFieldType === 'password') setConfirmFieldType('text')
+    else setConfirmFieldType('password')
+    setShowConfirmPassword(!showConfirmPassword)
+  }
 
+  const addUser = async (newUser) => {
     //setOpen(true)
     const payload = {
       newUser,
@@ -140,45 +147,53 @@ const Contact = () => {
         if (data.error) {
           throw Error(data.error)
         } else {
-          router.push('/visit-choice');
+          router.push('/visit-choice')
         }
       })
       .catch((error) => {
-        openSnackBar({message: error, snackSeverity: 'error'})
+        openSnackBar({ message: error, snackSeverity: 'error' })
       })
   }
   const loginUser = () => {
     supabase.auth.signUp({ email: localEmail, password }).then((response) => {
-      response.error ?  openSnackBar({message: response.error.message, snackSeverity: 'error'}) : setToken(response)
+      response.error
+        ? openSnackBar({
+            message: response.error.message,
+            snackSeverity: 'error',
+          })
+        : setToken(response)
     })
   }
 
   const setToken = async (response) => {
     if (!response.data.access_token) {
-      return;
+      return
     } else {
-      await setEmail(response.data.user.email);
-      await setLocalEmail(response.data.user.email);
-      await setLocalId(response.data.user.id);
+      await setEmail(response.data.user.email)
+      await setLocalEmail(response.data.user.email)
+      await setLocalId(response.data.user.id)
       // TODO: fix this timeout
-      openSnackBar({message: 'Logged in as ' + response.data.user.email, snackSeverity: 'success'})
-        let newUser = {
-          hasInsurance,
-          provider,
-          planNumber,
-          groupNumber,
-          // visitChoice,
-          firstName,
-          lastName,
-          email: response.data.user.email,
-          address,
-          city,
-          state,
-          zip,
-          phone: phone.replace(/\s/g, ''),
-          uuid: response.data.user.id,
-        }
-        addUser(newUser)
+      openSnackBar({
+        message: 'Logged in as ' + response.data.user.email,
+        snackSeverity: 'success',
+      })
+      let newUser = {
+        hasInsurance,
+        provider,
+        planNumber,
+        groupNumber,
+        // visitChoice,
+        firstName,
+        lastName,
+        email: response.data.user.email,
+        address,
+        city,
+        state,
+        zip,
+        phone: phone.replace(/\s/g, ''),
+        uuid: response.data.user.id,
+      }
+      addUser(newUser)
     }
   }
 
@@ -207,7 +222,14 @@ const Contact = () => {
               onChange={handleEmailUpdate}
             />
             <FormControl className={classes.textFields} variant="outlined">
-              <InputLabel htmlFor="outlined-password" color="secondary" variant="outlined" required>Password</InputLabel>
+              <InputLabel
+                htmlFor="outlined-password"
+                color="secondary"
+                variant="outlined"
+                required
+              >
+                Password
+              </InputLabel>
               <OutlinedInput
                 id="outlined-password"
                 value={password}
@@ -218,10 +240,7 @@ const Contact = () => {
                 onChange={handlePasswordUpdate}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={handlePasswordClick}
-                      edge="end"
-                    >
+                    <IconButton onClick={handlePasswordClick} edge="end">
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
@@ -229,32 +248,40 @@ const Contact = () => {
                 labelWidth={70}
                 error={passwordNotMatch}
               />
-              {passwordNotMatch && <FormHelperText error>Passwords do not match</FormHelperText>}
+              {passwordNotMatch && (
+                <FormHelperText error>Passwords do not match</FormHelperText>
+              )}
             </FormControl>
             <FormControl className={classes.textFields} variant="outlined">
-              <InputLabel htmlFor="outline-confirm-password" color="secondary" variant="outlined" required>Confirm Password</InputLabel>
+              <InputLabel
+                htmlFor="outline-confirm-password"
+                color="secondary"
+                variant="outlined"
+                required
+              >
+                Confirm Password
+              </InputLabel>
               <OutlinedInput
                 id="outline-confirm-password"
                 value={confirmPassword}
-                type={fieldType}
+                type={confirmFieldType}
                 variant="outlined"
                 color="secondary"
                 required
                 onChange={handleConfirmPasswordUpdate}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={handlePasswordClick}
-                      edge="end"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    <IconButton onClick={handleConfirmPasswordClick} edge="end">
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 }
                 labelWidth={70}
                 error={passwordNotMatch}
               />
-              {passwordNotMatch && <FormHelperText error>Passwords do not match</FormHelperText>}
+              {passwordNotMatch && (
+                <FormHelperText error>Passwords do not match</FormHelperText>
+              )}
             </FormControl>
             <Box mt="1em" width="100%" maxWidth="34rem">
               <FormControl component="fieldset">
