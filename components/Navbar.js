@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react'
+import { useState, useEffect, useContext, Fragment } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -12,6 +12,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { SnackBarContext } from '../components/SnackBar'
 import Image from 'next/image'
 import useStore from '../zustand/store'
 import { supabase } from '../utils/initSupabase'
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       backgroundColor: 'rgba(0, 0, 0, 0)',
       margin: 'auto',
-      border: '1px solid #ccc'
+      border: '1px solid #ccc',
     },
   },
   toolBar: {
@@ -81,12 +82,23 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
   const [drawerToggle, setDrawerToggle] = useState(false)
-  const { isAuthenticated } = useStore()
+  const { isAuthenticated, setIsAuthenticated } = useStore()
+  const user = supabase.auth.user()
+  const session = supabase.auth.session()
   const router = useRouter()
   const classes = useStyles()
+  const openSnackBar = useContext(SnackBarContext)
+
+  useEffect(() => {
+    session ? setIsAuthenticated(true) : setIsAuthenticated(false)
+  }, [session])
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
+    openSnackBar({
+      message: `${user.email} has been logged out of the application`,
+      snackSeverity: 'error',
+    })
     console.log(error)
     router.push('/')
   }
