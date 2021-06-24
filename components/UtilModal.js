@@ -130,7 +130,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
     <Modal open={open} onClose={reset} style={{ overflow: 'scroll' }}>
       <Paper elevation={3} className={classes.root}>
         {MeetingContent ? (
-          <MeetingCreated setMeetingContent={setMeetingContent} />
+          <MeetingCreated phone={phone} setMeetingContent={setMeetingContent} />
         ) : MessageContent ? (
           <SendSMS phone={phone} setMessageContent={setMessageContent} />
         ) : (
