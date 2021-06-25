@@ -19,10 +19,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MeetingCreated = ({ setMeetingContent }) => {
+const MeetingCreated = ({ phone, setMeetingContent }) => {
   const [roomId, setRoomId] = useState()
   const [loading, setLoading] = useState(false)
+  const [loadingSMS, setLoadingSMS] = useState(false)
+  const [success, setSuccess] = useState(false)
   const classes = useStyles()
+  const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`
 
   useEffect(async () => {
     try {
@@ -38,6 +41,31 @@ const MeetingCreated = ({ setMeetingContent }) => {
     }
   }, [])
 
+  const sendSMS = async () => {
+    try {
+      setLoadingSMS(true)
+      const res = await fetch('/api/sendMessage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ to: phone, body: message }),
+      })
+
+      const data = await res.json()
+
+      if (data.success) {
+        setSuccess(true)
+        setBody('')
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoadingSMS(false)
+    }
+  }
+
   return (
     <Box
       display="flex"
@@ -49,17 +77,49 @@ const MeetingCreated = ({ setMeetingContent }) => {
         style={{ height: '10rem', width: '10rem', color: '#b0b0b0' }}
       />
       {!loading ? (
-        <Box my="1em">
-          <Typography variant="h4">New meeting room created</Typography>
-          <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}>
-            <a target="_blank">
-              <Typography
-                variant="h6"
-                align="center"
-              >{`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}</Typography>
-            </a>
-          </Link>
-        </Box>
+        <>
+          <Box my="1em">
+            <Typography variant="h4">New meeting room created</Typography>
+            <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}>
+              <a target="_blank">
+                <Typography
+                  variant="h6"
+                  align="center"
+                >{`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}</Typography>
+              </a>
+            </Link>
+          </Box>
+
+          {success ? (
+            <Typography
+              variant="h4"
+              align="center"
+              style={{ color: '#399945' }}
+            >
+              Message Sent!
+            </Typography>
+          ) : loadingSMS ? (
+            <Box
+              my="1em"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Box
+              m="1em"
+              className={classes.buttonLinks}
+              display="flex"
+              justifyContent="center"
+            >
+              <Button color="secondary" variant="contained" onClick={sendSMS}>
+                Send Meeting Link To Patient
+              </Button>
+            </Box>
+          )}
+        </>
       ) : (
         <Box
           my="1em"
@@ -70,16 +130,7 @@ const MeetingCreated = ({ setMeetingContent }) => {
           <CircularProgress />
         </Box>
       )}
-      <Box
-        m="1em"
-        className={classes.buttonLinks}
-        display="flex"
-        justifyContent="center"
-      >
-        <Button color="secondary" variant="contained">
-          Send Meeting Link To Patient
-        </Button>
-      </Box>
+
       <Box
         m="1em"
         className={classes.buttonLinks}
