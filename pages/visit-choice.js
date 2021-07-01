@@ -7,6 +7,7 @@ import {
   RadioGroup,
   FormControl,
   FormControlLabel,
+  CircularProgress,
 } from '@material-ui/core'
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -45,30 +46,42 @@ const useStyles = makeStyles((theme) => ({
 
 const VisitChoice = () => {
   const [value, setValue] = useState('Video/Telemedicine Visit')
+  const [loading, setLoading] = useState(false)
   const [firstName, setLocalFirstName] = useState(null)
   const store = useStore()
-  const { setVisitChoice, hasInsurance } = store
+  const { setVisitChoice, hasInsurance, isAuthenticated } = store
   const classes = useStyles()
   const router = useRouter()
   const { user, session } = Auth.useUser()
 
   useEffect(() => {
+    if (!isAuthenticated) router.push('/login')
+  })
+
+  useEffect(() => {
     if (user) {
-      fetch('/api/getSingleUser', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify({ email: user.email }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log('res', res)
-          setLocalFirstName(res.firstName)
-          setStoreWithAuthInfo({
-            store,
-            user: res,
-          })
+      try {
+        setLoading(true)
+        fetch('/api/getSingleUser', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: user.email }),
         })
+          .then((res) => res.json())
+          .then((res) => {
+            console.log('res', res)
+            setLocalFirstName(res.firstName)
+            setStoreWithAuthInfo({
+              store,
+              user: res,
+            })
+          })
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setLoading(false)
+      }
     }
   }, [user])
 
@@ -86,11 +99,11 @@ const VisitChoice = () => {
   return (
     <Container>
       <Box>
-        {firstName && (
+        <Typography className={classes.h2} variant="h2">
+          Visit Choice
+        </Typography>
+        {!loading && firstName ? (
           <>
-            <Typography className={classes.h2} variant="h2">
-              Visit Choice
-            </Typography>
             <form onSubmit={handleSubmit}>
               <Box
                 mt="2em"
@@ -119,7 +132,7 @@ const VisitChoice = () => {
                       <FormControlLabel
                         value="video"
                         control={<Radio />}
-                        label={`Video/Telemedicine Visit (${
+                        label={`Video/Telemedicine Visit ($${
                           hasInsurance
                             ? '(No additonal fee with insurance)'
                             : visitPricing.noInsurance.pricing.video
@@ -128,7 +141,7 @@ const VisitChoice = () => {
                       <FormControlLabel
                         value="phone"
                         control={<Radio />}
-                        label={`Phone Visit (${
+                        label={`Phone Visit ($${
                           hasInsurance
                             ? visitPricing.insurance.pricing.phone
                             : visitPricing.noInsurance.pricing.phone
@@ -137,7 +150,7 @@ const VisitChoice = () => {
                       <FormControlLabel
                         value="in_person"
                         control={<Radio />}
-                        label={`Housecall, In person visit at home (${
+                        label={`Housecall, In person visit at home ($${
                           hasInsurance
                             ? visitPricing.insurance.pricing.in_person
                             : visitPricing.noInsurance.pricing.in_person
@@ -177,6 +190,15 @@ const VisitChoice = () => {
               </Box>
             </form>
           </>
+        ) : (
+          <Box
+            my="1em"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <CircularProgress />
+          </Box>
         )}
       </Box>
     </Container>

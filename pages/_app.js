@@ -19,7 +19,6 @@ const generateClassName = createGenerateClassName()
 
 export default function MyApp(props) {
   const { Component, pageProps, router } = props
-  const [loading, setLoading] = useState(true)
   const nextRouter = useRouter()
 
   useEffect(() => {
@@ -44,7 +43,6 @@ export default function MyApp(props) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-    setLoading(false)
   }, [])
 
   return (
@@ -63,8 +61,7 @@ export default function MyApp(props) {
           <CssBaseline />
           <Auth.UserContextProvider supabaseClient={supabase}>
             <Layout>
-              {loading && <di>loading...</di>}
-              {!loading && <Component {...pageProps} />}
+              <Component {...pageProps} />
             </Layout>
           </Auth.UserContextProvider>
         </ThemeProvider>

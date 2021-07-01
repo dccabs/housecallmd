@@ -1,5 +1,17 @@
-import { useState , useContext} from 'react'
-import { Typography, Box, Button, TextField } from '@material-ui/core'
+import { useState, useContext} from 'react'
+import { 
+  Typography, 
+  Box, 
+  Button, 
+  TextField, 
+  FormControl,
+  OutlinedInput, 
+  InputLabel, 
+  InputAdornment, 
+  IconButton
+} from '@material-ui/core'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Container from '../components/Container'
 import { SnackBarContext} from '../components/SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
@@ -42,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const login = () => {
+  const [fieldType, setFieldType] = useState('password')
+  const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
   const classes = useStyles()
@@ -76,6 +90,12 @@ const login = () => {
     setLocalEmail(e.target.value)
   }
 
+  const handlePasswordClick = () => {
+    if(fieldType === 'password') setFieldType('text')
+    else setFieldType('password')
+    setShowPassword(!showPassword)
+  }
+
   const openSnackBar = useContext(SnackBarContext)
 
   return (
@@ -100,17 +120,28 @@ const login = () => {
               required
               onChange={handleEmailUpdate}
             />
-            <TextField
-              value={password}
-              className={classes.textFields}
-              fullWidth
-              type="password"
-              label="Password"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={handlePasswordUpdate}
-            />
+            <FormControl className={classes.textFields} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-password" color="secondary" variant="outlined" required>Password</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                type={fieldType}
+                value={password}
+                color="secondary"
+                required
+                onChange={handlePasswordUpdate}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handlePasswordClick}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                labelWidth={70}
+              />
+            </FormControl>
             <Box
               className={classes.link}
               mt="1em"
