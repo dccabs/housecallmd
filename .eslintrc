@@ -1,0 +1,16 @@
+{
+  "plugins": ["prettier"],
+  "extends": ["airbnb", "prettier", "plugin:react/recommended"],
+  "rules": {
+    "react/prop-types": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/react-in-jsx-scope": "off",
+    "prettier/prettier": [
+      "warn",
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  }
+}
