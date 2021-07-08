@@ -175,7 +175,7 @@ const PaymentForm = () => {
       },
       body: JSON.stringify({
         // id,
-        amount,
+        amount: amount * 100,
       }),
     }).then((res) => {
       return res.json();
