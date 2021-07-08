@@ -31,6 +31,13 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  disclaimer: {
+    [theme.breakpoints.up('sm')]: {
+      margin: '2em 0 1em',
+      fontSize: '1.5em',
+      textAlign: 'center',
+    },
+  }
 }))
 
 const ForgotPassword = () => {
