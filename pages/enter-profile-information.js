@@ -168,6 +168,15 @@ const Contact = () => {
         <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
           <Box m="1em" className={classes.buttonLinks}>
             <Button
+              onClick={() => router.back()}
+              color="secondary"
+              variant="contained"
+            >
+              Back
+            </Button>
+          </Box>
+          <Box m="1em" className={classes.buttonLinks}>
+            <Button
               type="submit"
               color="secondary"
               variant="contained"
@@ -182,15 +191,6 @@ const Contact = () => {
               }
             >
               Continue
-            </Button>
-          </Box>
-          <Box m="1em" className={classes.buttonLinks}>
-            <Button
-              onClick={() => router.back()}
-              color="secondary"
-              variant="contained"
-            >
-              Back
             </Button>
           </Box>
         </Box>

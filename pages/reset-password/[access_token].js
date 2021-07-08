@@ -137,6 +137,7 @@ const ResetPassword = () => {
                   color="secondary"
                   variant="outlined"
                   required
+                  style={{background: '#ffffff'}}
                 >
                   Password
                 </InputLabel>
@@ -168,6 +169,7 @@ const ResetPassword = () => {
                   color="secondary"
                   variant="outlined"
                   required
+                  style={{background: '#ffffff'}}
                 >
                   Confirm Password
                 </InputLabel>
