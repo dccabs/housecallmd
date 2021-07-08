@@ -121,7 +121,7 @@ const login = () => {
               onChange={handleEmailUpdate}
             />
             <FormControl className={classes.textFields} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password" color="secondary" variant="outlined" required>Password</InputLabel>
+              <InputLabel style={{background: '#ffffff'}} htmlFor="outlined-adornment-password" color="secondary" variant="outlined" required>Password</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
                 type={fieldType}
