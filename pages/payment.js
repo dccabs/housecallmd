@@ -73,10 +73,10 @@ const Payment = () => {
 
   const handleContinue = () => {
     console.log('handleContinue')
-    sendEmailToUser();
+    sendEmailToHouseCall();
   }
 
-  const sendEmailToUser = async () => {
+  const sendEmailToHouseCall = async () => {
     const payload = {
       newUser: {
         hasInsurance,
