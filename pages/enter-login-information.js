@@ -227,6 +227,7 @@ const Contact = () => {
                 color="secondary"
                 variant="outlined"
                 required
+                style={{background: '#ffffff'}}
               >
                 Password
               </InputLabel>
@@ -258,6 +259,7 @@ const Contact = () => {
                 color="secondary"
                 variant="outlined"
                 required
+                style={{background: '#ffffff'}}
               >
                 Confirm Password
               </InputLabel>

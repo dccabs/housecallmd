@@ -132,10 +132,10 @@ const VisitChoice = () => {
                       <FormControlLabel
                         value="video"
                         control={<Radio />}
-                        label={`Video/Telemedicine Visit ($${
+                        label={`Video/Telemedicine Visit (${
                           hasInsurance
-                            ? '(No additonal fee with insurance)'
-                            : visitPricing.noInsurance.pricing.video
+                            ? 'No additonal fee with insurance'
+                            : `$${visitPricing.noInsurance.pricing.video}`
                         })`}
                       />
                       <FormControlLabel
