@@ -3,6 +3,7 @@ import { Box, Typography, Button, CircularProgress } from '@material-ui/core'
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
+import { Auth } from '@supabase/ui'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -20,17 +21,30 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const MeetingCreated = ({ phone, setMeetingContent }) => {
+  const { user } = Auth.useUser()
   const [roomId, setRoomId] = useState()
   const [loading, setLoading] = useState(false)
   const [loadingSMS, setLoadingSMS] = useState(false)
   const [success, setSuccess] = useState(false)
   const classes = useStyles()
   const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`
+  console.log('user', user)
 
   useEffect(async () => {
     try {
       setLoading(true)
-      const res = await fetch(`/api/addMeeting`)
+      const res = await fetch(`/api/addMeeting`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            creator: user.email,
+          }),
+        }
+        )
       const data = await res.json()
 
       setRoomId(data[0].cuid)
