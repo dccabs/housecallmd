@@ -148,7 +148,7 @@ const Home = () => {
             flexDirection="column"
             alignitems="center"
           >
-            <Link href={isAuthenticated ? '/visit-choice' : '/insurance'}>
+            <Link href={isAuthenticated ? '/visit-choice' : '/terms'}>
               <Button
                 color="secondary"
                 variant="contained"
