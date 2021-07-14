@@ -56,7 +56,7 @@ const CardInformation = () => {
     setPrimaryHolderFirstName(localFirstName)
     setPrimaryHolderLastName(localLastName)
     setPrimaryHolderDob(localDob);
-    router.push('/enter-profile-information')
+    router.push('/insurance/choose-provider')
   }
 
   const handleUpdate = (e, fn) => {
@@ -87,18 +87,20 @@ const CardInformation = () => {
               width="100%"
             >
               <TextField
+                autocomplete="nope"
                 value={localFirstName}
                 className={classes.textFields}
-                label="Primary cardholder first name"
+                label="Primary first name"
                 variant="outlined"
                 color="secondary"
                 onChange={(e) => handleUpdate(e, setLocalFirstName)}
                 required
               />
               <TextField
+                autocomplete="nope"
                 value={localLastName}
                 className={classes.textFields}
-                label="Primary cardholder last name"
+                label="Primary last name"
                 variant="outlined"
                 color="secondary"
                 onChange={(e) => handleUpdate(e, setLocalLastName)}
@@ -106,12 +108,12 @@ const CardInformation = () => {
               />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
-                  autocomplete="off"
+                  autocomplete="nope"
                   className={classes.textFields}
                   inputVariant="outlined"
                   margin="normal"
                   id="date-picker-dialog"
-                  label="Primary cardholder date of birth"
+                  label="Primary date of birth"
                   format="MM/dd/yyyy"
                   value={localDob}
                   onChange={(value) => setLocalDob(value)}
