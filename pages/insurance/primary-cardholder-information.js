@@ -1,7 +1,6 @@
 import { Typography, Box, Button, TextField } from '@material-ui/core'
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
