@@ -87,7 +87,7 @@ const ResetPassword = () => {
             message: `You successfully changed your password, you are logged in as ${user.email}`,
             snackSeverity: 'success',
           })
-          router.push('/')
+          router.push('/visit-choice')
         }
       })
       .catch((error) => {
