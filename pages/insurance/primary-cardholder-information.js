@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
 import { useState } from 'react'
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -115,7 +116,9 @@ const CardInformation = () => {
                   label="Primary date of birth"
                   format="MM/dd/yyyy"
                   value={localDob}
-                  onChange={(value) => setLocalDob(value)}
+                  onChange={(value) => {
+                    setLocalDob(value)
+                  }}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
                   }}
@@ -143,7 +146,7 @@ const CardInformation = () => {
                   color="secondary"
                   variant="contained"
                   size="large"
-                  disabled={!localLastName || !localFirstName || !localDob}
+                  disabled={!localLastName || !localFirstName || !moment(localDob).isValid()}
                 >
                   Continue
                 </Button>

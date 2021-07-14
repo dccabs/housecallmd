@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
 import { supabase } from '../utils/initSupabase'
 import { Auth } from '@supabase/ui'
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -76,10 +77,14 @@ const Contact = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
-  const [localId, setLocalId] = useState('')
+  const [localId, setLocalId]   = useState('')
 
   const {
     hasInsurance,
+    isPrimaryCardHolder,
+    primaryHolderFirstName,
+    primaryHolderLastName,
+    primaryHolderDob,
     provider,
     planNumber,
     groupNumber,
@@ -179,6 +184,10 @@ const Contact = () => {
       })
       let newUser = {
         hasInsurance,
+        isPrimaryCardHolder,
+        primaryHolderFirstName,
+        primaryHolderLastName,
+        primaryHolderDob: moment(primaryHolderDob).format('L'),
         provider,
         planNumber,
         groupNumber,
