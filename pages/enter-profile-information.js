@@ -78,14 +78,18 @@ const Contact = () => {
 
   return (
     <Container>
-      <Typography variant="h2" className={classes.h2}>Please enter the following information:</Typography>
+      <Typography variant="h2" className={classes.h2}>Patient Info</Typography>
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
         <Box
+          mt="1em"
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
         >
+          <Typography>
+            Please fill out the following about the <strong style={{color: '#0092b8'}}>patient</strong> who is requesting an appointment.
+          </Typography>
           <TextField
             className={classes.textFields}
             fullWidth
