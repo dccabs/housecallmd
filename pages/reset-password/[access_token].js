@@ -19,6 +19,8 @@ import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import { SnackBarContext } from '../../components/SnackBar'
+import { Auth } from '@supabase/ui'
+
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -57,9 +59,9 @@ const ResetPassword = () => {
   const [passwordNotMatch, setPasswordNotMatch] = useState(false)
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
+  const { user } = Auth.useUser()
 
   const { access_token } = router.query
-  console.log('access_token', access_token)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -82,10 +84,10 @@ const ResetPassword = () => {
           throw Error(data.error)
         } else {
           openSnackBar({
-            message: 'You successfully changed your password, please login',
+            message: `You successfully changed your password, you are logged in as ${user.email}`,
             snackSeverity: 'success',
           })
-          router.push('/login')
+          router.push('/visit-choice')
         }
       })
       .catch((error) => {

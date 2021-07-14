@@ -79,6 +79,7 @@ const login = () => {
 
   const setToken = (response) => {
     openSnackBar({message: 'Logged in as ' + response.user.email});
+    console.log('hello')
     router.push('/visit-choice')
   }
 

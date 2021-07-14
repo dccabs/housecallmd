@@ -80,6 +80,10 @@ const Payment = () => {
     const payload = {
       newUser: {
         hasInsurance,
+        isPrimaryCardHolder,
+        primaryHolderFirstName,
+        primaryHolderLastName,
+        primaryHolderDob,
         provider,
         planNumber,
         groupNumber,

@@ -29,17 +29,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Insurance = () => {
   const classes = useStyles()
-  const { setHasInsurance } = useStore()
+  const { setIsPrimaryCardHolder } = useStore()
   const router = useRouter()
 
   const handleNoClick = () => {
-    setHasInsurance(false);
-    router.push('/enter-profile-information');
+    setIsPrimaryCardHolder(false);
+    router.push('/insurance/primary-cardholder-information');
   }
 
   const handleYesClick = () => {
-    setHasInsurance(true);
-    router.push('/insurance/primary-cardholder');
+    setIsPrimaryCardHolder(true);
+    router.push('/insurance/choose-provider');
   }
 
   return (
@@ -53,10 +53,7 @@ const Insurance = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <Typography variant="h4">Will you be using insurance?</Typography>
-          <Box className={classes.disclaimer} mt="1em">
-            You do not need to have insurance to use this service.
-          </Box>
+          <Typography variant="h4">Are you the primary card holder on your insurance?</Typography>
           <Box
             className={classes.buttonLinks}
             mt="2em"

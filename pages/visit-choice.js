@@ -55,7 +55,7 @@ const VisitChoice = () => {
   const { user, session } = Auth.useUser()
 
   useEffect(() => {
-    if (!isAuthenticated) router.push('/login')
+    if (!user) router.push('/login')
   })
 
   useEffect(() => {
