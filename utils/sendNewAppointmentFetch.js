@@ -19,6 +19,10 @@ const sendNewAppointmentFetch = async (props) => {
     phone,
     visitChoice,
     amount,
+    isPrimaryCardHolder,
+    primaryHolderFirstName,
+    primaryHolderLastName,
+    primaryHolderDob,
   } = props;
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
@@ -51,7 +55,12 @@ const sendNewAppointmentFetch = async (props) => {
               <div style="font-weight: bold; font-size: 24px">
                 Patient Information
               </div>
-            
+              <br><br>
+              <div style="font-weight: bold">Primary cardholder: ${isPrimaryCardHolder}</div>
+              <div>Primary cardholder first name: ${primaryHolderFirstName}</div>
+              <div>Primary card holder last name: ${primaryHolderLastName}</div>
+              <div>Primary card holder date of birth: ${primaryHolderDob}</div>
+              <br><br>
               <div style="font-weight: bold">Visit Choice: ${visitChoice}</div>
               <div style="font-weight: bold">Amount Paid: ${amount}</div>
               <div style={{fontWeight: 'bold'}}>Patient Has Insurance: ${hasInsurance}</div>
@@ -66,6 +75,7 @@ const sendNewAppointmentFetch = async (props) => {
               <div>State: ${state}</div>
               <div>Zip: ${zip}</div>
               <div>Phone: ${phone}</div>
+              
               <br />
             </div>
           `,
