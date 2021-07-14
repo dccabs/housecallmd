@@ -36,7 +36,7 @@ const sendMailToMe = async (
         {
           type: 'text/html',
           value: `
-            <img src="http://www.housecallmd.org/wp-content/themes/housecallmd/images/main-logo.png" width="150px" height="100px" /><br />
+            <img src="/logo-vertical.png" width="150px" /><br /><br />
             <div style="color: #000;">
               <p>
                 ${client_message}
@@ -46,7 +46,7 @@ const sendMailToMe = async (
               <p>Phone: ${phone}</p>
               <br />
             </div>
-            <a href="http://www.housecallmd.org/"><button style="background-color: #0092b8; padding: 1em; border: 1px solid #0092b8; border-radius: 50px; color: #fff; cursor: pointer;">Go back to Housecall MD</button></a>
+            <a href="https://housecallmd.vercel.app/logo-vertical.png"><button style="background-color: #0092b8; padding: 1em; border: 1px solid #0092b8; border-radius: 50px; color: #fff; cursor: pointer;">Go back to Housecall MD</button></a>
           `,
         },
       ],

@@ -45,7 +45,7 @@ const sendNewAppointmentFetch = async (props) => {
         {
           type: 'text/html',
           value: `
-            <img src="http://www.housecallmd.org/wp-content/themes/housecallmd/images/main-logo.png" width="150px" height="100px" /><br />
+            <img src="https://housecallmd.vercel.app/logo-vertical.png" width="150px" /><br /><br />
             <div style="color: #000;">
             
               <div style="font-weight: bold; font-size: 24px">
