@@ -166,7 +166,7 @@ const CardInformation = () => {
                   color="secondary"
                   variant="contained"
                   size="large"
-                  disabled={!localLastName || !localFirstName || !moment(localDob).isValid()}
+                  disabled={!localLastName || !localFirstName || !moment(localDob).isValid() || !localRelation}
                 >
                   Continue
                 </Button>
