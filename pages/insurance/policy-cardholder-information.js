@@ -2,12 +2,12 @@ import { Typography, Box, Button, TextField } from '@material-ui/core'
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from '@material-ui/pickers';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import DateFnsUtils from '@date-io/date-fns';
+} from '@material-ui/pickers'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import DateFnsUtils from '@date-io/date-fns'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
@@ -47,7 +47,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CardInformation = () => {
-  const { setPolicyHolderFirstName, setPolicyHolderLastName, setPolicyHolderDob, setPolicyHolderRelation } = useStore()
+  const {
+    setPolicyHolderFirstName,
+    setPolicyHolderLastName,
+    setPolicyHolderDob,
+    setPolicyHolderRelation,
+  } = useStore()
   const [localFirstName, setLocalFirstName] = useState('')
   const [localLastName, setLocalLastName] = useState('')
   const [localDob, setLocalDob] = useState(null)
@@ -72,7 +77,9 @@ const CardInformation = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2" className={classes.h2}>Insurance</Typography>
+        <Typography variant="h2" className={classes.h2}>
+          Insurance
+        </Typography>
         <form onSubmit={handleSubmit} autoComplete="off">
           <Box
             mt="2em"
@@ -82,7 +89,11 @@ const CardInformation = () => {
             justifyContent="center"
           >
             <Typography>
-              Please fill out the following about the <strong style={{color: '#0092b8'}}>primary policy cardholder</strong> of your insurance plan
+              Please fill out the following about the{' '}
+              <strong style={{ color: '#0092b8' }}>
+                primary policy cardholder
+              </strong>{' '}
+              of your insurance plan
             </Typography>
             <Box
               mt="1em"
@@ -131,17 +142,19 @@ const CardInformation = () => {
                 />
               </MuiPickersUtilsProvider>
               <FormControl variant="outlined" className={classes.textFields}>
-                <InputLabel id="demo-simple-select-outlined-label">Relation to policy holder</InputLabel>
+                <InputLabel id="demo-simple-select-outlined-label">Guarantor's Relationship to patient</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   value={localRelation}
                   onChange={(e) => handleUpdate(e, setLocalRelation)}
-                  label="Relation to policy holder"
+                  label="Gurantor's Relationship to patient"
                 >
-                  <MenuItem value="spouse">Spouse</MenuItem>
-                  <MenuItem value="child">Step-child</MenuItem>
-                  <MenuItem value="child">Other</MenuItem>
+                  <MenuItem value="Spouse">Spouse</MenuItem>
+                  <MenuItem value="Mother">Mother</MenuItem>
+                  <MenuItem value="Father">Father</MenuItem>
+                  <MenuItem value="Child">Child</MenuItem>
+                  <MenuItem value="Domestic Partner">Domestic Partner</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -166,7 +179,12 @@ const CardInformation = () => {
                   color="secondary"
                   variant="contained"
                   size="large"
-                  disabled={!localLastName || !localFirstName || !moment(localDob).isValid() || !localRelation}
+                  disabled={
+                    !localLastName ||
+                    !localFirstName ||
+                    !moment(localDob).isValid() ||
+                    !localRelation
+                  }
                 >
                   Continue
                 </Button>

@@ -29,7 +29,6 @@ export default function MyApp(props) {
       let obj = {}
       params.forEach((param) => {
         const arr = param.split('=')
-        console.log('arr', arr)
         obj[arr[0]] = arr[1]
       })
 

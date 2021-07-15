@@ -1,19 +1,19 @@
-import { useState, useContext} from 'react'
-import { 
-  Typography, 
-  Box, 
-  Button, 
-  TextField, 
+import { useState, useContext } from 'react'
+import {
+  Typography,
+  Box,
+  Button,
+  TextField,
   FormControl,
-  OutlinedInput, 
-  InputLabel, 
-  InputAdornment, 
-  IconButton
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  IconButton,
 } from '@material-ui/core'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Container from '../components/Container'
-import { SnackBarContext} from '../components/SnackBar'
+import { SnackBarContext } from '../components/SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { supabase } from '../utils/initSupabase'
@@ -70,16 +70,20 @@ const login = () => {
     supabase.auth
       .signIn(payload)
       .then((response) => {
-        response.error ? openSnackBar({message: response.error.message, snackSeverity: 'error'}) : setToken(response)
+        response.error
+          ? openSnackBar({
+              message: response.error.message,
+              snackSeverity: 'error',
+            })
+          : setToken(response)
       })
       .catch((err) => {
-        openSnackBar({message: err.response.text, snackSeverity: 'error'})
+        openSnackBar({ message: err.response.text, snackSeverity: 'error' })
       })
   }
 
   const setToken = (response) => {
-    openSnackBar({message: 'Logged in as ' + response.user.email});
-    console.log('hello')
+    openSnackBar({ message: 'Logged in as ' + response.user.email })
     router.push('/visit-choice')
   }
 
@@ -92,7 +96,7 @@ const login = () => {
   }
 
   const handlePasswordClick = () => {
-    if(fieldType === 'password') setFieldType('text')
+    if (fieldType === 'password') setFieldType('text')
     else setFieldType('password')
     setShowPassword(!showPassword)
   }
@@ -102,7 +106,9 @@ const login = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2" className={classes.h2}>Login</Typography>
+        <Typography variant="h2" className={classes.h2}>
+          Login
+        </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box
             display="flex"
@@ -122,7 +128,15 @@ const login = () => {
               onChange={handleEmailUpdate}
             />
             <FormControl className={classes.textFields} variant="outlined">
-              <InputLabel style={{background: '#ffffff'}} htmlFor="outlined-adornment-password" color="secondary" variant="outlined" required>Password</InputLabel>
+              <InputLabel
+                style={{ background: '#ffffff' }}
+                htmlFor="outlined-adornment-password"
+                color="secondary"
+                variant="outlined"
+                required
+              >
+                Password
+              </InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
                 type={fieldType}
@@ -132,10 +146,7 @@ const login = () => {
                 onChange={handlePasswordUpdate}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={handlePasswordClick}
-                      edge="end"
-                    >
+                    <IconButton onClick={handlePasswordClick} edge="end">
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
@@ -165,12 +176,7 @@ const login = () => {
               </Box>
             </Box>
           </Box>
-          <Box
-            mt="2em"
-            display="flex"
-            justifyContent="center"
-            flexWrap="wrap"
-          >
+          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
               <Button
                 disabled={!password || !localEmail}

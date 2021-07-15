@@ -164,9 +164,9 @@ const Contact = () => {
     supabase.auth.signUp({ email: localEmail, password }).then((response) => {
       response.error
         ? openSnackBar({
-            message: response.error.message,
-            snackSeverity: 'error',
-          })
+          message: response.error.message,
+          snackSeverity: 'error',
+        })
         : setToken(response)
     })
   }
@@ -212,119 +212,130 @@ const Contact = () => {
     <Container>
       <Box>
         <Typography variant="h2" className={classes.h2}>
-          Please enter the following to finish creating your account:
+          Create your account
         </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box
+            mt="1em"
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
           >
-            <TextField
-              value={localEmail}
-              className={classes.textFields}
-              fullWidth
-              type="email"
-              label="Email"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={handleEmailUpdate}
-            />
-            <FormControl className={classes.textFields} variant="outlined">
-              <InputLabel
-                htmlFor="outlined-password"
-                color="secondary"
-                variant="outlined"
-                required
-                style={{background: '#ffffff'}}
-              >
-                Password
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-password"
-                value={password}
-                type={fieldType}
+            <Typography>
+              Please enter your email and password to finish creating your account.
+            </Typography>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <TextField
+                value={localEmail}
+                className={classes.textFields}
+                fullWidth
+                type="email"
+                label="Email"
                 variant="outlined"
                 color="secondary"
                 required
-                onChange={handlePasswordUpdate}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton onClick={handlePasswordClick} edge="end">
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={70}
-                error={passwordNotMatch}
+                onChange={handleEmailUpdate}
               />
-              {passwordNotMatch && (
-                <FormHelperText error>Passwords do not match</FormHelperText>
-              )}
-            </FormControl>
-            <FormControl className={classes.textFields} variant="outlined">
-              <InputLabel
-                htmlFor="outline-confirm-password"
-                color="secondary"
-                variant="outlined"
-                required
-                style={{background: '#ffffff'}}
-              >
-                Confirm Password
-              </InputLabel>
-              <OutlinedInput
-                id="outline-confirm-password"
-                value={confirmPassword}
-                type={confirmFieldType}
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={handleConfirmPasswordUpdate}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleConfirmPasswordClick} edge="end">
-                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={70}
-                error={passwordNotMatch}
-              />
-              {passwordNotMatch && (
-                <FormHelperText error>Passwords do not match</FormHelperText>
-              )}
-            </FormControl>
-            <Box mt="1em" width="100%" maxWidth="34rem">
-              <FormControl component="fieldset">
-                <FormControlLabel
-                  value="Terms"
-                  control={<Checkbox color="secondary" checked={checked} />}
-                  label="Accept terms and conditions of HousecallMD"
-                  labelPlacement="end"
-                  onChange={() => setChecked(!checked)}
+              <FormControl className={classes.textFields} variant="outlined">
+                <InputLabel
+                  htmlFor="outlined-password"
+                  color="secondary"
+                  variant="outlined"
+                  required
+                  style={{background: '#ffffff'}}
+                >
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-password"
+                  value={password}
+                  type={fieldType}
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={handlePasswordUpdate}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton onClick={handlePasswordClick} edge="end">
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                  error={passwordNotMatch}
                 />
+                {passwordNotMatch && (
+                  <FormHelperText error>Passwords do not match</FormHelperText>
+                )}
               </FormControl>
+              <FormControl className={classes.textFields} variant="outlined">
+                <InputLabel
+                  htmlFor="outline-confirm-password"
+                  color="secondary"
+                  variant="outlined"
+                  required
+                  style={{background: '#ffffff'}}
+                >
+                  Confirm Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outline-confirm-password"
+                  value={confirmPassword}
+                  type={confirmFieldType}
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={handleConfirmPasswordUpdate}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleConfirmPasswordClick} edge="end">
+                        {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                  error={passwordNotMatch}
+                />
+                {passwordNotMatch && (
+                  <FormHelperText error>Passwords do not match</FormHelperText>
+                )}
+              </FormControl>
+              <Box mt="1em" width="100%" maxWidth="34rem">
+                <FormControl component="fieldset">
+                  <FormControlLabel
+                    value="Terms"
+                    control={<Checkbox color="secondary" checked={checked} />}
+                    label="Accept terms and conditions of HousecallMD"
+                    labelPlacement="end"
+                    onChange={() => setChecked(!checked)}
+                  />
+                </FormControl>
+              </Box>
             </Box>
-          </Box>
-          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                disabled={
-                  !password ||
-                  !confirmPassword ||
-                  password !== confirmPassword ||
-                  !localEmail ||
-                  !checked
-                }
-                type="submit"
-                color="secondary"
-                variant="contained"
-                size="large"
-              >
-                Create Account
-              </Button>
+            <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+              <Box m="1em" className={classes.buttonLinks}>
+                <Button
+                  disabled={
+                    !password ||
+                    !confirmPassword ||
+                    password !== confirmPassword ||
+                    !localEmail ||
+                    !checked
+                  }
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  size="large"
+                >
+                  Create Account
+                </Button>
+              </Box>
             </Box>
           </Box>
         </form>
