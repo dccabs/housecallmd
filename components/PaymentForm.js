@@ -72,8 +72,8 @@ const useStyles = makeStyles((theme) => ({
   visitDescription: {
     textAlign: 'center',
     fontSize: 16,
-    margin: '20px 0'
-  }
+    margin: '20px 0',
+  },
 }))
 
 const CARD_OPTIONS = {
@@ -105,7 +105,7 @@ const PaymentForm = () => {
   const [error, setError] = useState(null)
   const [cardComplete, setCardComplete] = useState(false)
   const [processing, setProcessing] = useState(false)
-  const [succeeded, setSucceeded] = useState(false);
+  const [succeeded, setSucceeded] = useState(false)
   const [clientSecret, setClientSecret] = useState(false)
   const [amount, setAmount] = useState(0)
   const [billingDetails, setBillingDetails] = useState({
@@ -158,13 +158,13 @@ const PaymentForm = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (error) {
       openSnackBar({
-        message: "Please correct the errors in your payment form",
+        message: 'Please correct the errors in your payment form',
         snackSeverity: 'error',
       })
-      return false;
+      return false
     }
     setProcessing(true)
     await fetch(`/api/createPaymentIntent`, {
@@ -181,13 +181,15 @@ const PaymentForm = () => {
         firstName,
         lastName,
       }),
-    }).then((res) => {
-      return res.json();
-    }).then((data) => {
-      setClientSecret(data.clientSecret);
-      setOpen(true);
-      setProcessing(false)
-    });
+    })
+      .then((res) => {
+        return res.json()
+      })
+      .then((data) => {
+        setClientSecret(data.clientSecret)
+        setOpen(true)
+        setProcessing(false)
+      })
   }
 
   const sendEmailToUser = async () => {
@@ -207,54 +209,77 @@ const PaymentForm = () => {
         zip,
         phone,
         amount,
-      }
+      },
     }
+
+    await fetch('/api/sendAppointmentConfirmationEmail', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        email,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error)
+        } else {
+          console.log(data)
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        setProcessing(false)
+      })
 
     await fetch('/api/sendNewAppointmentEmail', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
-          throw Error(data.error);
+          throw Error(data.error)
         } else {
-          openSnackBar({message: 'Appointment request sent to HouseCallMD', snackSeverity: 'success'})
+          openSnackBar({
+            message: 'Appointment request sent to HouseCallMD',
+            snackSeverity: 'success',
+          })
           router.push('/thank-you')
           setProcessing(false)
         }
       })
-      .catch(error => {
-        openSnackBar({message: error.toString(), snackSeverity: 'error'})
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
         setProcessing(false)
-        setOpen(false);
-      });
+        setOpen(false)
+      })
   }
 
   const handleConfirm = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     setProcessing(true)
-
 
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
-      }
+      },
     })
 
     if (payload.error) {
       openSnackBar({
         message: `Payment failed ${payload.error.message}`,
         snackSeverity: 'error',
-      });
-      setProcessing(false);
-      setOpen(false);
+      })
+      setProcessing(false)
+      setOpen(false)
     } else {
-      setError(null);
-      setSucceeded(true);
-      sendEmailToUser();
+      setError(null)
+      setSucceeded(true)
+      sendEmailToUser()
     }
   }
 
@@ -271,18 +296,17 @@ const PaymentForm = () => {
             </Typography>
             <div className={classes.visitDescription}>
               <p>
-                You have chosen a {' '}
+                You have chosen a{' '}
                 {visitChoice === 'video'
                   ? 'Video'
                   : visitChoice === 'phone'
-                    ? 'Phone'
-                    : visitChoice === 'in_person'
-                      ? 'Housecall, in person'
-                      : ''}{' appointment'}
+                  ? 'Phone'
+                  : visitChoice === 'in_person'
+                  ? 'Housecall, in person'
+                  : ''}
+                {' appointment'}
               </p>
-              <p>
-                To proceed please fill out your payment information.
-              </p>
+              <p>To proceed please fill out your payment information.</p>
             </div>
           </Box>
           <form onSubmit={handleSubmit}>
@@ -308,7 +332,10 @@ const PaymentForm = () => {
                 autoComplete="email"
                 value={billingDetails.email}
                 onChange={(e) => {
-                  setBillingDetails({ ...billingDetails, email: e.target.value })
+                  setBillingDetails({
+                    ...billingDetails,
+                    email: e.target.value,
+                  })
                 }}
               />
               <Field
@@ -320,7 +347,10 @@ const PaymentForm = () => {
                 autoComplete="tel"
                 value={billingDetails.phone}
                 onChange={(e) => {
-                  setBillingDetails({ ...billingDetails, phone: e.target.value })
+                  setBillingDetails({
+                    ...billingDetails,
+                    phone: e.target.value,
+                  })
                 }}
               />
             </fieldset>
@@ -336,11 +366,7 @@ const PaymentForm = () => {
                 />
               </div>
             </fieldset>
-            {error &&
-            <div className={classes.cardError}>
-              {error}
-            </div>
-            }
+            {error && <div className={classes.cardError}>{error}</div>}
 
             <Box
               display="flex"
@@ -368,7 +394,12 @@ const PaymentForm = () => {
                     color="secondary"
                     variant="contained"
                     type="submit"
-                    disabled={!cardComplete || !billingDetails.name || !billingDetails.email || !billingDetails.phone}
+                    disabled={
+                      !cardComplete ||
+                      !billingDetails.name ||
+                      !billingDetails.email ||
+                      !billingDetails.phone
+                    }
                   >
                     Continue
                   </Button>
@@ -389,8 +420,8 @@ const PaymentForm = () => {
                   align="center"
                   style={{ lineHeight: '1.5em', maxWidth: '25rem' }}
                 >
-                  You will be charged ${amount} by HouseCallMD. Please confirm to
-                  pay.
+                  You will be charged ${amount} by HouseCallMD. Please confirm
+                  to pay.
                 </Typography>
                 <DialogContent>
                   <Box

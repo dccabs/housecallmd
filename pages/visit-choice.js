@@ -55,10 +55,6 @@ const VisitChoice = () => {
   const { user, session } = Auth.useUser()
 
   useEffect(() => {
-    if (!user) router.push('/login')
-  })
-
-  useEffect(() => {
     if (user) {
       try {
         setLoading(true)
@@ -82,12 +78,11 @@ const VisitChoice = () => {
       } finally {
         setLoading(false)
       }
-    }
+    } else router.push('/login')
   }, [user])
 
   const handleChange = (event) => {
     setValue(event.target.value)
-    console.log('user', user)
   }
 
   const handleSubmit = (e) => {
