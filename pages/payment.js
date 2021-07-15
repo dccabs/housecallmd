@@ -54,6 +54,11 @@ const Payment = () => {
   const router = useRouter()
 
   const {
+    isPolicyCardHolder,
+    policyHolderFirstName,
+    policyHolderLastName,
+    policyHolderDob,
+    policyHolderRelation,
     hasInsurance,
     provider,
     planNumber,
@@ -80,10 +85,11 @@ const Payment = () => {
     const payload = {
       newUser: {
         hasInsurance,
-        isPrimaryCardHolder,
-        primaryHolderFirstName,
-        primaryHolderLastName,
-        primaryHolderDob,
+        isPolicyCardHolder,
+        policyHolderFirstName,
+        policyHolderLastName,
+        policyHolderDob,
+        policyHolderRelation,
         provider,
         planNumber,
         groupNumber,

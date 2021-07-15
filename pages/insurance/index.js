@@ -39,7 +39,7 @@ const Insurance = () => {
 
   const handleYesClick = () => {
     setHasInsurance(true);
-    router.push('/insurance/primary-cardholder');
+    router.push('/insurance/policy-cardholder');
   }
 
   return (
