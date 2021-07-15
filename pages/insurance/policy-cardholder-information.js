@@ -131,17 +131,19 @@ const CardInformation = () => {
                 />
               </MuiPickersUtilsProvider>
               <FormControl variant="outlined" className={classes.textFields}>
-                <InputLabel id="demo-simple-select-outlined-label">Relation to policy holder</InputLabel>
+                <InputLabel id="demo-simple-select-outlined-label">Gurantor's Relationship to patient</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   value={localRelation}
                   onChange={(e) => handleUpdate(e, setLocalRelation)}
-                  label="Relation to policy holder"
+                  label="Gurantor's Relationship to patient"
                 >
                   <MenuItem value="spouse">Spouse</MenuItem>
-                  <MenuItem value="child">Step-child</MenuItem>
-                  <MenuItem value="child">Other</MenuItem>
+                  <MenuItem value="mother">Mother</MenuItem>
+                  <MenuItem value="father">Father</MenuItem>
+                  <MenuItem value="father">Child</MenuItem>
+                  <MenuItem value="father">Domestic Parter</MenuItem>
                 </Select>
               </FormControl>
             </Box>
