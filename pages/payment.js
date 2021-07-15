@@ -1,4 +1,11 @@
-import { Typography, Box, TextField, Button, Backdrop, CircularProgress } from '@material-ui/core'
+import {
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Backdrop,
+  CircularProgress,
+} from '@material-ui/core'
 import Container from '../components/Container'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
@@ -11,7 +18,6 @@ import useStore from '../zustand/store'
 import { useRouter } from 'next/router'
 import { useContext, useState } from 'react'
 import moment from 'moment'
-
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
@@ -45,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1.5em',
       padding: '2em 0',
     },
-  }
+  },
 }))
 
 const Payment = () => {
@@ -97,12 +103,11 @@ const Payment = () => {
     amount: 0,
   }
 
-  console.log('useStore()', useStore())
-
   const openSnackBar = useContext(SnackBarContext)
 
   const handleContinue = () => {
-    sendEmailToHouseCall();
+    sendEmailToHouseCall()
+    sendSMSToHouseCall()
   }
 
   const sendEmailToHouseCall = async () => {
@@ -110,27 +115,71 @@ const Payment = () => {
       newUser,
     }
 
-    await fetch('/api/sendNewAppointmentEmail', {
+    await fetch('/api/sendAppointmentConfirmationEmail', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        email,
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
-          throw Error(data.error);
+          throw Error(data.error)
         } else {
-          openSnackBar({message: 'Appointment request sent to HouseCallMD', snackSeverity: 'success'})
+          console.log(data)
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        setProcessing(false)
+      })
+
+    await fetch('/api/sendNewAppointmentEmail', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error)
+        } else {
+          openSnackBar({
+            message: 'Appointment request sent to HouseCallMD',
+            snackSeverity: 'success',
+          })
           router.push('/thank-you')
           setProcessing(false)
         }
       })
-      .catch(error => {
-        openSnackBar({message: error.toString(), snackSeverity: 'error'})
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
         setProcessing(false)
         // setOpen(false);
-      });
+      })
+  }
+
+  const sendSMSToHouseCall = async () => {
+    const message = `${firstName} ${lastName} just signed up for an appointment.`
+
+    try {
+      await fetch('/api/sendMessage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER,
+          body: message,
+        }),
+      })
+    } catch (err) {
+      throw err
+    }
   }
 
   return (
@@ -140,11 +189,15 @@ const Payment = () => {
       </Backdrop>
       <Container>
         <Box>
-          <Typography variant="h2" className={classes.h2}>Payment</Typography>
-          {(hasInsurance && visitChoice==='video') ?
+          <Typography variant="h2" className={classes.h2}>
+            Payment
+          </Typography>
+          {hasInsurance && visitChoice === 'video' ? (
             <>
               <p className={classes.content}>
-                Because you have insurance and have selected a Video appointment, there is no addtional charge for this service. Please click <strong>Continue</strong>.
+                Because you have insurance and have selected a Video
+                appointment, there is no addtional charge for this service.
+                Please click <strong>Continue</strong>.
               </p>
               <Box
                 mt="2em"
@@ -174,12 +227,11 @@ const Payment = () => {
                 </Box>
               </Box>
             </>
-
-
-            : <Elements stripe={stripePromise}>
+          ) : (
+            <Elements stripe={stripePromise}>
               <PaymentForm newUser={newUser} />
             </Elements>
-          }
+          )}
         </Box>
       </Container>
     </>
