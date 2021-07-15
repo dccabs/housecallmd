@@ -78,7 +78,7 @@ const VisitChoice = () => {
       } finally {
         setLoading(false)
       }
-    } else router.push('/login')
+    }
   }, [user])
 
   const handleChange = (event) => {

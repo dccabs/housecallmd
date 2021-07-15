@@ -84,6 +84,7 @@ const Payment = () => {
 
   const handleContinue = () => {
     sendEmailToHouseCall()
+    sendSMSToHouseCall()
   }
 
   const sendEmailToHouseCall = async () => {
@@ -156,6 +157,26 @@ const Payment = () => {
         setProcessing(false)
         // setOpen(false);
       })
+  }
+
+  const sendSMSToHouseCall = async () => {
+    const message = `${firstName} ${lastName} just signed up for an appointment.`
+
+    try {
+      await fetch('/api/sendMessage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER,
+          body: message,
+        }),
+      })
+    } catch (err) {
+      throw err
+    }
   }
 
   return (

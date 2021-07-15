@@ -259,6 +259,26 @@ const PaymentForm = () => {
       })
   }
 
+  const sendSMSToClient = async () => {
+    const message = `${firstName} ${lastName} just signed up for an appointment.`
+
+    try {
+      await fetch('/api/sendMessage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER,
+          body: message,
+        }),
+      })
+    } catch (err) {
+      throw err
+    }
+  }
+
   const handleConfirm = async (e) => {
     e.preventDefault()
     setProcessing(true)
@@ -280,6 +300,7 @@ const PaymentForm = () => {
       setError(null)
       setSucceeded(true)
       sendEmailToUser()
+      sendSMSToClient()
     }
   }
 
