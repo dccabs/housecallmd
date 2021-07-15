@@ -19,6 +19,7 @@ import { supabase } from '../utils/initSupabase'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import MobileNavDrawer from './MobileNavDrawer'
+import clearStore from '../utils/clearStore';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -82,11 +83,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Navbar = () => {
+  const store = useStore();
+
   const [drawerToggle, setDrawerToggle] = useState(false)
   const router = useRouter()
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const { user, session } = Auth.useUser()
+
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -94,7 +98,7 @@ const Navbar = () => {
       message: `${user.email} has been logged out of the application`,
       snackSeverity: 'error',
     })
-    console.log(error)
+    clearStore(store);
     router.push('/')
   }
 
