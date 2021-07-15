@@ -3,6 +3,10 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import DateFnsUtils from '@date-io/date-fns';
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -43,19 +47,21 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CardInformation = () => {
-  const { setPrimaryHolderFirstName, setPrimaryHolderLastName, setPrimaryHolderDob } = useStore()
+  const { setPolicyHolderFirstName, setPolicyHolderLastName, setPolicyHolderDob, setPolicyHolderRelation } = useStore()
   const [localFirstName, setLocalFirstName] = useState('')
   const [localLastName, setLocalLastName] = useState('')
   const [localDob, setLocalDob] = useState(null)
+  const [localRelation, setLocalRelation] = useState('')
 
   const classes = useStyles()
   const router = useRouter()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    setPrimaryHolderFirstName(localFirstName)
-    setPrimaryHolderLastName(localLastName)
-    setPrimaryHolderDob(localDob);
+    setPolicyHolderFirstName(localFirstName)
+    setPolicyHolderLastName(localLastName)
+    setPolicyHolderDob(localDob)
+    setPolicyHolderRelation(localRelation)
     router.push('/insurance/choose-provider')
   }
 
@@ -67,7 +73,7 @@ const CardInformation = () => {
     <Container>
       <Box>
         <Typography variant="h2" className={classes.h2}>Insurance</Typography>
-        <form onSubmit={handleSubmit} autocomplete="off">
+        <form onSubmit={handleSubmit} autoComplete="off">
           <Box
             mt="2em"
             display="flex"
@@ -76,7 +82,7 @@ const CardInformation = () => {
             justifyContent="center"
           >
             <Typography>
-              Please fill out the following about the <strong style={{color: '#0092b8'}}>primary cardholder</strong> of your insurance plan
+              Please fill out the following about the <strong style={{color: '#0092b8'}}>primary policy cardholder</strong> of your insurance plan
             </Typography>
             <Box
               mt="1em"
@@ -87,20 +93,20 @@ const CardInformation = () => {
               width="100%"
             >
               <TextField
-                autocomplete="nope"
+                autoComplete="nope"
                 value={localFirstName}
                 className={classes.textFields}
-                label="Primary first name"
+                label="Policy holder first name"
                 variant="outlined"
                 color="secondary"
                 onChange={(e) => handleUpdate(e, setLocalFirstName)}
                 required
               />
               <TextField
-                autocomplete="nope"
+                autoComplete="nope"
                 value={localLastName}
                 className={classes.textFields}
-                label="Primary last name"
+                label="Policy holder last name"
                 variant="outlined"
                 color="secondary"
                 onChange={(e) => handleUpdate(e, setLocalLastName)}
@@ -108,12 +114,12 @@ const CardInformation = () => {
               />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
-                  autocomplete="nope"
+                  autoComplete="nope"
                   className={classes.textFields}
                   inputVariant="outlined"
                   margin="normal"
                   id="date-picker-dialog"
-                  label="Primary date of birth"
+                  label="Policy holder date of birth"
                   format="MM/dd/yyyy"
                   value={localDob}
                   onChange={(value) => {
@@ -124,6 +130,20 @@ const CardInformation = () => {
                   }}
                 />
               </MuiPickersUtilsProvider>
+              <FormControl variant="outlined" className={classes.textFields}>
+                <InputLabel id="demo-simple-select-outlined-label">Relation to policy holder</InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={localRelation}
+                  onChange={(e) => handleUpdate(e, setLocalRelation)}
+                  label="Relation to policy holder"
+                >
+                  <MenuItem value="spouse">Spouse</MenuItem>
+                  <MenuItem value="child">Step-child</MenuItem>
+                  <MenuItem value="child">Other</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
             <Box
               mt="2em"
@@ -146,7 +166,7 @@ const CardInformation = () => {
                   color="secondary"
                   variant="contained"
                   size="large"
-                  disabled={!localLastName || !localFirstName || !moment(localDob).isValid()}
+                  disabled={!localLastName || !localFirstName || !moment(localDob).isValid() || !localRelation}
                 >
                   Continue
                 </Button>

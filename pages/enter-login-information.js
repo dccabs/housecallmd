@@ -81,10 +81,11 @@ const Contact = () => {
 
   const {
     hasInsurance,
-    isPrimaryCardHolder,
-    primaryHolderFirstName,
-    primaryHolderLastName,
-    primaryHolderDob,
+    isPolicyCardHolder,
+    policyHolderFirstName,
+    policyHolderLastName,
+    policyHolderDob,
+    policyHolderRelation,
     provider,
     planNumber,
     groupNumber,
@@ -184,10 +185,11 @@ const Contact = () => {
       })
       let newUser = {
         hasInsurance,
-        isPrimaryCardHolder,
-        primaryHolderFirstName,
-        primaryHolderLastName,
-        primaryHolderDob: moment(primaryHolderDob).format('L'),
+        isPolicyCardHolder,
+        policyHolderFirstName,
+        policyHolderLastName,
+        policyHolderDob: moment(policyHolderDob).format('L'),
+        policyHolderRelation,
         provider,
         planNumber,
         groupNumber,
