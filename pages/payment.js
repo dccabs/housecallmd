@@ -17,6 +17,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import useStore from '../zustand/store'
 import { useRouter } from 'next/router'
 import { useContext, useState } from 'react'
+import moment from 'moment'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
@@ -80,6 +81,28 @@ const Payment = () => {
     phone,
   } = useStore()
 
+  const newUser = {
+    hasInsurance,
+    isPolicyCardHolder,
+    policyHolderFirstName,
+    policyHolderLastName,
+    policyHolderDob: moment(policyHolderDob).format('L'),
+    policyHolderRelation,
+    provider,
+    planNumber,
+    groupNumber,
+    visitChoice,
+    firstName,
+    lastName,
+    email,
+    address,
+    city,
+    state,
+    zip,
+    phone,
+    amount: 0,
+  }
+
   const openSnackBar = useContext(SnackBarContext)
 
   const handleContinue = () => {
@@ -89,27 +112,7 @@ const Payment = () => {
 
   const sendEmailToHouseCall = async () => {
     const payload = {
-      newUser: {
-        hasInsurance,
-        isPolicyCardHolder,
-        policyHolderFirstName,
-        policyHolderLastName,
-        policyHolderDob,
-        policyHolderRelation,
-        provider,
-        planNumber,
-        groupNumber,
-        visitChoice,
-        firstName,
-        lastName,
-        email,
-        address,
-        city,
-        state,
-        zip,
-        phone,
-        amount: 0,
-      },
+      newUser,
     }
 
     await fetch('/api/sendAppointmentConfirmationEmail', {
@@ -226,7 +229,7 @@ const Payment = () => {
             </>
           ) : (
             <Elements stripe={stripePromise}>
-              <PaymentForm />
+              <PaymentForm newUser={newUser} />
             </Elements>
           )}
         </Box>

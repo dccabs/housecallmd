@@ -53,7 +53,7 @@ const Insurance = () => {
           <Box className={classes.disclaimer} mt="1em">
             You do not need to have insurance to use this service.
           </Box>
-          <Box mt="1em" width="100%" maxWidth="34rem">
+          <Box mt="1em" width="100%" maxWidth="34rem" style={{textAlign: 'center'}}>
             <FormControl component="fieldset">
               <FormControlLabel
                 value="Terms"

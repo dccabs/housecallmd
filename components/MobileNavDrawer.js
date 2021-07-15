@@ -32,6 +32,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
   const session = supabase.auth.session()
   const user = supabase.auth.user()
   const classes = useStyles()
+  const store = useStore();
 
   const openSnackBar = useContext(SnackBarContext)
 
@@ -55,7 +56,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
     openSnackBar({message: `${user.email} has been logged out of the application`, snackSeverity: 'error'})
-    clearStore(useStore)
+    clearStore(store)
     router.push('/')
   }
 

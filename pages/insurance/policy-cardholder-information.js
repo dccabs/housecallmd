@@ -142,9 +142,7 @@ const CardInformation = () => {
                 />
               </MuiPickersUtilsProvider>
               <FormControl variant="outlined" className={classes.textFields}>
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Gurantor's Relationship to patient
-                </InputLabel>
+                <InputLabel id="demo-simple-select-outlined-label">Guarantor's Relationship to patient</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"

@@ -61,7 +61,7 @@ const sendNewAppointmentFetch = async (props) => {
               <div>Policy cardholder first name: ${policyHolderFirstName}</div>
               <div>Policy card holder last name: ${policyHolderLastName}</div>
               <div>Policy card holder date of birth: ${policyHolderDob}</div>
-               <div>Patient relationship to policy holder: ${policyHolderRelation}</div>
+               <div>Gurantor's Relationship to patient: ${policyHolderRelation}</div>
 
 
               <br><br>
