@@ -1,5 +1,12 @@
 const clearStore = (store) => {
+  console.log('store', store)
   const {
+    setPolicyHolderFirstName,
+    setPolicyHolderLastName,
+    setPolicyHolderDob,
+    setIsPolicyCardHolder,
+    setPolicyHolderRelation,
+    setHasInsurance,
     setFirstName,
     setLastName,
     setEmail,
@@ -12,9 +19,14 @@ const clearStore = (store) => {
     setPlanNumber,
     setGroupNumber,
     setVisitChoice,
-    setHasInsurance,
+    setIsAuthenticated,
   } = store;
 
+  setPolicyHolderFirstName(''),
+  setPolicyHolderLastName(''),
+  setPolicyHolderDob(''),
+  setIsPolicyCardHolder(false),
+  setPolicyHolderRelation(''),
   setFirstName('');
   setLastName('');
   setEmail('');
@@ -28,6 +40,7 @@ const clearStore = (store) => {
   setGroupNumber('');
   setVisitChoice('');
   setHasInsurance(false);
+  setIsAuthenticated(false)
 }
 
 export default clearStore
