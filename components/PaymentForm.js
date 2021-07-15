@@ -100,7 +100,7 @@ const CARD_OPTIONS = {
   },
 }
 
-const PaymentForm = () => {
+const PaymentForm = (props) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState(null)
   const [cardComplete, setCardComplete] = useState(false)
@@ -118,19 +118,12 @@ const PaymentForm = () => {
 
   const {
     hasInsurance,
-    provider,
-    planNumber,
-    groupNumber,
     visitChoice,
     firstName,
     lastName,
     email,
-    address,
-    city,
-    state,
-    zip,
-    phone,
-  } = useStore()
+  } = props.newUser;
+
   const stripe = useStripe()
   const elements = useElements()
   const classes = useStyles()
@@ -192,22 +185,7 @@ const PaymentForm = () => {
 
   const sendEmailToUser = async () => {
     const payload = {
-      newUser: {
-        hasInsurance,
-        provider,
-        planNumber,
-        groupNumber,
-        visitChoice,
-        firstName,
-        lastName,
-        email,
-        address,
-        city,
-        state,
-        zip,
-        phone,
-        amount,
-      }
+      newUser: props.newUser,
     }
 
     await fetch('/api/sendNewAppointmentEmail', {

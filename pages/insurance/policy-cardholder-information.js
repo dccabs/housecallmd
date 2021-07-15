@@ -142,8 +142,8 @@ const CardInformation = () => {
                   <MenuItem value="spouse">Spouse</MenuItem>
                   <MenuItem value="mother">Mother</MenuItem>
                   <MenuItem value="father">Father</MenuItem>
-                  <MenuItem value="father">Child</MenuItem>
-                  <MenuItem value="father">Domestic Parter</MenuItem>
+                  <MenuItem value="child">Child</MenuItem>
+                  <MenuItem value="domestic_partner">Domestic Parter</MenuItem>
                 </Select>
               </FormControl>
             </Box>
