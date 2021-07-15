@@ -34,7 +34,7 @@ const Insurance = () => {
 
   const handleNoClick = () => {
     setIsPolicyCardHolder(false);
-    router.push('/insurance/primary-cardholder-information');
+    router.push('/insurance/policy-cardholder-information');
   }
 
   const handleYesClick = () => {
