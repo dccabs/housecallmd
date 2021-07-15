@@ -184,8 +184,12 @@ const PaymentForm = (props) => {
   }
 
   const sendEmailToUser = async () => {
+    const userData = {
+      ...props.newUser,
+      amount,
+    }
     const payload = {
-      newUser: props.newUser,
+      newUser: userData,
     }
 
     await fetch('/api/sendNewAppointmentEmail', {
