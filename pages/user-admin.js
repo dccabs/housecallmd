@@ -47,9 +47,7 @@ const UserAdmin = (props) => {
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
-
-  console.log('user', user)
-
+  
   useEffect(async () => {
     if (user) {
       fetch('/api/getSingleUser', {
@@ -76,7 +74,6 @@ const UserAdmin = (props) => {
   const getUsers = async () => {
     try {
       setLoading(true)
-      console.log('hello world')
       const res = await fetch(`/api/getAllUsers`, {
         method: 'POST',
         headers: new Headers({
