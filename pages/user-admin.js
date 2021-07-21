@@ -47,7 +47,7 @@ const UserAdmin = (props) => {
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
-  
+
   useEffect(async () => {
     if (user) {
       fetch('/api/getSingleUser', {
@@ -67,7 +67,6 @@ const UserAdmin = (props) => {
             })
           }
         })
-      // getUsers();
     }
   }, [user])
 
