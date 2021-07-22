@@ -125,7 +125,7 @@ const UserAdmin = (props) => {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
         credentials: 'same-origin',
-        body: JSON.stringify({ email: email.email }),
+        body: JSON.stringify({ email: email.email, user }),
       })
         .then((res) => res.json())
         .then((data) => {
