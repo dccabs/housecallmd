@@ -3,6 +3,10 @@ import { supabase } from '../../utils/initSupabase'
 const updateUser = async (req, res) => {
   const updatedUser = req.body
 
+  if (!updatedUser || updatedUser === 'undefined') {
+    throw Error('null data value')
+  }
+
   const { data, error } = await supabase
     .from('UserList')
     .update(updatedUser)

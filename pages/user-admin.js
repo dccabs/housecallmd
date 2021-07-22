@@ -67,14 +67,22 @@ const UserAdmin = (props) => {
             })
           }
         })
-      // getUsers();
     }
   }, [user])
 
   const getUsers = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`/api/getAllUsers`)
+      const res = await fetch(`/api/getAllUsers`, {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+        }),
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          user,
+        }),
+      })
       const data = await res.json()
       const users = await data.map((u) => {
         return {
@@ -117,7 +125,7 @@ const UserAdmin = (props) => {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
         credentials: 'same-origin',
-        body: JSON.stringify({ email: email.email }),
+        body: JSON.stringify({ email: email.email, user }),
       })
         .then((res) => res.json())
         .then((data) => {

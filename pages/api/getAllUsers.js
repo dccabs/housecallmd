@@ -2,7 +2,11 @@ import { supabase } from '../../utils/initSupabase'
 
 // Example of how to verify and get user data server-side.
 const getAllUsers = async (req, res) => {
-  const token = req.headers.token
+  const body = req.body
+
+  if (body.user.role !== 'authenticated') {
+    throw Error('not authorized')
+  }
 
   let { data: users, error } = await supabase
     .from('UserList')

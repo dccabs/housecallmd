@@ -2,12 +2,20 @@ import { supabase } from '../../utils/initSupabase'
 
 // Example of how to verify and get user data server-side.
 const deleteUser = async (req, res) => {
-  const { email } = req.body;
+  const { email, user } = req.body
+
+  if (user.role !== 'authenticated') {
+    throw Error('not authorized')
+  }
+
+  if (!email || email === 'undefined') {
+    throw Error('null data value')
+  }
 
   const { data, error } = await supabase
     .from('UserList')
     .delete()
-    .match({email,})
+    .match({ email })
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(data)
 }

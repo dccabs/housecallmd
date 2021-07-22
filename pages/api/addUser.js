@@ -3,6 +3,10 @@ import { supabase } from '../../utils/initSupabase'
 const addUser = async (req, res) => {
   const { newUser } = req.body
 
+  if (!newUser || newUser === 'undefined') {
+    throw Error('null data value')
+  }
+
   const { data, error } = await supabase
     .from('UserList')
     .insert([{ ...newUser }])

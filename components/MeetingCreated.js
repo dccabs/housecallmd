@@ -3,6 +3,8 @@ import { Box, Typography, Button, CircularProgress } from '@material-ui/core'
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
+import { Auth } from '@supabase/ui'
+import { SnackBarContext } from '../components/SnackBar'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -26,6 +28,8 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
   const [success, setSuccess] = useState(false)
   const classes = useStyles()
   const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`
+  const openSnackBar = useContext(SnackBarContext)
+  const { user } = Auth.useUser()
 
   useEffect(async () => {
     try {
@@ -35,7 +39,10 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
 
       setRoomId(data[0].cuid)
     } catch (err) {
-      console.log(err)
+      openSnackBar({
+        message: err,
+        snackSeverity: 'error',
+      })
     } finally {
       setLoading(false)
     }
@@ -50,7 +57,7 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ to: phone, body: message }),
+        body: JSON.stringify({ to: phone, body: message, user }),
       })
 
       const data = await res.json()
@@ -60,7 +67,10 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
         setBody('')
       }
     } catch (err) {
-      console.log(err)
+      openSnackBar({
+        message: err,
+        snackSeverity: 'error',
+      })
     } finally {
       setLoadingSMS(false)
     }
