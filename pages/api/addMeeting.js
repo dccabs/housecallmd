@@ -6,19 +6,17 @@ const addMeeting = async (req, res) => {
   const access_token = req.headers.token
   const { creator, user } = req.body
 
+  console.log('user', user)
+
   if (user.role !== 'authenticated') {
     throw Error('not authorized')
-  }
-
-  if (!creator || creator === 'undefined') {
-    throw Error('null data value')
   }
 
   const { data, error } = await supabase.from('MeetingList').insert([
     {
       cuid: uuidv4(),
       timestamp: new Date(),
-      creator,
+      creator: user.email,
     },
   ])
   if (error) return res.status(401).json({ error: error.message })
