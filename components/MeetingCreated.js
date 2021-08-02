@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Box, Typography, Button, CircularProgress } from '@material-ui/core'
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom'
 import { makeStyles } from '@material-ui/core/styles'
@@ -34,7 +34,14 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
   useEffect(async () => {
     try {
       setLoading(true)
-      const res = await fetch(`/api/addMeeting`)
+      const res = await fetch('/api/addMeeting', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user }),
+      })
       const data = await res.json()
 
       setRoomId(data[0].cuid)
@@ -64,7 +71,6 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
 
       if (data.success) {
         setSuccess(true)
-        setBody('')
       }
     } catch (err) {
       openSnackBar({
