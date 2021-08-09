@@ -122,7 +122,7 @@ const PaymentForm = (props) => {
     firstName,
     lastName,
     email,
-  } = props.newUser;
+  } = props.newUser
 
   const stripe = useStripe()
   const elements = useElements()
@@ -243,22 +243,25 @@ const PaymentForm = (props) => {
 
   const sendSMSToClient = async () => {
     const message = `${firstName} ${lastName} just signed up for an appointment.`
+    const phones = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBERS.split(',')
 
-    try {
-      await fetch('/api/sendMessage', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER,
-          body: message,
-        }),
-      })
-    } catch (err) {
-      throw err
-    }
+    phones.forEach(async (phone) => {
+      try {
+        await fetch('/api/sendMessage', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: phone,
+            body: message,
+          }),
+        })
+      } catch (err) {
+        throw err
+      }
+    })
   }
 
   const handleConfirm = async (e) => {
