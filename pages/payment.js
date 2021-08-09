@@ -162,24 +162,27 @@ const Payment = () => {
       })
   }
 
-  const sendSMSToHouseCall = async () => {
+  const sendSMSToHouseCall = () => {
     const message = `${firstName} ${lastName} just signed up for an appointment.`
+    const phones = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBERS.split(',')
 
-    try {
-      await fetch('/api/sendMessage', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER,
-          body: message,
-        }),
-      })
-    } catch (err) {
-      throw err
-    }
+    phones.forEach(async (phone) => {
+      try {
+        await fetch('/api/sendMessage', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: phone,
+            body: message,
+          }),
+        })
+      } catch (err) {
+        throw err
+      }
+    })
   }
 
   return (

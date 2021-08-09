@@ -40,6 +40,9 @@ const SendSMS = ({ phone, setMessageContent }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const message = body.concat(
+      '\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.'
+    )
 
     try {
       setLoading(true)
@@ -49,7 +52,7 @@ const SendSMS = ({ phone, setMessageContent }) => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ to: number, body: body }),
+        body: JSON.stringify({ to: number, body: message }),
       })
 
       const data = await res.json()
