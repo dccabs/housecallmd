@@ -27,7 +27,7 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
   const [loadingSMS, setLoadingSMS] = useState(false)
   const [success, setSuccess] = useState(false)
   const classes = useStyles()
-  const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`
+  const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
