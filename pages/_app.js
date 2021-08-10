@@ -47,7 +47,7 @@ export default function MyApp(props) {
   return (
     <Fragment>
       <Head>
-        <title>Urgent Care | Health Care | Kitsap County, Washington House Call MD</title>
+        <title>House Call MD - Urgent Care | Health Care | Kitsap County, Washington</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
