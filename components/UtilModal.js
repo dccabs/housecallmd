@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [dob, setDob] = useState('')
   const [hasInsurance, setHasInsurance] = useState('')
   const [provider, setProvider] = useState('')
   const [planNumber, setPlanNumber] = useState('')
@@ -67,6 +68,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
     setGroupNumber(rowData.groupNumber)
     setPhone(rowData.phone)
     setAddress(rowData.address)
+    setDob(rowData.dob)
   }, [rowData])
 
   const handleSubmit = async (e) => {
@@ -82,6 +84,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       groupNumber,
       phone,
       address,
+      dob,
     }
     const newRows = rows.map((r) => {
       if (r.email === email) r = updatedRow
@@ -93,6 +96,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       city: address.split(', ')[1],
       firstName: name.split(', ')[1],
       email,
+      dob,
       groupNumber,
       hasInsurance: hasInsurance === 'Yes' ? true : false,
       lastName: name.split(', ')[0],
@@ -159,6 +163,20 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
                     color="secondary"
                     required
                     onChange={(e) => setName(e.target.value)}
+                  />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <TextField
+                    value={dob}
+                    className={classes.textFields}
+                    fullWidth
+                    type="text"
+                    label="Date of Birth"
+                    variant="outlined"
+                    color="secondary"
+                    required
+                    onChange={(e) => setDob(e.target.value)}
                   />
                 </Box>
 
