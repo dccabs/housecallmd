@@ -79,6 +79,7 @@ const Payment = () => {
     state,
     zip,
     phone,
+    dob,
   } = useStore()
 
   const newUser = {
@@ -100,6 +101,7 @@ const Payment = () => {
     state,
     zip,
     phone,
+    dob: moment(dob).format('L'),
     amount: 0,
   }
 

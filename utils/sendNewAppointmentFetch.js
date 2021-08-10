@@ -19,6 +19,7 @@ const sendNewAppointmentFetch = async (props) => {
     phone,
     visitChoice,
     amount,
+    dob,
     isPolicyCardHolder,
     policyHolderFirstName,
     policyHolderLastName,
@@ -58,11 +59,13 @@ const sendNewAppointmentFetch = async (props) => {
               </div>
               <br><br>
               <div style="font-weight: bold">Policy cardholder: ${isPolicyCardHolder}</div>
-              <div>Policy cardholder first name: ${policyHolderFirstName}</div>
-              <div>Policy card holder last name: ${policyHolderLastName}</div>
-              <div>Policy card holder date of birth: ${policyHolderDob}</div>
-               <div>Gurantor's Relationship to patient: ${policyHolderRelation}</div>
-
+              ${!isPolicyCardHolder ?
+                `<div>Policy cardholder first name: ${policyHolderFirstName}</div>
+                <div>Policy card holder last name: ${policyHolderLastName}</div>
+                <div>Policy card holder date of birth: ${policyHolderDob}</div>
+                <div>Gurantor's Relationship to patient: ${policyHolderRelation}</div>`
+               : ''
+              }
 
               <br><br>
               <div style="font-weight: bold">Visit Choice: ${visitChoice}</div>
@@ -70,6 +73,7 @@ const sendNewAppointmentFetch = async (props) => {
               <div style={{fontWeight: 'bold'}}>Patient Has Insurance: ${hasInsurance}</div>
               <div>First Name: ${firstName}</div>
               <div>Last Name: ${lastName}</div>
+              <div>Date of Birth: ${dob}
               <div>Provider: ${provider}</div>
               <div>Plan Number: ${planNumber}</div>
               <div>Group Number: ${groupNumber}</div>

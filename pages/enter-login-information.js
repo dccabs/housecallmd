@@ -98,6 +98,7 @@ const Contact = () => {
     state,
     zip,
     phone,
+    dob,
     setEmail,
   } = useStore()
 
@@ -193,7 +194,6 @@ const Contact = () => {
         provider,
         planNumber,
         groupNumber,
-        // visitChoice,
         firstName,
         lastName,
         email: response.data.user.email,
@@ -201,6 +201,7 @@ const Contact = () => {
         city,
         state,
         zip,
+        dob: moment(dob).format('L'),
         phone: phone.replace(/\s/g, ''),
         uuid: response.data.user.id,
       }
