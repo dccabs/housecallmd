@@ -93,6 +93,7 @@ const UserAdmin = (props) => {
           planNumber: u.planNumber,
           groupNumber: u.groupNumber,
           phone: u.phone,
+          dob: u.dob,
           address: `${u.address}, ${u.city}, ${u.state}, ${u.zip}`,
         }
       })

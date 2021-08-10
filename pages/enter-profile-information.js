@@ -1,4 +1,10 @@
 import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
@@ -46,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Contact = () => {
 
-  const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone } = useStore();
+  const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone, setDob } = useStore();
 
   const [localFirstName, setLocalFirstName] = useState('');
   const [localLastName, setLocalLastName] = useState('');
@@ -55,6 +61,7 @@ const Contact = () => {
   const [localState, setLocalState] = useState('');
   const [localZip, setLocalZip] = useState('');
   const [localPhone, setLocalPhone] = useState('');
+  const [localDob, setLocalDob] = useState(null)
 
   const classes = useStyles();
   const router = useRouter();
@@ -68,6 +75,7 @@ const Contact = () => {
     setState(localState);
     setZip(localZip);
     setPhone(localPhone);
+    setDob(localDob);
 
     router.push('/enter-login-information');
   }
@@ -110,6 +118,24 @@ const Contact = () => {
             required
             onChange={(e) => handleUpdate(e, setLocalLastName)}
           />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              autoComplete="nope"
+              className={classes.textFields}
+              inputVariant="outlined"
+              margin="normal"
+              id="date-picker-dialog"
+              label="Date of birth"
+              format="MM/dd/yyyy"
+              value={localDob}
+              onChange={(value) => {
+                setLocalDob(value)
+              }}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
           <TextField
             className={classes.textFields}
             fullWidth
@@ -191,7 +217,8 @@ const Contact = () => {
                 !localAddress ||
                 !localCity ||
                 !localZip ||
-                !localPhone
+                !localPhone ||
+                !localDob
               }
             >
               Continue
