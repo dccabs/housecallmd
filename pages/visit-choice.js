@@ -6,6 +6,7 @@ import {
   Radio,
   RadioGroup,
   FormControl,
+  TextField,
   FormControlLabel,
   CircularProgress,
   Switch,
@@ -20,8 +21,8 @@ import { Auth } from '@supabase/ui'
 import useStore from '../zustand/store'
 import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
 import visitPricing from '../public/constants/visitPricing'
-import billOfRights from '../public/constants/bill_of_rights';
-import privacyPolicy from '../public/constants/privacyPolicy';
+import billOfRights from '../public/constants/bill_of_rights'
+import privacyPolicy from '../public/constants/privacyPolicy'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -64,7 +65,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const maxCharacters = 240
+
 const VisitChoice = () => {
+  const [localReason, setLocalReason] = useState('')
+  const [maxLength, setMaxLength] = useState(maxCharacters)
   const [value, setValue] = useState('video')
   const [loading, setLoading] = useState(false)
   const [firstName, setLocalFirstName] = useState(null)
@@ -73,7 +78,7 @@ const VisitChoice = () => {
   const [borOpen, setBorOpen] = useState(false)
   const [ppOpen, setPPOpen] = useState(false)
   const store = useStore()
-  const { setVisitChoice, hasInsurance, isAuthenticated } = store
+  const { setVisitChoice, hasInsurance, isAuthenticated, setReason } = store
   const classes = useStyles()
   const router = useRouter()
   const { user, session } = Auth.useUser()
@@ -112,20 +117,15 @@ const VisitChoice = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     setVisitChoice(value)
+    setReason(localReason)
     router.push('/payment')
   }
 
   const billOfRightsText = (
-    <Paper className={classes.modal}>
-      {billOfRights}
-    </Paper>
+    <Paper className={classes.modal}>{billOfRights}</Paper>
   )
 
-  const ppText = (
-    <Paper className={classes.modal}>
-      {privacyPolicy}
-    </Paper>
-  )
+  const ppText = <Paper className={classes.modal}>{privacyPolicy}</Paper>
 
   return (
     <>
@@ -208,6 +208,25 @@ const VisitChoice = () => {
                         />
                       </RadioGroup>
 
+                      <Box mt="2em">
+                        <TextField
+                          fullWidth
+                          type="text"
+                          label="Reason for visit *"
+                          variant="outlined"
+                          color="secondary"
+                          multiline
+                          rows={4}
+                          inputProps={{ maxlength: maxCharacters }}
+                          helperText={maxLength}
+                          value={localReason}
+                          onChange={(e) => {
+                            setLocalReason(e.target.value)
+                            setMaxLength(maxCharacters - e.target.value.length)
+                          }}
+                        />
+                      </Box>
+
                       <Box mt="2em" display="flex" alignItems="center">
                         <Box mr="1em">
                           <Switch
@@ -242,6 +261,7 @@ const VisitChoice = () => {
                       </Box>
                     </FormControl>
                   </Box>
+
                   <Box
                     mt="1em"
                     display="flex"
@@ -265,7 +285,9 @@ const VisitChoice = () => {
                         color="secondary"
                         variant="contained"
                         size="large"
-                        disabled={!agreeBorToggle || !agreePPToggle}
+                        disabled={
+                          !localReason || !agreeBorToggle || !agreePPToggle
+                        }
                       >
                         Continue
                       </Button>
