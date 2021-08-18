@@ -1,6 +1,13 @@
-import { Typography, Box, Button, Link } from '@material-ui/core'
+import { useState } from 'react'
+import { Typography, Box, Button, Link as MuiLink } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import Link from 'next/link'
+import { Auth } from '@supabase/ui'
+import { useRouter } from 'next/router'
+
 import Container from '../components/Container'
+import UtilModal from '../components/UtilModal'
+import ExistingInformation from '../components/ExistingInformation'
 
 const useStyles = makeStyles((theme) => ({
   headings: {
@@ -27,12 +34,39 @@ const useStyles = makeStyles((theme) => ({
     },
     '& a': {
       textaDecoration: 'none',
+      cursor: 'pointer',
     },
   },
 }))
 
 const ReturningUserPage = () => {
+  const [open, setOpen] = useState(false)
+
+  const { user } = Auth.useUser()
+  const router = useRouter()
   const classes = useStyles()
+
+  const updateInsurance = async () => {
+    const payload = {
+      email: user.email,
+      newValue: false,
+    }
+
+    try {
+      const res = await fetch(`/api/updateHasInsurance`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+    } catch (error) {
+      throw error
+    } finally {
+      router.push('/visit-choice')
+    }
+  }
 
   return (
     <div>
@@ -59,21 +93,37 @@ const ReturningUserPage = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Button variant="contained" color="secondary">
-              Continue with existing profile and insurance
-            </Button>
+            <Link href="/visit-choice">
+              <Button variant="contained" color="secondary">
+                Continue with existing profile and insurance
+              </Button>
+            </Link>
             <Box mt="0.5em">
-              <Link color="secondary">See existing information</Link>
+              <MuiLink color="secondary" onClick={() => setOpen(true)}>
+                See existing information
+              </MuiLink>
             </Box>
-            <Button variant="contained" color="secondary">
-              Change insurance information
-            </Button>
-            <Button variant="contained" color="secondary">
+            <Link href="/edit-information">
+              <Button variant="contained" color="secondary">
+                Change insurance information
+              </Button>
+            </Link>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={updateInsurance}
+            >
               Do not use insurance for this appointment
             </Button>
           </Box>
         </Box>
       </Container>
+
+      <UtilModal
+        open={open}
+        setOpen={setOpen}
+        component={<ExistingInformation />}
+      />
     </div>
   )
 }

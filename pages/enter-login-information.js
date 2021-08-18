@@ -77,7 +77,7 @@ const Contact = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
-  const [localId, setLocalId]   = useState('')
+  const [localId, setLocalId] = useState('')
 
   const {
     hasInsurance,
@@ -165,9 +165,9 @@ const Contact = () => {
     supabase.auth.signUp({ email: localEmail, password }).then((response) => {
       response.error
         ? openSnackBar({
-          message: response.error.message,
-          snackSeverity: 'error',
-        })
+            message: response.error.message,
+            snackSeverity: 'error',
+          })
         : setToken(response)
     })
   }
@@ -224,7 +224,8 @@ const Contact = () => {
             justifyContent="center"
           >
             <Typography>
-              Please enter your email and password to finish creating your account.
+              Please enter your email and password to finish creating your
+              account.
             </Typography>
             <Box
               display="flex"
@@ -249,7 +250,7 @@ const Contact = () => {
                   color="secondary"
                   variant="outlined"
                   required
-                  style={{background: '#ffffff'}}
+                  style={{ background: '#ffffff' }}
                 >
                   Password
                 </InputLabel>
@@ -281,7 +282,7 @@ const Contact = () => {
                   color="secondary"
                   variant="outlined"
                   required
-                  style={{background: '#ffffff'}}
+                  style={{ background: '#ffffff' }}
                 >
                   Confirm Password
                 </InputLabel>
@@ -295,8 +296,15 @@ const Contact = () => {
                   onChange={handleConfirmPasswordUpdate}
                   endAdornment={
                     <InputAdornment position="end">
-                      <IconButton onClick={handleConfirmPasswordClick} edge="end">
-                        {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                      <IconButton
+                        onClick={handleConfirmPasswordClick}
+                        edge="end"
+                      >
+                        {showConfirmPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -319,7 +327,12 @@ const Contact = () => {
                 </FormControl>
               </Box>
             </Box>
-            <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+            <Box
+              mt="2em"
+              display="flex"
+              justifyContent="center"
+              flexWrap="wrap"
+            >
               <Box m="1em" className={classes.buttonLinks}>
                 <Button
                   disabled={
