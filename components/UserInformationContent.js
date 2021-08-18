@@ -1,0 +1,568 @@
+import { useState, useEffect, useContext } from 'react'
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  FormControl,
+  FormControlLabel,
+  Select,
+  Checkbox,
+  InputLabel,
+  MenuItem,
+  Collapse,
+  CircularProgress,
+} from '@material-ui/core'
+import moment from 'moment'
+
+import PersonIcon from '@material-ui/icons/Person'
+import { makeStyles } from '@material-ui/core/styles'
+
+import { SnackBarContext } from './SnackBar'
+import PhoneField from './PhoneField'
+import MeetingCreated from './MeetingCreated'
+import SendSMS from './SendSMS'
+
+import states from '../public/constants/states'
+
+const useStyles = makeStyles((theme) => ({
+  fieldBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textFields: {
+    width: '100%',
+    marginTop: '2em',
+    maxWidth: '34rem',
+  },
+  buttonLinks: {
+    '& button': {
+      height: '100%',
+      padding: '1em',
+      fontWeight: 600,
+      width: '16rem',
+
+      '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+  },
+}))
+
+const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
+  const openSnackBar = useContext(SnackBarContext)
+
+  const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
+  const [policyHolderLastName, setPolicyHolderLastName] = useState('')
+  const [policyHolderDob, setPolicyHolderDob] = useState('')
+  const [policyHolderRelation, setPolicyHolderRelation] = useState('')
+
+  const [email, setEmail] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [dob, setDob] = useState('')
+  const [hasInsurance, setHasInsurance] = useState(false)
+  const [provider, setProvider] = useState('')
+  const [planNumber, setPlanNumber] = useState('')
+  const [groupNumber, setGroupNumber] = useState('')
+  const [phone, setPhone] = useState('')
+  const [address, setAddress] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [zip, setZip] = useState('')
+
+  const [MeetingContent, setMeetingContent] = useState(false)
+  const [MessageContent, setMessageContent] = useState(false)
+  const [currentDate, setCurrentDate] = useState(false)
+  const [checked, setChecked] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const classes = useStyles()
+
+  useEffect(async () => {
+    setFirstName(rowData.name.split(', ')[1])
+    setLastName(rowData.name.split(', ')[0])
+    setEmail(rowData.email)
+    setHasInsurance(rowData.hasInsurance === 'Yes' ? true : false)
+    setProvider(rowData.provider)
+    setPlanNumber(rowData.planNumber)
+    setGroupNumber(rowData.groupNumber)
+    setPhone(rowData.phone)
+    setAddress(rowData.address.split(', ')[0])
+    setCity(rowData.address.split(', ')[1])
+    setState(rowData.address.split(', ')[2])
+    setZip(rowData.address.split(', ')[3])
+    setDob(moment(rowData.dob).format('YYYY-MM-DD'))
+
+    try {
+      setLoading(true)
+      const res = await fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: rowData.email }),
+      })
+      const data = await res.json()
+
+      setChecked(data.isPolicyCardHolder)
+      setPolicyHolderFirstName(data.policyHolderFirstName)
+      setPolicyHolderLastName(data.policyHolderLastName)
+      setPolicyHolderRelation(data.policyHolderRelation)
+
+      if (data.policyHolderDob && data.policyHolderDob !== 'Invalid date')
+        setPolicyHolderDob(moment(data.policyHolderDob).format('YYYY-MM-DD'))
+    } catch (err) {
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }, [rowData])
+
+  useEffect(() => {
+    const date = new Date()
+    const dd = String(date.getDate()).padStart(2, '0')
+    const mm = String(date.getMonth() + 1).padStart(2, '0')
+    const yyyy = date.getFullYear()
+
+    setCurrentDate(`${yyyy}-${mm}-${dd}`)
+  }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const rows = [...users]
+    const updatedRow = {
+      name: `${lastName}, ${firstName}`,
+      email,
+      hasInsurance,
+      provider,
+      planNumber,
+      groupNumber,
+      phone,
+      address,
+      dob: moment(dob).format('L'),
+    }
+    const newRows = rows.map((r) => {
+      if (r.email === email) r = updatedRow
+      return r
+    })
+
+    const updatedUser = {
+      isPolicyCardHolder: checked,
+      policyHolderFirstName,
+      policyHolderLastName,
+      policyHolderDob: moment(policyHolderDob).format('L'),
+      policyHolderRelation,
+      email,
+      firstName,
+      lastName,
+      dob: moment(dob).format('L'),
+      groupNumber,
+      hasInsurance,
+      phone,
+      planNumber,
+      provider,
+      address,
+      city,
+      state,
+      zip,
+    }
+
+    try {
+      const res = await fetch(`/api/updateUser`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser),
+      })
+    } catch (error) {
+      openSnackBar({ message: error, snackSeverity: 'error' })
+    } finally {
+      setUsers(newRows)
+      setOpen(false)
+      openSnackBar({
+        message: 'Updated user information',
+        snackSeverity: 'success',
+      })
+    }
+  }
+
+  return (
+    <>
+      {MeetingContent ? (
+        <MeetingCreated phone={phone} setMeetingContent={setMeetingContent} />
+      ) : MessageContent ? (
+        <SendSMS phone={phone} setMessageContent={setMessageContent} />
+      ) : !loading ? (
+        <div>
+          <Box display="flex" alignItems="center">
+            <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
+            <Typography variant="h4" align="left">
+              Update User Information
+            </Typography>
+          </Box>
+          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+            <form
+              onSubmit={handleSubmit}
+              style={{ width: '100%', maxWidth: '34rem' }}
+            >
+              <Box mt="1em" width="100%" maxWidth="34rem">
+                <FormControl component="fieldset">
+                  <FormControlLabel
+                    value="Terms"
+                    control={<Checkbox color="secondary" checked={checked} />}
+                    label="Policy Card Holder"
+                    labelPlacement="end"
+                    onChange={() => setChecked(!checked)}
+                  />
+                </FormControl>
+              </Box>
+
+              <Collapse in={!checked} style={{ width: '100%' }}>
+                <Box
+                  display="flex"
+                  width="100%"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <TextField
+                    className={classes.textFields}
+                    type="text"
+                    label="Policy Holder First Name"
+                    variant="outlined"
+                    color="secondary"
+                    fullWidth
+                    value={policyHolderFirstName}
+                    onChange={(e) => setPolicyHolderFirstName(e.target.value)}
+                  />
+
+                  <TextField
+                    className={classes.textFields}
+                    type="text"
+                    label="Policy Holder Last Name"
+                    variant="outlined"
+                    color="secondary"
+                    fullWidth
+                    value={policyHolderLastName}
+                    onChange={(e) => setPolicyHolderLastName(e.target.value)}
+                  />
+
+                  <TextField
+                    className={classes.textFields}
+                    type="date"
+                    label="Policy Holder Date of Birth"
+                    variant="outlined"
+                    color="secondary"
+                    fullWidth
+                    value={policyHolderDob}
+                    onChange={(e) => setPolicyHolderDob(e.target.value)}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{
+                      max: currentDate,
+                    }}
+                  />
+
+                  <FormControl
+                    variant="outlined"
+                    className={classes.textFields}
+                  >
+                    <InputLabel id="relation" color="secondary">
+                      Policy Holder Relationship to Patient
+                    </InputLabel>
+                    <Select
+                      labelId="relation"
+                      label="Policy Holder Realtionship to Patient"
+                      color="secondary"
+                      value={policyHolderRelation}
+                      onChange={(e) => setPolicyHolderRelation(e.target.value)}
+                    >
+                      <MenuItem value="Spouse">Spouse</MenuItem>
+                      <MenuItem value="Mother">Mother</MenuItem>
+                      <MenuItem value="Father">Father</MenuItem>
+                      <MenuItem value="Child">Child</MenuItem>
+                      <MenuItem value="Domestic Partner">
+                        Domestic Partner
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Collapse>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  value={email}
+                  className={classes.textFields}
+                  fullWidth
+                  type="text"
+                  label="Email"
+                  variant="outlined"
+                  color="secondary"
+                  disabled
+                />
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  value={firstName}
+                  className={classes.textFields}
+                  fullWidth
+                  type="text"
+                  label="First Name"
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  value={lastName}
+                  className={classes.textFields}
+                  fullWidth
+                  type="text"
+                  label="Last Name"
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </Box>
+
+              <Box mt="1em">
+                <FormControl component="fieldset">
+                  <FormControlLabel
+                    control={
+                      <Checkbox color="secondary" checked={hasInsurance} />
+                    }
+                    label="Has Insurance"
+                    labelPlacement="end"
+                    onChange={() => setHasInsurance(!hasInsurance)}
+                  />
+                </FormControl>
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  value={provider}
+                  className={classes.textFields}
+                  fullWidth
+                  type="text"
+                  label="Provider"
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={(e) => setProvider(e.target.value)}
+                />
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  value={planNumber}
+                  className={classes.textFields}
+                  fullWidth
+                  type="text"
+                  label="Plan Number"
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={(e) => setPlanNumber(e.target.value)}
+                />
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  value={groupNumber}
+                  className={classes.textFields}
+                  fullWidth
+                  type="text"
+                  label="Group Number"
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={(e) => setGroupNumber(e.target.value)}
+                />
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  className={classes.textFields}
+                  type="date"
+                  label="Date of Birth"
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  inputProps={{
+                    max: currentDate,
+                  }}
+                />
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  className={classes.textFields}
+                  type="tel"
+                  label="Phone"
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  InputProps={{
+                    inputComponent: PhoneField,
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Box>
+
+              <Box className={classes.fieldBox}>
+                <TextField
+                  className={classes.textFields}
+                  type="text"
+                  label="Address"
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </Box>
+              <Box className={classes.fieldBox}>
+                <TextField
+                  className={classes.textFields}
+                  type="text"
+                  label="City"
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
+              </Box>
+              <Box className={classes.fieldBox}>
+                <FormControl variant="outlined" className={classes.textFields}>
+                  <InputLabel id="state" color="secondary">
+                    State
+                  </InputLabel>
+                  <Select
+                    labelId="state"
+                    label="State"
+                    color="secondary"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                  >
+                    {states.map((s, i) => (
+                      <MenuItem key={i} value={s.abbreviation}>
+                        {s.name}, {s.abbreviation}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box className={classes.fieldBox}>
+                <TextField
+                  className={classes.textFields}
+                  type="number"
+                  label="Zip"
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
+                />
+              </Box>
+
+              <Box
+                mt="2em"
+                display="flex"
+                justifyContent="center"
+                flexWrap="wrap"
+              >
+                <Box m="1em" className={classes.buttonLinks}>
+                  <Button
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                    size="large"
+                    disabled={
+                      (!checked &&
+                        (!policyHolderFirstName ||
+                          !policyHolderLastName ||
+                          !policyHolderDob ||
+                          !policyHolderRelation)) ||
+                      !firstName ||
+                      !lastName ||
+                      !dob ||
+                      !groupNumber ||
+                      !phone ||
+                      !planNumber ||
+                      !provider ||
+                      !address ||
+                      !city ||
+                      !state ||
+                      !zip
+                    }
+                  >
+                    Update
+                  </Button>
+                </Box>
+              </Box>
+            </form>
+          </Box>
+          <Box
+            className={classes.buttonLinks}
+            display="flex"
+            justifyContent="center"
+          >
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setMeetingContent(true)}
+            >
+              Create Meeting
+            </Button>
+          </Box>
+
+          <Box
+            m="1em"
+            className={classes.buttonLinks}
+            display="flex"
+            justifyContent="center"
+          >
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setMessageContent(true)}
+            >
+              Send SMS
+            </Button>
+          </Box>
+        </div>
+      ) : (
+        <Box
+          my="8em"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress />
+        </Box>
+      )}
+    </>
+  )
+}
+
+export default UserInformationContent

@@ -1,6 +1,9 @@
-import { Typography, Box, Button, Link } from '@material-ui/core'
+import { Typography, Box, Button, Link as MuiLink } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '../components/Container'
+import Link from 'next/link'
+import { Auth } from '@supabase/ui'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   headings: {
@@ -32,7 +35,31 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ReturningUserPage = () => {
+  const { user } = Auth.useUser()
+  const router = useRouter()
   const classes = useStyles()
+
+  const updateInsurance = async () => {
+    const payload = {
+      email: user.email,
+      newValue: false,
+    }
+
+    try {
+      const res = await fetch(`/api/updateHasInsurance`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+    } catch (error) {
+      throw error
+    } finally {
+      router.push('/visit-choice')
+    }
+  }
 
   return (
     <div>
@@ -59,16 +86,22 @@ const ReturningUserPage = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Button variant="contained" color="secondary">
-              Continue with existing profile and insurance
-            </Button>
+            <Link href="/visit-choice">
+              <Button variant="contained" color="secondary">
+                Continue with existing profile and insurance
+              </Button>
+            </Link>
             <Box mt="0.5em">
-              <Link color="secondary">See existing information</Link>
+              <MuiLink color="secondary">See existing information</MuiLink>
             </Box>
             <Button variant="contained" color="secondary">
               Change insurance information
             </Button>
-            <Button variant="contained" color="secondary">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={updateInsurance}
+            >
               Do not use insurance for this appointment
             </Button>
           </Box>

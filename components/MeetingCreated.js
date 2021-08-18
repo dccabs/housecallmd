@@ -148,7 +148,7 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
       )}
 
       <Box
-        m="1em"
+        mt="1em"
         className={classes.buttonLinks}
         display="flex"
         justifyContent="center"

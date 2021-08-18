@@ -14,7 +14,8 @@ import Container from '../components/Container'
 import UtilModal from '../components/UtilModal'
 import { SnackBarContext } from '../components/SnackBar'
 import { Auth } from '@supabase/ui'
-import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
+
+import UserInformationContent from '../components/UserInformationContent'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -62,7 +63,7 @@ const UserAdmin = (props) => {
             getUsers()
           } else {
             openSnackBar({
-              message: 'you are not authorized to view this page',
+              message: 'You are not authorized to view this page',
               snackSeverity: 'error',
             })
           }
@@ -213,9 +214,14 @@ const UserAdmin = (props) => {
       <UtilModal
         open={open}
         setOpen={setOpen}
-        rowData={rowData}
-        users={users}
-        setUsers={setUsers}
+        component={
+          <UserInformationContent
+            setOpen={setOpen}
+            rowData={rowData}
+            users={users}
+            setUsers={setUsers}
+          />
+        }
       />
 
       <Dialog

@@ -18,6 +18,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import moment from 'moment'
 
 import providerOptions from '../public/constants/providerOptions'
 import states from '../public/constants/states'
@@ -97,7 +98,7 @@ const EditInformationPage = () => {
         setPolicyHolderRelation(data.policyHolderRelation)
 
         if (data.policyHolderDob && data.policyHolderDob !== 'Invalid date')
-          setPolicyHolderDob(data.policyHolderDob)
+          setPolicyHolderDob(moment(data.policyHolderDob).format('YYYY-MM-DD'))
 
         setProvider(data.provider)
         setPlanNumber(data.planNumber)
@@ -111,7 +112,8 @@ const EditInformationPage = () => {
         setZip(data.zip)
         setPhone(data.phone)
 
-        if (data.dob && data.dob !== 'Invalid date') setDob(data.dob)
+        if (data.dob && data.dob !== 'Invalid date')
+          setDob(moment(data.dob).format('YYYY-MM-DD'))
       } catch (err) {
         throw err
       } finally {
@@ -124,9 +126,10 @@ const EditInformationPage = () => {
     e.preventDefault()
 
     const updatedUser = {
+      isPolicyCardHolder: checked,
       policyHolderFirstName,
       policyHolderLastName,
-      policyHolderDob,
+      policyHolderDob: moment(policyHolderDob).format('L'),
       policyHolderRelation,
       provider,
       planNumber,
@@ -139,7 +142,7 @@ const EditInformationPage = () => {
       state,
       zip,
       phone,
-      dob,
+      dob: moment(dob).format('L'),
     }
 
     try {
@@ -237,7 +240,7 @@ const EditInformationPage = () => {
 
                 <FormControl variant="outlined" className={classes.textFields}>
                   <InputLabel id="relation" color="secondary">
-                    Policy Holder Realtionship to Patient
+                    Policy Holder Relationship to Patient
                   </InputLabel>
                   <Select
                     labelId="relation"
