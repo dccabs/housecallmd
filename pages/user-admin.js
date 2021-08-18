@@ -84,21 +84,24 @@ const UserAdmin = (props) => {
         }),
       })
       const data = await res.json()
-      const users = await data.map((u) => {
-        return {
-          name: `${u.lastName}, ${u.firstName}`,
-          email: u.email,
-          hasInsurance: u.hasInsurance ? 'Yes' : 'No',
-          provider: u.provider,
-          planNumber: u.planNumber,
-          groupNumber: u.groupNumber,
-          phone: u.phone,
-          dob: u.dob,
-          address: `${u.address}, ${u.city}, ${u.state}, ${u.zip}`,
-        }
-      })
-
-      setUsers(users)
+      console.log('data', data)
+      // const users = await data.map((u) => {
+      //   console.log('u', u)
+      //   return {
+      //     name: `${u.lastName}, ${u.firstName}`,
+      //     email: u.email,
+      //     hasInsurance: u.hasInsurance ? 'Yes' : 'No',
+      //     provider: u.provider,
+      //     planNumber: u.planNumber,
+      //     groupNumber: u.groupNumber,
+      //     phone: u.phone,
+      //     dob: u.dob,
+      //     address: `${u.address}, ${u.city}, ${u.state}, ${u.zip}`,
+      //   }
+      // })
+      //
+      // setUsers(users)
+      setUsers(data);
     } catch (err) {
       console.log(err)
     } finally {
@@ -154,14 +157,29 @@ const UserAdmin = (props) => {
           <MaterialTable
             title="Users"
             columns={[
-              { title: 'Name', field: 'name' },
+              {
+                title: 'Name',
+                field: 'name',
+                render: (rowData) => (
+                  <>{rowData.lastName}, {rowData.firstName}</>
+                )
+              },
               { title: 'Email', field: 'email' },
               { title: 'Has Insurance', field: 'hasInsurance' },
               { title: 'Provider', field: 'provider' },
               { title: 'Plan Number', field: 'planNumber' },
               { title: 'Group Number', field: 'groupNumber' },
               { title: 'Phone', field: 'phone' },
-              { title: 'Address', field: 'address' },
+              {
+                title: 'Address',
+                field: 'address',
+                render: (rowData) => (
+                  <>
+                    {rowData.address}<br />
+                    {rowData.city}, {rowData.state} {rowData.zip}
+                  </>
+                )
+              },
             ]}
             data={users}
             // editable={{

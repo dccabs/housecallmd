@@ -80,18 +80,19 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
   const classes = useStyles()
 
   useEffect(async () => {
-    setFirstName(rowData.name.split(', ')[1])
-    setLastName(rowData.name.split(', ')[0])
+    console.log('rowData', rowData)
+    setFirstName(rowData.firstName);
+    setLastName(rowData.lastName);
     setEmail(rowData.email)
-    setHasInsurance(rowData.hasInsurance === 'Yes' ? true : false)
-    setProvider(rowData.provider)
-    setPlanNumber(rowData.planNumber)
-    setGroupNumber(rowData.groupNumber)
+    setHasInsurance(rowData.hasInsurance === 'Yes' ? true : false);
+    setProvider(rowData.provider);
+    setPlanNumber(rowData.planNumber);
+    setGroupNumber(rowData.groupNumber);
     setPhone(rowData.phone)
-    setAddress(rowData.address.split(', ')[0])
-    setCity(rowData.address.split(', ')[1])
-    setState(rowData.address.split(', ')[2])
-    setZip(rowData.address.split(', ')[3])
+    setAddress(rowData.address);
+    setCity(rowData.city);
+    setState(rowData.state);
+    setZip(rowData.zip);
     setDob(moment(rowData.dob).format('YYYY-MM-DD'))
 
     try {
@@ -131,21 +132,6 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
     e.preventDefault()
 
     const rows = [...users]
-    const updatedRow = {
-      name: `${lastName}, ${firstName}`,
-      email,
-      hasInsurance,
-      provider,
-      planNumber,
-      groupNumber,
-      phone,
-      address,
-      dob: moment(dob).format('L'),
-    }
-    const newRows = rows.map((r) => {
-      if (r.email === email) r = updatedRow
-      return r
-    })
 
     const updatedUser = {
       isPolicyCardHolder: checked,
@@ -167,6 +153,11 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
       state,
       zip,
     }
+
+    const newRows = rows.map((r) => {
+      if (r.email === email) r = updatedUser
+      return r
+    })
 
     try {
       const res = await fetch(`/api/updateUser`, {
