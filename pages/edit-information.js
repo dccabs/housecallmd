@@ -188,7 +188,7 @@ const EditInformationPage = () => {
               </FormControl>
             </Box>
 
-            <Collapse in={checked} style={{ width: '100%' }}>
+            <Collapse in={!checked} style={{ width: '100%' }}>
               <Box
                 display="flex"
                 width="100%"
@@ -430,7 +430,7 @@ const EditInformationPage = () => {
                 variant="contained"
                 color="secondary"
                 disabled={
-                  (checked &&
+                  (!checked &&
                     (!policyHolderFirstName ||
                       !policyHolderLastName ||
                       !policyHolderDob ||
