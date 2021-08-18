@@ -122,7 +122,7 @@ const ReturningUserPage = () => {
       <UtilModal
         open={open}
         setOpen={setOpen}
-        component={<ExistingInformation />}
+        component={<ExistingInformation setOpen={setOpen} />}
       />
     </div>
   )

@@ -36,9 +36,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '2em',
     maxWidth: '34rem',
   },
-  buttons: {
+  buttonLinks: {
     '& button': {
+      padding: '1em',
       marginBottom: '1em',
+      fontWeight: 600,
+      width: '16rem',
+      '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+      },
     },
   },
 }))
@@ -161,7 +167,7 @@ const EditInformationPage = () => {
         message: 'Information updated successfuly',
         snackSeverity: 'success',
       })
-      router.push('/visit-choice')
+      router.back()('/visit-choice')
     }
   }
 
@@ -371,7 +377,7 @@ const EditInformationPage = () => {
               >
                 {states.map((s, i) => (
                   <MenuItem key={i} value={s.abbreviation}>
-                    {s.name}, {s.abbreviation}
+                    {s.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -423,15 +429,18 @@ const EditInformationPage = () => {
             />
 
             <Box
-              className={classes.buttons}
+              className={classes.buttonLinks}
               mt="2em"
               display="flex"
+              justifyContent="center"
+              flexWrap="wrap"
               flexDirection="column"
             >
               <Button
                 type="submit"
                 variant="contained"
                 color="secondary"
+                size="large"
                 disabled={
                   (!checked &&
                     (!policyHolderFirstName ||
@@ -454,8 +463,22 @@ const EditInformationPage = () => {
                 Update Information
               </Button>
 
+              <Link href="/visit-choice">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="large"
+                >
+                  Make appointment
+                </Button>
+              </Link>
+
               <Link href="/returning-user">
-                <Button variant="contained" color="secondary">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="large"
+                >
                   Cancel
                 </Button>
               </Link>

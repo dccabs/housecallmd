@@ -465,7 +465,7 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
                   >
                     {states.map((s, i) => (
                       <MenuItem key={i} value={s.abbreviation}>
-                        {s.name}, {s.abbreviation}
+                        {s.name}
                       </MenuItem>
                     ))}
                   </Select>

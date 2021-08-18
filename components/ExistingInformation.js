@@ -13,7 +13,31 @@ import Link from 'next/link'
 import PersonIcon from '@material-ui/icons/Person'
 import { makeStyles } from '@material-ui/core/styles'
 
-const ExistingInformation = () => {
+
+const useStyles = makeStyles((theme) => ({
+  buttonLinks: {
+    marginTop: '4em',
+    alignItems: 'center',
+
+    '& button': {
+      width: '250px',
+      padding: '1em 2em',
+      fontWeight: 600,
+      marginTop: '1em',
+
+      '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+    '& a': {
+      textaDecoration: 'none',
+      cursor: 'pointer',
+    },
+  },
+}))
+
+const ExistingInformation = (props) => {
+  const classes = useStyles()
   const [isPolicyHolder, setIsPolicyHolder] = useState('')
   const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
   const [policyHolderLastName, setPolicyHolderLastName] = useState('')
@@ -95,91 +119,88 @@ const ExistingInformation = () => {
           <Box my="1em">
             <List>
               <ListItem>
-                <Typography variant="caption">
-                  Policy Holder: {isPolicyHolder ? 'Yes' : 'No'}
-                </Typography>
+                  <strong>Patient is Policy Holder:</strong> {isPolicyHolder ? 'Yes' : 'No'}
               </ListItem>
-              <ListItem>
-                <Typography variant="caption">
-                  Policy Holder First Name: {policyHolderFirstName}
-                </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography variant="caption">
-                  Policy Holder Last Name: {policyHolderLastName}
-                </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography variant="caption">
-                  Policy Holder Date of Birth: {policyHolderDob}
-                </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography variant="caption">
-                  Policy Holder Relationship to Patient: {policyHolderRelation}
-                </Typography>
-              </ListItem>
+              {isPolicyHolder &&
+              <>
+                <ListItem>
+                    <strong>Policy Holder First Name:</strong> {policyHolderFirstName}
+                </ListItem>
+                <ListItem>
+                    <strong>Policy Holder Last Name:</strong> {policyHolderLastName}
+                </ListItem>
+                <ListItem>
+                    <strong> Policy Holder Date of Birth:</strong> {policyHolderDob}
+                </ListItem>
+                <ListItem>
+                    <strong>Policy Holder Relationship to Patient:</strong> {policyHolderRelation}
+                </ListItem>
+              </>
+              }
             </List>
 
             <List>
               <ListItem>
-                <Typography variant="caption">Email: {email}</Typography>
+                <strong>Email: {email}</strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">
+                <strong>
                   First Name: {firstName}
-                </Typography>
+                </strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">Last Name: {lastName}</Typography>
+                <strong>Last Name: {lastName}</strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">
+                <strong>
                   Has Insurance: {hasInsurance ? 'Yes' : 'No'}
-                </Typography>
+                </strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">
+                <strong>
                   Insurance Provider: {provider}
-                </Typography>
+                </strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">
+                <strong>
                   Plan Number: {planNumber}
-                </Typography>
+                </strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">
+                <strong>
                   Group Number: {groupNumber}
-                </Typography>
+                </strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">Date of Birth: {dob}</Typography>
+                <strong>Date of Birth: {dob}</strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">Phone: {phone}</Typography>
+                <strong>Phone: {phone}</strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">Address: {address}</Typography>
+                <strong>Address: {address}</strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">City: {city}</Typography>
+                <strong>City: {city}</strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">State: {state}</Typography>
+                <strong>State: {state}</strong>
               </ListItem>
               <ListItem>
-                <Typography variant="caption">Zip Code: {zip}</Typography>
+                <strong>Zip Code: {zip}</strong>
               </ListItem>
             </List>
           </Box>
 
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center" flexDirection="column" className={classes.buttonLinks}>
             <Link href="/edit-information">
-              <Button variant="contained" color="secondary">
+              <Button variant="contained" color="secondary" size="large">
                 Edit Information
               </Button>
             </Link>
+            <Button variant="contained" color="secondary" size="large" onClick={() => props.setOpen(false)}>
+              Close
+            </Button>
           </Box>
         </>
       ) : (
