@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { Typography, Box, Button, Link as MuiLink } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import Container from '../components/Container'
 import Link from 'next/link'
 import { Auth } from '@supabase/ui'
 import { useRouter } from 'next/router'
+
+import Container from '../components/Container'
+import UtilModal from '../components/UtilModal'
+import ExistingInformation from '../components/ExistingInformation'
 
 const useStyles = makeStyles((theme) => ({
   headings: {
@@ -30,11 +34,14 @@ const useStyles = makeStyles((theme) => ({
     },
     '& a': {
       textaDecoration: 'none',
+      cursor: 'pointer',
     },
   },
 }))
 
 const ReturningUserPage = () => {
+  const [open, setOpen] = useState(false)
+
   const { user } = Auth.useUser()
   const router = useRouter()
   const classes = useStyles()
@@ -92,11 +99,15 @@ const ReturningUserPage = () => {
               </Button>
             </Link>
             <Box mt="0.5em">
-              <MuiLink color="secondary">See existing information</MuiLink>
+              <MuiLink color="secondary" onClick={() => setOpen(true)}>
+                See existing information
+              </MuiLink>
             </Box>
-            <Button variant="contained" color="secondary">
-              Change insurance information
-            </Button>
+            <Link href="/edit-information">
+              <Button variant="contained" color="secondary">
+                Change insurance information
+              </Button>
+            </Link>
             <Button
               variant="contained"
               color="secondary"
@@ -107,6 +118,12 @@ const ReturningUserPage = () => {
           </Box>
         </Box>
       </Container>
+
+      <UtilModal
+        open={open}
+        setOpen={setOpen}
+        component={<ExistingInformation />}
+      />
     </div>
   )
 }

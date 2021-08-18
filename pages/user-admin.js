@@ -12,10 +12,9 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Container from '../components/Container'
 import UtilModal from '../components/UtilModal'
+import UserInformationContent from '../components/UserInformationContent'
 import { SnackBarContext } from '../components/SnackBar'
 import { Auth } from '@supabase/ui'
-
-import UserInformationContent from '../components/UserInformationContent'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {

@@ -14,7 +14,6 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 import moment from 'moment'
-
 import PersonIcon from '@material-ui/icons/Person'
 import { makeStyles } from '@material-ui/core/styles'
 
