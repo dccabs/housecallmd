@@ -121,7 +121,12 @@ const Payment = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          const phones = data.map(phone => {
+          const activePhones = data.filter(phone => {
+            return phone.isActive;
+          })
+          
+
+          const phones = activePhones.map(phone => {
             return phone.phoneNumber;
           })
           setClientPhones(phones);
