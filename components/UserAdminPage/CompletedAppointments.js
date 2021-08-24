@@ -1,12 +1,35 @@
-import { useState, useEffect } from 'react'
-import { Typography, Box, Button, CircularProgress } from '@material-ui/core'
-import MaterialTable from 'material-table'
+import { useState, useEffect, useContext } from 'react'
+import { Auth } from '@supabase/ui'
 
-const CompletedAppointments = () => {
-  const [completedAppointments, setCompletedAppointments] = useState(false)
+
+const Appointments = ({openSnackBar}) => {
+  const [appointments, setAppointments] = useState(false)
   const [loading, setLoading] = useState(false)
+  const { user } = Auth.useUser()
 
-  return <div>Competed Appointments</div>
+
+  useEffect(async () => {
+    if (user) {
+      await fetch('/api/getAppointments', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          user,
+          completed: true,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('data', data)
+        })
+        .catch((error) => {
+          openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        })
+    }
+  },[user]);
+
+  return <div>Completed Appointments</div>
 }
 
-export default CompletedAppointments
+export default Appointments

@@ -84,10 +84,10 @@ const UserAdmin = (props) => {
             <Users user={user} openSnackBar={openSnackBar} />
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
-            <Appointments />
+            <Appointments openSnackBar={openSnackBar} />
           </TabPanel>
           <TabPanel value={tabValue} index={2}>
-            <CompletedAppointments />
+            <CompletedAppointments openSnackBar={openSnackBar} />
           </TabPanel>
           <TabPanel value={tabValue} index={3}>
             <PhoneNumbers user={user} openSnackBar={openSnackBar} />
