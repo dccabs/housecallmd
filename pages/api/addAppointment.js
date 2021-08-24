@@ -22,7 +22,7 @@ const addApointment = async (req, res) => {
         time: new Date(),
         usingInsurance: true,
         visitReason,
-        clientNotes: [],
+        clientNotes: '',
         visitChoice,
         completed: false,
         userId: UserList[0].id,
