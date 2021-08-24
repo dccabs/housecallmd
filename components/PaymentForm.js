@@ -243,9 +243,7 @@ const PaymentForm = (props) => {
 
   const sendSMSToClient = async () => {
     const message = `${firstName} ${lastName} just signed up for an appointment.`
-    const phones = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBERS.split(',')
-
-    phones.forEach(async (phone) => {
+    props.clientPhones.forEach(async (phone) => {
       try {
         await fetch('/api/sendMessage', {
           method: 'POST',
