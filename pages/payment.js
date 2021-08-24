@@ -165,7 +165,7 @@ const Payment = () => {
           throw Error(data.error)
         } else {
           sendEmailToHouseCall()
-          seconsolndSMSToHouseCall()
+          sendSMSToHouseCall()
         }
       })
       .catch((error) => {
