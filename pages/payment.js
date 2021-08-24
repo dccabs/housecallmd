@@ -259,7 +259,7 @@ const Payment = () => {
             </>
           ) : (
             <Elements stripe={stripePromise}>
-              <PaymentForm newUser={newUser} />
+              <PaymentForm newUser={newUser} clientPhones={clientPhones} />
             </Elements>
           )}
         </Box>
