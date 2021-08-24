@@ -1,54 +1,48 @@
 import { useState, useEffect, useContext } from 'react'
-import {
-  Typography,
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  CircularProgress,
-} from '@material-ui/core'
-import MaterialTable from 'material-table'
-import { makeStyles } from '@material-ui/core/styles'
+import { Typography, Box, Tabs, Tab } from '@material-ui/core'
 
 import Container from '../components/Container'
-import UtilModal from '../components/UtilModal'
-import UserInformationContent from '../components/UserInformationContent'
+import Users from '../components/UserAdminPage/Users'
+import Appointments from '../components/UserAdminPage/Appointments'
+import CompletedAppointments from '../components/UserAdminPage/CompletedAppointments'
+import PhoneNumbers from '../components/UserAdminPage/PhoneNumbers'
 import { SnackBarContext } from '../components/SnackBar'
 import { Auth } from '@supabase/ui'
 
-const useStyles = makeStyles((theme) => ({
-  buttonLinks: {
-    '@media screen and (max-width: 700px)': {
-      '&:nth-child(2)': {
-        order: -1,
-      },
-    },
+const a11yProps = (index) => {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  }
+}
 
-    '& button': {
-      height: '100%',
-      padding: '1em',
-      fontWeight: 600,
-      width: '16rem',
+const TabPanel = (props) => {
+  const { children, value, index, ...other } = props
 
-      '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-      },
-    },
-  },
-}))
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  )
+}
 
 const UserAdmin = (props) => {
-  const [users, setUsers] = useState()
-  const [open, setOpen] = useState(false)
-  const [openDialog, setOpenDialog] = useState(false)
-  const [rowData, setRowData] = useState({})
-  const [rowsToDelete, setRowsToDelete] = useState([])
-  const [loading, setLoading] = useState(false)
-  const classes = useStyles()
+  const [authorized, setAuthorized] = useState(false)
+  const [tabValue, setTabValue] = useState(0)
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
-  useEffect(async () => {
+  useEffect(() => {
     if (user) {
       fetch('/api/getSingleUser', {
         method: 'POST',
@@ -59,7 +53,7 @@ const UserAdmin = (props) => {
         .then((res) => res.json())
         .then((res) => {
           if (res.role === 'admin') {
-            getUsers()
+            setAuthorized(true)
           } else {
             openSnackBar({
               message: 'You are not authorized to view this page',
@@ -70,215 +64,36 @@ const UserAdmin = (props) => {
     }
   }, [user])
 
-  const getUsers = async () => {
-    try {
-      setLoading(true)
-      const res = await fetch(`/api/getAllUsers`, {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-        }),
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          user,
-        }),
-      })
-      const data = await res.json()
-      console.log('data', data)
-      // const users = await data.map((u) => {
-      //   console.log('u', u)
-      //   return {
-      //     name: `${u.lastName}, ${u.firstName}`,
-      //     email: u.email,
-      //     hasInsurance: u.hasInsurance ? 'Yes' : 'No',
-      //     provider: u.provider,
-      //     planNumber: u.planNumber,
-      //     groupNumber: u.groupNumber,
-      //     phone: u.phone,
-      //     dob: u.dob,
-      //     address: `${u.address}, ${u.city}, ${u.state}, ${u.zip}`,
-      //   }
-      // })
-      //
-      // setUsers(users)
-      setUsers(data);
-    } catch (err) {
-      console.log(err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const rowSelected = (rowData) => {
-    setRowData(rowData)
-    setOpen(true)
-  }
-
-  const deleteRows = async () => {
-    const rows = [...users]
-    const newRows = rows.filter((r) => !rowsToDelete.includes(r))
-
-    const emails = rowsToDelete.map((row) => {
-      return {
-        email: row.email,
-      }
-    })
-
-    await emails.forEach((email) => {
-      fetch('/api/deleteUser', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify({ email: email.email, user }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            throw Error(data.error)
-          } else {
-            openSnackBar({
-              message: `You successfully deleted a user`,
-              snackSeverity: 'success',
-            })
-          }
-        })
-        .catch((error) => {
-          openSnackBar({ message: error, snackSeverity: 'error' })
-        })
-    })
-
-    setUsers(newRows)
-    setOpenDialog(false)
-  }
   return (
     <Container>
-      <Box>
-        {!loading && users ? (
-          <MaterialTable
-            title="Users"
-            columns={[
-              {
-                title: 'Name',
-                field: 'name',
-                render: (rowData) => (
-                  <>{rowData.lastName}, {rowData.firstName}</>
-                )
-              },
-              { title: 'Email', field: 'email' },
-              { title: 'Has Insurance', field: 'hasInsurance' },
-              { title: 'Provider', field: 'provider' },
-              { title: 'Plan Number', field: 'planNumber' },
-              { title: 'Group Number', field: 'groupNumber' },
-              { title: 'Phone', field: 'phone' },
-              {
-                title: 'Address',
-                field: 'address',
-                render: (rowData) => (
-                  <>
-                    {rowData.address}<br />
-                    {rowData.city}, {rowData.state} {rowData.zip}
-                  </>
-                )
-              },
-            ]}
-            data={users}
-            // editable={{
-            //   onRowUpdate: async (updatedRow, oldRow) => {
-            //     const email = await oldRow.email
-            //     const rows = [...users]
-            //     const newRows = rows.map((r) => {
-            //       if (r.email === email) r = updatedRow
-            //       return r
-            //     })
-            //     await setUsers(newRows)
-            //   },
-            //   onRowDelete: async (selectedRow) => {
-            //     const email = await selectedRow.email
-            //     const rows = [...users]
-            //     const newRows = rows.filter((r) => r.email !== email)
-            //     await setUsers(newRows)
-            //   },
-            // }}
-            options={{
-              paginationType: 'stepped',
-              selection: true,
-              //actionsColumnIndex: -1,
-            }}
-            actions={[
-              {
-                tooltip: 'Remove All Selected Users',
-                icon: 'delete',
-                onClick: (event, data) => {
-                  setRowsToDelete(data)
-                  setOpenDialog(true)
-                },
-              },
-            ]}
-            onRowClick={(event, rowData) => rowSelected(rowData)}
-          />
-        ) : (
-          <Box
-            my="1em"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <CircularProgress />
-          </Box>
-        )}
-      </Box>
-
-      <UtilModal
-        open={open}
-        setOpen={setOpen}
-        component={
-          <UserInformationContent
-            setOpen={setOpen}
-            rowData={rowData}
-            users={users}
-            setUsers={setUsers}
-          />
-        }
-      />
-
-      <Dialog
-        open={openDialog}
-        keepMounted
-        onClose={() => setOpenDialog(false)}
-      >
-        <Box p="2em">
-          <Typography variant="h4" align="center">
-            Delete Users?
-          </Typography>
-          <DialogContent>
-            <Box
-              mt="2em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
+      {authorized && (
+        <>
+          <div>
+            <Tabs
+              value={tabValue}
+              onChange={(e, newValue) => setTabValue(newValue)}
             >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => setOpenDialog(!openDialog)}
-                >
-                  Cancel
-                </Button>
-              </Box>
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={deleteRows}
-                >
-                  Yes
-                </Button>
-              </Box>
-            </Box>
-          </DialogContent>
-        </Box>
-      </Dialog>
+              <Tab label="Users" {...a11yProps(0)} />
+              <Tab label="Appointments" {...a11yProps(1)} />
+              <Tab label="Completed Appoitments" {...a11yProps(2)} />
+              <Tab label="Phone Numbers" {...a11yProps(3)} />
+            </Tabs>
+          </div>
+
+          <TabPanel value={tabValue} index={0}>
+            <Users user={user} openSnackBar={openSnackBar} />
+          </TabPanel>
+          <TabPanel value={tabValue} index={1}>
+            <Appointments />
+          </TabPanel>
+          <TabPanel value={tabValue} index={2}>
+            <CompletedAppointments />
+          </TabPanel>
+          <TabPanel value={tabValue} index={3}>
+            <PhoneNumbers user={user} openSnackBar={openSnackBar} />
+          </TabPanel>
+        </>
+      )}
     </Container>
   )
 }

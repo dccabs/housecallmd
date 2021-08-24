@@ -81,18 +81,18 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
 
   useEffect(async () => {
     console.log('rowData', rowData)
-    setFirstName(rowData.firstName);
-    setLastName(rowData.lastName);
+    setFirstName(rowData.firstName)
+    setLastName(rowData.lastName)
     setEmail(rowData.email)
-    setHasInsurance(rowData.hasInsurance === 'Yes' ? true : false);
-    setProvider(rowData.provider);
-    setPlanNumber(rowData.planNumber);
-    setGroupNumber(rowData.groupNumber);
+    setHasInsurance(rowData.hasInsurance)
+    setProvider(rowData.provider)
+    setPlanNumber(rowData.planNumber)
+    setGroupNumber(rowData.groupNumber)
     setPhone(rowData.phone)
-    setAddress(rowData.address);
-    setCity(rowData.city);
-    setState(rowData.state);
-    setZip(rowData.zip);
+    setAddress(rowData.address)
+    setCity(rowData.city)
+    setState(rowData.state)
+    setZip(rowData.zip)
     setDob(moment(rowData.dob).format('YYYY-MM-DD'))
 
     try {
@@ -486,7 +486,6 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
                     type="submit"
                     color="secondary"
                     variant="contained"
-                    size="large"
                     disabled={
                       (!checked &&
                         (!policyHolderFirstName ||
