@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
       padding: '2em 0',
     },
   },
+  backdrop: {
+    zIndex: 99999,
+  }
 }))
 
 const Payment = () => {
@@ -105,6 +108,7 @@ const Payment = () => {
     state,
     zip,
     phone,
+    reason,
     dob: moment(dob).format('L'),
     amount: 0,
   }
@@ -140,8 +144,34 @@ const Payment = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   const handleContinue = () => {
-    sendEmailToHouseCall()
-    sendSMSToHouseCall()
+    addAppointment();
+  }
+
+  const addAppointment = async () => {
+    setProcessing(true)
+    await fetch('/api/addAppointment', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        user,
+        visitChoice,
+        visitReason: reason,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error)
+        } else {
+          sendEmailToHouseCall()
+          sendSMSToHouseCall()
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        setProcessing(false)
+      })
   }
 
   const sendEmailToHouseCall = async () => {
