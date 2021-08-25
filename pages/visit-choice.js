@@ -83,6 +83,8 @@ const VisitChoice = () => {
   const router = useRouter()
   const { user, session } = Auth.useUser()
 
+  console.log('store', store)
+
   useEffect(() => {
     if (user) {
       try {

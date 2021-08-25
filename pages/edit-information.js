@@ -167,7 +167,7 @@ const EditInformationPage = () => {
         message: 'Information updated successfuly',
         snackSeverity: 'success',
       })
-      router.back()('/visit-choice')
+      router.back();
     }
   }
 
