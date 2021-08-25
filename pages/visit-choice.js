@@ -198,7 +198,7 @@ const VisitChoice = () => {
                           color="secondary"
                           multiline
                           rows={4}
-                          inputProps={{ maxlength: maxCharacters }}
+                          inputProps={{ maxLength: maxCharacters }}
                           helperText={maxLength}
                           value={localReason}
                           onChange={(e) => {
