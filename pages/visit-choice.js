@@ -78,12 +78,10 @@ const VisitChoice = () => {
   const [borOpen, setBorOpen] = useState(false)
   const [ppOpen, setPPOpen] = useState(false)
   const store = useStore()
-  const { setVisitChoice, hasInsurance, isAuthenticated, setReason } = store
+  const { setVisitChoice, hasInsurance, isAuthenticated, setReason, insuranceOptOut } = store
   const classes = useStyles()
   const router = useRouter()
   const { user, session } = Auth.useUser()
-
-  console.log('store', store)
 
   useEffect(() => {
     if (user) {
@@ -128,6 +126,10 @@ const VisitChoice = () => {
   )
 
   const ppText = <Paper className={classes.modal}>{privacyPolicy}</Paper>
+
+  const usingInsurance = hasInsurance && !insuranceOptOut;
+
+  console.log('store', store)
 
   return (
     <>
@@ -185,7 +187,7 @@ const VisitChoice = () => {
                           value="video"
                           control={<Radio />}
                           label={`Video/Telemedicine Visit (${
-                            hasInsurance
+                            usingInsurance
                               ? 'No additonal fee with insurance'
                               : `$${visitPricing.noInsurance.pricing.video}`
                           })`}
@@ -194,7 +196,7 @@ const VisitChoice = () => {
                           value="phone"
                           control={<Radio />}
                           label={`Phone Visit ($${
-                            hasInsurance
+                            usingInsurance
                               ? visitPricing.insurance.pricing.phone
                               : visitPricing.noInsurance.pricing.phone
                           })`}
@@ -203,7 +205,7 @@ const VisitChoice = () => {
                           value="in_person"
                           control={<Radio />}
                           label={`Housecall, In person visit at home ($${
-                            hasInsurance
+                            usingInsurance
                               ? visitPricing.insurance.pricing.in_person
                               : visitPricing.noInsurance.pricing.in_person
                           })`}

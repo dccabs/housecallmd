@@ -24,6 +24,7 @@ const useStore = create(
     isAuthenticated: '',
     dob: '',
     reason: '',
+    insuranceOptOut: false,
     setPolicyHolderFirstName: (policyHolderFirstName) =>
       set({ policyHolderFirstName }),
     setPolicyHolderLastName: (policyHolderLastName) =>
@@ -48,6 +49,7 @@ const useStore = create(
     setVisitChoice: (visitChoice) => set({ visitChoice }),
     setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
     setReason: (reason) => set({ reason }),
+    setInsuranceOptOut: (insuranceOptOut) => set({ insuranceOptOut }),
   }))
 )
 

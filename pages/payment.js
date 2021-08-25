@@ -87,6 +87,7 @@ const Payment = () => {
     phone,
     dob,
     reason,
+    insuranceOptOut,
   } = useStore()
 
   const newUser = {
@@ -247,6 +248,8 @@ const Payment = () => {
     })
   }
 
+  const usingInsurance = hasInsurance && !insuranceOptOut;
+
   return (
     <>
       <Backdrop className={classes.backdrop} open={processing}>
@@ -257,7 +260,7 @@ const Payment = () => {
           <Typography variant="h2" className={classes.h2}>
             Payment
           </Typography>
-          {hasInsurance && visitChoice === 'video' ? (
+          {usingInsurance && visitChoice === 'video' ? (
             <>
               <p className={classes.content}>
                 Because you have insurance and have selected a Video
@@ -294,7 +297,7 @@ const Payment = () => {
             </>
           ) : (
             <Elements stripe={stripePromise}>
-              <PaymentForm newUser={newUser} clientPhones={clientPhones} />
+              <PaymentForm newUser={newUser} clientPhones={clientPhones} usingInsurance={usingInsurance} />
             </Elements>
           )}
         </Box>
