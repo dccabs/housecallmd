@@ -121,7 +121,7 @@ const ExistingInformation = (props) => {
               <ListItem>
                   <strong>Patient is Policy Holder:</strong> {isPolicyHolder ? 'Yes' : 'No'}
               </ListItem>
-              {isPolicyHolder &&
+              {!isPolicyHolder &&
               <>
                 <ListItem>
                     <strong>Policy Holder First Name:</strong> {policyHolderFirstName}

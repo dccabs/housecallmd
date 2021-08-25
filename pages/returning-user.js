@@ -1,13 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Typography, Box, Button, Link as MuiLink } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { Auth } from '@supabase/ui'
 import { useRouter } from 'next/router'
+import useStore from '../zustand/store'
 
 import Container from '../components/Container'
 import UtilModal from '../components/UtilModal'
 import ExistingInformation from '../components/ExistingInformation'
+import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
+
 
 const useStyles = makeStyles((theme) => ({
   headings: {
@@ -41,35 +44,56 @@ const useStyles = makeStyles((theme) => ({
 
 const ReturningUserPage = () => {
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const store = useStore();
+
+  const {
+    insuranceOptOut,
+    setInsuranceOptOut,
+  } = store
 
   const { user } = Auth.useUser()
   const router = useRouter()
   const classes = useStyles()
 
-  const updateInsurance = async () => {
-    const payload = {
-      email: user.email,
-      newValue: false,
+  useEffect(() => {
+    if (user) {
+      try {
+        setLoading(true)
+        fetch('/api/getSingleUser', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: user.email }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            setStoreWithAuthInfo({
+              store,
+              user: res,
+            })
+          })
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setLoading(false)
+      }
     }
+  }, [user])
 
-    try {
-      const res = await fetch(`/api/updateHasInsurance`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-    } catch (error) {
-      throw error
-    } finally {
-      router.push('/visit-choice')
-    }
+  useEffect(() => {
+    setInsuranceOptOut(false);
+  }, [])
+
+  const optOutofInsurance = async () => {
+    setInsuranceOptOut(true);
+    router.push('/visit-choice')
   }
 
   return (
     <div>
+      {!loading &&
       <Container>
         <Box
           display="flex"
@@ -111,13 +135,14 @@ const ReturningUserPage = () => {
             <Button
               variant="contained"
               color="secondary"
-              onClick={updateInsurance}
+              onClick={optOutofInsurance}
             >
               Do not use insurance for this appointment
             </Button>
           </Box>
         </Box>
       </Container>
+      }
 
       <UtilModal
         open={open}

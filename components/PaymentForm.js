@@ -116,6 +116,9 @@ const PaymentForm = (props) => {
 
   const openSnackBar = useContext(SnackBarContext)
 
+  const { usingInsurance } = props;
+  console.log('usingInsurance', usingInsurance)
+
   const {
     hasInsurance,
     visitChoice,
@@ -131,15 +134,15 @@ const PaymentForm = (props) => {
 
   useEffect(() => {
     if (visitChoice === 'video') {
-      hasInsurance
+      usingInsurance
         ? setAmount(visitPricing.insurance.pricing.video)
         : setAmount(visitPricing.noInsurance.pricing.video)
     } else if (visitChoice === 'phone') {
-      hasInsurance
+      usingInsurance
         ? setAmount(visitPricing.insurance.pricing.phone)
         : setAmount(visitPricing.noInsurance.pricing.phone)
     } else if (visitChoice === 'in_person') {
-      hasInsurance
+      usingInsurance
         ? setAmount(visitPricing.insurance.pricing.in_person)
         : setAmount(visitPricing.noInsurance.pricing.in_person)
     }
