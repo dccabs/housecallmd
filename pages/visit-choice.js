@@ -19,7 +19,6 @@ import { useRouter } from 'next/router'
 import { Auth } from '@supabase/ui'
 
 import useStore from '../zustand/store'
-import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
 import visitPricing from '../public/constants/visitPricing'
 import billOfRights from '../public/constants/bill_of_rights'
 import privacyPolicy from '../public/constants/privacyPolicy'
@@ -85,28 +84,8 @@ const VisitChoice = () => {
 
   useEffect(() => {
     if (user) {
-      try {
-        setLoading(true)
-        fetch('/api/getSingleUser', {
-          method: 'POST',
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          credentials: 'same-origin',
-          body: JSON.stringify({ email: user.email }),
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            console.log('res', res)
-            setLocalFirstName(res.firstName)
-            setStoreWithAuthInfo({
-              store,
-              user: res,
-            })
-          })
-      } catch (err) {
-        console.log(err)
-      } finally {
-        setLoading(false)
-      }
+      setLocalFirstName(store.firstName);
+      setLoading(false)
     }
   }, [user])
 
@@ -128,8 +107,6 @@ const VisitChoice = () => {
   const ppText = <Paper className={classes.modal}>{privacyPolicy}</Paper>
 
   const usingInsurance = hasInsurance && !insuranceOptOut;
-
-  console.log('store', store)
 
   return (
     <>

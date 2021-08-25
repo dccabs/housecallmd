@@ -9,6 +9,8 @@ import useStore from '../zustand/store'
 import Container from '../components/Container'
 import UtilModal from '../components/UtilModal'
 import ExistingInformation from '../components/ExistingInformation'
+import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
+
 
 const useStyles = makeStyles((theme) => ({
   headings: {
@@ -42,18 +44,45 @@ const useStyles = makeStyles((theme) => ({
 
 const ReturningUserPage = () => {
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const store = useStore();
 
   const {
     insuranceOptOut,
     setInsuranceOptOut,
-  } = useStore()
+  } = store
 
   const { user } = Auth.useUser()
   const router = useRouter()
   const classes = useStyles()
 
   useEffect(() => {
-    console.log('hello')
+    if (user) {
+      try {
+        setLoading(true)
+        fetch('/api/getSingleUser', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: user.email }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            setStoreWithAuthInfo({
+              store,
+              user: res,
+            })
+          })
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }, [user])
+
+  useEffect(() => {
     setInsuranceOptOut(false);
   }, [])
 
@@ -64,6 +93,7 @@ const ReturningUserPage = () => {
 
   return (
     <div>
+      {!loading &&
       <Container>
         <Box
           display="flex"
@@ -112,6 +142,7 @@ const ReturningUserPage = () => {
           </Box>
         </Box>
       </Container>
+      }
 
       <UtilModal
         open={open}
