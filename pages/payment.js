@@ -91,6 +91,7 @@ const Payment = () => {
   } = useStore()
 
   const newUser = {
+    insuranceOptOut,
     hasInsurance,
     isPolicyCardHolder,
     policyHolderFirstName,
@@ -115,6 +116,7 @@ const Payment = () => {
   }
 
   useEffect(async () => {
+    console.log('newUser', newUser)
     if (user) {
       await fetch('/api/getPhoneNumbers', {
         method: 'POST',

@@ -25,6 +25,9 @@ const sendNewAppointmentFetch = async (props) => {
     policyHolderLastName,
     policyHolderDob,
     policyHolderRelation,
+    insuranceOptOut,
+    reason,
+
   } = props;
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
@@ -58,14 +61,11 @@ const sendNewAppointmentFetch = async (props) => {
                 Patient Information
               </div>
               <br><br>
-              <div style="font-weight: bold">Policy cardholder: ${isPolicyCardHolder}</div>
-              ${!isPolicyCardHolder ?
-                `<div>Policy cardholder first name: ${policyHolderFirstName}</div>
-                <div>Policy card holder last name: ${policyHolderLastName}</div>
-                <div>Policy card holder date of birth: ${policyHolderDob}</div>
-                <div>Gurantor's Relationship to patient: ${policyHolderRelation}</div>`
-               : ''
-              }
+              
+             <div style="font-weight: bold">Patient Using Insurance: ${hasInsurance && !insuranceOptOut}</div>
+             
+             
+              <div style="font-weight: bold">Reason for Visit: ${reason}</div>
 
               <br><br>
               <div style="font-weight: bold">Visit Choice: ${visitChoice}</div>
@@ -83,6 +83,16 @@ const sendNewAppointmentFetch = async (props) => {
               <div>State: ${state}</div>
               <div>Zip: ${zip}</div>
               <div>Phone: ${phone}</div>
+              
+              <br><br>
+              <div style="font-weight: bold">Policy cardholder: ${isPolicyCardHolder}</div>
+              ${!isPolicyCardHolder ?
+                `<div>Policy cardholder first name: ${policyHolderFirstName}</div>
+                <div>Policy card holder last name: ${policyHolderLastName}</div>
+                <div>Policy card holder date of birth: ${policyHolderDob}</div>
+                <div>Gurantor's Relationship to patient: ${policyHolderRelation}</div>`
+               : ''
+              }
               
               <br />
             </div>
