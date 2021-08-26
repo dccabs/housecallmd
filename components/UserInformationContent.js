@@ -183,7 +183,12 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
   return (
     <>
       {MeetingContent ? (
-        <MeetingCreated phone={phone} setMeetingContent={setMeetingContent} />
+        <MeetingCreated
+          name={`${firstName} ${lastName}`}
+          email={email}
+          phone={phone}
+          setMeetingContent={setMeetingContent}
+        />
       ) : MessageContent ? (
         <SendSMS phone={phone} setMessageContent={setMessageContent} />
       ) : !loading ? (
