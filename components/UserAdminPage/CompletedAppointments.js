@@ -1,12 +1,19 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
+import { Box, CircularProgress } from '@material-ui/core'
 import { Auth } from '@supabase/ui'
+import MaterialTable from 'material-table'
+import moment from 'moment'
 
+import UtilModal from '../UtilModal'
+import CompletedAppointmentsModalContent from '../CompletedAppointmentsModalContent'
 
-const Appointments = ({openSnackBar}) => {
-  const [appointments, setAppointments] = useState(false)
+const CompletedAppointments = ({ openSnackBar }) => {
+  const [completedAppointments, setCompletedAppointments] = useState(false)
+  const [rowData, setRowData] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { user } = Auth.useUser()
+  const [open, setOpen] = useState(false)
 
+  const { user } = Auth.useUser()
 
   useEffect(async () => {
     if (user) {
@@ -21,15 +28,93 @@ const Appointments = ({openSnackBar}) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log('data', data)
+          setCompletedAppointments(data)
         })
         .catch((error) => {
           openSnackBar({ message: error.toString(), snackSeverity: 'error' })
         })
     }
-  },[user]);
+  }, [user])
 
-  return <div>Completed Appointments</div>
+  return (
+    <div>
+      {!loading && completedAppointments ? (
+        <>
+          <MaterialTable
+            title="Completed Appointments"
+            columns={[
+              {
+                title: 'Name',
+                field: 'name',
+                render: (rowData) => (
+                  <>
+                    {rowData.UserList.lastName}, {rowData.UserList.firstName}
+                  </>
+                ),
+              },
+              {
+                title: 'Visit Choice',
+                field: 'visitChoice',
+              },
+              {
+                title: 'Visit Reason',
+                field: 'visitReason',
+              },
+              {
+                title: 'Client Notes',
+                field: 'clientNotes',
+              },
+              {
+                title: 'Using Insurance',
+                field: 'usingInsurance',
+                render: (rowData) => (
+                  <>{rowData.usingInsurance ? 'Yes' : 'No'}</>
+                ),
+              },
+              {
+                title: 'Date/Time',
+                field: 'time',
+                render: (rowData) => (
+                  <>{moment(rowData.time).format('DD/MM/YYYY - h:mm:ss a')}</>
+                ),
+              },
+            ]}
+            data={completedAppointments}
+            options={{
+              paginationType: 'stepped',
+            }}
+            onRowClick={(event, rowData) => {
+              setOpen(true)
+              setRowData(rowData)
+            }}
+          />
+
+          <UtilModal
+            open={open}
+            setOpen={setOpen}
+            component={
+              <CompletedAppointmentsModalContent
+                setOpen={setOpen}
+                rowData={rowData}
+                completedAppointments={completedAppointments}
+                setCompletedAppointments={setCompletedAppointments}
+                openSnackBar={openSnackBar}
+              />
+            }
+          />
+        </>
+      ) : (
+        <Box
+          my="1em"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress />
+        </Box>
+      )}
+    </div>
+  )
 }
 
-export default Appointments
+export default CompletedAppointments
