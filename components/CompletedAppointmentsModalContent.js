@@ -122,6 +122,8 @@ const CompletedAppointmentsModalContent = ({
     <>
       {MeetingContent ? (
         <MeetingCreated
+          name={`${rowData.UserList.firstName} ${rowData.UserList.lastName}`}
+          email={rowData.UserList.email}
           phone={rowData.UserList.phone}
           setMeetingContent={setMeetingContent}
         />
