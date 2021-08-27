@@ -77,13 +77,15 @@ const Appointments = ({ openSnackBar }) => {
                 title: 'Date/Time',
                 field: 'time',
                 render: (rowData) => (
-                  <>{moment(rowData.time).format('DD/MM/YYYY - h:mm:ss a')}</>
+                  <>{moment(rowData.time).format('MM/DD/YYYY - h:mm a')}</>
                 ),
+                defaultSort: 'asc',
               },
             ]}
             data={appointments}
             options={{
               paginationType: 'stepped',
+              sorting: true,
             }}
             onRowClick={(event, rowData) => {
               setOpen(true)

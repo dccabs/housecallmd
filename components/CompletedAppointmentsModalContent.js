@@ -6,12 +6,7 @@ import {
   Button,
   FormControl,
   FormControlLabel,
-  Select,
   Checkbox,
-  InputLabel,
-  MenuItem,
-  Collapse,
-  CircularProgress,
 } from '@material-ui/core'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 import { makeStyles } from '@material-ui/core/styles'
@@ -112,7 +107,7 @@ const CompletedAppointmentsModalContent = ({
       setCompletedAppointments(filteredRows)
       setOpen(false)
       openSnackBar({
-        message: 'Updated user information',
+        message: 'Appointment updated',
         snackSeverity: 'success',
       })
     }
@@ -202,13 +197,15 @@ const CompletedAppointmentsModalContent = ({
 
                   <TextField
                     className={classes.textFields}
-                    fullWidth
                     type="text"
                     label="Client Notes"
                     variant="outlined"
                     color="secondary"
                     value={clientNotes}
                     onChange={(e) => setClientNotes(e.target.value)}
+                    rows={5}
+                    fullWidth
+                    multiline
                   />
 
                   <Box mt="1em" width="100%" maxWidth="34rem">

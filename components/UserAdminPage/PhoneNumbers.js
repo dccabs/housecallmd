@@ -192,7 +192,7 @@ const PhoneNumbers = ({ user, openSnackBar }) => {
                               }}
                             />
                           }
-                          label={rowData.isActive ? 'Active' : 'Inactive'}
+                          label="Active"
                           labelPlacement="end"
                         />
                       </FormControl>

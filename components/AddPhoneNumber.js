@@ -84,7 +84,7 @@ const AddPhoneNumber = ({
     } finally {
       setOpen(false)
       openSnackBar({
-        message: 'Updated user information',
+        message: 'New phone number added',
         snackSeverity: 'success',
       })
     }
