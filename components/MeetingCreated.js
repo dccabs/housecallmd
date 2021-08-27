@@ -134,13 +134,15 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
           </Box>
 
           {success ? (
-            <Typography
-              variant="h4"
-              align="center"
-              style={{ color: '#399945' }}
-            >
-              Message Sent!
-            </Typography>
+            <Box my="1em">
+              <Typography
+                variant="h4"
+                align="center"
+                style={{ color: '#399945' }}
+              >
+                Message Sent!
+              </Typography>
+            </Box>
           ) : loadingSMS ? (
             <Box
               my="1em"

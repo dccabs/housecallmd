@@ -112,7 +112,7 @@ const AppointmentsModalContent = ({
       setAppointments(filteredRows)
       setOpen(false)
       openSnackBar({
-        message: 'Updated user information',
+        message: 'Appointment updated',
         snackSeverity: 'success',
       })
     }
@@ -202,13 +202,15 @@ const AppointmentsModalContent = ({
 
                   <TextField
                     className={classes.textFields}
-                    fullWidth
                     type="text"
                     label="Client Notes"
                     variant="outlined"
                     color="secondary"
                     value={clientNotes}
                     onChange={(e) => setClientNotes(e.target.value)}
+                    rows={5}
+                    fullWidth
+                    multiline
                   />
 
                   <Box mt="1em" width="100%" maxWidth="34rem">
