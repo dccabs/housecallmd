@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react'
+import { useState, useEffect, useContext, Fragment } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -6,17 +6,20 @@ import {
   Box,
   IconButton,
   Drawer,
-  Link as MuiLink,
 } from '@material-ui/core'
+import { Auth } from '@supabase/ui'
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { SnackBarContext } from '../components/SnackBar'
 import Image from 'next/image'
 import useStore from '../zustand/store'
 import { supabase } from '../utils/initSupabase'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import MobileNavDrawer from './MobileNavDrawer'
+import clearStore from '../utils/clearStore';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -26,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       backgroundColor: 'rgba(0, 0, 0, 0)',
       margin: 'auto',
-      border: '1px solid #ccc'
+      border: '1px solid #ccc',
     },
   },
   toolBar: {
@@ -80,14 +83,22 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Navbar = () => {
+  const store = useStore();
+
   const [drawerToggle, setDrawerToggle] = useState(false)
-  const { isAuthenticated } = useStore()
   const router = useRouter()
   const classes = useStyles()
+  const openSnackBar = useContext(SnackBarContext)
+  const { user, session } = Auth.useUser()
+
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
-    console.log(error)
+    openSnackBar({
+      message: `${user.email} has been logged out of the application`,
+      snackSeverity: 'error',
+    })
+    clearStore(store);
     router.push('/')
   }
 
@@ -132,15 +143,24 @@ const Navbar = () => {
                 <Typography>Contact</Typography>
               </a>
             </Link>
-            {isAuthenticated ? (
-              <Box ml="2rem">
-                <Typography
-                  onClick={handleSignOut}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Logout
-                </Typography>
-              </Box>
+            {user ? (
+              <>
+                <Box ml="2rem">
+                  <Typography
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    <AccountCircleIcon style={{marginRight: 10 }} /> {user.email}
+                  </Typography>
+                </Box>
+                <Box ml="1rem">
+                  <Typography
+                    onClick={handleSignOut}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Logout
+                  </Typography>
+                </Box>
+              </>
             ) : (
               <Box className={classes.nextLink}>
                 <Link href="/login">

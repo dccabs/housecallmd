@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { supabase } from '../utils/initSupabase'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import clearStore from '../utils/clearStore'
+import useStore from '../zustand/store'
 
 const useStyles = makeStyles((theme) => ({
   authLinks: {
@@ -30,6 +32,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
   const session = supabase.auth.session()
   const user = supabase.auth.user()
   const classes = useStyles()
+  const store = useStore();
 
   const openSnackBar = useContext(SnackBarContext)
 
@@ -53,6 +56,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
     openSnackBar({message: `${user.email} has been logged out of the application`, snackSeverity: 'error'})
+    clearStore(store)
     router.push('/')
   }
 

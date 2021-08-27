@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
   Box,
   Paper,
@@ -7,8 +7,18 @@ import {
   Button,
   Modal,
 } from '@material-ui/core'
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+import moment from 'moment'
+
 import PersonIcon from '@material-ui/icons/Person'
 import { makeStyles } from '@material-ui/core/styles'
+
+import { SnackBarContext } from '../components/SnackBar'
+
 
 import MeetingCreated from './MeetingCreated'
 import SendSMS from './SendSMS'
@@ -46,8 +56,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
+  const openSnackBar = useContext(SnackBarContext)
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [dob, setDob] = useState('')
   const [hasInsurance, setHasInsurance] = useState('')
   const [provider, setProvider] = useState('')
   const [planNumber, setPlanNumber] = useState('')
@@ -67,6 +80,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
     setGroupNumber(rowData.groupNumber)
     setPhone(rowData.phone)
     setAddress(rowData.address)
+    setDob(rowData.dob)
   }, [rowData])
 
   const handleSubmit = async (e) => {
@@ -82,6 +96,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       groupNumber,
       phone,
       address,
+      dob,
     }
     const newRows = rows.map((r) => {
       if (r.email === email) r = updatedRow
@@ -93,6 +108,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       city: address.split(', ')[1],
       firstName: name.split(', ')[1],
       email,
+      dob: moment(dob).format('L'),
       groupNumber,
       hasInsurance: hasInsurance === 'Yes' ? true : false,
       lastName: name.split(', ')[0],
@@ -114,10 +130,12 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
       })
     } catch (error) {
       console.log(error)
+      openSnackBar({ message: error, snackSeverity: 'error' })
     }
 
     setUsers(newRows)
     setOpen(false)
+    openSnackBar({ message: 'Updated user information', snackSeverity: 'success' })
   }
 
   const reset = () => {
@@ -130,7 +148,7 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
     <Modal open={open} onClose={reset} style={{ overflow: 'scroll' }}>
       <Paper elevation={3} className={classes.root}>
         {MeetingContent ? (
-          <MeetingCreated setMeetingContent={setMeetingContent} />
+          <MeetingCreated phone={phone} setMeetingContent={setMeetingContent} />
         ) : MessageContent ? (
           <SendSMS phone={phone} setMessageContent={setMessageContent} />
         ) : (
@@ -160,6 +178,27 @@ const UtilModal = ({ open, setOpen, rowData, users, setUsers }) => {
                     required
                     onChange={(e) => setName(e.target.value)}
                   />
+                </Box>
+
+                <Box className={classes.fieldBox}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      autoComplete="nope"
+                      className={classes.textFields}
+                      inputVariant="outlined"
+                      margin="normal"
+                      id="date-picker-dialog"
+                      label="Date of birth"
+                      format="MM/dd/yyyy"
+                      value={dob}
+                      onChange={(value) => {
+                        setDob(value)
+                      }}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                    />
+                  </MuiPickersUtilsProvider>
                 </Box>
 
                 <Box className={classes.fieldBox}>

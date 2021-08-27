@@ -1,4 +1,10 @@
 import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import STATES from '../public/constants/states'
@@ -46,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Contact = () => {
 
-  const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone } = useStore();
+  const { setFirstName, setLastName, setAddress, setCity, setState, setZip, setPhone, setDob } = useStore();
 
   const [localFirstName, setLocalFirstName] = useState('');
   const [localLastName, setLocalLastName] = useState('');
@@ -55,6 +61,7 @@ const Contact = () => {
   const [localState, setLocalState] = useState('');
   const [localZip, setLocalZip] = useState('');
   const [localPhone, setLocalPhone] = useState('');
+  const [localDob, setLocalDob] = useState(null)
 
   const classes = useStyles();
   const router = useRouter();
@@ -68,6 +75,7 @@ const Contact = () => {
     setState(localState);
     setZip(localZip);
     setPhone(localPhone);
+    setDob(localDob);
 
     router.push('/enter-login-information');
   }
@@ -78,14 +86,18 @@ const Contact = () => {
 
   return (
     <Container>
-      <Typography variant="h2" className={classes.h2}>Please enter the following information:</Typography>
+      <Typography variant="h2" className={classes.h2}>Patient Info</Typography>
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
         <Box
+          mt="1em"
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
         >
+          <Typography>
+            Please fill out the following about the <strong style={{color: '#0092b8'}}>patient</strong> who is requesting an appointment.
+          </Typography>
           <TextField
             className={classes.textFields}
             fullWidth
@@ -106,6 +118,24 @@ const Contact = () => {
             required
             onChange={(e) => handleUpdate(e, setLocalLastName)}
           />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              autoComplete="nope"
+              className={classes.textFields}
+              inputVariant="outlined"
+              margin="normal"
+              id="date-picker-dialog"
+              label="Date of birth"
+              format="MM/dd/yyyy"
+              value={localDob}
+              onChange={(value) => {
+                setLocalDob(value)
+              }}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
           <TextField
             className={classes.textFields}
             fullWidth
@@ -168,6 +198,15 @@ const Contact = () => {
         <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
           <Box m="1em" className={classes.buttonLinks}>
             <Button
+              onClick={() => router.back()}
+              color="secondary"
+              variant="contained"
+            >
+              Back
+            </Button>
+          </Box>
+          <Box m="1em" className={classes.buttonLinks}>
+            <Button
               type="submit"
               color="secondary"
               variant="contained"
@@ -178,19 +217,11 @@ const Contact = () => {
                 !localAddress ||
                 !localCity ||
                 !localZip ||
-                !localPhone
+                !localPhone ||
+                !localDob
               }
             >
               Continue
-            </Button>
-          </Box>
-          <Box m="1em" className={classes.buttonLinks}>
-            <Button
-              onClick={() => router.back()}
-              color="secondary"
-              variant="contained"
-            >
-              Back
             </Button>
           </Box>
         </Box>

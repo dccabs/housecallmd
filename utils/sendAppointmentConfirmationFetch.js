@@ -1,16 +1,8 @@
 const SENDGRID_API_URL = 'https://api.sendgrid.com/v3/mail/send'
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
 
-const sendMailToMe = async (
-  {
-    recepient_email, // email_address to send mail
-    name, // from name on email
-    subject = 'sample subject',
-    email,
-    client_message,
-    phone = "",
-  }
-) => {
+const sendAppointmentConfirmationFetch = async (props) => {
+  const { subject, recipient_email, email } = props
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
     headers: {
@@ -22,31 +14,29 @@ const sendMailToMe = async (
         {
           to: [
             {
-              email: recepient_email,
+              email: email,
             },
           ],
           subject: subject,
         },
       ],
       from: {
-        email: recepient_email,
-        name,
+        email: recipient_email,
+        name: 'HouseCall MD Appointments',
       },
       content: [
         {
           type: 'text/html',
           value: `
-            <img src="/logo-vertical.png" width="150px" /><br /><br />
+            <img src="https://housecallmd.vercel.app/logo-vertical.png" width="150px" /><br /><br />
             <div style="color: #000;">
+            
               <p>
-                ${client_message}
+                Housecall MD received your request for an appointment. A representative from HouseCall MD will be contacting you shortly with more information. If you need to reach out to us sooner, please email contact@housecallmd.org. If this is an emergency, please call 9-1-1.
               </p>
-              <p>${name}</p>
-              <p>Email: ${email}</p>
-              <p>Phone: ${phone}</p>
+              
               <br />
             </div>
-            <a href="https://housecallmd.vercel.app/logo-vertical.png"><button style="background-color: #0092b8; padding: 1em; border: 1px solid #0092b8; border-radius: 50px; color: #fff; cursor: pointer;">Go back to Housecall MD</button></a>
           `,
         },
       ],
@@ -57,4 +47,4 @@ const sendMailToMe = async (
   return sgResponse
 }
 
-export { sendMailToMe }
+export { sendAppointmentConfirmationFetch }

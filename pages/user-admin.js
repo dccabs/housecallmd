@@ -46,16 +46,15 @@ const UserAdmin = (props) => {
   const [loading, setLoading] = useState(false)
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
-  const { user } = Auth.useUser();
-
+  const { user } = Auth.useUser()
 
   useEffect(async () => {
     if (user) {
       fetch('/api/getSingleUser', {
         method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json'}),
+        headers: new Headers({ 'Content-Type': 'application/json' }),
         credentials: 'same-origin',
-        body: JSON.stringify({ email: user.email })
+        body: JSON.stringify({ email: user.email }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -63,19 +62,27 @@ const UserAdmin = (props) => {
             getUsers()
           } else {
             openSnackBar({
-              message: "you are not authorized to view this page",
+              message: 'you are not authorized to view this page',
               snackSeverity: 'error',
             })
           }
-        });
-      // getUsers();
+        })
     }
   }, [user])
 
   const getUsers = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`/api/getAllUsers`)
+      const res = await fetch(`/api/getAllUsers`, {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+        }),
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          user,
+        }),
+      })
       const data = await res.json()
       const users = await data.map((u) => {
         return {
@@ -86,6 +93,7 @@ const UserAdmin = (props) => {
           planNumber: u.planNumber,
           groupNumber: u.groupNumber,
           phone: u.phone,
+          dob: u.dob,
           address: `${u.address}, ${u.city}, ${u.state}, ${u.zip}`,
         }
       })
@@ -107,29 +115,32 @@ const UserAdmin = (props) => {
     const rows = [...users]
     const newRows = rows.filter((r) => !rowsToDelete.includes(r))
 
-    const emails = rowsToDelete.map(row => {
+    const emails = rowsToDelete.map((row) => {
       return {
-        email: row.email
-      };
-    });
+        email: row.email,
+      }
+    })
 
     await emails.forEach((email) => {
       fetch('/api/deleteUser', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
         credentials: 'same-origin',
-        body: JSON.stringify({email: email.email }),
+        body: JSON.stringify({ email: email.email, user }),
       })
         .then((res) => res.json())
         .then((data) => {
           if (data.error) {
             throw Error(data.error)
           } else {
-            openSnackBar({message: `You successfully deleted a user`, snackSeverity: 'success'})
+            openSnackBar({
+              message: `You successfully deleted a user`,
+              snackSeverity: 'success',
+            })
           }
         })
         .catch((error) => {
-          openSnackBar({message: error, snackSeverity: 'error'})
+          openSnackBar({ message: error, snackSeverity: 'error' })
         })
     })
 
@@ -139,7 +150,7 @@ const UserAdmin = (props) => {
   return (
     <Container>
       <Box>
-        {!loading ? (
+        {!loading && users ? (
           <MaterialTable
             title="Users"
             columns={[

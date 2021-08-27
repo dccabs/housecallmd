@@ -1,9 +1,26 @@
 import { useContext, useState } from 'react'
-import { Typography, Box, Button, TextField, Dialog } from '@material-ui/core'
+import {
+  Typography,
+  Box,
+  Button,
+  TextField,
+  Dialog,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  OutlinedInput,
+  InputLabel,
+  InputAdornment,
+  IconButton,
+} from '@material-ui/core'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import { SnackBarContext } from '../../components/SnackBar'
+import { Auth } from '@supabase/ui'
+
 
 const useStyles = makeStyles((theme) => ({
   textFields: {
@@ -31,15 +48,20 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ResetPassword = () => {
-  const router = useRouter();
+  const router = useRouter()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [open, setOpen] = useState(false)
+  const [fieldType, setFieldType] = useState('password')
+  const [confirmFieldType, setConfirmFieldType] = useState('password')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [passwordNotMatch, setPasswordNotMatch] = useState(false)
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
+  const { user } = Auth.useUser()
 
-  const { access_token } = router.query;
-  console.log('access_token', access_token)
+  const { access_token } = router.query
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -49,32 +71,54 @@ const ResetPassword = () => {
     }
     fetch('/api/resetPassword', {
       method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json', token: access_token }),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        token: access_token,
+      }),
       credentials: 'same-origin',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
-          throw Error(data.error);
+          throw Error(data.error)
         } else {
-          openSnackBar({message: 'You successfully changed your password, please login', snackSeverity: 'success'})
-          router.push('/login');
+          openSnackBar({
+            message: `You successfully changed your password, you are logged in as ${user.email}`,
+            snackSeverity: 'success',
+          })
+          router.push('/visit-choice')
         }
       })
-      .catch(error => {
-        openSnackBar({message: error, snackSeverity: 'error'})
-
-      });
-
+      .catch((error) => {
+        openSnackBar({ message: error, snackSeverity: 'error' })
+      })
   }
 
   const handlePasswordUpdate = (e) => {
     setPassword(e.target.value)
+
+    if (e.target.value !== confirmPassword) setPasswordNotMatch(true)
+    else setPasswordNotMatch(false)
   }
 
   const handleConfirmPasswordUpdate = (e) => {
     setConfirmPassword(e.target.value)
+
+    if (password !== e.target.value) setPasswordNotMatch(true)
+    else setPasswordNotMatch(false)
+  }
+
+  const handlePasswordClick = () => {
+    if (fieldType === 'password') setFieldType('text')
+    else setFieldType('password')
+    setShowPassword(!showPassword)
+  }
+
+  const handleConfirmPasswordClick = () => {
+    if (confirmFieldType === 'password') setConfirmFieldType('text')
+    else setConfirmFieldType('password')
+    setShowConfirmPassword(!showConfirmPassword)
   }
 
   return (
@@ -89,28 +133,77 @@ const ResetPassword = () => {
               alignItems="center"
               justifyContent="center"
             >
-              <TextField
-                value={password}
-                className={classes.textFields}
-                fullWidth
-                type="password"
-                label="Password"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={handlePasswordUpdate}
-              />
-              <TextField
-                value={confirmPassword}
-                className={classes.textFields}
-                fullWidth
-                type="password"
-                label="Confirm Password"
-                variant="outlined"
-                color="secondary"
-                required
-                onChange={handleConfirmPasswordUpdate}
-              />
+              <FormControl className={classes.textFields} variant="outlined">
+                <InputLabel
+                  htmlFor="outlined-password"
+                  color="secondary"
+                  variant="outlined"
+                  required
+                  style={{background: '#ffffff'}}
+                >
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-password"
+                  value={password}
+                  type={fieldType}
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={handlePasswordUpdate}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton onClick={handlePasswordClick} edge="end">
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                  error={passwordNotMatch}
+                />
+                {passwordNotMatch && (
+                  <FormHelperText error>Passwords do not match</FormHelperText>
+                )}
+              </FormControl>
+              <FormControl className={classes.textFields} variant="outlined">
+                <InputLabel
+                  htmlFor="outline-confirm-password"
+                  color="secondary"
+                  variant="outlined"
+                  required
+                  style={{background: '#ffffff'}}
+                >
+                  Confirm Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outline-confirm-password"
+                  value={confirmPassword}
+                  type={confirmFieldType}
+                  variant="outlined"
+                  color="secondary"
+                  required
+                  onChange={handleConfirmPasswordUpdate}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleConfirmPasswordClick}
+                        edge="end"
+                      >
+                        {showConfirmPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                  error={passwordNotMatch}
+                />
+                {passwordNotMatch && (
+                  <FormHelperText error>Passwords do not match</FormHelperText>
+                )}
+              </FormControl>
             </Box>
             <Box
               mt="2em"

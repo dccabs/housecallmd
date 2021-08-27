@@ -19,7 +19,6 @@ const generateClassName = createGenerateClassName()
 
 export default function MyApp(props) {
   const { Component, pageProps, router } = props
-  const [loading, setLoading] = useState(true)
   const nextRouter = useRouter()
 
   useEffect(() => {
@@ -30,7 +29,6 @@ export default function MyApp(props) {
       let obj = {}
       params.forEach((param) => {
         const arr = param.split('=')
-        console.log('arr', arr)
         obj[arr[0]] = arr[1]
       })
 
@@ -44,13 +42,12 @@ export default function MyApp(props) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-    setLoading(false)
   }, [])
 
   return (
     <Fragment>
       <Head>
-        <title>House Call MD</title>
+        <title>House Call MD - Urgent Care | Health Care | Kitsap County, Washington</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
@@ -63,8 +60,7 @@ export default function MyApp(props) {
           <CssBaseline />
           <Auth.UserContextProvider supabaseClient={supabase}>
             <Layout>
-              {loading && <di>loading...</di>}
-              {!loading && <Component {...pageProps} />}
+              <Component {...pageProps} />
             </Layout>
           </Auth.UserContextProvider>
         </ThemeProvider>

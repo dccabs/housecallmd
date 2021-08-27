@@ -4,7 +4,7 @@ import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
-import providerOptions from '../../public/constants/providerOptions';
+import providerOptions from '../../public/constants/providerOptions'
 import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
@@ -36,26 +36,27 @@ const useStyles = makeStyles((theme) => ({
 const ChooseProvider = () => {
   const { setProvider, provider } = useStore()
 
-  const [localProvider, setLocalProvider] = useState('');
+  const [localProvider, setLocalProvider] = useState('')
 
-  console.log('useStore', useStore())
   const classes = useStyles()
   const router = useRouter()
 
   const handleUpdate = (e, fn) => {
-    fn(e.target.value);
+    fn(e.target.value)
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     setProvider(localProvider)
-    router.push('/insurance/card-information');
+    router.push('/insurance/card-information')
   }
 
   return (
     <Container>
       <Box>
-        <Typography variant="h2" className={classes.h2}>Insurance</Typography>
+        <Typography variant="h2" className={classes.h2}>
+          Insurance
+        </Typography>
         <form onSubmit={handleSubmit}>
           <Box
             mt="2em"
@@ -78,11 +79,9 @@ const ChooseProvider = () => {
                 disableClearable
                 options={providerOptions}
                 style={{ width: '100%', maxWidth: '34rem' }}
-                onChange={
-                  (e, value) => {
-                    setLocalProvider(value)
-                  }
-                }
+                onChange={(e, value) => {
+                  setLocalProvider(value)
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -91,7 +90,7 @@ const ChooseProvider = () => {
                     color="secondary"
                     variant="outlined"
                     onChange={(e, value) => {
-                      handleUpdate(e, setLocalProvider);
+                      handleUpdate(e, setLocalProvider)
                     }}
                     InputProps={{ ...params.InputProps, type: 'search' }}
                     required

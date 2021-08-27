@@ -41,13 +41,11 @@ const Reviews = () => {
             </Box>
             <Box mb="1em">
               <Typography>
-                <strong>Jimmy Smith</strong>
+                <strong>Beverly H.</strong>
               </Typography>
             </Box>
             <Typography mb="1em" align="center">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum
-              quibusdam vero alias accusamus tenetur eius, consectetur, odit
-              nemo aut.
+              My mom has memory issues and also isn’t mobile. Taking time out of my day to take her to the clinic just doesn’t work. Housecall came and treated her and I could go about my day.
             </Typography>
           </Box>
         </CardContent>
@@ -69,14 +67,11 @@ const Reviews = () => {
             </Box>
             <Box mb="1em">
               <Typography>
-                <strong>John Doe</strong>
+                <strong>Sandra B</strong>
               </Typography>
             </Box>
             <Typography mb="1em" align="center">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum
-              quibusdam vero alias accusamus tenetur eius, consectetur, odit
-              nemo aut dolore sapiente vel deleniti, cum eum perspiciatis nisi
-              velit assumenda nobis.
+              I appreciate that they don’t make me feel rushed because there are a bunch of other people waiting in the waiting room. They get to spend the time with me so I get the proper diagnosis and treatment.
             </Typography>
           </Box>
         </CardContent>
@@ -98,13 +93,11 @@ const Reviews = () => {
             </Box>
             <Box mb="1em">
               <Typography>
-                <strong>Karen Myers</strong>
+                <strong>Adam Y.</strong>
               </Typography>
             </Box>
             <Typography mb="1em" align="center">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum
-              quibusdam vero alias accusamus tenetur eius, consectetur, odit
-              nemo aut dolore sapiente vel deleniti.
+              Housecall MD came to my home and gave me a breathing treatment and medicine for my bronchitis. It was nice not having to wait for hours in some urgent care waiting room.
             </Typography>
           </Box>
         </CardContent>
