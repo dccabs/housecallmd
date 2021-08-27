@@ -6,6 +6,7 @@ import {
   Radio,
   RadioGroup,
   FormControl,
+  TextField,
   FormControlLabel,
   CircularProgress,
   Switch,
@@ -18,10 +19,9 @@ import { useRouter } from 'next/router'
 import { Auth } from '@supabase/ui'
 
 import useStore from '../zustand/store'
-import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
 import visitPricing from '../public/constants/visitPricing'
-import billOfRights from '../public/constants/bill_of_rights';
-import privacyPolicy from '../public/constants/privacyPolicy';
+import billOfRights from '../public/constants/bill_of_rights'
+import privacyPolicy from '../public/constants/privacyPolicy'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -64,7 +64,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const maxCharacters = 240
+
 const VisitChoice = () => {
+  const [localReason, setLocalReason] = useState('')
+  const [maxLength, setMaxLength] = useState(maxCharacters)
   const [value, setValue] = useState('video')
   const [loading, setLoading] = useState(false)
   const [firstName, setLocalFirstName] = useState(null)
@@ -73,35 +77,15 @@ const VisitChoice = () => {
   const [borOpen, setBorOpen] = useState(false)
   const [ppOpen, setPPOpen] = useState(false)
   const store = useStore()
-  const { setVisitChoice, hasInsurance, isAuthenticated } = store
+  const { setVisitChoice, hasInsurance, isAuthenticated, setReason, insuranceOptOut } = store
   const classes = useStyles()
   const router = useRouter()
   const { user, session } = Auth.useUser()
 
   useEffect(() => {
     if (user) {
-      try {
-        setLoading(true)
-        fetch('/api/getSingleUser', {
-          method: 'POST',
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          credentials: 'same-origin',
-          body: JSON.stringify({ email: user.email }),
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            console.log('res', res)
-            setLocalFirstName(res.firstName)
-            setStoreWithAuthInfo({
-              store,
-              user: res,
-            })
-          })
-      } catch (err) {
-        console.log(err)
-      } finally {
-        setLoading(false)
-      }
+      setLocalFirstName(store.firstName);
+      setLoading(false)
     }
   }, [user])
 
@@ -112,20 +96,17 @@ const VisitChoice = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     setVisitChoice(value)
+    setReason(localReason)
     router.push('/payment')
   }
 
   const billOfRightsText = (
-    <Paper className={classes.modal}>
-      {billOfRights}
-    </Paper>
+    <Paper className={classes.modal}>{billOfRights}</Paper>
   )
 
-  const ppText = (
-    <Paper className={classes.modal}>
-      {privacyPolicy}
-    </Paper>
-  )
+  const ppText = <Paper className={classes.modal}>{privacyPolicy}</Paper>
+
+  const usingInsurance = hasInsurance && !insuranceOptOut;
 
   return (
     <>
@@ -183,7 +164,7 @@ const VisitChoice = () => {
                           value="video"
                           control={<Radio />}
                           label={`Video/Telemedicine Visit (${
-                            hasInsurance
+                            usingInsurance
                               ? 'No additonal fee with insurance'
                               : `$${visitPricing.noInsurance.pricing.video}`
                           })`}
@@ -192,7 +173,7 @@ const VisitChoice = () => {
                           value="phone"
                           control={<Radio />}
                           label={`Phone Visit ($${
-                            hasInsurance
+                            usingInsurance
                               ? visitPricing.insurance.pricing.phone
                               : visitPricing.noInsurance.pricing.phone
                           })`}
@@ -201,12 +182,31 @@ const VisitChoice = () => {
                           value="in_person"
                           control={<Radio />}
                           label={`Housecall, In person visit at home ($${
-                            hasInsurance
+                            usingInsurance
                               ? visitPricing.insurance.pricing.in_person
                               : visitPricing.noInsurance.pricing.in_person
                           })`}
                         />
                       </RadioGroup>
+
+                      <Box mt="2em">
+                        <TextField
+                          fullWidth
+                          type="text"
+                          label="Reason for visit *"
+                          variant="outlined"
+                          color="secondary"
+                          multiline
+                          rows={4}
+                          inputProps={{ maxLength: maxCharacters }}
+                          helperText={maxLength}
+                          value={localReason}
+                          onChange={(e) => {
+                            setLocalReason(e.target.value)
+                            setMaxLength(maxCharacters - e.target.value.length)
+                          }}
+                        />
+                      </Box>
 
                       <Box mt="2em" display="flex" alignItems="center">
                         <Box mr="1em">
@@ -242,6 +242,7 @@ const VisitChoice = () => {
                       </Box>
                     </FormControl>
                   </Box>
+
                   <Box
                     mt="1em"
                     display="flex"
@@ -265,7 +266,9 @@ const VisitChoice = () => {
                         color="secondary"
                         variant="contained"
                         size="large"
-                        disabled={!agreeBorToggle || !agreePPToggle}
+                        disabled={
+                          !localReason || !agreeBorToggle || !agreePPToggle
+                        }
                       >
                         Continue
                       </Button>
