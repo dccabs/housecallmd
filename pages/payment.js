@@ -16,7 +16,8 @@ import { SnackBarContext } from '../components/SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
 import useStore from '../zustand/store'
 import { useRouter } from 'next/router'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
+import { Auth } from '@supabase/ui'
 import moment from 'moment'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
@@ -52,13 +53,18 @@ const useStyles = makeStyles((theme) => ({
       padding: '2em 0',
     },
   },
+  backdrop: {
+    zIndex: 99999,
+  }
 }))
 
 const Payment = () => {
   const [processing, setProcessing] = useState(false)
+  const [clientPhones, setClientPhones] = useState([])
 
   const classes = useStyles()
   const router = useRouter()
+  const { user } = Auth.useUser()
 
   const {
     isPolicyCardHolder,
@@ -80,9 +86,12 @@ const Payment = () => {
     zip,
     phone,
     dob,
+    reason,
+    insuranceOptOut,
   } = useStore()
 
   const newUser = {
+    insuranceOptOut,
     hasInsurance,
     isPolicyCardHolder,
     policyHolderFirstName,
@@ -101,15 +110,71 @@ const Payment = () => {
     state,
     zip,
     phone,
+    reason,
     dob: moment(dob).format('L'),
     amount: 0,
   }
 
+  useEffect(async () => {
+    console.log('newUser', newUser)
+    if (user) {
+      await fetch('/api/getPhoneNumbers', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          user,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const activePhones = data.filter(phone => {
+            return phone.isActive;
+          })
+          
+
+          const phones = activePhones.map(phone => {
+            return phone.phoneNumber;
+          })
+          setClientPhones(phones);
+        })
+        .catch((error) => {
+          openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        })
+    }
+  }, [user])
+
   const openSnackBar = useContext(SnackBarContext)
 
   const handleContinue = () => {
-    sendEmailToHouseCall()
-    sendSMSToHouseCall()
+    addAppointment();
+  }
+
+  const addAppointment = async () => {
+    setProcessing(true)
+    await fetch('/api/addAppointment', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        user,
+        visitChoice,
+        visitReason: reason,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error)
+        } else {
+          sendEmailToHouseCall()
+          sendSMSToHouseCall()
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        setProcessing(false)
+      })
   }
 
   const sendEmailToHouseCall = async () => {
@@ -129,8 +194,6 @@ const Payment = () => {
       .then((data) => {
         if (data.error) {
           throw Error(data.error)
-        } else {
-          console.log(data)
         }
       })
       .catch((error) => {
@@ -166,9 +229,9 @@ const Payment = () => {
 
   const sendSMSToHouseCall = () => {
     const message = `${firstName} ${lastName} just signed up for an appointment.`
-    const phones = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBERS.split(',')
+    //const phones = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBERS.split(',')
 
-    phones.forEach(async (phone) => {
+    clientPhones.forEach(async (phone) => {
       try {
         await fetch('/api/sendMessage', {
           method: 'POST',
@@ -187,6 +250,8 @@ const Payment = () => {
     })
   }
 
+  const usingInsurance = hasInsurance && !insuranceOptOut;
+
   return (
     <>
       <Backdrop className={classes.backdrop} open={processing}>
@@ -197,7 +262,7 @@ const Payment = () => {
           <Typography variant="h2" className={classes.h2}>
             Payment
           </Typography>
-          {hasInsurance && visitChoice === 'video' ? (
+          {usingInsurance && visitChoice === 'video' ? (
             <>
               <p className={classes.content}>
                 Because you have insurance and have selected a Video
@@ -234,7 +299,7 @@ const Payment = () => {
             </>
           ) : (
             <Elements stripe={stripePromise}>
-              <PaymentForm newUser={newUser} />
+              <PaymentForm newUser={newUser} clientPhones={clientPhones} usingInsurance={usingInsurance} />
             </Elements>
           )}
         </Box>

@@ -4,7 +4,6 @@ import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 
-import Container from '../components/Container'
 import ContactSection from '../components/ContactSection'
 import Reviews from '../components/Reviews'
 
@@ -148,7 +147,7 @@ const Home = () => {
             flexDirection="column"
             alignitems="center"
           >
-            <Link href={isAuthenticated ? '/visit-choice' : '/terms'}>
+            <Link href={isAuthenticated ? '/returning-user' : '/terms'}>
               <Button
                 color="secondary"
                 variant="contained"

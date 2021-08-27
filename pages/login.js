@@ -84,7 +84,7 @@ const login = () => {
 
   const setToken = (response) => {
     openSnackBar({ message: 'Logged in as ' + response.user.email })
-    router.push('/visit-choice')
+    router.push('/returning-user')
   }
 
   const handlePasswordUpdate = (e) => {

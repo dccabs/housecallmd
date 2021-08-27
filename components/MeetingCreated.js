@@ -21,8 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MeetingCreated = ({ phone, setMeetingContent }) => {
+const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
   const [roomId, setRoomId] = useState()
+  const [roomUrl, setRoomUrl] = useState()
   const [loading, setLoading] = useState(false)
   const [loadingSMS, setLoadingSMS] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -45,6 +46,7 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
       const data = await res.json()
 
       setRoomId(data[0].cuid)
+      setRoomUrl(`${process.env.NEXT_PUBLIC_SITE_URL}/room/${data[0].cuid}`)
     } catch (err) {
       openSnackBar({
         message: err,
@@ -54,6 +56,32 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
       setLoading(false)
     }
   }, [])
+
+  const sendMeetingLink = () => {
+    sendEmail()
+    sendSMS()
+  }
+
+  const sendEmail = async () => {
+    const payload = {
+      name,
+      email,
+      roomUrl,
+    }
+
+    try {
+      const res = await fetch(`/api/sendMailToClient`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+    } catch (err) {
+      throw err
+    }
+  }
 
   const sendSMS = async () => {
     try {
@@ -98,22 +126,23 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
             <Typography variant="h4">New meeting room created</Typography>
             <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}>
               <a target="_blank">
-                <Typography
-                  variant="h6"
-                  align="center"
-                >{`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}</Typography>
+                <Typography variant="h6" align="center">
+                  {roomUrl}
+                </Typography>
               </a>
             </Link>
           </Box>
 
           {success ? (
-            <Typography
-              variant="h4"
-              align="center"
-              style={{ color: '#399945' }}
-            >
-              Message Sent!
-            </Typography>
+            <Box my="1em">
+              <Typography
+                variant="h4"
+                align="center"
+                style={{ color: '#399945' }}
+              >
+                Message Sent!
+              </Typography>
+            </Box>
           ) : loadingSMS ? (
             <Box
               my="1em"
@@ -130,7 +159,11 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
               display="flex"
               justifyContent="center"
             >
-              <Button color="secondary" variant="contained" onClick={sendSMS}>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={sendMeetingLink}
+              >
                 Send Meeting Link To Patient
               </Button>
             </Box>
@@ -148,7 +181,6 @@ const MeetingCreated = ({ phone, setMeetingContent }) => {
       )}
 
       <Box
-        m="1em"
         className={classes.buttonLinks}
         display="flex"
         justifyContent="center"

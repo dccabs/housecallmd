@@ -1,7 +1,14 @@
 const clearStore = ({store , user}) => {
   const {
+    setPolicyHolderFirstName,
+    setPolicyHolderLastName,
+    setPolicyHolderDob,
+    setIsPolicyCardHolder,
+    setPolicyHolderRelation,
+    setHasInsurance,
     setFirstName,
     setLastName,
+    setDob,
     setEmail,
     setAddress,
     setCity,
@@ -11,9 +18,14 @@ const clearStore = ({store , user}) => {
     setProvider,
     setPlanNumber,
     setGroupNumber,
-    setHasInsurance,
   } = store;
 
+  setIsPolicyCardHolder(user.isPolicyCardHolder);
+  setPolicyHolderFirstName(user.policyHolderFirstName);
+  setPolicyHolderLastName(user.policyHolderLastName);
+  setPolicyHolderDob(user.policyHolderDob);
+  setPolicyHolderRelation(user.policyHolderRelation)
+  setDob(user.dob);
   setFirstName(user.firstName);
   setLastName(user.lastName);
   setEmail(user.email);

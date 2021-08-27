@@ -1,0 +1,124 @@
+import { useState, useEffect } from 'react'
+import { Box, CircularProgress } from '@material-ui/core'
+import { Auth } from '@supabase/ui'
+import MaterialTable from 'material-table'
+import moment from 'moment'
+
+import UtilModal from '../UtilModal'
+import AppointmentsModalContent from '../AppointmentsModalContent'
+
+const Appointments = ({ openSnackBar }) => {
+  const [appointments, setAppointments] = useState(false)
+  const [rowData, setRowData] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  const { user } = Auth.useUser()
+
+  useEffect(async () => {
+    if (user) {
+      setLoading(true)
+      await fetch('/api/getAppointments', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          user,
+          completed: false,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setAppointments(data)
+          setLoading(false)
+        })
+        .catch((error) => {
+          openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        })
+    }
+  }, [user])
+
+  return (
+    <div>
+      {!loading && appointments ? (
+        <>
+          <MaterialTable
+            title="Appointments"
+            columns={[
+              {
+                title: 'Name',
+                field: 'name',
+                render: (rowData) => (
+                  <>
+                    {rowData.UserList.lastName}, {rowData.UserList.firstName}
+                  </>
+                ),
+              },
+              {
+                title: 'Visit Choice',
+                field: 'visitChoice',
+              },
+              {
+                title: 'Visit Reason',
+                field: 'visitReason',
+              },
+              {
+                title: 'Client Notes',
+                field: 'clientNotes',
+              },
+              {
+                title: 'Using Insurance',
+                field: 'usingInsurance',
+                render: (rowData) => (
+                  <>{rowData.usingInsurance ? 'Yes' : 'No'}</>
+                ),
+              },
+              {
+                title: 'Date/Time',
+                field: 'time',
+                render: (rowData) => (
+                  <>{moment(rowData.time).format('MM/DD/YYYY - h:mm a')}</>
+                ),
+                defaultSort: 'asc',
+              },
+            ]}
+            data={appointments}
+            options={{
+              paginationType: 'stepped',
+              sorting: true,
+            }}
+            onRowClick={(event, rowData) => {
+              setOpen(true)
+              setRowData(rowData)
+            }}
+          />
+
+          <UtilModal
+            open={open}
+            setOpen={setOpen}
+            component={
+              <AppointmentsModalContent
+                setOpen={setOpen}
+                rowData={rowData}
+                appointments={appointments}
+                setAppointments={setAppointments}
+                openSnackBar={openSnackBar}
+              />
+            }
+          />
+        </>
+      ) : (
+        <Box
+          my="1em"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress />
+        </Box>
+      )}
+    </div>
+  )
+}
+
+export default Appointments
