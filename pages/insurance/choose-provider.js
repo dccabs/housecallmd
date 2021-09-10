@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ChooseProvider = () => {
-  const { setProvider, provider } = useStore()
+  const { setProvider, provider, setHasInsurance } = useStore()
 
   const [localProvider, setLocalProvider] = useState('')
 
@@ -49,6 +49,12 @@ const ChooseProvider = () => {
     e.preventDefault()
     setProvider(localProvider)
     router.push('/insurance/card-information')
+  }
+
+  const handleSelfPayClick = (e) => {
+    e.preventDefault()
+    setHasInsurance(false)
+    router.push('/enter-profile-information')
   }
 
   return (
@@ -75,7 +81,7 @@ const ChooseProvider = () => {
             >
               <Autocomplete
                 //value={localProvider}
-                freeSolo
+                // freeSolo
                 disableClearable
                 options={providerOptions}
                 style={{ width: '100%', maxWidth: '34rem' }}
@@ -99,6 +105,20 @@ const ChooseProvider = () => {
               />
             </Box>
             <Box
+              mt="1em"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <p>
+                Some HMO plans require prior authorization to reimburse for our services.
+              </p>
+              <p>
+                If your health insurance is not listed here, then HouseCall MD’s services will not be covered.  You can still use our services at the discounted <a href="#" onClick={handleSelfPayClick}>self-pay rate</a>.
+              </p>
+            </Box>
+              <Box
               mt="1em"
               display="flex"
               justifyContent="center"

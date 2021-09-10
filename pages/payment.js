@@ -131,7 +131,7 @@ const Payment = () => {
           const activePhones = data.filter(phone => {
             return phone.isActive;
           })
-          
+
 
           const phones = activePhones.map(phone => {
             return phone.phoneNumber;
@@ -169,6 +169,7 @@ const Payment = () => {
         } else {
           sendEmailToHouseCall()
           sendSMSToHouseCall()
+          sendSMSToPatient();
         }
       })
       .catch((error) => {
@@ -248,6 +249,26 @@ const Payment = () => {
         throw err
       }
     })
+  }
+
+  const sendSMSToPatient = () => {
+    console.log('sendSMSToPatient', phone)
+    const message = `Housecall MD received your request for an appointment. A representative from HouseCall MD will be contacting you shortly with more information. Please do not reply to this message as this inbox is not monitored. If you need to reach out to us sooner, please email contact@housecallmd.org or call (833) 432-5633. If this is an emergency, please call 9-1-1.`
+    try {
+      fetch('/api/sendMessage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: phone,
+          body: message,
+        }),
+      })
+    } catch (err) {
+      throw err
+    }
   }
 
   const usingInsurance = hasInsurance && !insuranceOptOut;

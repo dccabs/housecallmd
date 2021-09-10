@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { useState, useEffect } from 'react'
 import useStore from '../zustand/store'
 import { Box, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -6,6 +6,7 @@ import Link from 'next/link'
 
 import ContactSection from '../components/ContactSection'
 import Reviews from '../components/Reviews'
+import { Auth } from '@supabase/ui'
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -123,8 +124,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Home = () => {
-  const { isAuthenticated } = useStore()
+  const { user } = Auth.useUser()
+  const [loading, setLoading] = useState(true);
   const classes = useStyles()
+
+  useEffect(() => {
+    setLoading(false);
+  }, [])
+
 
   return (
     <div className={classes.pageContainer}>
@@ -147,7 +154,7 @@ const Home = () => {
             flexDirection="column"
             alignitems="center"
           >
-            <Link href={isAuthenticated ? '/returning-user' : '/terms'}>
+            <Link href={user !==null ? '/returning-user' : '/terms'}>
               <Button
                 color="secondary"
                 variant="contained"
@@ -156,7 +163,7 @@ const Home = () => {
                 Get Started
               </Button>
             </Link>
-            {!isAuthenticated && (
+            {!user && !loading && (
               <Link href="/login">
                 <Button
                   color="secondary"

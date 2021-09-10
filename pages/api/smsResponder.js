@@ -10,7 +10,7 @@ const MessagingResponse = require('twilio').twiml.MessagingResponse;
 export default (req, res) => {
 
   const twiml = new MessagingResponse();
-  twiml.message("This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact");
+  twiml.message("This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact or call (833) 432-5633. If this an emergency please call 911.");
 
 
   res.statusCode = 200
