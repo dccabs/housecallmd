@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   Box,
   Typography,
@@ -6,15 +7,22 @@ import {
   CircularProgress,
   List,
   ListItem,
+  ListItemText,
+  Divider,
+  makeStyles,
 } from '@material-ui/core'
 import moment from 'moment'
 import { Auth } from '@supabase/ui'
 import Link from 'next/link'
 import PersonIcon from '@material-ui/icons/Person'
-import { makeStyles } from '@material-ui/core/styles'
-
 
 const useStyles = makeStyles((theme) => ({
+  flexGrow: {
+    flex: 1,
+  },
+  itemLabel: {
+    fontWeight: 600,
+  },
   buttonLinks: {
     marginTop: '4em',
     alignItems: 'center',
@@ -37,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ExistingInformation = (props) => {
+  const { onClose } = props
   const classes = useStyles()
   const [isPolicyHolder, setIsPolicyHolder] = useState('')
   const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
@@ -105,100 +114,201 @@ const ExistingInformation = (props) => {
     }
   }, [user])
 
+  const handleCloseModal = () => {
+    onClose()
+  }
+
   return (
     <div>
       {!loading ? (
         <>
           <Box display="flex" alignItems="center">
-            <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
+            <PersonIcon
+              color="secondary"
+              fontSize="large"
+              style={{ marginRight: '0.3em' }}
+            />
             <Typography variant="h4" align="left">
               Your User Information
             </Typography>
           </Box>
+          <Divider />
 
           <Box my="1em">
-            <List>
+            <List dense={true}>
               <ListItem>
-                  <strong>Patient is Policy Holder:</strong> {isPolicyHolder ? 'Yes' : 'No'}
+                <ListItemText className={classes.flexGrow}>
+                  Patient is Policy Holder:
+                </ListItemText>
+                <ListItemText className={classes.flexGrow}>
+                  {isPolicyHolder ? 'Yes' : 'No'}
+                </ListItemText>
               </ListItem>
-              {!isPolicyHolder &&
-              <>
-                <ListItem>
-                    <strong>Policy Holder First Name:</strong> {policyHolderFirstName}
-                </ListItem>
-                <ListItem>
-                    <strong>Policy Holder Last Name:</strong> {policyHolderLastName}
-                </ListItem>
-                <ListItem>
-                    <strong> Policy Holder Date of Birth:</strong> {policyHolderDob}
-                </ListItem>
-                <ListItem>
-                    <strong>Policy Holder Relationship to Patient:</strong> {policyHolderRelation}
-                </ListItem>
-              </>
-              }
+              {!isPolicyHolder && (
+                <>
+                  <ListItem>
+                    <span
+                      className={`${classes.flexGrow} ${classes.itemLabel}`}
+                    >
+                      Policy Holder First Name:
+                    </span>
+                    <ListItemText className={classes.flexGrow}>
+                      {policyHolderFirstName}
+                    </ListItemText>
+                  </ListItem>
+                  <ListItem>
+                    <span
+                      className={`${classes.flexGrow} ${classes.itemLabel}`}
+                    >
+                      Policy Holder Last Name:
+                    </span>
+                    <ListItemText className={classes.flexGrow}>
+                      {policyHolderLastName}
+                    </ListItemText>
+                  </ListItem>
+                  <ListItem>
+                    <span
+                      className={`${classes.flexGrow} ${classes.itemLabel}`}
+                    >
+                      Policy Holder Date of Birth:
+                    </span>
+                    <ListItemText className={classes.flexGrow}>
+                      {policyHolderDob}
+                    </ListItemText>
+                  </ListItem>
+                  <ListItem>
+                    <span
+                      className={`${classes.flexGrow} ${classes.itemLabel}`}
+                    >
+                      Policy Holder Relationship to Patient:
+                    </span>
+                    <ListItemText className={classes.flexGrow}>
+                      {policyHolderRelation}
+                    </ListItemText>
+                  </ListItem>
+                </>
+              )}
             </List>
 
-            <List>
-              <ListItem>
-                <strong>Email: {email}</strong>
+            <List dense={true}>
+              <ListItem alignItems="flex-start">
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Email:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {email}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>
-                  First Name: {firstName}
-                </strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  First Name:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {firstName}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>Last Name: {lastName}</strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Last Name:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {lastName}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>
-                  Has Insurance: {hasInsurance ? 'Yes' : 'No'}
-                </strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Has Insurance:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {hasInsurance ? 'Yes' : 'No'}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>
-                  Insurance Provider: {provider}
-                </strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Insurance Provider:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {provider}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>
-                  Plan Number: {planNumber}
-                </strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Plan Number:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {planNumber}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>
-                  Group Number: {groupNumber}
-                </strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Group Number:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {groupNumber}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>Date of Birth: {dob}</strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Date of Birth:
+                </span>
+                <ListItemText className={classes.flexGrow}> {dob}</ListItemText>
               </ListItem>
               <ListItem>
-                <strong>Phone: {phone}</strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Phone:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {phone}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>Address: {address}</strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Address:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {address}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>City: {city}</strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  City:
+                </span>
+                <ListItemText className={classes.flexGrow}>{city}</ListItemText>
               </ListItem>
               <ListItem>
-                <strong>State: {state}</strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  State:
+                </span>
+                <ListItemText className={classes.flexGrow}>
+                  {state}
+                </ListItemText>
               </ListItem>
               <ListItem>
-                <strong>Zip Code: {zip}</strong>
+                <span className={`${classes.flexGrow} ${classes.itemLabel}`}>
+                  Zip Code:
+                </span>
+                <ListItemText className={classes.flexGrow}> {zip}</ListItemText>
               </ListItem>
             </List>
           </Box>
 
-          <Box display="flex" justifyContent="center" flexDirection="column" className={classes.buttonLinks}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            flexDirection="column"
+            className={classes.buttonLinks}
+          >
             <Link href="/edit-information">
               <Button variant="contained" color="secondary" size="large">
                 Edit Information
               </Button>
             </Link>
-            <Button variant="contained" color="secondary" size="large" onClick={() => props.setOpen(false)}>
+            <Button
+              variant="contained"
+              color="default"
+              size="large"
+              onClick={handleCloseModal}
+            >
               Close
             </Button>
           </Box>
@@ -215,6 +325,13 @@ const ExistingInformation = (props) => {
       )}
     </div>
   )
+}
+
+ExistingInformation.propTypes = {
+  onClose: PropTypes.func,
+}
+ExistingInformation.defaultProps = {
+  onClose: () => {},
 }
 
 export default ExistingInformation

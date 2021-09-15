@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Paper, Modal, Zoom } from '@material-ui/core'
+import { Paper, Modal, Zoom, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -11,15 +11,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const UtilModal = ({ open, setOpen, component }) => {
+const handleOnCloseModal = () => {}
+
+const UtilModal = ({ open, onClose, component }) => {
+
   const classes = useStyles()
 
   return (
-    <Modal
-      open={open}
-      onClose={() => setOpen(false)}
-      style={{ overflow: 'scroll' }}
-    >
+    <Modal open={open} style={{ overflow: 'scroll' }}>
+      
       <Zoom in={open}>
         <Paper elevation={3} className={classes.root}>
           {component}

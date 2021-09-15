@@ -7,19 +7,21 @@ import {
   IconButton,
   Drawer,
 } from '@material-ui/core'
-import { Auth } from '@supabase/ui'
-import MenuIcon from '@material-ui/icons/Menu'
-import { makeStyles } from '@material-ui/core/styles'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { SnackBarContext } from '../components/SnackBar'
-import Image from 'next/image'
-import useStore from '../zustand/store'
+import Link from 'next/link'
+import { Auth } from '@supabase/ui'
 import { supabase } from '../utils/initSupabase'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import useStore from '../zustand/store'
+import { makeStyles } from '@material-ui/core/styles'
+import Image from 'next/image'
+import { SnackBarContext } from '../components/SnackBar'
+import {
+  AccountCircleRounded as AccountCircleIcon,
+  Menu as MenuIcon,
+} from '@material-ui/icons'
 
 import MobileNavDrawer from './MobileNavDrawer'
-import clearStore from '../utils/clearStore';
+import clearStore from '../utils/clearStore'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -27,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
 
     [theme.breakpoints.up('sm')]: {
-      backgroundColor: 'rgba(0, 0, 0, 0)',
+      backgroundColor: '#fff',
       margin: 'auto',
-      border: '1px solid #ccc',
+      boxShadow: 'rgba(140, 152, 164, 0.25) 0px 3px 6px 0px',
     },
   },
   toolBar: {
@@ -83,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Navbar = () => {
-  const store = useStore();
+  const store = useStore()
 
   const [drawerToggle, setDrawerToggle] = useState(false)
   const router = useRouter()
@@ -91,14 +93,13 @@ const Navbar = () => {
   const openSnackBar = useContext(SnackBarContext)
   const { user, session } = Auth.useUser()
 
-
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
     openSnackBar({
       message: `${user.email} has been logged out of the application`,
       snackSeverity: 'error',
     })
-    clearStore(store);
+    clearStore(store)
     router.push('/')
   }
 
@@ -146,10 +147,9 @@ const Navbar = () => {
             {user ? (
               <>
                 <Box ml="2rem">
-                  <Typography
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    <AccountCircleIcon style={{marginRight: 10 }} /> {user.email}
+                  <Typography style={{ display: 'flex', alignItems: 'center' }}>
+                    <AccountCircleIcon style={{ marginRight: 10 }} />
+                    {user.email}
                   </Typography>
                 </Box>
                 <Box ml="1rem">
