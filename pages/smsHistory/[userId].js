@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import PropTypes from 'prop-types'
-import MessageItem from '../components/MessageItem'
+import MessageItem from '../../components/MessageItem'
 import {
   Typography,
   Box,
