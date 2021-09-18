@@ -1,13 +1,9 @@
 require('dotenv').config()
-const MessagingResponse = require('twilio').twiml.MessagingResponse;
+import smsClient from './lib/utils/sms';
 import { supabase } from '../../utils/initSupabase'
 import moment from 'moment';
 
-// const client = require('twilio')(
-//   process.env.NEXT_PUBLIC_TWILIO_SID,
-//   process.env.NEXT_PUBLIC_TWILIO_AUTH_TOKEN
-// )
-
+const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 const smsResponder = async (req, res) => {
   
@@ -20,28 +16,59 @@ const smsResponder = async (req, res) => {
     
     const lastTwoDays = moment().subtract(2, 'days').format('YYYY-MM-DD');
     const twiml = new MessagingResponse();
+
     
     let message = '';
     let statusCode = 400;
-
+    
     let appointments = await supabase
-      .from('UserList')
-      .select(`*,
-      appointments (*)`)
-      .eq('phone', From)
-      .eq('appointments.completed', true)
-      .gte("appointments.completed_date", lastTwoDays)
-
+    .from('UserList')
+    .select(`*,
+    appointments (*)`)
+    .eq('phone', From)
+    .eq('appointments.completed', true)
+    .gte("appointments.completed_date", lastTwoDays)
+    
     
     if (appointments && (appointments.data === null || appointments.data.length === 0)) {
-      message = 'Something went wrong. This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
+      message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
     } else {
       if (appointments.data[0].appointments.length === 0) {
-        message = 'Something went wrong. This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
+        message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
       } else {
+
+        const userId = appointments.data[0].id;
+        const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
+        const smsHistoryPath = `${process.env.HOST}/smsHistory/${userId}`;
+        
         const { data, error, status } = await supabase.from('sms_log_message').insert([{ ...logMessage, user_id: appointments.data[0].id }], { returning: 'minimal' })
+        
+        const adminPhones = await supabase.from('adminPhones').select(`*`).eq('isActive', true);
+
+        if (adminPhones && adminPhones.data && adminPhones.data.length > 0) {
+          const adminMsg = `User ${senderName} has sent following message to HouseCallMD: 
+          "${Body}"
+          To reply to this message or see the full message history, click here. ${smsHistoryPath}`
+
+          const sendAdminMsg = adminPhones.data.map(user => {
+            return smsClient.messages.create({
+              body: adminMsg,
+              from: process.env.NEXT_PUBLIC_PHONE_NUMBER,
+              to: user.phoneNumber,
+            }).then((message) => {
+              return message;
+            }).catch((err) => {
+              return err;
+            })
+          });
+
+          const resultSendAdmin = await Promise.all(sendAdminMsg);
+          console.log('resultSendAdmin', resultSendAdmin);
+        }
+        
         if (error) {
           console.log('error saving in the table', error);
+          message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
         }
         statusCode = status;
       }
