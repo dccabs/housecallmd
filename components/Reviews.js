@@ -24,6 +24,7 @@ const Reviews = () => {
       display="flex"
       justifyContent="space-around"
       flexWrap="wrap"
+      paddingY="4em"
     >
       <Card className={classes.card} variant="outlined">
         <CardContent>

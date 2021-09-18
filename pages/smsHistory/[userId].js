@@ -1,14 +1,17 @@
-import React, { memo } from 'react'
+import React, { memo, useState, useEffect, useContext } from 'react'
+import moment from 'moment'
 import PropTypes from 'prop-types'
-import MessageItem from '../../components/MessageItem'
+import MessageList from '../../components/MessageList'
+import PhoneNumberList from '../../components/PhoneNumberList'
+import SnackBarContext from '../../components/SnackBar'
+import SkeletonChatPage from '../../components/SkeletonChatPage'
 import {
   Typography,
-  Box,
-  Button,
   TextField,
   makeStyles,
   Container,
   Grid,
+  Box,
   List,
   ListItem,
   ListItemText,
@@ -16,8 +19,14 @@ import {
   IconButton,
   Avatar,
   ListItemIcon,
+  Button,
 } from '@material-ui/core'
-import { Send, ChatBubbleOutlineTwoTone } from '@material-ui/icons'
+import { Auth } from '@supabase/ui'
+import {
+  Send as SendIcon,
+  ChatBubbleOutlineTwoTone,
+  PersonTwoTone,
+} from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   wrapIcon: {
@@ -46,127 +55,156 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 12,
     marginBottom: 12,
   },
-  sendButton: {
-    backgroundColor: '#3f51b5',
-  },
-  sendIcon: {
-    color: '#fff',
-  },
   mainGrid: { paddingTop: '3em', borderWidth: 1 },
   h4: {
     marginTop: 0,
   },
   borderRight500: {
-    borderRight: '1px solid #e0e0e0'
+    borderRight: '1px solid #e0e0e0',
   },
 }))
 
-const dataMessages = [
-  {
-    message: {
-      from: 'lourdes@yucaba.com',
-      text: 'hello',
-      date: '09/1/2021-3:00PM',
-    },
-    email: 'lourdes@yucaba.com',
-  },
-  {
-    message: {
-      date: '09/1/2021-3:01PM',
-      text: 'hi',
-      from: 'valerie@yucaba.com',
-    },
-    email: 'valerie@yucaba.com',
-  },
-  {
-    message: {
-      from: 'lourdes@yucaba.com',
-      text: 'this is a sample text',
-      date: '09/1/2021-3:05PM',
-    },
-    email: 'lourdes@yucaba.com',
-  },
-]
-
 const SmsHistory = () => {
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [authorized, setAuthorized] = useState(false)
+  const [smsLogMessages, setSmsLogMessages] = useState(false)
+  const [bodyMessage, setBodyMessage] = useState('')
+  const [number, setNumber] = useState('')
   const classes = useStyles()
+  const openSnackBar = useContext(SnackBarContext)
+  const { user } = Auth.useUser()
+
+  useEffect(() => {
+    if (user) {
+      setLoading(true)
+      fetch('/api/getUserById', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({ id: 54 }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.role === 'admin') {
+            setAuthorized(true)
+            setLoading(false)
+          } else {
+            openSnackBar({
+              message: 'You are not authorized to view this page',
+              snackSeverity: 'error',
+            })
+          }
+        })
+    }
+  }, [user])
+
+  if (loading) {
+    return <SkeletonChatPage />
+  }
+
+  // const handleOnchange = (e) => {}
+
+  // const handleOnsubmit = async (e) => {
+  //   await e.preventDefault()
+
+  //   console.log('click send button')
+  //   console.log('number--->', sendToNumber)
+  //   console.log('bodyMessage--->', bodyMessage)
+
+  //   try {
+  //     setLoading(true)
+  //     const res = await fetch(`api/sendMessage`, {
+  //       method: 'POST',
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ to: number, body: bodyMessage }),
+  //     })
+
+  //     const data = await res.json()
+
+  //     if (data.success) {
+  //       setSuccess(true)
+  //       // setNumber('')
+  //       setBodyMessage('')
+  //     }
+  //   } catch (err) {
+  //     console.log(err)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
+
   return (
-    <Container component="main" maxWidth="md">
-      <Typography
-        mt="2rem"
-        variant="h4"
-        align="left"
-        className={classes.wrapIcon}
-      >
-        <ChatBubbleOutlineTwoTone color="secondary" />
-        SMS History
-      </Typography>
-      <Grid container direction="row" className={classes.mainGrid}>
-        <Grid item xs={3} spacing={0} className={classes.borderRight500}>
-          <List dense={true}>
-            <ListItem button key="RemySharp">
-              <ListItemIcon>
-                <Avatar>C</Avatar>
-              </ListItemIcon>
-              <ListItemText primary="Lourdes">Lourdes</ListItemText>
-            </ListItem>
-            <ListItem button key="A">
-              <ListItemIcon>
-                <Avatar>A</Avatar>
-              </ListItemIcon>
-              <ListItemText primary="Valerie">Valerie</ListItemText>
-            </ListItem>
-            <ListItem button key="B">
-              <ListItemIcon>
-                <Avatar>B</Avatar>
-              </ListItemIcon>
-              <ListItemText primary="Janna">Janna</ListItemText>
-            </ListItem>
-          </List>
-        </Grid>
-        <Grid item xs={9} spacing={0} className={classes.gridItemChatList}>
-          <List dense={true}>
-            {dataMessages &&
-              dataMessages.map((dataMessage) => (
-                <MessageItem
-                  key={dataMessage.index}
-                  message={dataMessage.message}
-                  email={dataMessage.email}
-                />
-              ))}
-          </List>
-          <Divider />
-          <Grid item className={classes.gridItemMessage}>
-            <Grid
-              container
-              direction="row"
-              justify="center"
-              alignItems="center"
-            >
-              <Grid item xs={11} className={classes.textFieldContainer}>
-                <TextField
-                  required
-                  className={classes.textField}
-                  placeholder="Enter message"
-                  variant="outlined"
-                  // multiline
-                  rows={2}
-                  // value={text}
-                />
+    <>
+      {authorized && (
+        <Container component="main" maxWidth="md">
+          <Typography
+            mt="2rem"
+            variant="h4"
+            align="left"
+            className={classes.wrapIcon}
+          >
+            <ChatBubbleOutlineTwoTone color="secondary" />
+            SMS History
+          </Typography>
+          <form>
+            <Grid container direction="row" className={classes.mainGrid}>
+              <Grid
+                item
+                xs={11}
+                sm={5}
+                md={3}
+                className={classes.borderRight500}
+              >
+                <PhoneNumberList user={user} />
               </Grid>
-              <Grid item xs={1}>
-                <IconButton
-                  className={classes.sendButton}
-                  // onClick={}
-                >
-                  <Send className={classes.sendIcon} />
-                </IconButton>
+              <Grid item xs={11} sm={7} md={9}>
+                <Grid className={classes.gridItemChatList}>
+                  <MessageList user={user} />
+                </Grid>
+                <Divider />
+                <Grid item className={classes.gridItemMessage}>
+                  <Box px={1}>
+                    <Grid
+                      container
+                      direction="row"
+                      justify="center"
+                      alignItems="center"
+                    >
+                      <Grid item xs={10} className={classes.textFieldContainer}>
+                        <TextField
+                          required
+                          className={classes.textField}
+                          placeholder="Enter message"
+                          variant="outlined"
+                          multiline
+                          onChange={(e) => setBodyMessage(e.target.value)}
+                          rows={2}
+                          // value={bodyMessage}
+                        />
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Button
+                          // onClick={handleOnsubmit}
+                          variant="contained"
+                          color="secondary"
+                          endIcon={<SendIcon />}
+                        >
+                          Send
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Container>
+          </form>
+        </Container>
+      )}
+    </>
   )
 }
 

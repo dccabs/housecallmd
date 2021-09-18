@@ -102,7 +102,7 @@ const ContactSection = () => {
   }
 
   return (
-    <Box padding="1em" className={classes.root}>
+    <Box padding="1em" paddingY="5em" className={classes.root}>
       <Box id="contact">
         <Box
           width="100%"
