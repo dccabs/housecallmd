@@ -1,13 +1,16 @@
 import React, { memo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
+  Box,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Avatar,
 } from '@material-ui/core'
+import Link from 'next/link'
 import { PersonTwoTone } from '@material-ui/icons'
+import { Skeleton } from '@material-ui/lab'
 
 const PhoneNumberList = memo((props) => {
   const { user } = props
@@ -34,7 +37,7 @@ const PhoneNumberList = memo((props) => {
     } catch (err) {
       console.log(err)
     } finally {
-      setLoading(false)
+      setLoading(true)
     }
   }, [])
 
@@ -42,22 +45,41 @@ const PhoneNumberList = memo((props) => {
     <List dense={true}>
       {phoneNumbers &&
         phoneNumbers?.map(({ id, phoneNumber, firstName, lastName }) => (
-          <ListItem button key={id}>
-            <ListItemIcon>
-              <Avatar>
-                <PersonTwoTone />
-              </Avatar>
-            </ListItemIcon>
-            <ListItemText
-              primary={`${firstName} ${lastName}`}
-              secondary={`${phoneNumber}`}
-            />
-          </ListItem>
+          <Link key={id} href={`/smsHistory/${id}`} underline="none">
+            <a
+              style={{
+                textDecoration: 'none',
+                color: '#0092b8',
+              }}
+            >
+              <ListItem button>
+                <ListItemIcon>
+                  <Avatar>
+                    <PersonTwoTone />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary={`${firstName} ${lastName}`}
+                  secondary={`${phoneNumber}`}
+                />
+              </ListItem>
+            </a>
+          </Link>
         ))}
     </List>
   )
 })
 
-PhoneNumberList.propTypes = {}
+PhoneNumberList.propTypes = {
+  user: PropTypes.shape({
+    email: PropTypes.string,
+  }),
+}
+
+PhoneNumberList.defaultProps = {
+  user: {
+    email: '',
+  },
+}
 
 export default PhoneNumberList

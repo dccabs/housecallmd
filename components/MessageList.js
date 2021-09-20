@@ -1,7 +1,13 @@
 import React, { memo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { List, ListItem, makeStyles, Avatar } from '@material-ui/core'
+import {
+  Box,
+  List,
+  ListItem,
+  makeStyles,
+  CircularProgress,
+} from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   author: { fontSize: 10, color: 'gray' },
@@ -84,7 +90,15 @@ const MessageList = memo((props) => {
   )
 })
 
-MessageList.propTypes = { phoneNumber: PropTypes.string }
-MessageList.defaultProps = { phoneNumber: '' }
+MessageList.propTypes = {
+  user: PropTypes.shape({
+    email: PropTypes.string,
+  }),
+}
+MessageList.defaultProps = {
+  user: {
+    email: '',
+  },
+}
 
 export default MessageList

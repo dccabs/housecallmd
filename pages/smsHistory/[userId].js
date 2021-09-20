@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import MessageList from '../../components/MessageList'
@@ -12,21 +12,12 @@ import {
   Container,
   Grid,
   Box,
-  List,
-  ListItem,
-  ListItemText,
   Divider,
-  IconButton,
-  Avatar,
-  ListItemIcon,
   Button,
+  CircularProgress,
 } from '@material-ui/core'
 import { Auth } from '@supabase/ui'
-import {
-  Send as SendIcon,
-  ChatBubbleOutlineTwoTone,
-  PersonTwoTone,
-} from '@material-ui/icons'
+import { Send as SendIcon, ChatBubbleOutlineTwoTone } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   wrapIcon: {
@@ -66,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SmsHistory = () => {
   const [loading, setLoading] = useState(false)
+  const [sendingMessage, setSendingMessage] = useState(false)
   const [success, setSuccess] = useState(false)
   const [authorized, setAuthorized] = useState(false)
   const [smsLogMessages, setSmsLogMessages] = useState(false)
@@ -105,37 +97,35 @@ const SmsHistory = () => {
 
   // const handleOnchange = (e) => {}
 
-  // const handleOnsubmit = async (e) => {
-  //   await e.preventDefault()
+  const handleOnsubmit = async (e) => {
+    await e.preventDefault()
 
-  //   console.log('click send button')
-  //   console.log('number--->', sendToNumber)
-  //   console.log('bodyMessage--->', bodyMessage)
+    try {
+      setSendingMessage(true)
+      const res = await fetch(`api/sendMessage`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ to: number, body: bodyMessage }),
+      })
 
-  //   try {
-  //     setLoading(true)
-  //     const res = await fetch(`api/sendMessage`, {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ to: number, body: bodyMessage }),
-  //     })
+      const data = await res.json()
 
-  //     const data = await res.json()
+      if (data.success) {
+        setSuccess(true)
+        // setNumber('')
+        setBodyMessage('')
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setSendingMessage(false)
+    }
+  }
 
-  //     if (data.success) {
-  //       setSuccess(true)
-  //       // setNumber('')
-  //       setBodyMessage('')
-  //     }
-  //   } catch (err) {
-  //     console.log(err)
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
+  const handleRedirectMessage = () => {}
 
   return (
     <>
@@ -188,10 +178,16 @@ const SmsHistory = () => {
                       </Grid>
                       <Grid item xs={2}>
                         <Button
-                          // onClick={handleOnsubmit}
+                          onClick={handleOnsubmit}
                           variant="contained"
                           color="secondary"
-                          endIcon={<SendIcon />}
+                          endIcon={
+                            sendingMessage ? (
+                              <CircularProgress color="inherit" size="1em" />
+                            ) : (
+                              <SendIcon />
+                            )
+                          }
                         >
                           Send
                         </Button>
