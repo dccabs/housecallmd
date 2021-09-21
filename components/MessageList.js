@@ -53,7 +53,7 @@ const MessageList = memo((props) => {
           }),
           credentials: 'same-origin',
           body: JSON.stringify({
-            userId: 54,
+            userId: user.userId,
           }),
         })
 
@@ -67,7 +67,7 @@ const MessageList = memo((props) => {
     }
   }, [user])
 
-  const isOwnMessage = true
+  const isOwnMessage = false
   const classes = useStyles()
 
   return (

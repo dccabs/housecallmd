@@ -5,6 +5,7 @@ import MessageList from '../../components/MessageList'
 import PhoneNumberList from '../../components/PhoneNumberList'
 import SnackBarContext from '../../components/SnackBar'
 import SkeletonChatPage from '../../components/SkeletonChatPage'
+import { useRouter } from 'next/router'
 import {
   Typography,
   TextField,
@@ -17,7 +18,7 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 import { Auth } from '@supabase/ui'
-import { Send as SendIcon, ChatBubbleOutlineTwoTone } from '@material-ui/icons'
+import { Send as SendIcon, ChatBubbleOutlineTwoTone, CodeSharp } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   wrapIcon: {
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
 const SmsHistory = () => {
   const [loading, setLoading] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
+  const [userId, setUserId] = useState('');
   const [success, setSuccess] = useState(false)
   const [authorized, setAuthorized] = useState(false)
   const [smsLogMessages, setSmsLogMessages] = useState(false)
@@ -66,20 +68,33 @@ const SmsHistory = () => {
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
+  const router = useRouter();
 
   useEffect(() => {
-    if (user) {
+    console.log(router);
+    if (router.query.userId) {
+      setUserId(router.query.userId);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (user && userId) {
+      const userById = { id: userId };
+      console.log(userId);
       setLoading(true)
       fetch('/api/getUserById', {
         method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify({ id: 54 }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userById)
       })
         .then((res) => res.json())
         .then((res) => {
           if (res.role === 'admin') {
             setAuthorized(true)
+            setNumber(res.phone);
             setLoading(false)
           } else {
             openSnackBar({
@@ -102,21 +117,21 @@ const SmsHistory = () => {
 
     try {
       setSendingMessage(true)
-      const res = await fetch(`api/sendMessage`, {
+
+      const res = await fetch('/api/sendMessage', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ to: number, body: bodyMessage }),
+        body: JSON.stringify({ to: number, body: bodyMessage, isFromSmsHistory: true, user }),
       })
 
-      const data = await res.json()
+     const data = await res.json()
 
       if (data.success) {
         setSuccess(true)
-        // setNumber('')
-        setBodyMessage('')
+        setBodyMessage("")
       }
     } catch (err) {
       console.log(err)
@@ -153,7 +168,7 @@ const SmsHistory = () => {
               </Grid>
               <Grid item xs={11} sm={7} md={9}>
                 <Grid className={classes.gridItemChatList}>
-                  <MessageList user={user} />
+                  <MessageList user={{...user, userId}}/>
                 </Grid>
                 <Divider />
                 <Grid item className={classes.gridItemMessage}>
@@ -173,7 +188,7 @@ const SmsHistory = () => {
                           multiline
                           onChange={(e) => setBodyMessage(e.target.value)}
                           rows={2}
-                          // value={bodyMessage}
+                          value={bodyMessage}
                         />
                       </Grid>
                       <Grid item xs={2}>
