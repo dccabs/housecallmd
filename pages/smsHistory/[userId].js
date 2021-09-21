@@ -70,15 +70,16 @@ const SmsHistory = () => {
   const { user } = Auth.useUser()
   const router = useRouter();
 
+  const { userId: user_id } = router.query;
+
   useEffect(() => {
-    console.log(router);
-    if (router.query.userId) {
+    if (user_id) {
       setUserId(router.query.userId);
     }
   }, [])
 
   useEffect(() => {
-    if (user && userId) {
+    if (user && user_id) {
       const userById = { id: userId };
       console.log(userId);
       setLoading(true)
