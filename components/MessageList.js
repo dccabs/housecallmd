@@ -21,14 +21,14 @@ const styles = {
   container: (isOwnMessage) => ({
     maxWidth: '75%',
     borderRadius: 12,
+    fontSize: 14,
     padding: 16,
     color: isOwnMessage ? '#fff' : '#000',
-    fontSize: 12,
     marginTop: 5,
     backgroundColor: isOwnMessage ? '#2C6DFB' : '#F6F6F8',
   }),
   timestamp: (isOwnMessage) => ({
-    fontSize: 8,
+    fontSize: 10,
     color: isOwnMessage ? '#fff' : 'gray',
     textAlign: isOwnMessage ? 'right' : 'left',
     paddingTop: 4,

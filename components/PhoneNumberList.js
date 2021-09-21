@@ -7,14 +7,25 @@ import {
   ListItemIcon,
   ListItemText,
   Avatar,
+  makeStyles,
 } from '@material-ui/core'
 import Link from 'next/link'
 import { PersonTwoTone } from '@material-ui/icons'
 import { Skeleton } from '@material-ui/lab'
 
+const useStyles = makeStyles((theme) => ({
+  gridItemPhoneList: {
+    '@media screen and (max-width: 767px)': {
+      height: '30vh',
+    },
+    overflow: 'auto',
+    height: '60vh',
+  },
+}))
+
 const PhoneNumberList = memo((props) => {
   const { user } = props
-
+  const classes = useStyles()
   const [loading, setLoading] = useState(false)
   const [phoneNumbers, setPhoneNumbers] = useState(false)
 
@@ -42,7 +53,7 @@ const PhoneNumberList = memo((props) => {
   }, [])
 
   return (
-    <List dense={true}>
+    <List dense={true} className={classes.gridItemPhoneList}>
       {phoneNumbers &&
         phoneNumbers?.map(({ id, phoneNumber, firstName, lastName }) => (
           <Link key={id} href={`/smsHistory/${id}`} underline="none">

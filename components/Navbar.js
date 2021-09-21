@@ -26,7 +26,7 @@ import clearStore from '../utils/clearStore'
 const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: '#fff',
-    boxShadow: 'none',
+    boxShadow: 'rgba(140, 152, 164, 0.25) 0px 3px 6px 0px',
 
     [theme.breakpoints.up('sm')]: {
       backgroundColor: '#fff',
