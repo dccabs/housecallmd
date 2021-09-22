@@ -1,5 +1,6 @@
 import { supabase } from '../../utils/initSupabase'
 import moment from 'moment';
+import pusher from '../../utils/pusher';
 
 require('dotenv').config()
 const client = require('twilio')(
@@ -28,19 +29,30 @@ export default async (req, res) => {
       }
     }
 
-    client.messages
+    const { body } = req.body;
+    
+    const payload = { body: body, sender: process.env.NEXT_PUBLIC_PHONE_NUMBER };
+
+    const clientMsg = await client.messages
     .create({
       from: process.env.NEXT_PUBLIC_PHONE_NUMBER,
       to: req.body.to,
       body: req.body.body,
     })
-    .then(() => {
-      res.send(JSON.stringify({ success: true }))
-    })
-    .catch((err) => {
-      console.log(err)
+      
+    if (clientMsg) {
+        const response = await pusher.trigger("chat", "chat-event", {
+          body,
+          sender: process.env.NEXT_PUBLIC_PHONE_NUMBER,
+        });
+  
+        res.send(JSON.stringify({success: true, payload}))
+    } else {
+      console.log(clientMsg);
       res.send(JSON.stringify({ success: false }))
-    })
+    }
+
+    
 
 
   } catch (error) {

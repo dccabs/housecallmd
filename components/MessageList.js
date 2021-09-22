@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import config from '../utils/config';
 import {
   Box,
   List,
@@ -8,6 +9,7 @@ import {
   makeStyles,
   CircularProgress,
 } from '@material-ui/core'
+import Pusher from "pusher-js";
 
 const useStyles = makeStyles((theme) => ({
   author: { fontSize: 10, color: 'gray' },
@@ -40,7 +42,7 @@ const MessageList = memo((props) => {
 
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [smsLogMessages, setSmsLogMessages] = useState(false)
+  const [smsLogMessages, setSmsLogMessages] = useState([])
 
   useEffect(async () => {
     if (user) {
@@ -58,23 +60,43 @@ const MessageList = memo((props) => {
         })
 
         const smsData = await res.json()
-        setSmsLogMessages(smsData)
+        setSmsLogMessages(smsData);
       } catch (err) {
         console.log(err)
       } finally {
         setLoading(false)
       }
     }
-  }, [user])
+  }, [])
 
-  const isOwnMessage = false
+  useEffect(() => {
+      const pusher = new Pusher(config.pusher.PUSHER_KEY, {
+        cluster: config.pusher.NEXT_PUSHER_CLUSTER,
+      });
+      const channel = pusher.subscribe("chat");
+      
+      channel.bind("chat-event", function (data) {
+        setSmsLogMessages((prevState) => [
+          ...prevState,
+          {
+          from_phone_number: data.sender,
+          message: data.body,
+          isOwnMessage: true
+        }]);
+      });
+    
+    return () => {
+      pusher.unsubscribe("chat");
+    };
+  }, []);
+
   const classes = useStyles()
 
   return (
     <List dense={true}>
       {smsLogMessages &&
         smsLogMessages?.map(
-          ({ id, from_phone_number, message, created_at }) => (
+          ({ id, from_phone_number, message, created_at, isOwnMessage }) => (
             <ListItem key={`${id}`} style={styles.listItem(isOwnMessage)}>
               <div className={classes.author}>{from_phone_number}</div>
               <div style={styles.container(isOwnMessage)}>
