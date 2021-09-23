@@ -98,7 +98,6 @@ const SmsHistoryPage = memo((props) => {
             setNumber(res.phone)
             setLoading(false)
           } else {
-            console.log('not admin bitch')
             openSnackBar({
               message: 'You are not authorized to view this page',
               snackSeverity: 'error',

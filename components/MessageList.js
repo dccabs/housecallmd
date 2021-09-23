@@ -1,7 +1,7 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useState, createRef , useRef} from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import config from '../utils/config';
+import config from '../utils/config'
 import {
   Box,
   List,
@@ -9,7 +9,7 @@ import {
   makeStyles,
   CircularProgress,
 } from '@material-ui/core'
-import Pusher from "pusher-js";
+import Pusher from 'pusher-js'
 
 const useStyles = makeStyles((theme) => ({
   author: { fontSize: 10, color: 'gray' },
@@ -43,6 +43,12 @@ const MessageList = memo((props) => {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [smsLogMessages, setSmsLogMessages] = useState([])
+  const classes = useStyles()
+
+  const messagesEndRef = useRef(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(async () => {
     if (user) {
@@ -60,7 +66,8 @@ const MessageList = memo((props) => {
         })
 
         const smsData = await res.json()
-        setSmsLogMessages(smsData);
+        setSmsLogMessages(smsData)
+        scrollToBottom()
       } catch (err) {
         console.log(err)
       } finally {
@@ -70,27 +77,26 @@ const MessageList = memo((props) => {
   }, [])
 
   useEffect(() => {
-      const pusher = new Pusher(config.pusher.PUSHER_KEY, {
-        cluster: config.pusher.NEXT_PUSHER_CLUSTER,
-      });
-      const channel = pusher.subscribe("chat");
-      
-      channel.bind("chat-event", function (data) {
-        setSmsLogMessages((prevState) => [
-          ...prevState,
-          {
+    const pusher = new Pusher(config.pusher.PUSHER_KEY, {
+      cluster: config.pusher.NEXT_PUSHER_CLUSTER,
+    })
+    const channel = pusher.subscribe('chat')
+
+    channel.bind('chat-event', function (data) {
+      setSmsLogMessages((prevState) => [
+        ...prevState,
+        {
           from_phone_number: data.sender,
           message: data.body,
-          isOwnMessage: true
-        }]);
-      });
-    
+          isOwnMessage: true,
+        },
+      ])
+    })
+    scrollToBottom()
     return () => {
-      pusher.unsubscribe("chat");
-    };
-  }, []);
-
-  const classes = useStyles()
+      pusher.unsubscribe('chat')
+    }
+  }, [])
 
   return (
     <List dense={true}>
@@ -108,6 +114,7 @@ const MessageList = memo((props) => {
             </ListItem>
           )
         )}
+      <div ref={messagesEndRef} />
     </List>
   )
 })
