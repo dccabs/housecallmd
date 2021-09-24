@@ -30,8 +30,7 @@ const smsResponder = async (req, res) => {
     .eq('phone', From)
     .eq('appointments.completed', true)
     .gte("appointments.completed_date", lastTwoDays)
-    
-    
+
     if (appointments && (appointments.data === null || appointments.data.length === 0)) {
       message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
     } else {
@@ -40,12 +39,12 @@ const smsResponder = async (req, res) => {
       } else {
 
         const response = await pusher.trigger("chat", "chat-event", {
-
           body: Body,
           sender: From,
           isOwnMessage: false
         });
 
+        console.log('chat', response)
 
         const userId = appointments.data[0].id;
         const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;

@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
 import MessageList from '../../components/MessageList'
 import PhoneNumberList from '../../components/PhoneNumberList'
-import SnackBarContext from '../../components/SnackBar'
+import { SnackBarContext } from '../../components/SnackBar';
 import SkeletonChatPage from '../../components/SkeletonChatPage'
 import {
   Typography,
@@ -82,14 +82,13 @@ const SmsHistoryPage = memo((props) => {
   useEffect(() => {
     if (user && userId) {
       setLoading(true)
-      const userById = { id: userId }
-      fetch('/api/getUserById', {
+      fetch('/api/getSingleUser', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userById),
+        body: JSON.stringify({email: user.email}),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -104,7 +103,26 @@ const SmsHistoryPage = memo((props) => {
             })
           }
         })
+      
+      const userById = { id: userId }
+
+      const userWhoOwnSms = fetch('/api/getUserById', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userById),
+      })
+      .then((res) => res.json())
+        .then((res) => {
+          if (res) {
+            console.log(user);
+            setNumber(res.phone)
+          } 
+        })
     }
+
   }, [user, userId])
 
   if (loading) {

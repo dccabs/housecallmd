@@ -13,12 +13,18 @@ export default async (req, res) => {
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/json')
 
+    const userAdmin = await supabase
+    .from('UserList')
+    .select(`*`)
+    .eq('email', req.body.user.email)
+    
     if (req.body.isFromSmsHistory) {
       const logMessage = {
         message: req.body.body,
         from_phone_number: process.env.NEXT_PUBLIC_PHONE_NUMBER,
         to_phone_number: req.body.to,
-        is_admin: true
+        is_admin: true,
+        user_id: userAdmin.data[0].id,
       }
       const { data, error, status } = await supabase.from('sms_log_message').insert([{
         ...logMessage,
@@ -56,12 +62,7 @@ export default async (req, res) => {
             .select(`*`)
             .eq('id', req.body.user.userId)
 
-            const userAdmin = await supabase
-            .from('UserList')
-            .select(`*`)
-            .eq('email', req.body.user.email)
-            
-            const adminMsg = `${userAdmin.data[0].firstName} ${userAdmin.data[0].lastName} sent a message to 
+            const adminMsg = `An admin name: ${userAdmin.data[0].firstName} ${userAdmin.data[0].lastName} sent a message to 
             ${userWhoOwnsTheSMS.data[0].firstName} ${userWhoOwnsTheSMS.data[0].lastName}:
             ${req.body.body}
             To see the full message history or reply, click here ${smsHistoryPath}`;

@@ -62,6 +62,7 @@ const MessageList = memo((props) => {
           credentials: 'same-origin',
           body: JSON.stringify({
             userId: user.userId,
+            authEmail: user.email,
           }),
         })
 
