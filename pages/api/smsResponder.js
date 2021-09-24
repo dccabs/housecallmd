@@ -39,6 +39,14 @@ const smsResponder = async (req, res) => {
         message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
       } else {
 
+        const response = await pusher.trigger("chat", "chat-event", {
+
+          body: Body,
+          sender: From,
+          isOwnMessage: false
+        });
+
+
         const userId = appointments.data[0].id;
         const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
         const smsHistoryPath = `${process.env.HOST}/smsHistory/${userId}`;
@@ -66,14 +74,7 @@ const smsResponder = async (req, res) => {
 
           
           const resultSendAdmin = await Promise.all(sendAdminMsg);
-          const response = await pusher.trigger("chat", "chat-event", {
-            body: Body,
-            sender: From,
-            isOwnMessage: false
-          });
-          
           console.log('resultSendAdmin', resultSendAdmin);
-          
         }
         
         if (error) {

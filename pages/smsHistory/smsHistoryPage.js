@@ -129,7 +129,7 @@ const SmsHistoryPage = memo((props) => {
           to: number,
           body: bodyMessage,
           isFromSmsHistory: true,
-          user,
+          user: {...user, userId},
         }),
       })
 

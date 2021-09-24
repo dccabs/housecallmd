@@ -13,7 +13,7 @@ const getSmsLogMessageByUserId = async (req, res) => {
     .select('*')
     .eq('user_id', userId)
     .order('created_at', true)
-
+  
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(users)
 }

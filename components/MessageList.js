@@ -87,6 +87,7 @@ const MessageList = memo((props) => {
       setSmsLogMessages((prevState) => [
         ...prevState,
         {
+          id: Math.random(),
           from_phone_number: data.sender,
           message: data.body,
           isOwnMessage: data.isOwnMessage === false ? data.isOwnMessage : true,
