@@ -83,12 +83,13 @@ const MessageList = memo((props) => {
     const channel = pusher.subscribe('chat')
 
     channel.bind('chat-event', function (data) {
+      console.log('data', data);
       setSmsLogMessages((prevState) => [
         ...prevState,
         {
           from_phone_number: data.sender,
           message: data.body,
-          isOwnMessage: true,
+          isOwnMessage: data.isOwnMessage === false ? data.isOwnMessage : true,
         },
       ])
     })

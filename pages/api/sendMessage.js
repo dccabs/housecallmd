@@ -17,6 +17,7 @@ export default async (req, res) => {
       const logMessage = {
         message: req.body.body,
         from_phone_number: process.env.NEXT_PUBLIC_PHONE_NUMBER,
+        to_phone_number: req.body.to,
         is_admin: true
       }
       const { data, error, status } = await supabase.from('sms_log_message').insert([{
