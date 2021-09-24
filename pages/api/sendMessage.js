@@ -51,17 +51,22 @@ export default async (req, res) => {
         const adminPhones = await supabase.from('adminPhones').select(`*`).eq('isActive', true);
         
         if (adminPhones && adminPhones.data && adminPhones.data.length > 0) {
-            const userList = await supabase
+            const userWhoOwnsTheSMS = await supabase
             .from('UserList')
             .select(`*`)
             .eq('id', req.body.user.userId)
-  
+
+            const userAdmin = await supabase
+            .from('UserList')
+            .select(`*`)
+            .eq('email', req.body.user.email)
+            
+            const adminMsg = `${userAdmin.data[0].firstName} ${userAdmin.data[0].lastName} sent a message to 
+            ${userWhoOwnsTheSMS.data[0].firstName} ${userWhoOwnsTheSMS.data[0].lastName}:
+            ${req.body.body}
+            To see the full message history or reply, click here ${smsHistoryPath}`;
+
             const sendAdminMsg = adminPhones.data.map(user => {
-              const adminMsg = `${user.firstName} ${user.lastName} sent a message to 
-              ${userList.data[0].firstName} ${userList.data[0].lastName}:
-              ${req.body.body}
-              To see the full message history or reply, click here ${smsHistoryPath}`;
-  
               return client.messages.create({
                 body: adminMsg,
                 from: process.env.NEXT_PUBLIC_PHONE_NUMBER,
