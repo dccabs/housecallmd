@@ -163,7 +163,7 @@ const SmsHistoryPage = memo((props) => {
           </Typography>
           <form>
             <Grid container direction="row" className={classes.mainGrid}>
-              <Grid
+              {/* <Grid
                 item
                 xs={11}
                 sm={5}
@@ -171,8 +171,8 @@ const SmsHistoryPage = memo((props) => {
                 className={classes.borderRight500}
               >
                 <PhoneNumberList user={user} />
-              </Grid>
-              <Grid item xs={11} sm={7} md={9}>
+              </Grid> */}
+              <Grid item xs={11} sm={11} md={10}>
                 <Grid className={classes.gridItemChatList}>
                   <MessageList user={{ ...user, userId }} />
                 </Grid>
