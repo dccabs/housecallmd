@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     width: '18rem',
     maxHeight: '25rem',
     overflow: 'auto',
-    boxShadow: '10px 15px 15px 6px #e6e6e6',
+    boxShadow: 'rgb(140, 152, 164, 0.25) 0px 3px 6px 0px',
     padding: '1em',
     margin: '1em',
 

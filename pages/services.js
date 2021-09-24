@@ -47,14 +47,15 @@ const ServicesPage = () => {
   const classes = useStyles()
 
   return (
-    <Container>
-      <Box>
-        <Typography variant="h2" className={classes.h2}>
-          Services
-        </Typography>
-        <ServicesItems />
-      </Box>
-
+    <>
+      <Container>
+        <Box>
+          <Typography variant="h2" className={classes.h2}>
+            Services
+          </Typography>
+          <ServicesItems />
+        </Box>
+      </Container>
 
       <Box className={classes.cta} display="flex" justifyContent="center">
         <Container>
@@ -92,9 +93,11 @@ const ServicesPage = () => {
         </Container>
       </Box>
 
-      <ServicesAreas />
+      <Container>
+        <ServicesAreas />
+      </Container>
       <ContactSection />
-    </Container>
+    </>
   )
 }
 

@@ -2,8 +2,9 @@ require('dotenv').config()
 import smsClient from './lib/utils/sms';
 import { supabase } from '../../utils/initSupabase'
 import moment from 'moment';
-
+import pusher from '../../utils/pusher';
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
+
 
 const smsResponder = async (req, res) => {
   
@@ -12,6 +13,7 @@ const smsResponder = async (req, res) => {
     const logMessage = {
       message: Body,
       from_phone_number: From,
+      to_phone_number: process.env.NEXT_PUBLIC_PHONE_NUMBER
     }
     
     const lastTwoDays = moment().subtract(2, 'days').format('YYYY-MM-DD');
@@ -28,14 +30,21 @@ const smsResponder = async (req, res) => {
     .eq('phone', From)
     .eq('appointments.completed', true)
     .gte("appointments.completed_date", lastTwoDays)
-    
-    
+
     if (appointments && (appointments.data === null || appointments.data.length === 0)) {
       message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
     } else {
       if (appointments.data[0].appointments.length === 0) {
         message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
       } else {
+
+        const response = await pusher.trigger("chat", "chat-event", {
+          body: Body,
+          sender: From,
+          isOwnMessage: false
+        });
+
+        console.log('chat', response)
 
         const userId = appointments.data[0].id;
         const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
@@ -62,6 +71,7 @@ const smsResponder = async (req, res) => {
             })
           });
 
+          
           const resultSendAdmin = await Promise.all(sendAdminMsg);
           console.log('resultSendAdmin', resultSendAdmin);
         }
@@ -73,15 +83,14 @@ const smsResponder = async (req, res) => {
         statusCode = status;
       }
     }
+
     
     twiml.message(message);
-    
+
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/xml')
-
   
     res.end(twiml.toString());
-
   } catch (e) {
     console.log('error', e);
   }
