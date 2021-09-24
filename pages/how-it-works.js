@@ -36,26 +36,15 @@ const useStyles = makeStyles((theme) => ({
 const HowItWorksPage = () => {
   const classes = useStyles()
   return (
-    <Container component="main" className={classes.maxWidth}>
+    <Container component="main">
       <Box my="3em">
         <Box paddingBottom="3em">
           <Typography variant="h3">How it Works</Typography>
         </Box>
         <Box paddingBottom="3em" sx={{ flexGrow: 1 }}>
-          <Grid
-            container
-            direction="row"
-            spacing={3}
-            justifyContent="center"
-            alignItems="stretch"
-          >
+          <Grid container direction="row" spacing={3} alignItems="stretch">
             <Grid item xs={12} sm={6} md={4}>
-              <Box
-                py="2em"
-                m="auto"
-                alignItems="center"
-                justifyContent="center"
-              >
+              <Box py="2em" m="auto" alignItems="center">
                 <Avatar className={classes.avatar}>
                   <Typography>1</Typography>
                 </Avatar>
@@ -65,7 +54,7 @@ const HowItWorksPage = () => {
               </Box>
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <Box py="2em" alignItems="center" justifyContent="center">
+              <Box py="2em" alignItems="center">
                 <Avatar className={classes.avatar}>
                   <Typography>2</Typography>
                 </Avatar>
@@ -75,7 +64,7 @@ const HowItWorksPage = () => {
               </Box>
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <Box py="2em" alignItems="center" justifyContent="center">
+              <Box py="2em" alignItems="center">
                 <Avatar
                   sx={{ bgcolor: deepOrange[500], margin: 'auto' }}
                   className={classes.avatar}
@@ -99,7 +88,6 @@ const HowItWorksPage = () => {
             container
             spacing={2}
             justify="space-between"
-            justifyContent="center"
             alignItems="stretch"
           >
             <Grid item xs={12} sm={6} md={4}>
@@ -107,7 +95,6 @@ const HowItWorksPage = () => {
                 <CardHeader
                   title="TeleMedicine"
                   className={classes.cardTitle}
-                  gutterBottom
                 />
                 <CardMedia
                   component="img"
@@ -141,7 +128,6 @@ const HowItWorksPage = () => {
                 <CardHeader
                   title="Augmented TeleMedicine"
                   className={classes.cardTitle}
-                  gutterBottom
                 />
                 <CardMedia
                   component="img"
@@ -173,11 +159,7 @@ const HowItWorksPage = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Card className={classes.stretch}>
-                <CardHeader
-                  title="House Call"
-                  className={classes.cardTitle}
-                  gutterBottom
-                />
+                <CardHeader title="House Call" className={classes.cardTitle} />
                 <CardMedia
                   component="img"
                   height="194"
@@ -206,9 +188,9 @@ const HowItWorksPage = () => {
             </Grid>
           </Grid>
         </Box>
-        <Grid container sm={12} spacing={4}>
-          <Grid item sm={12} md={6}>
-            <Box py="2em" m="auto" alignItems="center" justifyContent="center">
+        <Grid container spacing={4}>
+          <Grid item md={6}>
+            <Box py="2em" m="auto" alignItems="center">
               <Avatar className={classes.avatar}>
                 <Typography>4</Typography>
               </Avatar>
@@ -224,8 +206,8 @@ const HowItWorksPage = () => {
             </Box>
           </Grid>
 
-          <Grid item sm={12} md={6}>
-            <Box py="2em" m="auto" alignItems="center" justifyContent="center">
+          <Grid item md={6}>
+            <Box py="2em" m="auto" alignItems="center">
               <Avatar className={classes.avatar}>
                 <Typography>5</Typography>
               </Avatar>
