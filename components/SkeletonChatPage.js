@@ -19,7 +19,7 @@ const SkeletonChatPage = () => {
         <Skeleton animation="wave" variant="text" width="40%" height={50} />
         <Box my="1em" />
         <Grid container direction="row">
-          <Grid item xs={11} sm={5} md={3}>
+          {/* <Grid item xs={11} sm={5} md={3}>
             <List>
               <ListItem>
                 <ListItemIcon>
@@ -80,8 +80,8 @@ const SkeletonChatPage = () => {
                 </ListItemText>
               </ListItem>
             </List>
-          </Grid>
-          <Grid item xs={11} sm={7} md={9}>
+          </Grid> */}
+          <Grid item xs={11} sm={11} md={10}>
             <Grid>
               <Skeleton
                 animation="wave"
