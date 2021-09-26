@@ -169,16 +169,16 @@ const FacilityCovidTestingPage = () => {
             <Typography variant="body1">
               The first two tests,
               <span className={`${classes.yellowText} ${classes.fontWeight}`}>
-                Viral RNA (RT-PCR/RNA)
+                Viral RNA (RT-PCR/RNA){' '}
               </span>
-              and the
+              and the{' '}
               <span className={`${classes.greenText} ${classes.fontWeight}`}>
                 Rapid Antigen Test (RAT)
               </span>
-              , are obtained by a nasal swab. The
+              , are obtained by a nasal swab. The{' '}
               <span className={`${classes.purpleText} ${classes.fontWeight}`}>
                 Serum Antibody Test
-              </span>
+              </span>{' '}
               requires a blood draw. Each test is appropriate at different times
               after the date of the potential exposure. The timing of the test
               matters for each of the three tests as well as if symptoms are
