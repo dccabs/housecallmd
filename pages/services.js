@@ -1,6 +1,6 @@
 import { Typography, Box, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-
+import { NextSeo } from 'next-seo'
 import Container from '../components/Container'
 import ServicesItems from '../components/ServicesPage/ServicesItems'
 import ServicesAreas from '../components/ServicesPage/ServicesAreas'
@@ -48,6 +48,18 @@ const ServicesPage = () => {
 
   return (
     <>
+      <NextSeo
+        title="Services | House Call MD"
+        description="Services in House Call MD."
+        canonical="https://www.housecallmd.org"
+        openGraph={{
+          type: 'website',
+          title: 'Services | House Call MD',
+          description: 'Services in House Call MD',
+          locale: 'en_US',
+          url: `https://www.housecallmd.org/services`,
+        }}
+      />
       <Container>
         <Box>
           <Typography variant="h2" className={classes.h2}>
