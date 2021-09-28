@@ -51,16 +51,17 @@ export default async (req, res) => {
         const response = await pusher.trigger("chat", "chat-event", {
           body,
           sender: process.env.NEXT_PUBLIC_PHONE_NUMBER,
+          user_id: req.body.user.id
         });
       
-        const smsHistoryPath = `${process.env.HOST}/smsHistory/${req.body.user.userId}`;
+        const smsHistoryPath = `${process.env.HOST}/smsHistory/${req.body.user.smsUserId}`;
         const adminPhones = await supabase.from('adminPhones').select(`*`).eq('isActive', true);
         
         if (adminPhones && adminPhones.data && adminPhones.data.length > 0) {
             const userWhoOwnsTheSMS = await supabase
             .from('UserList')
             .select(`*`)
-            .eq('id', req.body.user.userId)
+            .eq('id', req.body.user.smsUserId)
 
             const adminMsg = `An admin name: ${userAdmin.data[0].firstName} ${userAdmin.data[0].lastName} sent a message to 
             ${userWhoOwnsTheSMS.data[0].firstName} ${userWhoOwnsTheSMS.data[0].lastName}:

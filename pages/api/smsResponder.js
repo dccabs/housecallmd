@@ -1,6 +1,7 @@
 require('dotenv').config()
 import smsClient from './lib/utils/sms';
 import { supabase } from '../../utils/initSupabase'
+import config from '../../utils/config';
 import moment from 'moment';
 import pusher from '../../utils/pusher';
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
@@ -41,14 +42,13 @@ const smsResponder = async (req, res) => {
         const response = await pusher.trigger("chat", "chat-event", {
           body: Body,
           sender: From,
-          isOwnMessage: false
+          isOwnMessage: false,
+          isReply: true,
         });
-
-        console.log('chat', response)
 
         const userId = appointments.data[0].id;
         const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
-        const smsHistoryPath = `${process.env.HOST}/smsHistory/${userId}`;
+        const smsHistoryPath = `${config.default.host}smsHistory/${userId}`;
         
         const { data, error, status } = await supabase.from('sms_log_message').insert([{ ...logMessage, user_id: appointments.data[0].id }], { returning: 'minimal' })
         
@@ -73,7 +73,6 @@ const smsResponder = async (req, res) => {
 
           
           const resultSendAdmin = await Promise.all(sendAdminMsg);
-          console.log('resultSendAdmin', resultSendAdmin);
         }
         
         if (error) {

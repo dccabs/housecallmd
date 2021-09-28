@@ -2,9 +2,9 @@ import { supabase } from '../../utils/initSupabase'
 
 const getSmsLogMessageByUserId = async (req, res) => {
   const token = req.headers.token
-  const { userId, authEmail } = req.body
+  const { smsUserId, authEmail } = req.body
 
-  if (!userId || userId === 'undefined') {
+  if (!smsUserId || smsUserId === 'undefined') {
     throw Error('User Id not found')
   }
 
@@ -13,7 +13,7 @@ const getSmsLogMessageByUserId = async (req, res) => {
   let { data: users, error } = await supabase
     .from('sms_log_message')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', smsUserId)
     .order('created_at', true)
   
 
