@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const SmsHistoryPage = memo((props) => {
-  const { userId } = props
+  const { userId: smsUserId } = props
 
   const [loading, setLoading] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
@@ -80,7 +80,7 @@ const SmsHistoryPage = memo((props) => {
   const { user } = Auth.useUser()
 
   useEffect(() => {
-    if (user && userId) {
+    if (user && smsUserId) {
       setLoading(true)
       fetch('/api/getSingleUser', {
         method: 'POST',
@@ -94,7 +94,6 @@ const SmsHistoryPage = memo((props) => {
         .then((res) => {
           if (res.role === 'admin') {
             setAuthorized(true)
-            setNumber(res.phone)
             setLoading(false)
           } else {
             openSnackBar({
@@ -104,7 +103,7 @@ const SmsHistoryPage = memo((props) => {
           }
         })
       
-      const userById = { id: userId }
+      const smsUserById = { id: smsUserId }
 
       const userWhoOwnSms = fetch('/api/getUserById', {
         method: 'POST',
@@ -112,18 +111,17 @@ const SmsHistoryPage = memo((props) => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userById),
+        body: JSON.stringify({id: smsUserId}),
       })
       .then((res) => res.json())
         .then((res) => {
           if (res) {
-            console.log(user);
             setNumber(res.phone)
           } 
         })
     }
 
-  }, [user, userId])
+  }, [user, smsUserId])
 
   if (loading) {
     return <SkeletonChatPage />
@@ -147,7 +145,7 @@ const SmsHistoryPage = memo((props) => {
           to: number,
           body: bodyMessage,
           isFromSmsHistory: true,
-          user: {...user, userId},
+          user: {...user, smsUserId},
         }),
       })
 
@@ -192,7 +190,7 @@ const SmsHistoryPage = memo((props) => {
               </Grid> */}
               <Grid item xs={11} sm={11} md={10}>
                 <Grid className={classes.gridItemChatList}>
-                  <MessageList user={{ ...user, userId }} />
+                  <MessageList user={{ ...user, smsUserId }} />
                 </Grid>
                 <Divider />
                 <Grid item className={classes.gridItemMessage}>
