@@ -193,7 +193,7 @@ const Users = ({ user, openSnackBar }) => {
         keepMounted
         onClose={() => setOpenDialog(false)}
       >
-        <Box p="2em">
+        <Box>
           <Typography variant="h4" align="center">
             Delete Users?
           </Typography>
