@@ -65,7 +65,7 @@ const UserAdmin = (props) => {
   }, [user])
 
   return (
-    <Container>
+    <div>
       {authorized && (
         <>
           <div>
@@ -94,7 +94,7 @@ const UserAdmin = (props) => {
           </TabPanel>
         </>
       )}
-    </Container>
+    </div>
   )
 }
 

@@ -13,6 +13,7 @@ import {
   Collapse,
   CircularProgress,
 } from '@material-ui/core'
+import Link from 'next/link'
 import moment from 'moment'
 import PersonIcon from '@material-ui/icons/Person'
 import { makeStyles } from '@material-ui/core/styles'
@@ -73,14 +74,12 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
   const [zip, setZip] = useState('')
 
   const [MeetingContent, setMeetingContent] = useState(false)
-  const [MessageContent, setMessageContent] = useState(false)
   const [currentDate, setCurrentDate] = useState(false)
   const [checked, setChecked] = useState(false)
   const [loading, setLoading] = useState(false)
   const classes = useStyles()
 
   useEffect(async () => {
-    console.log('rowData', rowData)
     setFirstName(rowData.firstName)
     setLastName(rowData.lastName)
     setEmail(rowData.email)
@@ -189,8 +188,6 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
           phone={phone}
           setMeetingContent={setMeetingContent}
         />
-      ) : MessageContent ? (
-        <SendSMS phone={phone} setMessageContent={setMessageContent} />
       ) : !loading ? (
         <div>
           <Box display="flex" alignItems="center">
@@ -536,13 +533,16 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
             display="flex"
             justifyContent="center"
           >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMessageContent(true)}
-            >
-              Send SMS
-            </Button>
+            <Link href={`/smsHistory/${rowData.id}`} target={"_blank"} passHref>
+              <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                >
+                  Send SMS
+                </Button>
+              </a>
+            </Link>
           </Box>
         </div>
       ) : (

@@ -61,7 +61,7 @@ const MessageList = memo((props) => {
           }),
           credentials: 'same-origin',
           body: JSON.stringify({
-            userId: user.userId,
+            smsUserId: user.smsUserId,
             authEmail: user.email,
           }),
         })
@@ -85,20 +85,22 @@ const MessageList = memo((props) => {
 
     channel.bind('chat-event', function (data) {
       console.log('data', data);
-      setSmsLogMessages((prevState) => [
-        ...prevState,
-        {
-          id: Math.random(),
-          from_phone_number: data.sender,
-          message: data.body,
-          isOwnMessage: data.isOwnMessage === false ? data.isOwnMessage : true,
-        },
-      ])
+      if (data.isReply || data.user_id === user.id) {
+        setSmsLogMessages((prevState) => [
+          ...prevState,
+          {
+            id: Math.random(),
+            from_phone_number: data.sender,
+            message: data.body,
+            isOwnMessage: data.isOwnMessage === false ? data.isOwnMessage : true,
+          },
+        ])
+      }
     })
-    scrollToBottom()
-    return () => {
-      pusher.unsubscribe('chat')
-    }
+      scrollToBottom()
+      return () => {
+        pusher.unsubscribe('chat')
+      }
   }, [])
 
   return (
