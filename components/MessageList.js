@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, createRef , useRef} from 'react'
+import React, { memo, useEffect, useState, createRef, useRef } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import config from '../utils/config'
@@ -41,7 +41,6 @@ const MessageList = memo((props) => {
   const { user } = props
 
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
   const [smsLogMessages, setSmsLogMessages] = useState([])
   const classes = useStyles()
 
@@ -84,7 +83,7 @@ const MessageList = memo((props) => {
     const channel = pusher.subscribe('chat')
 
     channel.bind('chat-event', function (data) {
-      console.log('data', data);
+      console.log('data', data)
       if (data.isReply || data.user_id === user.id) {
         setSmsLogMessages((prevState) => [
           ...prevState,
@@ -92,15 +91,16 @@ const MessageList = memo((props) => {
             id: Math.random(),
             from_phone_number: data.sender,
             message: data.body,
-            isOwnMessage: data.isOwnMessage === false ? data.isOwnMessage : true,
+            isOwnMessage:
+              data.isOwnMessage === false ? data.isOwnMessage : true,
           },
         ])
       }
-    })
       scrollToBottom()
-      return () => {
-        pusher.unsubscribe('chat')
-      }
+    })
+    return () => {
+      pusher.unsubscribe('chat')
+    }
   }, [])
 
   return (

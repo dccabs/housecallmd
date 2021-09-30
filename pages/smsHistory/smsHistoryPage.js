@@ -77,7 +77,6 @@ const SmsHistoryPage = memo((props) => {
   const [sendingMessage, setSendingMessage] = useState(false)
   const [success, setSuccess] = useState(false)
   const [authorized, setAuthorized] = useState(false)
-  const [smsLogMessages, setSmsLogMessages] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
   const [number, setNumber] = useState('')
   const classes = useStyles()
@@ -174,7 +173,7 @@ const SmsHistoryPage = memo((props) => {
             SMS History
           </Typography>
           <form>
-            <Grid container direction="row" justifyContent="center" className={classes.mainGrid}>
+            <Grid container direction="row" className={classes.mainGrid}>
               {/* <PhoneNumberList user={user} /> */}
               <Grid item xs={12} sm={12} md={12}>
                 <Grid className={classes.gridItemChatList}>
