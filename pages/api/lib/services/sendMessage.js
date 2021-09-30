@@ -66,12 +66,6 @@ const chatSms = async (req) => {
     })
 
     if (clientMsg) {
-        const response = await pusher.trigger("chat", "chat-event", {
-          body,
-          sender: process.env.NEXT_PUBLIC_PHONE_NUMBER,
-          user_id: req.body.user.id
-        });
-
         const smsHistoryPath = `${process.env.HOST}/smsHistory/${req.body.user.smsUserId}`;
         const adminPhones = await supabase.from('adminPhones').select(`*`).eq('isActive', true);
         
@@ -97,10 +91,14 @@ const chatSms = async (req) => {
                 return err;
               })
             });
-  
-            
             const resultSendAdmin = await Promise.all(sendAdminMsg);
           }
+
+          const response = await pusher.trigger("chat", "chat-event", {
+            body,
+            sender: process.env.NEXT_PUBLIC_PHONE_NUMBER,
+            user_id: req.body.user.id
+          });
 
         return { success: true, payload };
     } else {
