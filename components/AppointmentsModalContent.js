@@ -20,6 +20,8 @@ import moment from 'moment'
 import MeetingCreated from './MeetingCreated'
 import SendSMS from './SendSMS'
 
+import Link from 'next/link'
+
 const useStyles = makeStyles((theme) => ({
   fieldBox: {
     display: 'flex',
@@ -58,7 +60,6 @@ const AppointmentsModalContent = ({
   const [clientNotes, setClientNotes] = useState('')
   const [completed, setCompleted] = useState(false)
   const [MeetingContent, setMeetingContent] = useState(false)
-  const [MessageContent, setMessageContent] = useState(false)
 
   const classes = useStyles()
 
@@ -126,11 +127,6 @@ const AppointmentsModalContent = ({
           email={rowData.UserList.email}
           phone={rowData.UserList.phone}
           setMeetingContent={setMeetingContent}
-        />
-      ) : MessageContent ? (
-        <SendSMS
-          phone={rowData.UserList.phone}
-          setMessageContent={setMessageContent}
         />
       ) : (
         <>
@@ -256,13 +252,16 @@ const AppointmentsModalContent = ({
             display="flex"
             justifyContent="center"
           >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMessageContent(true)}
-            >
-              Send SMS
-            </Button>
+            <Link href={`/smsHistory/${rowData.id}`} target={"_blank"} passHref>
+              <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                >
+                  Send SMS
+                </Button>
+              </a>
+            </Link>
           </Box>
         </>
       )}

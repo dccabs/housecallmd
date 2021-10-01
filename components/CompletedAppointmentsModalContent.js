@@ -12,6 +12,8 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 
+import Link from 'next/link'
+
 import MeetingCreated from './MeetingCreated'
 import SendSMS from './SendSMS'
 
@@ -53,7 +55,6 @@ const CompletedAppointmentsModalContent = ({
   const [clientNotes, setClientNotes] = useState('')
   const [completed, setCompleted] = useState(false)
   const [MeetingContent, setMeetingContent] = useState(false)
-  const [MessageContent, setMessageContent] = useState(false)
 
   const classes = useStyles()
 
@@ -121,11 +122,6 @@ const CompletedAppointmentsModalContent = ({
           email={rowData.UserList.email}
           phone={rowData.UserList.phone}
           setMeetingContent={setMeetingContent}
-        />
-      ) : MessageContent ? (
-        <SendSMS
-          phone={rowData.UserList.phone}
-          setMessageContent={setMessageContent}
         />
       ) : (
         <>
@@ -251,13 +247,16 @@ const CompletedAppointmentsModalContent = ({
             display="flex"
             justifyContent="center"
           >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMessageContent(true)}
-            >
-              Send SMS
-            </Button>
+            <Link href={`/smsHistory/${rowData.id}`} target={"_blank"} passHref>
+              <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                >
+                  Send SMS
+                </Button>
+              </a>
+            </Link>
           </Box>
         </>
       )}
