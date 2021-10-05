@@ -252,7 +252,7 @@ const AppointmentsModalContent = ({
             display="flex"
             justifyContent="center"
           >
-            <Link href={`/smsHistory/${rowData.id}`} target={"_blank"} passHref>
+            <Link href={`/smsHistory/${rowData.userId}`} target={"_blank"} passHref>
               <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
                 <Button
                   color="secondary"

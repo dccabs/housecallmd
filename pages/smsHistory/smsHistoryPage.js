@@ -79,6 +79,7 @@ const SmsHistoryPage = memo((props) => {
   const [authorized, setAuthorized] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
   const [number, setNumber] = useState('')
+  const [messageSent, setMessageSent ] = useState({});
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
@@ -156,6 +157,7 @@ const SmsHistoryPage = memo((props) => {
       if (data.success) {
         setSuccess(true)
         setBodyMessage('')
+        setMessageSent({...data.payload});
       }
     } catch (err) {
       console.log(err)
@@ -177,7 +179,7 @@ const SmsHistoryPage = memo((props) => {
               {/* <PhoneNumberList user={user} /> */}
               <Grid item xs={12} sm={12} md={12}>
                 <Grid className={classes.gridItemChatList}>
-                  <MessageList user={{ ...user, smsUserId }} />
+                  <MessageList user={{ ...user, smsUserId }} messageSent={messageSent}/>
                 </Grid>
                 <Divider />
                 <Grid

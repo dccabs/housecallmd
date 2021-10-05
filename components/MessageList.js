@@ -38,7 +38,7 @@ const styles = {
 }
 
 const MessageList = memo((props) => {
-  const { user } = props
+  const { user, messageSent } = props
 
   const [loading, setLoading] = useState(false)
   const [smsLogMessages, setSmsLogMessages] = useState([])
@@ -103,6 +103,22 @@ const MessageList = memo((props) => {
     }
   }, [])
 
+  useEffect(() => {
+    const { body, sender, user_id} = messageSent;
+    if (Object.keys(messageSent).length !== 0) {
+      console.log('sendMessage', messageSent);
+      setSmsLogMessages((prevState) => [
+        ...prevState,
+        {
+          id: Math.random(),
+          from_phone_number: sender,
+          message: body,
+          isOwnMessage: true
+        },
+      ])
+    }
+  }, [messageSent])
+
   return (
     <List dense={true}>
       {smsLogMessages &&
@@ -128,11 +144,21 @@ MessageList.propTypes = {
   user: PropTypes.shape({
     email: PropTypes.string,
   }),
+  messageSent: PropTypes.shape({
+    body: PropTypes.string,
+    sender: PropTypes.string,
+    user_id: PropTypes.string
+  })
 }
 MessageList.defaultProps = {
   user: {
     email: '',
   },
+  messageSent: {
+    body: '',
+    sender: '',
+    user_id: ''
+  }
 }
 
 export default MessageList

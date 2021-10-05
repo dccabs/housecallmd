@@ -56,7 +56,11 @@ const chatSms = async (req) => {
 
     const { body } = req.body;
     
-    const payload = { body: body, sender: process.env.NEXT_PUBLIC_PHONE_NUMBER };
+  const payload = {
+      body,
+      sender: process.env.NEXT_PUBLIC_PHONE_NUMBER,
+      user_id: req.body.user.id
+  };
 
     const clientMsg = await client.messages
     .create({
@@ -94,11 +98,11 @@ const chatSms = async (req) => {
             const resultSendAdmin = await Promise.all(sendAdminMsg);
           }
 
-          const response = await pusher.trigger("chat", "chat-event", {
-            body,
-            sender: process.env.NEXT_PUBLIC_PHONE_NUMBER,
-            user_id: req.body.user.id
-          });
+          // const response = await pusher.trigger("chat", "chat-event", {
+          //   body,
+          //   sender: process.env.NEXT_PUBLIC_PHONE_NUMBER,
+          //   user_id: req.body.user.id
+          // });
 
         return { success: true, payload };
     } else {
