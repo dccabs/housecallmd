@@ -104,7 +104,7 @@ const MessageList = memo((props) => {
   }, [])
 
   useEffect(() => {
-    const { body, sender, user_id} = messageSent;
+    const { body, sender, user_id, adminName} = messageSent;
     if (Object.keys(messageSent).length !== 0) {
       console.log('sendMessage', messageSent);
       setSmsLogMessages((prevState) => [
@@ -113,7 +113,8 @@ const MessageList = memo((props) => {
           id: Math.random(),
           from_phone_number: sender,
           message: body,
-          isOwnMessage: true
+          isOwnMessage: true,
+          name: adminName
         },
       ])
     }
@@ -123,9 +124,9 @@ const MessageList = memo((props) => {
     <List dense={true}>
       {smsLogMessages &&
         smsLogMessages?.map(
-          ({ id, from_phone_number, message, created_at, isOwnMessage }) => (
+          ({ id, from_phone_number, message, created_at, isOwnMessage, name }) => (
             <ListItem key={`${id}`} style={styles.listItem(isOwnMessage)}>
-              <div className={classes.author}>{from_phone_number}</div>
+              <div className={classes.author}>{name} - {from_phone_number}</div>
               <div style={styles.container(isOwnMessage)}>
                 {message}
                 <div style={styles.timestamp(isOwnMessage)}>{`${moment(

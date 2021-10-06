@@ -176,7 +176,7 @@ const SmsHistoryPage = memo((props) => {
           </Typography>
           <form>
             <Grid container direction="row" className={classes.mainGrid}>
-              {/* <PhoneNumberList user={user} /> */}
+              {/* {<PhoneNumberList user={user} />} */}
               <Grid item xs={12} sm={12} md={12}>
                 <Grid className={classes.gridItemChatList}>
                   <MessageList user={{ ...user, smsUserId }} messageSent={messageSent}/>

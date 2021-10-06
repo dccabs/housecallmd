@@ -39,16 +39,18 @@ const smsResponder = async (req, res) => {
         message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
       } else {
 
+        
+        const userId = appointments.data[0].id;
+        const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
+        const smsHistoryPath = `${config.default.host}smsHistory/${userId}`;
+
         const response = await pusher.trigger("chat", "chat-event", {
           body: Body,
           sender: From,
           isOwnMessage: false,
           isReply: true,
+          name: senderName
         });
-
-        const userId = appointments.data[0].id;
-        const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
-        const smsHistoryPath = `${config.default.host}smsHistory/${userId}`;
         
         const { data, error, status } = await supabase.from('sms_log_message').insert([{ ...logMessage, user_id: appointments.data[0].id }], { returning: 'minimal' })
         
