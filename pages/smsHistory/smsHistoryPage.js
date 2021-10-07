@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '2rem',
     alignItems: 'center',
     display: 'inline-flex',
+    fontSize: '1.5em',
+  },
+  icon: {
+    marginRight: '.2em',
     '@media screen and (max-width: 767px)': {
       marginTop: '1rem',
     },
@@ -79,6 +83,7 @@ const SmsHistoryPage = memo((props) => {
   const [authorized, setAuthorized] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
   const [number, setNumber] = useState('')
+  const [userNameSmsOwner, setNameUserSmsOwner] = useState('')
   const [messageSent, setMessageSent ] = useState({});
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
@@ -93,7 +98,7 @@ const SmsHistoryPage = memo((props) => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email: user.email}),
+        body: JSON.stringify({ email: user.email }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -107,7 +112,7 @@ const SmsHistoryPage = memo((props) => {
             })
           }
         })
-      
+
       const smsUserById = { id: smsUserId }
 
       const userWhoOwnSms = fetch('/api/getUserById', {
@@ -116,16 +121,18 @@ const SmsHistoryPage = memo((props) => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({id: smsUserId}),
+        body: JSON.stringify({ id: smsUserId }),
       })
-      .then((res) => res.json())
+        .then((res) => res.json())
         .then((res) => {
           if (res) {
+            const patientFirstName = res?.firstName ?? ''
+            const patientLastName = res?.lastName ?? ''
+            setNameUserSmsOwner(patientFirstName.concat(' ', patientLastName))
             setNumber(res.phone)
-          } 
+          }
         })
     }
-
   }, [user, smsUserId])
 
   if (loading) {
@@ -148,7 +155,7 @@ const SmsHistoryPage = memo((props) => {
           to: number,
           body: bodyMessage,
           isFromSmsHistory: true,
-          user: {...user, smsUserId},
+          user: { ...user, smsUserId },
         }),
       })
 
@@ -170,9 +177,17 @@ const SmsHistoryPage = memo((props) => {
     <>
       {authorized && (
         <Container component="main" maxWidth="md">
-          <Typography variant="h4" align="left" className={classes.wrapIcon}>
-            <ChatBubbleOutlineTwoTone color="secondary" />
-            SMS History
+          <Typography
+            mt="2rem"
+            variant="h4"
+            align="left"
+            className={classes.wrapIcon}
+          >
+            <ChatBubbleOutlineTwoTone
+              color="secondary"
+              className={classes.icon}
+            />
+            {userNameSmsOwner} SMS history
           </Typography>
           <form>
             <Grid container direction="row" className={classes.mainGrid}>
