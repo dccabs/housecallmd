@@ -116,7 +116,6 @@ const Payment = () => {
   }
 
   useEffect(async () => {
-    console.log('newUser', newUser)
     if (user) {
       await fetch('/api/getPhoneNumbers', {
         method: 'POST',
@@ -167,7 +166,7 @@ const Payment = () => {
         if (data.error) {
           throw Error(data.error)
         } else {
-          sendEmailToHouseCall()
+          sendEmailAppointmentConfirmation()
           sendSMSToHouseCall()
           sendSMSToPatient();
         }
@@ -178,7 +177,7 @@ const Payment = () => {
       })
   }
 
-  const sendEmailToHouseCall = async () => {
+  const sendEmailAppointmentConfirmation = async () => {
     const payload = {
       newUser,
     }
@@ -320,7 +319,12 @@ const Payment = () => {
             </>
           ) : (
             <Elements stripe={stripePromise}>
-              <PaymentForm newUser={newUser} clientPhones={clientPhones} usingInsurance={usingInsurance} />
+              <PaymentForm
+                newUser={newUser}
+                clientPhones={clientPhones}
+                usingInsurance={usingInsurance}
+                addAppointment={addAppointment}
+              />
             </Elements>
           )}
         </Box>

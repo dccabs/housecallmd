@@ -114,10 +114,10 @@ const PaymentForm = (props) => {
     name: '',
   })
 
-  const openSnackBar = useContext(SnackBarContext)
-
-  const { usingInsurance } = props;
-  console.log('usingInsurance', usingInsurance)
+  const {
+    usingInsurance,
+    addAppointment,
+  } = props;
 
   const {
     hasInsurance,
@@ -153,7 +153,7 @@ const PaymentForm = (props) => {
     // handleSubmit()
   }
 
-  const handleSubmit = async (e) => {
+  const handlePaymentSubmit = async (e) => {
     e.preventDefault()
     if (error) {
       openSnackBar({
@@ -188,83 +188,6 @@ const PaymentForm = (props) => {
       })
   }
 
-  const sendEmailToUser = async () => {
-    const userData = {
-      ...props.newUser,
-      amount,
-    }
-    const payload = {
-      newUser: userData,
-    }
-
-    await fetch('/api/sendAppointmentConfirmationEmail', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify({
-        email,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw Error(data.error)
-        } else {
-          console.log(data)
-        }
-      })
-      .catch((error) => {
-        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
-        setProcessing(false)
-      })
-
-    await fetch('/api/sendNewAppointmentEmail', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw Error(data.error)
-        } else {
-          openSnackBar({
-            message: 'Appointment request sent to HouseCallMD',
-            snackSeverity: 'success',
-          })
-          router.push('/thank-you')
-          setProcessing(false)
-        }
-      })
-      .catch((error) => {
-        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
-        setProcessing(false)
-        setOpen(false)
-      })
-  }
-
-  const sendSMSToClient = async () => {
-    const message = `${firstName} ${lastName} just signed up for an appointment.`
-    props.clientPhones.forEach(async (phone) => {
-      try {
-        await fetch('/api/sendMessage', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: phone,
-            body: message,
-          }),
-        })
-      } catch (err) {
-        throw err
-      }
-    })
-  }
-
   const handleConfirm = async (e) => {
     e.preventDefault()
     setProcessing(true)
@@ -285,8 +208,7 @@ const PaymentForm = (props) => {
     } else {
       setError(null)
       setSucceeded(true)
-      sendEmailToUser()
-      sendSMSToClient()
+      addAppointment();
     }
   }
 
@@ -316,7 +238,7 @@ const PaymentForm = (props) => {
               <p>To proceed please fill out your payment information.</p>
             </div>
           </Box>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handlePaymentSubmit}>
             <fieldset className={classes.FormGroup}>
               <Field
                 label="Name"
