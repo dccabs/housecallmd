@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
 import MessageList from '../../components/MessageList'
 import PhoneNumberList from '../../components/PhoneNumberList'
-import { SnackBarContext } from '../../components/SnackBar';
+import { SnackBarContext } from '../../components/SnackBar'
 import SkeletonChatPage from '../../components/SkeletonChatPage'
 import {
   Typography,
@@ -10,7 +10,6 @@ import {
   makeStyles,
   Container,
   Grid,
-  Box,
   Divider,
   Button,
   CircularProgress,
@@ -19,31 +18,36 @@ import { Auth } from '@supabase/ui'
 import {
   Send as SendIcon,
   ChatBubbleOutlineTwoTone,
-  CodeSharp,
 } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   wrapIcon: {
-    marginTop: '3rem',
+    marginTop: '2rem',
     alignItems: 'center',
     display: 'inline-flex',
+    '@media screen and (max-width: 767px)': {
+      marginTop: '1rem',
+    },
   },
   textField: {
     width: '100%',
     borderWidth: 0,
     borderColor: 'transparent',
   },
-  textFieldContainer: {
-    flex: 1,
-    marginRight: 12,
-  },
+  
   gridItem: {
     paddingTop: 12,
     paddingBottom: 12,
   },
   gridItemChatList: {
     overflow: 'auto',
-    height: '50vh',
+    height: '60vh',
+  },
+  buttonContainer: {
+    '@media screen and (max-width: 767px)': {
+      marginTop: 12,
+      textAlign: 'right',
+    },
   },
   gridItemMessage: {
     '@media screen and (max-width: 767px)': {
@@ -52,16 +56,17 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 12,
     marginBottom: 12,
   },
-  mainGrid: { paddingTop: '3em', paddingBottom: '3em', borderWidth: 1 },
+  mainGrid: {
+    marginTop: '2em',
+    marginBottom: '3em',
+    borderWidth: 1,
+    '@media screen and (max-width: 767px)': {
+      marginTop: '1em',
+      marginBottom: '1em',
+    },
+  },
   h4: {
     marginTop: 0,
-  },
-  borderRight500: {
-    '@media screen and (max-width: 767px)': {
-      borderRight: 'none',
-      borderBottom: '1px solid #e0e0e0',
-    },
-    borderRight: '1px solid #e0e0e0',
   },
 }))
 
@@ -72,9 +77,9 @@ const SmsHistoryPage = memo((props) => {
   const [sendingMessage, setSendingMessage] = useState(false)
   const [success, setSuccess] = useState(false)
   const [authorized, setAuthorized] = useState(false)
-  const [smsLogMessages, setSmsLogMessages] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
   const [number, setNumber] = useState('')
+  const [messageSent, setMessageSent ] = useState({});
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
@@ -127,9 +132,7 @@ const SmsHistoryPage = memo((props) => {
     return <SkeletonChatPage />
   }
 
-  // const handleOnchange = (e) => {}
-
-  const handleOnsubmit = async (e) => {
+  const handleOnSubmit = async (e) => {
     await e.preventDefault()
 
     try {
@@ -154,6 +157,7 @@ const SmsHistoryPage = memo((props) => {
       if (data.success) {
         setSuccess(true)
         setBodyMessage('')
+        setMessageSent({...data.payload});
       }
     } catch (err) {
       console.log(err)
@@ -162,75 +166,75 @@ const SmsHistoryPage = memo((props) => {
     }
   }
 
-  const handleRedirectMessage = () => {}
-
   return (
     <>
       {authorized && (
         <Container component="main" maxWidth="md">
-          <Typography
-            mt="2rem"
-            variant="h4"
-            align="left"
-            className={classes.wrapIcon}
-          >
+          <Typography variant="h4" align="left" className={classes.wrapIcon}>
             <ChatBubbleOutlineTwoTone color="secondary" />
             SMS History
           </Typography>
           <form>
             <Grid container direction="row" className={classes.mainGrid}>
-              {/* <Grid
-                item
-                xs={11}
-                sm={5}
-                md={3}
-                className={classes.borderRight500}
-              >
-                <PhoneNumberList user={user} />
-              </Grid> */}
-              <Grid item xs={11} sm={11} md={10}>
+              {/* {<PhoneNumberList user={user} />} */}
+              <Grid item xs={12} sm={12} md={12}>
                 <Grid className={classes.gridItemChatList}>
-                  <MessageList user={{ ...user, smsUserId }} />
+                  <MessageList user={{ ...user, smsUserId }} messageSent={messageSent}/>
                 </Grid>
                 <Divider />
-                <Grid item className={classes.gridItemMessage}>
-                  <Box px={1}>
+                <Grid
+                  container
+                  direction="row"
+                  className={classes.gridItemMessage}
+                >
+                  <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
+                    spacing={1}
+                  >
                     <Grid
-                      container
-                      direction="row"
-                      justify="center"
-                      alignItems="center"
+                      item
+                      xs={12}
+                      sm={10}
+                      md={10}
+                      className={classes.textFieldContainer}
                     >
-                      <Grid item xs={10} className={classes.textFieldContainer}>
-                        <TextField
-                          required
-                          className={classes.textField}
-                          placeholder="Enter message"
-                          variant="outlined"
-                          multiline
-                          onChange={(e) => setBodyMessage(e.target.value)}
-                          rows={2}
-                          value={bodyMessage}
-                        />
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Button
-                          onClick={handleOnsubmit}
-                          variant="contained"
-                          color="secondary"
-                          endIcon={
-                            sendingMessage ? (
-                              <CircularProgress color="inherit" size="1em" />
-                            ) : (
-                              <SendIcon />
-                            )
-                          }
-                        >
-                          Send
-                        </Button>
-                      </Grid>
+                      <TextField
+                        required
+                        className={classes.textField}
+                        placeholder="Enter message"
+                        variant="outlined"
+                        multiline
+                        onChange={(e) => setBodyMessage(e.target.value)}
+                        rows={2}
+                        value={bodyMessage}
+                      />
                     </Grid>
-                  </Box>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={2}
+                      md={2}
+                      className={classes.buttonContainer}
+                    >
+                      <Button
+                        onClick={handleOnSubmit}
+                        variant="contained"
+                        color="secondary"
+                        endIcon={
+                          sendingMessage ? (
+                            <CircularProgress color="inherit" size="1em" />
+                          ) : (
+                            <SendIcon />
+                          )
+                        }
+                      >
+                        Send
+                      </Button>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

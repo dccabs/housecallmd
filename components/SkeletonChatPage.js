@@ -4,11 +4,6 @@ import {
   Container,
   Divider,
   Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Avatar,
 } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 
@@ -19,69 +14,7 @@ const SkeletonChatPage = () => {
         <Skeleton animation="wave" variant="text" width="40%" height={50} />
         <Box my="1em" />
         <Grid container direction="row">
-          {/* <Grid item xs={11} sm={5} md={3}>
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <Skeleton
-                    animation="wave"
-                    variant="circle"
-                    width={40}
-                    height={40}
-                  >
-                    <Avatar />
-                  </Skeleton>
-                </ListItemIcon>
-                <ListItemText>
-                  <Skeleton animation="wave" height={20} />
-                  <Skeleton animation="wave" width="80%" height={20} />
-                </ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <Skeleton
-                    animation="wave"
-                    variant="circle"
-                    width={40}
-                    height={40}
-                  />
-                </ListItemIcon>
-                <ListItemText>
-                  <Skeleton animation="wave" height={20} />
-                  <Skeleton animation="wave" width="80%" height={20} />
-                </ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <Skeleton
-                    animation="wave"
-                    variant="circle"
-                    width={40}
-                    height={40}
-                  />
-                </ListItemIcon>
-                <ListItemText>
-                  <Skeleton animation="wave" height={20} />
-                  <Skeleton animation="wave" width="80%" height={20} />
-                </ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <Skeleton
-                    animation="wave"
-                    variant="circle"
-                    width={40}
-                    height={40}
-                  />
-                </ListItemIcon>
-                <ListItemText>
-                  <Skeleton animation="wave" height={20} />
-                  <Skeleton animation="wave" width="80%" height={20} />
-                </ListItemText>
-              </ListItem>
-            </List>
-          </Grid> */}
-          <Grid item xs={11} sm={11} md={10}>
+          <Grid item xs={12} sm={12} md={12}>
             <Grid>
               <Skeleton
                 animation="wave"
@@ -122,10 +55,10 @@ const SkeletonChatPage = () => {
                   justify="center"
                   alignItems="center"
                 >
-                  <Grid item xs={10}>
+                  <Grid item xs={10} sm={10} md={10}>
                     <Skeleton animation="wave" variant="rect" height={100} />
                   </Grid>
-                  <Grid item xs={2}>
+                  <Grid item xs={2} sm={2} md={2}>
                     <Box ml="1em">
                       <Skeleton animation="wave" variant="rect" height={50} />
                     </Box>
