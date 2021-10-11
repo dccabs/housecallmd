@@ -1,13 +1,13 @@
 import { useState, useEffect, Fragment, useContext } from 'react'
 import { Box, List, ListItem, Link as MuiLink } from '@material-ui/core'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { SnackBarContext } from './SnackBar'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import { SnackBarContext } from '../../SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
-import { supabase } from '../utils/initSupabase'
+import { supabase } from '../../../utils/initSupabase'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import clearStore from '../utils/clearStore'
-import useStore from '../zustand/store'
+import clearStore from '../../../utils/clearStore'
+import useStore from '../../../zustand/store'
 
 const useStyles = makeStyles((theme) => ({
   authLinks: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   profileEmail: {
     marginLeft: 5,
-  }
+  },
 }))
 
 const MobileNavDrawer = ({ setDrawerToggle }) => {
@@ -32,7 +32,7 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
   const session = supabase.auth.session()
   const user = supabase.auth.user()
   const classes = useStyles()
-  const store = useStore();
+  const store = useStore()
 
   const openSnackBar = useContext(SnackBarContext)
 
@@ -55,7 +55,10 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
-    openSnackBar({message: `${user.email} has been logged out of the application`, snackSeverity: 'error'})
+    openSnackBar({
+      message: `${user.email} has been logged out of the application`,
+      snackSeverity: 'error',
+    })
     clearStore(store)
     router.push('/')
   }
@@ -68,11 +71,12 @@ const MobileNavDrawer = ({ setDrawerToggle }) => {
         minWidth="12rem"
       >
         <List className={classes.authLinks}>
-          {isAuthenticated &&
+          {isAuthenticated && (
             <ListItem>
-              <AccountCircleIcon/> <span className={classes.profileEmail}>dccabs@gmail.com</span>
+              <AccountCircleIcon />{' '}
+              <span className={classes.profileEmail}>dccabs@gmail.com</span>
             </ListItem>
-          }
+          )}
           {isAuthenticated ? (
             <MuiLink
               onClick={handleSignOut}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, Fragment } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -6,22 +6,24 @@ import {
   Box,
   IconButton,
   Drawer,
+  makeStyles,
 } from '@material-ui/core'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { Auth } from '@supabase/ui'
-import { supabase } from '../utils/initSupabase'
-import useStore from '../zustand/store'
-import { makeStyles } from '@material-ui/core/styles'
 import Image from 'next/image'
-import { SnackBarContext } from '../components/SnackBar'
+import { Auth } from '@supabase/ui'
+import { useRouter } from 'next/router'
+import useStore from '../../zustand/store'
+import { supabase } from '../../utils/initSupabase'
+import { SnackBarContext } from '../../components/SnackBar'
+import PatientsMenu from './desktopMenu/PatientsMenu'
+import PartnersMenu from './desktopMenu/PartnersMenu'
+import CompanyMenu from './desktopMenu/CompanyMenu'
+import MobileNavDrawer from './mobileMenu/MobileNavDrawer'
 import {
   AccountCircleRounded as AccountCircleIcon,
   Menu as MenuIcon,
 } from '@material-ui/icons'
-
-import MobileNavDrawer from './MobileNavDrawer'
-import clearStore from '../utils/clearStore'
+import clearStore from '../../utils/clearStore'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -55,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 600,
       color: theme.typography.color,
       textDecoration: 'none',
-      marginLeft: '2rem',
+      // marginLeft: '2rem',
     },
     [theme.breakpoints.down('xs')]: {
       display: 'none',
@@ -82,16 +84,19 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 400,
     },
   },
+  menuItemBox: {
+    cursor: 'pointer',
+    alignItems: 'center',
+  },
 }))
 
 const Navbar = () => {
-  const store = useStore()
-
-  const [drawerToggle, setDrawerToggle] = useState(false)
-  const router = useRouter()
   const classes = useStyles()
-  const openSnackBar = useContext(SnackBarContext)
+  const store = useStore()
+  const router = useRouter()
   const { user, session } = Auth.useUser()
+  const openSnackBar = useContext(SnackBarContext)
+  const [drawerToggle, setDrawerToggle] = useState(false)
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -104,7 +109,7 @@ const Navbar = () => {
   }
 
   return (
-    <Fragment>
+    <>
       <Drawer
         anchor="right"
         open={drawerToggle}
@@ -133,8 +138,68 @@ const Navbar = () => {
             </a>
           </Link>
 
+          {/* desktop */}
           <Box className={classes.authLinks} display="flex">
-            <Link href="/services">
+            <Box mr="2em">
+              <PatientsMenu />
+            </Box>
+            <Box mr="2em">
+              <PartnersMenu />
+            </Box>
+            <Box mr="2em">
+              <CompanyMenu />
+            </Box>
+            {/* <Box mr="2em">
+              <Box display="flex">
+                <Typography>Our Company</Typography>
+                <KeyboardArrowDown />
+              </Box>
+            </Box> */}
+
+            {/* <Typography
+              ref={anchorRef}
+              aria-controls={openMenuList ? 'menu-list-grow' : undefined}
+              aria-haspopup="true"
+              onClick={handleToggle}
+            >
+              <AccountCircleIcon style={{ marginRight: 10 }} />
+              Lourdes Suello
+            </Typography>
+            <Popper
+              open={openMenuList}
+              anchorEl={anchorRef.current}
+              role={undefined}
+              transition
+              disablePortal
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  style={{
+                    transformOrigin:
+                      placement === 'bottom' ? 'center top' : 'center bottom',
+                  }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={handleClose}>
+                      <MenuList
+                        autoFocusItem={openMenuList}
+                        id="menu-list-grow"
+                        onKeyDown={handleListKeyDown}
+                      >
+                        <MenuItem onClick={handleClose}>My Profile</MenuItem>
+                        <MenuItem onClick={handleClose}>
+                          Request Records and Pay Bill
+                        </MenuItem>
+                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper> */}
+
+            {/* <Link href="/services">
               <a>
                 <Typography>Services</Typography>
               </a>
@@ -143,13 +208,13 @@ const Navbar = () => {
               <a>
                 <Typography>Contact</Typography>
               </a>
-            </Link>
+            </Link> */}
             {user ? (
               <>
                 <Box ml="2rem">
                   <Typography style={{ display: 'flex', alignItems: 'center' }}>
                     <AccountCircleIcon style={{ marginRight: 10 }} />
-                    {user.email}
+                    {user.first}
                   </Typography>
                 </Box>
                 <Box ml="1rem">
@@ -172,6 +237,7 @@ const Navbar = () => {
             )}
           </Box>
 
+          {/* mobile */}
           <Box display="none" className={classes.burgerNav}>
             <IconButton
               edge="start"
@@ -182,7 +248,7 @@ const Navbar = () => {
           </Box>
         </Toolbar>
       </AppBar>
-    </Fragment>
+    </>
   )
 }
 
