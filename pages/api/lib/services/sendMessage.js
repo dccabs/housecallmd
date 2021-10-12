@@ -74,7 +74,7 @@ const chatSms = async (req) => {
         .select(`*`)
         .eq('id', req.body.user.smsUserId)
         
-        const adminMsg = `An admin name: ${userAdmin.data[0].firstName} ${userAdmin.data[0].lastName} sent a message to 
+        const adminMsg = `Housecall Admin ${userAdmin.data[0].firstName} ${userAdmin.data[0].lastName} sent a message to 
         ${userWhoOwnsTheSMS.data[0].firstName} ${userWhoOwnsTheSMS.data[0].lastName}:
         ${req.body.body}
         To see the full message history or reply, click here ${smsHistoryPath}`;
