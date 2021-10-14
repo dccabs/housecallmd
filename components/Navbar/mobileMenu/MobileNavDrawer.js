@@ -126,8 +126,6 @@ const MobileMenu = [
 
 const MobileNavDrawer = memo((props) => {
   const { setDrawerToggle, loading } = props
-  console.log(typeof loading)
-  console.log(typeof setDrawerToggle)
   const [openCollapse, setOpenCollapse] = useState({
     settings: [
       { id: 1, open: false },
@@ -189,7 +187,7 @@ const MobileNavDrawer = memo((props) => {
           <CloseOutlined />
         </Box>
         <Divider />
-        {!loading ? (
+        {loading ? (
           <Box p="1em" display="flex" alignContent="center">
             <Skeleton
               variant="circle"
