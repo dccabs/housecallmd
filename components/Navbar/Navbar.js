@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useContext } from 'react'
+import PropTypes from 'prop-types'
 import {
   AppBar,
   Toolbar,
@@ -23,6 +24,7 @@ import {
   AccountCircleRounded as AccountCircleIcon,
   Menu as MenuIcon,
 } from '@material-ui/icons'
+import { Skeleton } from '@material-ui/lab'
 import clearStore from '../../utils/clearStore'
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.up('sm')]: {
       width: '100%',
-      maxWidth: 1100,
+      maxWidth: 1300,
       margin: 'auto',
     },
   },
@@ -57,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 600,
       color: theme.typography.color,
       textDecoration: 'none',
-      // marginLeft: '2rem',
     },
     [theme.breakpoints.down('xs')]: {
       display: 'none',
@@ -97,6 +98,31 @@ const Navbar = () => {
   const { user, session } = Auth.useUser()
   const openSnackBar = useContext(SnackBarContext)
   const [drawerToggle, setDrawerToggle] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+
+  useEffect(() => {
+    if (user) {
+      setLoading(true)
+      fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: user.email }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res) {
+            setFirstName(res?.firstName ?? '')
+            setLastName(res?.lastName ?? '')
+            setLoading(false)
+          }
+        })
+    }
+  }, [user])
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -112,10 +138,14 @@ const Navbar = () => {
     <>
       <Drawer
         anchor="right"
+        width={280}
         open={drawerToggle}
         onClose={() => setDrawerToggle(false)}
       >
-        <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
+        <MobileNavDrawer
+          loading={loading}
+          setDrawerToggle={setDrawerToggle}
+        />
       </Drawer>
 
       <AppBar position="static" className={classes.appBar}>
@@ -140,83 +170,36 @@ const Navbar = () => {
 
           {/* desktop */}
           <Box className={classes.authLinks} display="flex">
-            <Box mr="2em">
-              <PatientsMenu />
+            <Box mr="1.2em">
+              <PatientsMenu user={user} handleSignOut={handleSignOut} />
             </Box>
-            <Box mr="2em">
+            <Box mr="1.2em">
               <PartnersMenu />
             </Box>
-            <Box mr="2em">
+            <Box mr="1.2em">
               <CompanyMenu />
             </Box>
-            {/* <Box mr="2em">
-              <Box display="flex">
-                <Typography>Our Company</Typography>
-                <KeyboardArrowDown />
-              </Box>
-            </Box> */}
-
-            {/* <Typography
-              ref={anchorRef}
-              aria-controls={openMenuList ? 'menu-list-grow' : undefined}
-              aria-haspopup="true"
-              onClick={handleToggle}
-            >
-              <AccountCircleIcon style={{ marginRight: 10 }} />
-              Lourdes Suello
-            </Typography>
-            <Popper
-              open={openMenuList}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              transition
-              disablePortal
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  style={{
-                    transformOrigin:
-                      placement === 'bottom' ? 'center top' : 'center bottom',
-                  }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={handleClose}>
-                      <MenuList
-                        autoFocusItem={openMenuList}
-                        id="menu-list-grow"
-                        onKeyDown={handleListKeyDown}
-                      >
-                        <MenuItem onClick={handleClose}>My Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>
-                          Request Records and Pay Bill
-                        </MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper> */}
-
-            {/* <Link href="/services">
-              <a>
-                <Typography>Services</Typography>
-              </a>
-            </Link>
-            <Link href="/contact">
-              <a>
-                <Typography>Contact</Typography>
-              </a>
-            </Link> */}
+            <Box mr="2em">
+              <Link href="/" underline="none">
+                <a>
+                  <Typography>Covid 19 Information</Typography>
+                </a>
+              </Link>
+            </Box>
             {user ? (
               <>
-                <Box ml="2rem">
-                  <Typography style={{ display: 'flex', alignItems: 'center' }}>
-                    <AccountCircleIcon style={{ marginRight: 10 }} />
-                    {user.first}
+                {loading ? (
+                  <Typography>
+                    <Skeleton variant="text" width="5em" />
                   </Typography>
-                </Box>
+                ) : (
+                  <Box display="flex" alignItems="center">
+                    <AccountCircleIcon style={{ marginRight: 10 }} />
+                    <Typography>
+                      {firstName} {lastName}
+                    </Typography>
+                  </Box>
+                )}
                 <Box ml="1rem">
                   <Typography
                     onClick={handleSignOut}
@@ -251,5 +234,9 @@ const Navbar = () => {
     </>
   )
 }
+
+Navbar.propTypes = {}
+
+Navbar.defaultProps = {}
 
 export default Navbar

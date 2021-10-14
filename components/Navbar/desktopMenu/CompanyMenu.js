@@ -76,7 +76,11 @@ const CompanyMenu = () => {
         className={classes.menuItemBox}
       >
         <Typography variant="body1">Our Company</Typography>
-        {openCompanyMenu ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+        {openCompanyMenu ? (
+          <KeyboardArrowUp fontSize="small" />
+        ) : (
+          <KeyboardArrowDown fontSize="small" />
+        )}
       </Box>
       <Popper
         open={openCompanyMenu}
@@ -102,28 +106,34 @@ const CompanyMenu = () => {
                   aria-labelledby="company-button"
                   onKeyDown={handleListKeyDown}
                 >
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/">
-                      <a>In the Press</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/">
-                      <a>Blog</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/contact">
-                      <a>Contact Us</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Typography noWrap>
-                      <Link href="/provider-groups">
-                        <a>Provider Groups</a>
-                      </Link>
-                    </Typography>
-                  </MenuItem>
+                  <Link href="/">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        In the Press
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        Blog
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/contact">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        Contact Us
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/provider-groups">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        <Typography noWrap>Provider Groups</Typography>
+                      </MenuItem>
+                    </a>
+                  </Link>
                 </MenuList>
               </ClickAwayListener>
             </Paper>

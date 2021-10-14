@@ -10,6 +10,7 @@ import {
   Popper,
   ClickAwayListener,
   makeStyles,
+  Divider,
 } from '@material-ui/core'
 import Link from 'next/link'
 import {
@@ -17,6 +18,8 @@ import {
   Menu as MenuIcon,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  ExitToApp,
+  LogoutIcon,
 } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const PatientsMenu = () => {
+const PatientsMenu = memo((props) => {
+  const { user, handleSignOut } = props
   const classes = useStyles()
   const anchorRefPatientsMenu = useRef(null)
   const [openPatientsMenu, setOpenPatientsMenu] = useState(false)
@@ -34,6 +38,11 @@ const PatientsMenu = () => {
   const handleToggle = () => {
     setOpenPatientsMenu((prevOpen) => !prevOpen)
   }
+
+  const signOut = () => {
+    handleSignOut()
+  }
+
   const handleClose = (event) => {
     if (
       anchorRefPatientsMenu.current &&
@@ -76,7 +85,11 @@ const PatientsMenu = () => {
         className={classes.menuItemBox}
       >
         <Typography variant="body1">Our Patients</Typography>
-        {openPatientsMenu ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+        {openPatientsMenu ? (
+          <KeyboardArrowUp fontSize="small" />
+        ) : (
+          <KeyboardArrowDown fontSize="small" />
+        )}
       </Box>
       <Popper
         open={openPatientsMenu}
@@ -102,41 +115,67 @@ const PatientsMenu = () => {
                   aria-labelledby="patients-button"
                   onKeyDown={handleListKeyDown}
                 >
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/login">
-                      <a>
-                        <span style={{ marginRight: '1em' }}>Login</span>
-                      </a>
-                    </Link>
-                    |
-                    <Link href="/insurance">
-                      <a>
-                        <span style={{ marginLeft: '1em' }}>Signup</span>
-                      </a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/how-it-works">
-                      <a>How it works</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/services">
-                      <a>Services</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/faq">
-                      <a>FAQ's</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Typography noWrap>
-                      <Link href="/services">
-                        <a>Request Records &amp; Pay Bill</a>
+                  {user ? (
+                    <MenuItem>
+                      <Box display="flex" alignItems="center">
+                        <ExitToApp
+                          fontSize="small"
+                          style={{ marginRight: 10 }}
+                        />{' '}
+                        <Typography
+                          onClick={signOut}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          Logout
+                        </Typography>
+                      </Box>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem onClick={handleClose} disableRipple>
+                      <Link href="/login" underline="hover">
+                        <a>
+                          <span style={{ marginRight: '1em' }}>Login</span>
+                        </a>
                       </Link>
-                    </Typography>
-                  </MenuItem>
+                      |
+                      <Link href="/insurance" underline="hover">
+                        <a>
+                          <span style={{ marginLeft: '1em' }}>Signup</span>
+                        </a>
+                      </Link>
+                    </MenuItem>
+                  )}
+                  <Divider />
+                  <Link href="/how-it-works">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        How it works
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/services">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        Services
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/faq">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        FAQ's
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        <Typography noWrap>
+                          Request Records &amp; Pay Bill
+                        </Typography>
+                      </MenuItem>
+                    </a>
+                  </Link>
                 </MenuList>
               </ClickAwayListener>
             </Paper>
@@ -145,8 +184,10 @@ const PatientsMenu = () => {
       </Popper>
     </>
   )
-}
+})
 
 PatientsMenu.propTypes = {}
+
+PatientsMenu.defaultProps = {}
 
 export default PatientsMenu

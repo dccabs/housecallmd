@@ -76,7 +76,11 @@ const PartnersMenu = () => {
         className={classes.menuItemBox}
       >
         <Typography variant="body1">Our Partners</Typography>
-        {openPartnersMenu ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+        {openPartnersMenu ? (
+          <KeyboardArrowUp fontSize="small" />
+        ) : (
+          <KeyboardArrowDown fontSize="small" />
+        )}
       </Box>
       <Popper
         open={openPartnersMenu}
@@ -102,28 +106,34 @@ const PartnersMenu = () => {
                   aria-labelledby="partners-button"
                   onKeyDown={handleListKeyDown}
                 >
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/long-term-care-facilities">
-                      <a>Long-Term Care Facilities</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/corporate-n95-fit-testing">
-                      <a>Corporate N95 Fit Testing</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Link href="/facility-covid-testing">
-                      <a>Facility COVID Testing</a>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleClose} disableRipple>
-                    <Typography noWrap>
-                      <Link href="/provider-groups">
-                        <a>Provider Groups</a>
-                      </Link>
-                    </Typography>
-                  </MenuItem>
+                  <Link href="/long-term-care-facilities">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        Long-Term Care Facilities
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/corporate-n95-fit-testing">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        Corporate N95 Fit Testing
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/facility-covid-testing">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        Facility COVID Testing
+                      </MenuItem>
+                    </a>
+                  </Link>
+                  <Link href="/provider-groups">
+                    <a>
+                      <MenuItem onClick={handleClose} disableRipple>
+                        <Typography noWrap>Provider Groups</Typography>
+                      </MenuItem>
+                    </a>
+                  </Link>
                 </MenuList>
               </ClickAwayListener>
             </Paper>
