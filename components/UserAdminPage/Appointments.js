@@ -95,7 +95,7 @@ const Appointments = ({ openSnackBar }) => {
 
           <UtilModal
             open={open}
-            setOpen={setOpen}
+            onClose={() => setOpen(false)}
             component={
               <AppointmentsModalContent
                 setOpen={setOpen}

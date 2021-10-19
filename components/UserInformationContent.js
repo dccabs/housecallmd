@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, memo } from 'react'
 import {
   Box,
   Typography,
@@ -11,6 +11,8 @@ import {
   InputLabel,
   MenuItem,
   Collapse,
+  Grid,
+  Item,
   CircularProgress,
 } from '@material-ui/core'
 import Link from 'next/link'
@@ -51,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
+const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
   const openSnackBar = useContext(SnackBarContext)
 
   const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
@@ -190,18 +192,9 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
         />
       ) : !loading ? (
         <div>
-          <Box display="flex" alignItems="center">
-            <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
-            <Typography variant="h4" align="left">
-              Update User Information
-            </Typography>
-          </Box>
-          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
-            <form
-              onSubmit={handleSubmit}
-              style={{ width: '100%', maxWidth: '34rem' }}
-            >
-              <Box mt="1em" width="100%" maxWidth="34rem">
+          <Box display="flex" justifyContent="center" flexWrap="wrap">
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+              <Box mt="1em" width="100%">
                 <FormControl component="fieldset">
                   <FormControlLabel
                     value="Terms"
@@ -476,18 +469,56 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
                   onChange={(e) => setZip(e.target.value)}
                 />
               </Box>
-
               <Box
-                mt="2em"
+                mt="1.5em"
                 display="flex"
-                justifyContent="center"
+                justifyContent="space-between"
                 flexWrap="wrap"
               >
-                <Box m="1em" className={classes.buttonLinks}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  flexWrap="wrap"
+                >
+                  <Box mr="1rem">
+                    <Button
+                      size="large"
+                      color="secondary"
+                      variant="outlined"
+                      onClick={() => setMeetingContent(true)}
+                    >
+                      Create Meeting
+                    </Button>
+                  </Box>
+
+                  <Box>
+                    <Link
+                      href={`/smsHistory/${rowData.id}`}
+                      target={'_blank'}
+                      passHref
+                    >
+                      <a
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Button
+                          color="secondary"
+                          variant="outlined"
+                          size="large"
+                        >
+                          Send SMS
+                        </Button>
+                      </a>
+                    </Link>
+                  </Box>
+                </Box>
+                <Box>
                   <Button
                     type="submit"
                     color="secondary"
                     variant="contained"
+                    size="large"
                     disabled={
                       (!checked &&
                         (!policyHolderFirstName ||
@@ -513,37 +544,6 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
               </Box>
             </form>
           </Box>
-          <Box
-            className={classes.buttonLinks}
-            display="flex"
-            justifyContent="center"
-          >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMeetingContent(true)}
-            >
-              Create Meeting
-            </Button>
-          </Box>
-
-          <Box
-            m="1em"
-            className={classes.buttonLinks}
-            display="flex"
-            justifyContent="center"
-          >
-            <Link href={`/smsHistory/${rowData.id}`} target={"_blank"} passHref>
-              <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                >
-                  Send SMS
-                </Button>
-              </a>
-            </Link>
-          </Box>
         </div>
       ) : (
         <Box
@@ -557,6 +557,6 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
       )}
     </>
   )
-}
+})
 
 export default UserInformationContent
