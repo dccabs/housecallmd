@@ -30,7 +30,7 @@ const getSmsLogMessageByUserId = async (req, res) => {
   }
   
   if (auth.data && auth.data.length > 0) {
-     authMessage = auth.data[0].sms_log_message.map((d) => ({ ...d, isOwnMessage: true, name: `${auth.data[0].firstName} ${auth.data[0].lastName}` }));
+     authMessage = auth.data[0].sms_log_message.map((d) => ({ ...d, isOwnMessage: true, name: `HouseCallMD` }));
      messages = [...smsMessages, ...authMessage].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
      messages = messages.map((d) => {
       delete d.UserList;

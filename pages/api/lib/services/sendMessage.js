@@ -61,7 +61,7 @@ const chatSms = async (req) => {
     .create({
       from: process.env.NEXT_PUBLIC_PHONE_NUMBER,
       to: req.body.to,
-      body: req.body.body,
+      body: `HouseCallMD has sent you a message: ${req.body.body}`,
     })
     
     if (clientMsg) {
