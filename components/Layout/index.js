@@ -4,11 +4,10 @@ import { Box } from '@material-ui/core'
 import { supabase } from '../../utils/initSupabase'
 import { Auth } from '@supabase/ui'
 
-import Navbar from '../Navbar'
+import Navbar from '../Navbar/Navbar'
 import Footer from '../Footer'
 import SnackBar from '../SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
-
 
 const Layout = ({ children }) => {
   const { setIsAuthenticated } = useStore()
@@ -28,9 +27,8 @@ const Layout = ({ children }) => {
       <Box>
         <SnackBar>
           <Navbar />
-            <Box
-            >{children}</Box>
-          </SnackBar>
+          <Box>{children}</Box>
+        </SnackBar>
       </Box>
       <Footer />
     </Box>
