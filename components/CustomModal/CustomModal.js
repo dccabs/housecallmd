@@ -15,11 +15,14 @@ import {
 } from '@material-ui/core'
 import { Close } from '@material-ui/icons'
 
-const modalContext = createContext()
 
 const useStyles = makeStyles((theme) => ({
   title: {
     padding: '10px 20px',
+    '& h2': {
+      fontSize: '18px',
+      fontWeight: 600,
+    },
   },
   content: {
     padding: '20px',
@@ -34,11 +37,16 @@ const CustomModal = ({
   onClose,
   onSubmit,
   open,
+  icon,
 }) => {
   const classes = useStyles()
   return (
     <Dialog open={Boolean(open)} maxWidth="sm" fullWidth>
-      <DialogTitle className={classes.title}>{title}</DialogTitle>
+      <DialogTitle className={classes.title}>
+        <Box display="flex" alignItems="center">
+          {icon ? icon : ''} {title}
+        </Box>
+      </DialogTitle>
       <Box position="absolute" top={0} right={0} onClick={onClose}>
         <IconButton>
           <Close />
@@ -63,11 +71,13 @@ CustomModal.propTypes = {
   onSubmit: PropTypes.func,
   open: PropTypes.bool,
   title: PropTypes.string,
+  icon: PropTypes.object,
 }
 CustomModal.defaultProps = {
   onClose: () => {},
   onSubmit: () => {},
   open: false,
   title: '',
+  icon: {},
 }
 export default CustomModal

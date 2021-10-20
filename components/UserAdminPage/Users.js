@@ -11,6 +11,7 @@ import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
 
 import UtilModal from '../UtilModal'
+import CustomModal from '../CustomModal/CustomModal'
 import UserInformationContent from '../UserInformationContent'
 import PersonIcon from '@material-ui/icons/Person'
 
@@ -176,7 +177,7 @@ const Users = ({ user, openSnackBar }) => {
         )}
       </div>
 
-      <UtilModal
+      <CustomModal
         open={open}
         title={'Update User Information'}
         onClose={() => setOpen(false)}
@@ -186,7 +187,6 @@ const Users = ({ user, openSnackBar }) => {
             setOpen={() => setOpen(false)}
             rowData={rowData}
             users={users}
-            width={'xl'}
             setUsers={setUsers}
           />
         }

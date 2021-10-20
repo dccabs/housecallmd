@@ -8,6 +8,7 @@ import useStore from '../zustand/store'
 
 import Container from '../components/Container'
 import UtilModal from '../components/UtilModal'
+import CustomModal from '../components/CustomModal/CustomModal'
 import ExistingInformation from '../components/ExistingInformation'
 import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
 import PersonIcon from '@material-ui/icons/Person'
@@ -141,11 +142,10 @@ const ReturningUserPage = () => {
         </Container>
       )}
 
-      <UtilModal
+      <CustomModal
         open={open}
-        title={'Your User Information'}
-        width={'xl'}
         icon={<PersonIcon fontSize="medium" />}
+        title={'Your User Information'}
         onClose={() => setOpen(false)}
         component={<ExistingInformation />}
       />

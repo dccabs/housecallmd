@@ -1,9 +1,9 @@
 import React, { memo, useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
 import MessageList from '../../components/MessageList'
-import PhoneNumberList from '../../components/PhoneNumberList'
+// import PhoneNumberList from '../../components/PhoneNumberList'
 import { SnackBarContext } from '../../components/SnackBar'
-import SkeletonChatPage from '../../components/SkeletonChatPage'
+import SkeletonChatPage from '../../components/SkeletonLoading/SkeletonChatPage'
 import {
   Typography,
   TextField,
@@ -15,10 +15,7 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 import { Auth } from '@supabase/ui'
-import {
-  Send as SendIcon,
-  ChatBubbleOutlineTwoTone,
-} from '@material-ui/icons'
+import { Send as SendIcon, ChatBubbleOutlineTwoTone } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   wrapIcon: {
@@ -38,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: 0,
     borderColor: 'transparent',
   },
-  
+
   gridItem: {
     paddingTop: 12,
     paddingBottom: 12,
@@ -84,7 +81,7 @@ const SmsHistoryPage = memo((props) => {
   const [bodyMessage, setBodyMessage] = useState('')
   const [number, setNumber] = useState('')
   const [userNameSmsOwner, setNameUserSmsOwner] = useState('')
-  const [messageSent, setMessageSent ] = useState({});
+  const [messageSent, setMessageSent] = useState({})
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
@@ -164,7 +161,7 @@ const SmsHistoryPage = memo((props) => {
       if (data.success) {
         setSuccess(true)
         setBodyMessage('')
-        setMessageSent({...data.payload});
+        setMessageSent({ ...data.payload })
       }
     } catch (err) {
       console.log(err)
@@ -194,7 +191,10 @@ const SmsHistoryPage = memo((props) => {
               {/* {<PhoneNumberList user={user} />} */}
               <Grid item xs={12} sm={12} md={12}>
                 <Grid className={classes.gridItemChatList}>
-                  <MessageList user={{ ...user, smsUserId }} messageSent={messageSent}/>
+                  <MessageList
+                    user={{ ...user, smsUserId }}
+                    messageSent={messageSent}
+                  />
                 </Grid>
                 <Divider />
                 <Grid
