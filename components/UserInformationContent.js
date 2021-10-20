@@ -12,6 +12,9 @@ import {
   MenuItem,
   Collapse,
   CircularProgress,
+  Divider,
+  Grid,
+  Item,
 } from '@material-ui/core'
 import Link from 'next/link'
 import moment from 'moment'
@@ -189,358 +192,396 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
         />
       ) : !loading ? (
         <div>
-          <Box
-            display="flex"
-            justifyContent="center"
-            flexWrap="wrap"
-          >
-            <form
-              onSubmit={handleSubmit}
-              style={{ width: '100%', maxWidth: '34rem' }}
-            >
-              <Box width="100%" maxWidth="34rem">
-                <FormControl component="fieldset">
-                  <FormControlLabel
-                    value="Terms"
-                    control={<Checkbox color="secondary" checked={checked} />}
-                    label="Policy Card Holder"
-                    labelPlacement="end"
-                    onChange={() => setChecked(!checked)}
-                  />
-                </FormControl>
-              </Box>
-
-              <Collapse in={!checked} style={{ width: '100%' }}>
-                <Box
-                  display="flex"
-                  width="100%"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <TextField
-                    className={classes.textFields}
-                    type="text"
-                    label="Policy Holder First Name"
-                    variant="outlined"
-                    color="secondary"
-                    fullWidth
-                    value={policyHolderFirstName}
-                    onChange={(e) => setPolicyHolderFirstName(e.target.value)}
-                  />
-
-                  <TextField
-                    className={classes.textFields}
-                    type="text"
-                    label="Policy Holder Last Name"
-                    variant="outlined"
-                    color="secondary"
-                    fullWidth
-                    value={policyHolderLastName}
-                    onChange={(e) => setPolicyHolderLastName(e.target.value)}
-                  />
-
-                  <TextField
-                    className={classes.textFields}
-                    type="date"
-                    label="Policy Holder Date of Birth"
-                    variant="outlined"
-                    color="secondary"
-                    fullWidth
-                    value={policyHolderDob}
-                    onChange={(e) => setPolicyHolderDob(e.target.value)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    inputProps={{
-                      max: currentDate,
-                    }}
-                  />
-
-                  <FormControl
-                    variant="outlined"
-                    className={classes.textFields}
-                  >
-                    <InputLabel id="relation" color="secondary">
-                      Policy Holder Relationship to Patient
-                    </InputLabel>
-                    <Select
-                      labelId="relation"
-                      label="Policy Holder Realtionship to Patient"
+          <Box display="flex" justifyContent="center" flexWrap="wrap">
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box width="100%">
+                    <FormControl component="fieldset">
+                      <FormControlLabel
+                        value="Terms"
+                        control={
+                          <Checkbox color="secondary" checked={checked} />
+                        }
+                        label="Policy Card Holder"
+                        labelPlacement="end"
+                        onChange={() => setChecked(!checked)}
+                      />
+                    </FormControl>
+                  </Box>
+                </Grid>
+                <Collapse in={!checked} style={{ width: '100%' }}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <TextField
+                        className={classes.textFields}
+                        type="text"
+                        label="Policy Holder First Name"
+                        variant="outlined"
+                        color="secondary"
+                        fullWidth
+                        value={policyHolderFirstName}
+                        onChange={(e) =>
+                          setPolicyHolderFirstName(e.target.value)
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <TextField
+                        className={classes.textFields}
+                        type="text"
+                        label="Policy Holder Last Name"
+                        variant="outlined"
+                        color="secondary"
+                        fullWidth
+                        value={policyHolderLastName}
+                        onChange={(e) =>
+                          setPolicyHolderLastName(e.target.value)
+                        }
+                      />
+                    </Grid>{' '}
+                    <Grid item xs={12} sm={12} md={6}>
+                      <TextField
+                        className={classes.textFields}
+                        type="date"
+                        label="Policy Holder Date of Birth"
+                        variant="outlined"
+                        color="secondary"
+                        fullWidth
+                        value={policyHolderDob}
+                        onChange={(e) => setPolicyHolderDob(e.target.value)}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          max: currentDate,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.textFields}
+                      >
+                        <InputLabel id="relation" color="secondary">
+                          Policy Holder Relationship to Patient
+                        </InputLabel>
+                        <Select
+                          labelId="relation"
+                          label="Policy Holder Realtionship to Patient"
+                          color="secondary"
+                          value={policyHolderRelation}
+                          onChange={(e) =>
+                            setPolicyHolderRelation(e.target.value)
+                          }
+                        >
+                          <MenuItem value="Spouse">Spouse</MenuItem>
+                          <MenuItem value="Mother">Mother</MenuItem>
+                          <MenuItem value="Father">Father</MenuItem>
+                          <MenuItem value="Child">Child</MenuItem>
+                          <MenuItem value="Domestic Partner">
+                            Domestic Partner
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Collapse>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      value={firstName}
+                      className={classes.textFields}
+                      fullWidth
+                      type="text"
+                      label="First Name"
+                      variant="outlined"
                       color="secondary"
-                      value={policyHolderRelation}
-                      onChange={(e) => setPolicyHolderRelation(e.target.value)}
+                      required
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      value={lastName}
+                      className={classes.textFields}
+                      fullWidth
+                      type="text"
+                      label="Last Name"
+                      variant="outlined"
+                      color="secondary"
+                      required
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      value={email}
+                      className={classes.textFields}
+                      fullWidth
+                      type="text"
+                      label="Email"
+                      variant="outlined"
+                      color="secondary"
+                      disabled
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+
+              {/* has insurance */}
+              <Grid container spacing={1}>
+                <Grid item sm={12}>
+                  <Box mt="1em">
+                    <FormControl component="fieldset">
+                      <FormControlLabel
+                        control={
+                          <Checkbox color="secondary" checked={hasInsurance} />
+                        }
+                        label="Has Insurance"
+                        labelPlacement="end"
+                        onChange={() => setHasInsurance(!hasInsurance)}
+                      />
+                    </FormControl>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      value={provider}
+                      className={classes.textFields}
+                      fullWidth
+                      type="text"
+                      label="Provider"
+                      variant="outlined"
+                      color="secondary"
+                      required
+                      onChange={(e) => setProvider(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      value={planNumber}
+                      className={classes.textFields}
+                      fullWidth
+                      type="text"
+                      label="Plan Number"
+                      variant="outlined"
+                      color="secondary"
+                      required
+                      onChange={(e) => setPlanNumber(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      value={groupNumber}
+                      className={classes.textFields}
+                      fullWidth
+                      type="text"
+                      label="Group Number"
+                      variant="outlined"
+                      color="secondary"
+                      required
+                      onChange={(e) => setGroupNumber(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      className={classes.textFields}
+                      type="date"
+                      label="Date of Birth"
+                      variant="outlined"
+                      color="secondary"
+                      fullWidth
+                      value={dob}
+                      onChange={(e) => setDob(e.target.value)}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        max: currentDate,
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      className={classes.textFields}
+                      type="tel"
+                      label="Phone"
+                      variant="outlined"
+                      color="secondary"
+                      fullWidth
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      InputProps={{
+                        inputComponent: PhoneField,
+                      }}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      className={classes.textFields}
+                      type="text"
+                      label="Address"
+                      variant="outlined"
+                      color="secondary"
+                      fullWidth
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      className={classes.textFields}
+                      type="text"
+                      label="City"
+                      variant="outlined"
+                      color="secondary"
+                      fullWidth
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  {' '}
+                  <Box className={classes.fieldBox}>
+                    <FormControl
+                      variant="outlined"
+                      className={classes.textFields}
                     >
-                      <MenuItem value="Spouse">Spouse</MenuItem>
-                      <MenuItem value="Mother">Mother</MenuItem>
-                      <MenuItem value="Father">Father</MenuItem>
-                      <MenuItem value="Child">Child</MenuItem>
-                      <MenuItem value="Domestic Partner">
-                        Domestic Partner
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Collapse>
-
-              <Box className={classes.fieldBox}>
-                <TextField
-                  value={email}
-                  className={classes.textFields}
-                  fullWidth
-                  type="text"
-                  label="Email"
-                  variant="outlined"
-                  color="secondary"
-                  disabled
-                />
+                      <InputLabel id="state" color="secondary">
+                        State
+                      </InputLabel>
+                      <Select
+                        labelId="state"
+                        label="State"
+                        color="secondary"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                      >
+                        {states.map((s, i) => (
+                          <MenuItem key={i} value={s.abbreviation}>
+                            {s.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Box className={classes.fieldBox}>
+                    <TextField
+                      className={classes.textFields}
+                      type="number"
+                      label="Zip"
+                      variant="outlined"
+                      color="secondary"
+                      fullWidth
+                      value={zip}
+                      onChange={(e) => setZip(e.target.value)}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+              <Box my="2em">
+                <Divider light />
               </Box>
 
-              <Box className={classes.fieldBox}>
-                <TextField
-                  value={firstName}
-                  className={classes.textFields}
-                  fullWidth
-                  type="text"
-                  label="First Name"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </Box>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12} md={8}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12} md={5}>
+                      <Button
+                        color="secondary"
+                        variant="outlined"
+                        size="large"
+                        onClick={() => setMeetingContent(true)}
+                        style={{ marginRight: '10px' }}
+                        fullWidth
+                      >
+                        Create Meeting
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={5}>
+                      <Link
+                        href={`/smsHistory/${rowData.id}`}
+                        target={'_blank'}
+                        passHref
+                      >
+                        <a
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <Button
+                            color="secondary"
+                            size="large"
+                            variant="outlined"
+                            fullWidth
+                          >
+                            Send SMS
+                          </Button>
+                        </a>
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </Grid>
 
-              <Box className={classes.fieldBox}>
-                <TextField
-                  value={lastName}
-                  className={classes.textFields}
-                  fullWidth
-                  type="text"
-                  label="Last Name"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </Box>
-
-              <Box mt="1em">
-                <FormControl component="fieldset">
-                  <FormControlLabel
-                    control={
-                      <Checkbox color="secondary" checked={hasInsurance} />
-                    }
-                    label="Has Insurance"
-                    labelPlacement="end"
-                    onChange={() => setHasInsurance(!hasInsurance)}
-                  />
-                </FormControl>
-              </Box>
-
-              <Box className={classes.fieldBox}>
-                <TextField
-                  value={provider}
-                  className={classes.textFields}
-                  fullWidth
-                  type="text"
-                  label="Provider"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                  onChange={(e) => setProvider(e.target.value)}
-                />
-              </Box>
-
-              <Box className={classes.fieldBox}>
-                <TextField
-                  value={planNumber}
-                  className={classes.textFields}
-                  fullWidth
-                  type="text"
-                  label="Plan Number"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                  onChange={(e) => setPlanNumber(e.target.value)}
-                />
-              </Box>
-
-              <Box className={classes.fieldBox}>
-                <TextField
-                  value={groupNumber}
-                  className={classes.textFields}
-                  fullWidth
-                  type="text"
-                  label="Group Number"
-                  variant="outlined"
-                  color="secondary"
-                  required
-                  onChange={(e) => setGroupNumber(e.target.value)}
-                />
-              </Box>
-
-              <Box className={classes.fieldBox}>
-                <TextField
-                  className={classes.textFields}
-                  type="date"
-                  label="Date of Birth"
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  value={dob}
-                  onChange={(e) => setDob(e.target.value)}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  inputProps={{
-                    max: currentDate,
-                  }}
-                />
-              </Box>
-
-              <Box className={classes.fieldBox}>
-                <TextField
-                  className={classes.textFields}
-                  type="tel"
-                  label="Phone"
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  InputProps={{
-                    inputComponent: PhoneField,
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </Box>
-
-              <Box className={classes.fieldBox}>
-                <TextField
-                  className={classes.textFields}
-                  type="text"
-                  label="Address"
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </Box>
-              <Box className={classes.fieldBox}>
-                <TextField
-                  className={classes.textFields}
-                  type="text"
-                  label="City"
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                />
-              </Box>
-              <Box className={classes.fieldBox}>
-                <FormControl variant="outlined" className={classes.textFields}>
-                  <InputLabel id="state" color="secondary">
-                    State
-                  </InputLabel>
-                  <Select
-                    labelId="state"
-                    label="State"
-                    color="secondary"
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                  >
-                    {states.map((s, i) => (
-                      <MenuItem key={i} value={s.abbreviation}>
-                        {s.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box className={classes.fieldBox}>
-                <TextField
-                  className={classes.textFields}
-                  type="number"
-                  label="Zip"
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  value={zip}
-                  onChange={(e) => setZip(e.target.value)}
-                />
-              </Box>
-
-              <Box
-                mt="2em"
-                display="flex"
-                justifyContent="center"
-                flexWrap="wrap"
-              >
-                <Box m="1em" className={classes.buttonLinks}>
-                  <Button
-                    type="submit"
-                    color="secondary"
-                    variant="contained"
-                    disabled={
-                      (!checked &&
-                        (!policyHolderFirstName ||
-                          !policyHolderLastName ||
-                          !policyHolderDob ||
-                          !policyHolderRelation)) ||
-                      !firstName ||
-                      !lastName ||
-                      !dob ||
-                      !groupNumber ||
-                      !phone ||
-                      !planNumber ||
-                      !provider ||
-                      !address ||
-                      !city ||
-                      !state ||
-                      !zip
-                    }
-                  >
-                    Update
-                  </Button>
-                </Box>
-              </Box>
+                <Grid item xs={12} sm={12} md={4}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12} md={12}>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        variant="contained"
+                        size="large"
+                        fullWidth
+                        disabled={
+                          (!checked &&
+                            (!policyHolderFirstName ||
+                              !policyHolderLastName ||
+                              !policyHolderDob ||
+                              !policyHolderRelation)) ||
+                          !firstName ||
+                          !lastName ||
+                          !dob ||
+                          !groupNumber ||
+                          !phone ||
+                          !planNumber ||
+                          !provider ||
+                          !address ||
+                          !city ||
+                          !state ||
+                          !zip
+                        }
+                      >
+                        Update
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
             </form>
-          </Box>
-          <Box
-            className={classes.buttonLinks}
-            display="flex"
-            justifyContent="center"
-          >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMeetingContent(true)}
-            >
-              Create Meeting
-            </Button>
-          </Box>
-
-          <Box
-            m="1em"
-            className={classes.buttonLinks}
-            display="flex"
-            justifyContent="center"
-          >
-            <Link href={`/smsHistory/${rowData.id}`} target={'_blank'} passHref>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                style={{ textDecoration: 'none' }}
-              >
-                <Button color="secondary" variant="contained">
-                  Send SMS
-                </Button>
-              </a>
-            </Link>
           </Box>
         </div>
       ) : (
