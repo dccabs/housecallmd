@@ -11,8 +11,6 @@ import {
   InputLabel,
   MenuItem,
   Collapse,
-  Grid,
-  Item,
   CircularProgress,
 } from '@material-ui/core'
 import Link from 'next/link'
@@ -55,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
 
 const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
   const openSnackBar = useContext(SnackBarContext)
-
   const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
   const [policyHolderLastName, setPolicyHolderLastName] = useState('')
   const [policyHolderDob, setPolicyHolderDob] = useState('')
@@ -192,9 +189,16 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
         />
       ) : !loading ? (
         <div>
-          <Box display="flex" justifyContent="center" flexWrap="wrap">
-            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-              <Box mt="1em" width="100%">
+          <Box
+            display="flex"
+            justifyContent="center"
+            flexWrap="wrap"
+          >
+            <form
+              onSubmit={handleSubmit}
+              style={{ width: '100%', maxWidth: '34rem' }}
+            >
+              <Box width="100%" maxWidth="34rem">
                 <FormControl component="fieldset">
                   <FormControlLabel
                     value="Terms"
@@ -469,56 +473,18 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
                   onChange={(e) => setZip(e.target.value)}
                 />
               </Box>
+
               <Box
-                mt="1.5em"
+                mt="2em"
                 display="flex"
-                justifyContent="space-between"
+                justifyContent="center"
                 flexWrap="wrap"
               >
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  flexWrap="wrap"
-                >
-                  <Box mr="1rem">
-                    <Button
-                      size="large"
-                      color="secondary"
-                      variant="outlined"
-                      onClick={() => setMeetingContent(true)}
-                    >
-                      Create Meeting
-                    </Button>
-                  </Box>
-
-                  <Box>
-                    <Link
-                      href={`/smsHistory/${rowData.id}`}
-                      target={'_blank'}
-                      passHref
-                    >
-                      <a
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <Button
-                          color="secondary"
-                          variant="outlined"
-                          size="large"
-                        >
-                          Send SMS
-                        </Button>
-                      </a>
-                    </Link>
-                  </Box>
-                </Box>
-                <Box>
+                <Box m="1em" className={classes.buttonLinks}>
                   <Button
                     type="submit"
                     color="secondary"
                     variant="contained"
-                    size="large"
                     disabled={
                       (!checked &&
                         (!policyHolderFirstName ||
@@ -543,6 +509,38 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
                 </Box>
               </Box>
             </form>
+          </Box>
+          <Box
+            className={classes.buttonLinks}
+            display="flex"
+            justifyContent="center"
+          >
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setMeetingContent(true)}
+            >
+              Create Meeting
+            </Button>
+          </Box>
+
+          <Box
+            m="1em"
+            className={classes.buttonLinks}
+            display="flex"
+            justifyContent="center"
+          >
+            <Link href={`/smsHistory/${rowData.id}`} target={'_blank'} passHref>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                style={{ textDecoration: 'none' }}
+              >
+                <Button color="secondary" variant="contained">
+                  Send SMS
+                </Button>
+              </a>
+            </Link>
           </Box>
         </div>
       ) : (

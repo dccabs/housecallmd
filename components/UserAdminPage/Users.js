@@ -10,7 +10,7 @@ import {
 import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
 
-import UtilModal from '../UtilModal'
+// import UtilModal from '../UtilModal'
 import CustomModal from '../CustomModal/CustomModal'
 import UserInformationContent from '../UserInformationContent'
 import PersonIcon from '@material-ui/icons/Person'
@@ -181,7 +181,7 @@ const Users = ({ user, openSnackBar }) => {
         open={open}
         title={'Update User Information'}
         onClose={() => setOpen(false)}
-        icon={<PersonIcon fontSize="medium" />}
+        icon={<PersonIcon fontSize="small" />}
         component={
           <UserInformationContent
             setOpen={() => setOpen(false)}

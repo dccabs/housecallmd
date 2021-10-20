@@ -4,7 +4,9 @@ import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
 import moment from 'moment'
 
-import UtilModal from '../UtilModal'
+// import UtilModal from '../UtilModal'
+import CustomModal from '../CustomModal/CustomModal'
+import { AssignmentTurnedIn as AssignmentTurnedInIcon } from '@material-ui/icons'
 import CompletedAppointmentsModalContent from '../CompletedAppointmentsModalContent'
 
 const CompletedAppointments = ({ openSnackBar }) => {
@@ -90,12 +92,14 @@ const CompletedAppointments = ({ openSnackBar }) => {
             }}
           />
 
-          <UtilModal
+          <CustomModal
             open={open}
-            setOpen={setOpen}
+            title={'Update Appointment'}
+            onClose={() => setOpen(false)}
+            icon={<AssignmentTurnedInIcon fontSize="small" />}
             component={
               <CompletedAppointmentsModalContent
-                setOpen={setOpen}
+                setOpen={() => setOpen(false)}
                 rowData={rowData}
                 completedAppointments={completedAppointments}
                 setCompletedAppointments={setCompletedAppointments}
