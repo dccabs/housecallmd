@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import useStore from '../zustand/store'
-import { Box, Typography, Button } from '@material-ui/core'
+import { Box, Typography, Button, Modal, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
+import CustomModal from '../components/CustomModal/CustomModal'
 
 import ContactSection from '../components/ContactSection'
 import Reviews from '../components/Reviews'
@@ -50,8 +51,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '3.7em',
     },
   },
-  mainHeading: {
-  },
+  mainHeading: {},
   content: {
     padding: '2em',
     background: '#e1215b',
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
   reviewH2: {
     margin: '.5em 0',
-    fontSize: '2em,'
+    fontSize: '2em,',
   },
   contentH2: {
     margin: '.5em 0',
@@ -114,24 +114,24 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   reviewsContainer: {
-    marginTop: '1.5em'
+    marginTop: '1.5em',
   },
   textBody: {
     [theme.breakpoints.up('sm')]: {
-      fontSize: '1.4em'
+      fontSize: '1.4em',
     },
-  }
+  },
 }))
 
 const Home = () => {
   const { user } = Auth.useUser()
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
   const classes = useStyles()
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
   useEffect(() => {
-    setLoading(false);
+    setLoading(false)
   }, [])
-
 
   return (
     <div className={classes.pageContainer}>
@@ -139,12 +139,22 @@ const Home = () => {
         <div className={classes.mainHeadingContainer}>
           <Box className={classes.mainHeading} fontWeight="fontWeightBold">
             <Typography className={classes.h2} variant="h2">
-              Housecall,<br />
-              <span style={{color: '#e1215b'}}>ALWAYS ON-CALL</span>
+              Housecall,
+              <br />
+              <span style={{ color: '#e1215b' }}>ALWAYS ON-CALL</span>
             </Typography>
 
-            <p style={{color: 'rgb(100, 110, 115)', fontSize: '1.25em', margin: '1.3em 0', fontWeight: 300}}>
-              There is always a care professional from our team who will answer your call. Discover what our team can do for you and your loved ones.
+            <p
+              style={{
+                color: 'rgb(100, 110, 115)',
+                fontSize: '1.25em',
+                margin: '1.3em 0',
+                fontWeight: 300,
+              }}
+            >
+              There is always a care professional from our team who will answer
+              your call. Discover what our team can do for you and your loved
+              ones.
             </p>
           </Box>
           <Box
@@ -154,22 +164,14 @@ const Home = () => {
             flexDirection="column"
             alignitems="center"
           >
-            <Link href={user !==null ? '/returning-user' : '/terms'}>
-              <Button
-                color="secondary"
-                variant="contained"
-                size="large"
-              >
+            <Link href={user !== null ? '/returning-user' : '/terms'}>
+              <Button color="secondary" variant="contained" size="large">
                 Get Started
               </Button>
             </Link>
             {!user && !loading && (
               <Link href="/login">
-                <Button
-                  color="secondary"
-                  variant="outlined"
-                  size="large"
-                >
+                <Button color="secondary" variant="outlined" size="large">
                   Login
                 </Button>
               </Link>
@@ -185,14 +187,19 @@ const Home = () => {
           />
         </div>
       </div>
+
       <Box mt="1em" className={classes.content}>
         <div className={classes.contentInner}>
-          <Typography variant="h2" className={classes.reviewh2}
-                      classes={{
-                        root: classes.contentH2,
-                      }}
-          >What we do</Typography>
-          <Typography classes={{root: classes.textBody}}>
+          <Typography
+            variant="h2"
+            className={classes.reviewh2}
+            classes={{
+              root: classes.contentH2,
+            }}
+          >
+            What we do
+          </Typography>
+          <Typography classes={{ root: classes.textBody }}>
             Our team of experienced and qualified care professionals specializes
             in providing urgent care in Kitsap County, Washington for our
             patients, whether you are at home or in your office.
@@ -220,11 +227,15 @@ const Home = () => {
         justifyContent="center"
       >
         <Box mb="2em" className={classes.reviewsInner}>
-          <Typography variant="h2" className={classes.reviewh2}
+          <Typography
+            variant="h2"
+            className={classes.reviewh2}
             classes={{
               root: classes.reviewH2,
             }}
-          >Reviews</Typography>
+          >
+            Reviews
+          </Typography>
 
           <div className={classes.reviewsContainer}>
             <Reviews />
