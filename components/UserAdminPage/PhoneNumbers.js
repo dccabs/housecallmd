@@ -13,8 +13,10 @@ import {
 import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
 
-import UtilModal from '../UtilModal'
+// import UtilModal from '../UtilModal'
+import CustomModal from '../CustomModal/CustomModal'
 import AddPhoneNumber from '../AddPhoneNumber'
+import { Phone as PhoneIcon } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -215,16 +217,17 @@ const PhoneNumbers = ({ user, openSnackBar }) => {
                   },
                 },
               ]}
-              // onRowClick={(event, rowData) => rowSelected(rowData)}
             />
           </div>
 
-          <UtilModal
+          <CustomModal
             open={open}
-            setOpen={setOpen}
+            onClose={() => setOpen(false)}
+            icon={<PhoneIcon fontSize="small" />}
+            title={'Add Phone Number'}
             component={
               <AddPhoneNumber
-                setOpen={setOpen}
+                setOpen={() => setOpen(false)}
                 phoneNumbers={phoneNumbers}
                 setPhoneNumbers={setPhoneNumbers}
                 openSnackBar={openSnackBar}
