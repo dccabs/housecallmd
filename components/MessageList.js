@@ -114,7 +114,7 @@ const MessageList = memo((props) => {
           from_phone_number: sender,
           message: body,
           isOwnMessage: true,
-          name: adminName
+          name: 'House call MD'
         },
       ])
     }
