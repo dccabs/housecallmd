@@ -106,7 +106,6 @@ const MessageList = memo((props) => {
   useEffect(() => {
     const { body, sender, user_id, adminName} = messageSent;
     if (Object.keys(messageSent).length !== 0) {
-      console.log('sendMessage', messageSent);
       setSmsLogMessages((prevState) => [
         ...prevState,
         {
