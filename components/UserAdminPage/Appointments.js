@@ -4,8 +4,10 @@ import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
 import moment from 'moment'
 
-import UtilModal from '../UtilModal'
+// import UtilModal from '../UtilModal'
+import CustomModal from '../CustomModal/CustomModal'
 import AppointmentsModalContent from '../AppointmentsModalContent'
+import { AssignmentInd as AssignmentIndIcon } from '@material-ui/icons'
 
 const Appointments = ({ openSnackBar }) => {
   const [appointments, setAppointments] = useState(false)
@@ -93,12 +95,14 @@ const Appointments = ({ openSnackBar }) => {
             }}
           />
 
-          <UtilModal
+          <CustomModal
             open={open}
-            setOpen={setOpen}
+            title={'Update Appointment'}
+            icon={<AssignmentIndIcon fontSize="small" />}
+            onClose={() => setOpen(false)}
             component={
               <AppointmentsModalContent
-                setOpen={setOpen}
+                setOpen={() => setOpen(false)}
                 rowData={rowData}
                 appointments={appointments}
                 setAppointments={setAppointments}

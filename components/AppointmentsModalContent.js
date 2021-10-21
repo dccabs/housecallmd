@@ -13,7 +13,6 @@ import {
   Collapse,
   CircularProgress,
 } from '@material-ui/core'
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
 import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 
@@ -130,17 +129,7 @@ const AppointmentsModalContent = ({
         />
       ) : (
         <>
-          <Box display="flex" alignItems="center">
-            <AssignmentIndIcon
-              fontSize="large"
-              style={{ marginRight: '0.3em' }}
-            />
-            <Typography variant="h4" align="left">
-              Update Appointment
-            </Typography>
-          </Box>
-
-          <Box mt="2em">
+          <Box>
             <form onSubmit={handleSubmit}>
               <Box display="flex" justifyContent="center" flexWrap="wrap">
                 <Box

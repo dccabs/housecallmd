@@ -13,7 +13,6 @@ import {
   Collapse,
   CircularProgress,
 } from '@material-ui/core'
-import PhoneIcon from '@material-ui/icons/Phone'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PhoneField from './PhoneField'
@@ -92,14 +91,7 @@ const AddPhoneNumber = ({
 
   return (
     <div>
-      <Box display="flex" alignItems="center">
-        <PhoneIcon fontSize="large" style={{ marginRight: '0.3em' }} />
-        <Typography variant="h4" align="left">
-          Add Phone Number
-        </Typography>
-      </Box>
-
-      <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+      <Box display="flex" justifyContent="center" flexWrap="wrap">
         <form onSubmit={handleSubmit}>
           <Box className={classes.fieldBox}>
             <TextField

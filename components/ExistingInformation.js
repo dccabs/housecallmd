@@ -14,7 +14,6 @@ import {
 import moment from 'moment'
 import { Auth } from '@supabase/ui'
 import Link from 'next/link'
-import PersonIcon from '@material-ui/icons/Person'
 
 const useStyles = makeStyles((theme) => ({
   flexGrow: {
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   buttonLinks: {
-    marginTop: '4em',
+    marginTop: '2em',
     alignItems: 'center',
 
     '& button': {
@@ -44,8 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ExistingInformation = (props) => {
-  const { onClose } = props
+const ExistingInformation = () => {
   const classes = useStyles()
   const [isPolicyHolder, setIsPolicyHolder] = useState('')
   const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
@@ -114,27 +112,11 @@ const ExistingInformation = (props) => {
     }
   }, [user])
 
-  const handleCloseModal = () => {
-    onClose()
-  }
-
   return (
     <div>
       {!loading ? (
         <>
-          <Box display="flex" alignItems="center">
-            <PersonIcon
-              color="secondary"
-              fontSize="large"
-              style={{ marginRight: '0.3em' }}
-            />
-            <Typography variant="h4" align="left">
-              Your User Information
-            </Typography>
-          </Box>
-          <Divider />
-
-          <Box my="1em">
+          <Box>
             <List dense={true}>
               <ListItem>
                 <ListItemText className={classes.flexGrow}>
@@ -299,18 +281,10 @@ const ExistingInformation = (props) => {
             className={classes.buttonLinks}
           >
             <Link href="/edit-information">
-              <Button variant="contained" color="secondary" size="large">
+              <Button variant="contained" color="secondary" size="small">
                 Edit Information
               </Button>
             </Link>
-            <Button
-              variant="contained"
-              color="default"
-              size="large"
-              onClick={handleCloseModal}
-            >
-              Close
-            </Button>
           </Box>
         </>
       ) : (
