@@ -1,12 +1,17 @@
 import { useContext, useState } from 'react'
-import { Typography, Box, Button, TextField } from '@material-ui/core'
-import Container from '../components/Container'
-import { SnackBarContext} from '../components/SnackBar'
+import {
+  Typography,
+  Box,
+  Button,
+  TextField,
+  Grid,
+} from '@material-ui/core'
+import { SnackBarContext } from '../components/SnackBar'
 
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
-  h2: {
+  marginTop: {
     marginTop: '.5em',
   },
   textFields: {
@@ -45,16 +50,21 @@ const ForgotPassword = () => {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+    }).then((res) => {
+      console.log('res', res)
+      if (res.ok) {
+        openSnackBar({
+          message: `An email has been sent to ${localEmail} to reset your password.`,
+          snackSeverity: 'success',
+        })
+      } else {
+        openSnackBar({
+          message: `There was an error please try again later.`,
+          snackSeverity: 'error',
+        })
+      }
     })
-      .then((res) => {
-        console.log('res', res)
-        if (res.ok) {
-          openSnackBar({message: `An email has been sent to ${localEmail} to reset your password.`, snackSeverity: 'success'})
-        } else {
-          openSnackBar({message: `There was an error please try again later.`, snackSeverity: 'error'})
-        }
-      });
   }
 
   const handleEmailUpdate = (e) => {
@@ -64,53 +74,64 @@ const ForgotPassword = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   return (
-    <Container>
-      <Box>
-        <Typography variant="h2" className={classes.h2}>Forgot Password</Typography>
-        <Box className={classes.disclaimer} mt="1em">
-          Please enter your email.  If you have an account associated with HouseCall MD, you will be sent instructions to reset your password.
-        </Box>
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <Box
-            p="0"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <TextField
-              value={localEmail}
-              className={classes.textFields}
-              fullWidth
-              type="email"
-              label="Email"
-              variant="outlined"
-              color="secondary"
-              required
-              onChange={handleEmailUpdate}
-            />
+    <Grid
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justify="center"
+      style={{ minHeight: `calc(100vh - 100px)` }}
+    >
+      <Grid item xs={11} sm={6} md={6} lg={6}>
+        <Box className={classes.marginTop}>
+          <Typography variant="body1">RECOVER ACCOUNT</Typography>
+          <Typography variant="h3">Forgot your password?</Typography>
+          <Box className={classes.disclaimer} mt="1em">
+            Please enter your email. If you have an account associated with
+            HouseCall MD, you will be sent instructions to reset your password.
           </Box>
-          <Box
-            mt="2em"
-            display="flex"
-            justifyContent="center"
-            flexWrap="wrap"
-          >
-            <Box m="1em" className={classes.buttonLinks}>
-              <Button
-                disabled={!localEmail}
-                type="submit"
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <Box
+              p="0"
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <TextField
+                value={localEmail}
+                className={classes.textFields}
+                fullWidth
+                type="email"
+                label="Email"
+                variant="outlined"
                 color="secondary"
-                variant="contained"
-                size="large"
-              >
-                Submit
-              </Button>
+                required
+                onChange={handleEmailUpdate}
+              />
             </Box>
-          </Box>
-        </form>
-      </Box>
-    </Container>
+            <Box
+              mt="2em"
+              display="flex"
+              justifyContent="center"
+              flexWrap="wrap"
+            >
+              <Box m="1em" className={classes.buttonLinks}>
+                <Button
+                  disabled={!localEmail}
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  size="large"
+                >
+                  Submit
+                </Button>
+              </Box>
+            </Box>
+          </form>
+        </Box>
+      </Grid>
+    </Grid>
   )
 }
 

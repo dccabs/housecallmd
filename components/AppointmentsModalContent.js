@@ -13,12 +13,13 @@ import {
   Collapse,
   CircularProgress,
 } from '@material-ui/core'
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
 import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 
 import MeetingCreated from './MeetingCreated'
 import SendSMS from './SendSMS'
+
+import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
   fieldBox: {
@@ -58,7 +59,6 @@ const AppointmentsModalContent = ({
   const [clientNotes, setClientNotes] = useState('')
   const [completed, setCompleted] = useState(false)
   const [MeetingContent, setMeetingContent] = useState(false)
-  const [MessageContent, setMessageContent] = useState(false)
 
   const classes = useStyles()
 
@@ -127,24 +127,9 @@ const AppointmentsModalContent = ({
           phone={rowData.UserList.phone}
           setMeetingContent={setMeetingContent}
         />
-      ) : MessageContent ? (
-        <SendSMS
-          phone={rowData.UserList.phone}
-          setMessageContent={setMessageContent}
-        />
       ) : (
         <>
-          <Box display="flex" alignItems="center">
-            <AssignmentIndIcon
-              fontSize="large"
-              style={{ marginRight: '0.3em' }}
-            />
-            <Typography variant="h4" align="left">
-              Update Appointment
-            </Typography>
-          </Box>
-
-          <Box mt="2em">
+          <Box>
             <form onSubmit={handleSubmit}>
               <Box display="flex" justifyContent="center" flexWrap="wrap">
                 <Box
@@ -256,13 +241,16 @@ const AppointmentsModalContent = ({
             display="flex"
             justifyContent="center"
           >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMessageContent(true)}
-            >
-              Send SMS
-            </Button>
+            <Link href={`/smsHistory/${rowData.userId}`} target={"_blank"} passHref>
+              <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                >
+                  Send SMS
+                </Button>
+              </a>
+            </Link>
           </Box>
         </>
       )}

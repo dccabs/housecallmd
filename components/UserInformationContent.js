@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, memo } from 'react'
 import {
   Box,
   Typography,
@@ -13,6 +13,7 @@ import {
   Collapse,
   CircularProgress,
 } from '@material-ui/core'
+import Link from 'next/link'
 import moment from 'moment'
 import PersonIcon from '@material-ui/icons/Person'
 import { makeStyles } from '@material-ui/core/styles'
@@ -50,9 +51,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
+const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
   const openSnackBar = useContext(SnackBarContext)
-
   const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
   const [policyHolderLastName, setPolicyHolderLastName] = useState('')
   const [policyHolderDob, setPolicyHolderDob] = useState('')
@@ -73,14 +73,12 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
   const [zip, setZip] = useState('')
 
   const [MeetingContent, setMeetingContent] = useState(false)
-  const [MessageContent, setMessageContent] = useState(false)
   const [currentDate, setCurrentDate] = useState(false)
   const [checked, setChecked] = useState(false)
   const [loading, setLoading] = useState(false)
   const classes = useStyles()
 
   useEffect(async () => {
-    console.log('rowData', rowData)
     setFirstName(rowData.firstName)
     setLastName(rowData.lastName)
     setEmail(rowData.email)
@@ -189,22 +187,18 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
           phone={phone}
           setMeetingContent={setMeetingContent}
         />
-      ) : MessageContent ? (
-        <SendSMS phone={phone} setMessageContent={setMessageContent} />
       ) : !loading ? (
         <div>
-          <Box display="flex" alignItems="center">
-            <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
-            <Typography variant="h4" align="left">
-              Update User Information
-            </Typography>
-          </Box>
-          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+          <Box
+            display="flex"
+            justifyContent="center"
+            flexWrap="wrap"
+          >
             <form
               onSubmit={handleSubmit}
               style={{ width: '100%', maxWidth: '34rem' }}
             >
-              <Box mt="1em" width="100%" maxWidth="34rem">
+              <Box width="100%" maxWidth="34rem">
                 <FormControl component="fieldset">
                   <FormControlLabel
                     value="Terms"
@@ -536,13 +530,17 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
             display="flex"
             justifyContent="center"
           >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMessageContent(true)}
-            >
-              Send SMS
-            </Button>
+            <Link href={`/smsHistory/${rowData.id}`} target={'_blank'} passHref>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                style={{ textDecoration: 'none' }}
+              >
+                <Button color="secondary" variant="contained">
+                  Send SMS
+                </Button>
+              </a>
+            </Link>
           </Box>
         </div>
       ) : (
@@ -557,6 +555,6 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
       )}
     </>
   )
-}
+})
 
 export default UserInformationContent

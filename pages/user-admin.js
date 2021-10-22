@@ -65,20 +65,20 @@ const UserAdmin = (props) => {
   }, [user])
 
   return (
-    <Container>
+    <>
       {authorized && (
         <>
-          <div>
+          <Box mt="1em">
             <Tabs
               value={tabValue}
               onChange={(e, newValue) => setTabValue(newValue)}
             >
-              <Tab label="Users" {...a11yProps(0)} />
+              <Tab label="Users" {...a11yProps(0)}  wrap/>
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Completed Appoitments" {...a11yProps(2)} />
-              <Tab label="Phone Numbers" {...a11yProps(3)} />
+              <Tab label="Completed Appoitments" {...a11yProps(2)} wrap/>
+              <Tab label="Phone Numbers" {...a11yProps(3)} wrap/>
             </Tabs>
-          </div>
+          </Box>
 
           <TabPanel value={tabValue} index={0}>
             <Users user={user} openSnackBar={openSnackBar} />
@@ -94,7 +94,7 @@ const UserAdmin = (props) => {
           </TabPanel>
         </>
       )}
-    </Container>
+    </>
   )
 }
 

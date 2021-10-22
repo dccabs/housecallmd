@@ -8,9 +8,10 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core'
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
+
+import Link from 'next/link'
 
 import MeetingCreated from './MeetingCreated'
 import SendSMS from './SendSMS'
@@ -53,7 +54,6 @@ const CompletedAppointmentsModalContent = ({
   const [clientNotes, setClientNotes] = useState('')
   const [completed, setCompleted] = useState(false)
   const [MeetingContent, setMeetingContent] = useState(false)
-  const [MessageContent, setMessageContent] = useState(false)
 
   const classes = useStyles()
 
@@ -122,24 +122,9 @@ const CompletedAppointmentsModalContent = ({
           phone={rowData.UserList.phone}
           setMeetingContent={setMeetingContent}
         />
-      ) : MessageContent ? (
-        <SendSMS
-          phone={rowData.UserList.phone}
-          setMessageContent={setMessageContent}
-        />
       ) : (
         <>
-          <Box display="flex" alignItems="center">
-            <AssignmentTurnedInIcon
-              fontSize="large"
-              style={{ marginRight: '0.3em' }}
-            />
-            <Typography variant="h4" align="left">
-              Update Appointment
-            </Typography>
-          </Box>
-
-          <Box mt="2em">
+          <Box>
             <form onSubmit={handleSubmit}>
               <Box display="flex" justifyContent="center" flexWrap="wrap">
                 <Box
@@ -251,13 +236,16 @@ const CompletedAppointmentsModalContent = ({
             display="flex"
             justifyContent="center"
           >
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setMessageContent(true)}
-            >
-              Send SMS
-            </Button>
+            <Link href={`/smsHistory/${rowData.id}`} target={"_blank"} passHref>
+              <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                >
+                  Send SMS
+                </Button>
+              </a>
+            </Link>
           </Box>
         </>
       )}

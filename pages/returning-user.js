@@ -7,10 +7,11 @@ import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
 
 import Container from '../components/Container'
-import UtilModal from '../components/UtilModal'
+// import UtilModal from '../components/UtilModal'
+import CustomModal from '../components/CustomModal/CustomModal'
 import ExistingInformation from '../components/ExistingInformation'
 import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
-
+import PersonIcon from '@material-ui/icons/Person'
 
 const useStyles = makeStyles((theme) => ({
   headings: {
@@ -46,12 +47,9 @@ const ReturningUserPage = () => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const store = useStore();
+  const store = useStore()
 
-  const {
-    insuranceOptOut,
-    setInsuranceOptOut,
-  } = store
+  const { insuranceOptOut, setInsuranceOptOut } = store
 
   const { user } = Auth.useUser()
   const router = useRouter()
@@ -83,71 +81,73 @@ const ReturningUserPage = () => {
   }, [user])
 
   useEffect(() => {
-    setInsuranceOptOut(false);
+    setInsuranceOptOut(false)
   }, [])
 
   const optOutofInsurance = async () => {
-    setInsuranceOptOut(true);
+    setInsuranceOptOut(true)
     router.push('/visit-choice')
   }
 
   return (
     <div>
-      {!loading &&
-      <Container>
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <div className={classes.headings}>
-            <Typography variant="h2">Welcome Back</Typography>
-            <Typography variant="h6">
-              <strong>
-                If you have questions about a recently completed visit, please
-                call (833) 432-5633 / (833) HEAL MED
-              </strong>
-            </Typography>
-          </div>
+      {!loading && (
+        <Container>
           <Box
-            className={classes.buttonLinks}
             display="flex"
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
           >
-            <Link href="/visit-choice">
-              <Button variant="contained" color="secondary">
-                Continue with existing profile and insurance
-              </Button>
-            </Link>
-            <Box mt="0.5em">
-              <MuiLink color="secondary" onClick={() => setOpen(true)}>
-                See existing information
-              </MuiLink>
-            </Box>
-            <Link href="/edit-information">
-              <Button variant="contained" color="secondary">
-                Change insurance information
-              </Button>
-            </Link>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={optOutofInsurance}
+            <div className={classes.headings}>
+              <Typography variant="h2">Welcome Back</Typography>
+              <Typography variant="h6">
+                <strong>
+                  If you have questions about a recently completed visit, please
+                  call (833) 432-5633 / (833) HEAL MED
+                </strong>
+              </Typography>
+            </div>
+            <Box
+              className={classes.buttonLinks}
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
             >
-              Do not use insurance for this appointment
-            </Button>
+              <Link href="/visit-choice">
+                <Button variant="contained" color="secondary">
+                  Continue with existing profile and insurance
+                </Button>
+              </Link>
+              <Box mt="0.5em">
+                <MuiLink color="secondary" onClick={() => setOpen(true)}>
+                  See existing information
+                </MuiLink>
+              </Box>
+              <Link href="/edit-information">
+                <Button variant="contained" color="secondary">
+                  Change insurance information
+                </Button>
+              </Link>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={optOutofInsurance}
+              >
+                Do not use insurance for this appointment
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-      }
+        </Container>
+      )}
 
-      <UtilModal
+      <CustomModal
         open={open}
-        setOpen={setOpen}
-        component={<ExistingInformation setOpen={setOpen} />}
+        icon={<PersonIcon fontSize="medium" />}
+        title={'Your User Information'}
+        onClose={() => setOpen(false)}
+        component={<ExistingInformation />}
       />
     </div>
   )

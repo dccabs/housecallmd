@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext, Fragment } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
+import PropTypes from 'prop-types'
 import {
   AppBar,
   Toolbar,
@@ -6,30 +7,35 @@ import {
   Box,
   IconButton,
   Drawer,
+  makeStyles,
 } from '@material-ui/core'
-import { Auth } from '@supabase/ui'
-import MenuIcon from '@material-ui/icons/Menu'
-import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { SnackBarContext } from '../components/SnackBar'
 import Image from 'next/image'
-import useStore from '../zustand/store'
-import { supabase } from '../utils/initSupabase'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-
-import MobileNavDrawer from './MobileNavDrawer'
-import clearStore from '../utils/clearStore';
+import { Auth } from '@supabase/ui'
+import { useRouter } from 'next/router'
+import useStore from '../../zustand/store'
+import { supabase } from '../../utils/initSupabase'
+import { SnackBarContext } from '../../components/SnackBar'
+import PatientsMenu from './desktopMenu/PatientsMenu'
+import PartnersMenu from './desktopMenu/PartnersMenu'
+import CompanyMenu from './desktopMenu/CompanyMenu'
+import MobileNavDrawer from './mobileMenu/MobileNavDrawer'
+import {
+  AccountCircleRounded as AccountCircleIcon,
+  Menu as MenuIcon,
+} from '@material-ui/icons'
+import { Skeleton } from '@material-ui/lab'
+import clearStore from '../../utils/clearStore'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: '#fff',
-    boxShadow: 'none',
+    boxShadow: 'rgba(140, 152, 164, 0.25) 0px 3px 6px 0px',
 
     [theme.breakpoints.up('sm')]: {
-      backgroundColor: 'rgba(0, 0, 0, 0)',
+      backgroundColor: '#fff',
       margin: 'auto',
-      border: '1px solid #ccc',
+      boxShadow: 'rgba(140, 152, 164, 0.25) 0px 3px 6px 0px',
     },
   },
   toolBar: {
@@ -42,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.up('sm')]: {
       width: '100%',
-      maxWidth: 1100,
+      maxWidth: 1300,
       margin: 'auto',
     },
   },
@@ -53,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 600,
       color: theme.typography.color,
       textDecoration: 'none',
-      marginLeft: '2rem',
     },
     [theme.breakpoints.down('xs')]: {
       display: 'none',
@@ -80,17 +85,44 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 400,
     },
   },
+  menuItemBox: {
+    cursor: 'pointer',
+    alignItems: 'center',
+  },
 }))
 
 const Navbar = () => {
-  const store = useStore();
-
-  const [drawerToggle, setDrawerToggle] = useState(false)
-  const router = useRouter()
   const classes = useStyles()
-  const openSnackBar = useContext(SnackBarContext)
+  const store = useStore()
+  const router = useRouter()
   const { user, session } = Auth.useUser()
+  const openSnackBar = useContext(SnackBarContext)
+  const [drawerToggle, setDrawerToggle] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
 
+  useEffect(() => {
+    if (user) {
+      setLoading(true)
+      fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: user.email }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res) {
+            setFirstName(res?.firstName ?? '')
+            setLastName(res?.lastName ?? '')
+            setLoading(false)
+          }
+        })
+    }
+  }, [user])
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -98,18 +130,22 @@ const Navbar = () => {
       message: `${user.email} has been logged out of the application`,
       snackSeverity: 'error',
     })
-    clearStore(store);
+    clearStore(store)
     router.push('/')
   }
 
   return (
-    <Fragment>
+    <>
       <Drawer
         anchor="right"
+        width={280}
         open={drawerToggle}
         onClose={() => setDrawerToggle(false)}
       >
-        <MobileNavDrawer setDrawerToggle={setDrawerToggle} />
+        <MobileNavDrawer
+          loading={loading}
+          setDrawerToggle={setDrawerToggle}
+        />
       </Drawer>
 
       <AppBar position="static" className={classes.appBar}>
@@ -132,26 +168,38 @@ const Navbar = () => {
             </a>
           </Link>
 
+          {/* desktop */}
           <Box className={classes.authLinks} display="flex">
-            <Link href="/services">
-              <a>
-                <Typography>Services</Typography>
-              </a>
-            </Link>
-            <Link href="/contact">
-              <a>
-                <Typography>Contact</Typography>
-              </a>
-            </Link>
+            <Box mr="1.2em">
+              <PatientsMenu user={user} handleSignOut={handleSignOut} />
+            </Box>
+            <Box mr="1.2em">
+              <PartnersMenu />
+            </Box>
+            <Box mr="1.2em">
+              <CompanyMenu />
+            </Box>
+            <Box mr="2em">
+              <Link href="/" underline="none">
+                <a>
+                  <Typography>Covid 19 Information</Typography>
+                </a>
+              </Link>
+            </Box>
             {user ? (
               <>
-                <Box ml="2rem">
-                  <Typography
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    <AccountCircleIcon style={{marginRight: 10 }} /> {user.email}
+                {loading ? (
+                  <Typography>
+                    <Skeleton variant="text" width="5em" />
                   </Typography>
-                </Box>
+                ) : (
+                  <Box display="flex" alignItems="center">
+                    <AccountCircleIcon style={{ marginRight: 10 }} />
+                    <Typography>
+                      {firstName} {lastName}
+                    </Typography>
+                  </Box>
+                )}
                 <Box ml="1rem">
                   <Typography
                     onClick={handleSignOut}
@@ -172,6 +220,7 @@ const Navbar = () => {
             )}
           </Box>
 
+          {/* mobile */}
           <Box display="none" className={classes.burgerNav}>
             <IconButton
               edge="start"
@@ -182,8 +231,12 @@ const Navbar = () => {
           </Box>
         </Toolbar>
       </AppBar>
-    </Fragment>
+    </>
   )
 }
+
+Navbar.propTypes = {}
+
+Navbar.defaultProps = {}
 
 export default Navbar

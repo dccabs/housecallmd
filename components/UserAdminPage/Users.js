@@ -10,8 +10,10 @@ import {
 import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
 
-import UtilModal from '../UtilModal'
+// import UtilModal from '../UtilModal'
+import CustomModal from '../CustomModal/CustomModal'
 import UserInformationContent from '../UserInformationContent'
+import PersonIcon from '@material-ui/icons/Person'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -109,7 +111,7 @@ const Users = ({ user, openSnackBar }) => {
   }
 
   return (
-    <div>
+    <>
       <div>
         {!loading && users ? (
           <MaterialTable
@@ -175,12 +177,14 @@ const Users = ({ user, openSnackBar }) => {
         )}
       </div>
 
-      <UtilModal
+      <CustomModal
         open={open}
-        setOpen={setOpen}
+        title={'Update User Information'}
+        onClose={() => setOpen(false)}
+        icon={<PersonIcon fontSize="small" />}
         component={
           <UserInformationContent
-            setOpen={setOpen}
+            setOpen={() => setOpen(false)}
             rowData={rowData}
             users={users}
             setUsers={setUsers}
@@ -193,7 +197,7 @@ const Users = ({ user, openSnackBar }) => {
         keepMounted
         onClose={() => setOpenDialog(false)}
       >
-        <Box p="2em">
+        <Box>
           <Typography variant="h4" align="center">
             Delete Users?
           </Typography>
@@ -226,7 +230,7 @@ const Users = ({ user, openSnackBar }) => {
           </DialogContent>
         </Box>
       </Dialog>
-    </div>
+    </>
   )
 }
 

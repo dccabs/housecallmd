@@ -6,8 +6,6 @@ const addMeeting = async (req, res) => {
   const access_token = req.headers.token
   const { creator, user } = req.body
 
-  console.log('user', user)
-
   if (user.role !== 'authenticated') {
     throw Error('not authorized')
   }
