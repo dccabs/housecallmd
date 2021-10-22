@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../components/SnackBar'
+import config from '../utils/config';
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -22,13 +23,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
+
   const [roomId, setRoomId] = useState()
   const [roomUrl, setRoomUrl] = useState()
   const [loading, setLoading] = useState(false)
   const [loadingSMS, setLoadingSMS] = useState(false)
   const [success, setSuccess] = useState(false)
   const classes = useStyles()
-  const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`
+  const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n ${config.default.host}/room/${roomId}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
@@ -46,7 +48,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
       const data = await res.json()
 
       setRoomId(data[0].cuid)
-      setRoomUrl(`${process.env.NEXT_PUBLIC_SITE_URL}/room/${data[0].cuid}`)
+      setRoomUrl(`${config.default.host}/room/${data[0].cuid}`)
     } catch (err) {
       openSnackBar({
         message: err,
@@ -82,7 +84,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
       throw err
     }
   }
-
+ 
   const sendSMS = async () => {
     try {
       setLoadingSMS(true)
@@ -92,7 +94,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ to: phone, body: message, user }),
+        body: JSON.stringify({ to: phone, body: message }),
       })
 
       const data = await res.json()
@@ -124,7 +126,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
         <>
           <Box my="1em">
             <Typography variant="h4">New meeting room created</Typography>
-            <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/room/${roomId}`}>
+            <Link href={`${config.default.host}/room/${roomId}`}>
               <a target="_blank">
                 <Typography variant="h6" align="center">
                   {roomUrl}
@@ -162,7 +164,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
               <Button
                 color="secondary"
                 variant="contained"
-                onClick={sendMeetingLink}
+                onClick={() => sendMeetingLink()}
               >
                 Send Meeting Link To Patient
               </Button>

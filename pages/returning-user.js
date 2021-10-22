@@ -7,9 +7,11 @@ import { useRouter } from 'next/router'
 import useStore from '../zustand/store'
 
 import Container from '../components/Container'
-import UtilModal from '../components/UtilModal'
+// import UtilModal from '../components/UtilModal'
+import CustomModal from '../components/CustomModal/CustomModal'
 import ExistingInformation from '../components/ExistingInformation'
 import setStoreWithAuthInfo from '../utils/setStoreWithAuthInfo'
+import PersonIcon from '@material-ui/icons/Person'
 
 const useStyles = makeStyles((theme) => ({
   headings: {
@@ -87,10 +89,6 @@ const ReturningUserPage = () => {
     router.push('/visit-choice')
   }
 
-  const handleOnCloseModal = () => {
-    setOpen(false)
-  }
-
   return (
     <div>
       {!loading && (
@@ -144,10 +142,12 @@ const ReturningUserPage = () => {
         </Container>
       )}
 
-      <UtilModal
+      <CustomModal
         open={open}
+        icon={<PersonIcon fontSize="medium" />}
+        title={'Your User Information'}
         onClose={() => setOpen(false)}
-        component={<ExistingInformation onClose={() => setOpen(false)} />}
+        component={<ExistingInformation />}
       />
     </div>
   )

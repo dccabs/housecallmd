@@ -106,7 +106,6 @@ const MessageList = memo((props) => {
   useEffect(() => {
     const { body, sender, user_id, adminName} = messageSent;
     if (Object.keys(messageSent).length !== 0) {
-      console.log('sendMessage', messageSent);
       setSmsLogMessages((prevState) => [
         ...prevState,
         {
@@ -114,7 +113,7 @@ const MessageList = memo((props) => {
           from_phone_number: sender,
           message: body,
           isOwnMessage: true,
-          name: adminName
+          name: 'House call MD'
         },
       ])
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, memo } from 'react'
 import {
   Box,
   Typography,
@@ -51,9 +51,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
+const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
   const openSnackBar = useContext(SnackBarContext)
-
   const [policyHolderFirstName, setPolicyHolderFirstName] = useState('')
   const [policyHolderLastName, setPolicyHolderLastName] = useState('')
   const [policyHolderDob, setPolicyHolderDob] = useState('')
@@ -190,18 +189,16 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
         />
       ) : !loading ? (
         <div>
-          <Box display="flex" alignItems="center">
-            <PersonIcon fontSize="large" style={{ marginRight: '0.3em' }} />
-            <Typography variant="h4" align="left">
-              Update User Information
-            </Typography>
-          </Box>
-          <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
+          <Box
+            display="flex"
+            justifyContent="center"
+            flexWrap="wrap"
+          >
             <form
               onSubmit={handleSubmit}
               style={{ width: '100%', maxWidth: '34rem' }}
             >
-              <Box mt="1em" width="100%" maxWidth="34rem">
+              <Box width="100%" maxWidth="34rem">
                 <FormControl component="fieldset">
                   <FormControlLabel
                     value="Terms"
@@ -533,12 +530,13 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
             display="flex"
             justifyContent="center"
           >
-            <Link href={`/smsHistory/${rowData.id}`} target={"_blank"} passHref>
-              <a target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                >
+            <Link href={`/smsHistory/${rowData.id}`} target={'_blank'} passHref>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                style={{ textDecoration: 'none' }}
+              >
+                <Button color="secondary" variant="contained">
                   Send SMS
                 </Button>
               </a>
@@ -557,6 +555,6 @@ const UserInformationContent = ({ setOpen, rowData, users, setUsers }) => {
       )}
     </>
   )
-}
+})
 
 export default UserInformationContent
