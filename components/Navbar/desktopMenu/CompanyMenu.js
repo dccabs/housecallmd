@@ -89,16 +89,19 @@ const CompanyMenu = () => {
         placement="bottom-start"
         transition
         disablePortal
+        style={{
+          zIndex: 1500,
+        }}
       >
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
             style={{
               transformOrigin:
-                placement === 'bottom-start' ? 'left top' : 'left bottom',
+                placement === 'bottom-start' ? 'left-top' : 'left-bottom',
             }}
           >
-            <Paper>
+            <Paper elevation={2}>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
                   autoFocusItem={openCompanyMenu}
