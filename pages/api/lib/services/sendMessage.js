@@ -11,7 +11,7 @@ const client = require('twilio')(
 const sendMessage = async (req) => {
     let fnc;
     const caseSend = req.body && req.body.user !== undefined ? 'ChatSms' : 'SendSms';
-
+    
     switch (caseSend) {
         case 'ChatSms':
             fnc = chatSms(req);
@@ -32,7 +32,7 @@ const chatSms = async (req) => {
     .from('UserList')
     .select(`*`)
     .eq('email', req.body.user.email)
-    
+
     if (req.body.isFromSmsHistory) {
       const logMessage = {
         message: req.body.body,
@@ -65,7 +65,7 @@ const chatSms = async (req) => {
     })
     
     if (clientMsg) {
-      const smsHistoryPath = `${process.env.HOST}/smsHistory/${req.body.user.smsUserId}`;
+      const smsHistoryPath = `${process.env.NEXT_PUBLIC_HOST}/smsHistory/${req.body.user.smsUserId}`;
       const adminPhones = await supabase.from('adminPhones').select(`*`).eq('isActive', true);
       
       if (adminPhones && adminPhones.data && adminPhones.data.length > 0) {
