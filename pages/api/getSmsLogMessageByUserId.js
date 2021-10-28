@@ -1,5 +1,5 @@
-import { UserList } from 'twilio/lib/rest/conversations/v1/user'
 import { supabase } from '../../utils/initSupabase'
+require('dotenv').config();
 
 const getSmsLogMessageByUserId = async (req, res) => {
   const token = req.headers.token
@@ -12,6 +12,8 @@ const getSmsLogMessageByUserId = async (req, res) => {
   let auth = [];
   let authMessage = [];
   let messages = [];
+  let messagesToUser = [];
+  let userId;
   
   let { data: smsMessages, error } = await supabase
     .from('sms_log_message')
@@ -27,6 +29,13 @@ const getSmsLogMessageByUserId = async (req, res) => {
       .select('*')
       .eq('id', smsUserId)
 
+    messagesToUser = await supabase
+      .from('sms_log_message')
+      .select(`*, UserList(*)`)
+      .eq('to_phone_number', user[0].phone)
+
+    messagesToUser = messagesToUser.data.map((d) => ({ ...d, name: `${d.UserList.firstName} ${d.UserList.lastName}` }))
+
     auth = await supabase
       .from('UserList')
       .select(`*, sms_log_message (*)`)
@@ -35,9 +44,12 @@ const getSmsLogMessageByUserId = async (req, res) => {
 	}
 
   if (auth.data && auth.data.length > 0) {
-    authMessage = auth.data[0].sms_log_message.map((d) => ({ ...d, isOwnMessage: true, name: `HouseCallMD` }));
-    messages = [...smsMessages, ...authMessage].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    messages = [...messagesToUser].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
     messages = messages.map((d) => {
+      if (d.from_phone_number === process.env.NEXT_PUBLIC_PHONE_NUMBER && d.user_id === parseFloat(smsUserId)) {
+       d.isOwnMessage = true;
+       d.name = "Me";
+      }
      delete d.UserList;
      return {...d}
     })
