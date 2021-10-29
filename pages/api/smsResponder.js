@@ -5,9 +5,6 @@ import config from '../../utils/config';
 import moment from 'moment';
 import pusher from '../../utils/pusher';
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-import libphonenumber from 'google-libphonenumber';
-
-const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance();
 
 const smsResponder = async (req, res) => {
   try {
