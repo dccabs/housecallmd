@@ -6,9 +6,7 @@ import moment from 'moment';
 import pusher from '../../utils/pusher';
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
-
 const smsResponder = async (req, res) => {
-  
   try {
     const { From, Body } = req.body;
     const logMessage = {
