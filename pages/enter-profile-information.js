@@ -4,6 +4,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
+import { PhoneNumberUtil } from "google-libphonenumber";
 import formatPhoneNumberE164 from '../utils/formatPhoneNumberE164'
 
 import Container from '../components/Container'
@@ -62,10 +63,32 @@ const Contact = () => {
   const [localState, setLocalState] = useState('');
   const [localZip, setLocalZip] = useState('');
   const [localPhone, setLocalPhone] = useState('');
-  const [localDob, setLocalDob] = useState(null)
+  const [localDob, setLocalDob] = useState(null);
+
+  const [phoneError, setPhoneError] = useState(false);
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState('');
 
   const classes = useStyles();
   const router = useRouter();
+
+  const validatePhone = (phone) => {
+    setPhoneError(false);
+    setPhoneErrorMessage('');
+
+    const trimmed = phone.replace(/\s+/g, '');
+
+    if (trimmed.length > 9) {
+      const formattedPhone = formatPhoneNumberE164(phone)
+      checkUniquePhone();
+    } else {
+      setPhoneError(true);
+      setPhoneErrorMessage('Invalid Phone Number');
+    }
+  }
+
+  const checkUniquePhone = () => {
+    console.log('checkUniquePhone')
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,7 +111,6 @@ const Contact = () => {
     fn(e.target.value);
   }
 
-  console.log('hello world')
   return (
     <Container>
       <Typography variant="h2" className={classes.h2}>Patient Info</Typography>
@@ -185,6 +207,8 @@ const Contact = () => {
             onChange={(e) => handleUpdate(e, setLocalZip)}
           />
           <TextField
+            error={phoneError}
+            helperText={phoneErrorMessage}
             value={localPhone}
             className={classes.textFields}
             fullWidth
@@ -194,7 +218,10 @@ const Contact = () => {
             color="secondary"
             required
             onChange={(e) => {
-              handleUpdate(e, setLocalPhone)}}
+              handleUpdate(e, setLocalPhone)
+              validatePhone(e.target.value);
+            }}
+
             InputProps={{
               inputComponent: PhoneField,
             }}
@@ -223,7 +250,8 @@ const Contact = () => {
                 !localCity ||
                 !localZip ||
                 !localPhone ||
-                !localDob
+                !localDob ||
+                phoneError
               }
             >
               Continue
