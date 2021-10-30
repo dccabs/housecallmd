@@ -4,6 +4,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
+import formatPhoneNumberE164 from '../utils/formatPhoneNumberE164'
 
 import Container from '../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -68,13 +69,16 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const formattedPhone = formatPhoneNumberE164(localPhone)
+
     setFirstName(localFirstName);
     setLastName(localLastName);
     setAddress(localAddress);
     setCity(localCity);
     setState(localState);
     setZip(localZip);
-    setPhone(localPhone);
+    setPhone(formattedPhone);
     setDob(localDob);
 
     router.push('/enter-login-information');
@@ -84,6 +88,7 @@ const Contact = () => {
     fn(e.target.value);
   }
 
+  console.log('hello world')
   return (
     <Container>
       <Typography variant="h2" className={classes.h2}>Patient Info</Typography>
