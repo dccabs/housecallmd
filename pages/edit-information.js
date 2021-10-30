@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
+import formatPhoneNumberE164 from '../utils/formatPhoneNumberE164'
+
 import {
   Typography,
   Box,
@@ -71,6 +73,8 @@ const EditInformationPage = () => {
   const [checked, setChecked] = useState(false)
   const [loading, setLoading] = useState(false)
   const [currentDate, setCurrentDate] = useState(false)
+  const [phoneError, setPhoneError] = useState(false);
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState('');
 
   const openSnackBar = useContext(SnackBarContext)
   const router = useRouter()
@@ -147,7 +151,7 @@ const EditInformationPage = () => {
       city,
       state,
       zip,
-      phone,
+      phone: formatPhoneNumberE164(phone),
       dob: moment(dob).format('L'),
     }
 
@@ -168,6 +172,21 @@ const EditInformationPage = () => {
         snackSeverity: 'success',
       })
       router.back();
+    }
+  }
+
+  const validatePhone = (phone) => {
+    setPhoneError(false);
+    setPhoneErrorMessage('');
+
+    const trimmed = phone.replace(/\s+/g, '');
+
+    if (trimmed.length > 9) {
+      const formattedPhone = formatPhoneNumberE164(phone)
+      // checkUniquePhone();
+    } else {
+      setPhoneError(true);
+      setPhoneErrorMessage('Invalid Phone Number');
     }
   }
 
@@ -395,6 +414,8 @@ const EditInformationPage = () => {
             />
 
             <TextField
+              error={phoneError}
+              helperText={phoneErrorMessage}
               className={classes.textFields}
               type="tel"
               label="Phone"
@@ -402,7 +423,10 @@ const EditInformationPage = () => {
               color="secondary"
               fullWidth
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                setPhone(e.target.value)
+                validatePhone(e.target.value);
+              }}
               InputProps={{
                 inputComponent: PhoneField,
               }}
@@ -457,7 +481,8 @@ const EditInformationPage = () => {
                   !state ||
                   !zip ||
                   !phone ||
-                  !dob
+                  !dob ||
+                  phoneError
                 }
               >
                 Update Information
