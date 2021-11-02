@@ -15,7 +15,7 @@ const smsResponder = async (req, res) => {
       to_phone_number: process.env.NEXT_PUBLIC_PHONE_NUMBER
     }
     
-    const lastTwoDays = moment().subtract(2, 'days').format('YYYY-MM-DD');
+    // const lastTwoDays = moment().subtract(2, 'days').format('YYYY-MM-DD');
     const twiml = new MessagingResponse();
 
     
@@ -27,8 +27,8 @@ const smsResponder = async (req, res) => {
     .select(`*,
     appointments (*)`)
     .eq('phone', From)
-    .eq('appointments.completed', true)
-    .gte("appointments.completed_date", lastTwoDays)
+    // .eq('appointments.completed', true)
+    // .gte("appointments.completed_date", lastTwoDays)
 
     if (appointments && (appointments.data === null || appointments.data.length === 0)) {
       message = 'This inbox is not monitored. Please contact HouseCallMD at https://www.housecallmd.org/contact';
