@@ -1,54 +1,62 @@
-import { UserList } from 'twilio/lib/rest/conversations/v1/user'
 import { supabase } from '../../utils/initSupabase'
+require('dotenv').config();
 
 const getSmsLogMessageByUserId = async (req, res) => {
-  const token = req.headers.token
-  const { smsUserId, authEmail } = req.body
+  const { smsUserId, authEmail, authUserId } = req.body
 
   if (!smsUserId || smsUserId === 'undefined') {
     throw Error('User Id not found')
   }
 
   let auth = [];
-  let authMessage = [];
   let messages = [];
-  
+  let messagesToUser = [];
+  let messagesFromUser = [];
+  let viewerId;
+
   let { data: smsMessages, error } = await supabase
     .from('sms_log_message')
     .select(`*, UserList(*)`)
     .eq('user_id', smsUserId)
     .order('created_at', true)
-  
+
   smsMessages = smsMessages.map((d) => ({ ...d, name: `${d.UserList.firstName} ${d.UserList.lastName}` }))
 
   if (smsMessages.length > 0) {
-    auth = await supabase
+    let { data: user, error } = await supabase
       .from('UserList')
-      .select(`*, sms_log_message (*)`)
+      .select('*')
+      .eq('id', smsUserId)
+
+    messagesToUser = await supabase
+      .from('sms_log_message')
+      .select(`*, UserList(*)`)
+      .eq('to_phone_number', user[0].phone)
+
+    messagesToUser = messagesToUser.data.map((d) => ({ ...d, name: `${d.UserList.firstName} ${d.UserList.lastName}` }))
+
+    messagesFromUser = await supabase
+      .from('sms_log_message')
+      .select(`*, UserList(*)`)
+      .eq('from_phone_number', user[0].phone)
+
+    messagesFromUser = messagesFromUser.data.map((d) => ({ ...d, name: `${d.UserList.firstName} ${d.UserList.lastName}` }))
+
+    viewerId = await supabase
+      .from('UserList')
+      .select(`*`)
       .eq('email', authEmail)
-      .eq('sms_log_message.to_phone_number', smsMessages[0].from_phone_number)
-	} else {
-		let { data: user, error } = await supabase
-			.from('UserList')
-			.select('*')
-			.eq('id', smsUserId)
-	  
-		auth = await supabase
-		.from('UserList')
-		.select(`*, sms_log_message (*)`)
-		.eq('email', authEmail)
-		.eq('sms_log_message.to_phone_number', user[0].phone)
   }
 
-  if (auth.data && auth.data.length > 0) {
-    authMessage = auth.data[0].sms_log_message.map((d) => ({ ...d, isOwnMessage: true, name: `HouseCallMD` }));
-    messages = [...smsMessages, ...authMessage].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    messages = messages.map((d) => {
-     delete d.UserList;
-     return {...d}
-    })
-
- }
+  messages = [...messagesToUser, ...messagesFromUser].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  messages = messages.map((d) => {
+    if (d.from_phone_number === process.env.NEXT_PUBLIC_PHONE_NUMBER && d.user_id === parseFloat(viewerId.data[0].id)) {
+      d.isOwnMessage = true;
+      d.name = "Me";
+    }
+    delete d.UserList;
+    return {...d}
+  })
 
   if (error || auth.error) return res.status(401).json({ error: error.message })
 
