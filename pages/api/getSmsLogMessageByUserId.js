@@ -13,16 +13,17 @@ const getSmsLogMessageByUserId = async (req, res) => {
   let messagesToUser = [];
   let messagesFromUser = [];
   let viewerId;
+  let smsMessages = [];
 
-  let { data: smsMessages, error } = await supabase
-    .from('sms_log_message')
-    .select(`*, UserList(*)`)
-    .eq('user_id', smsUserId)
-    .order('created_at', true)
+  // let { data: smsMessages, error } = await supabase
+  //   .from('sms_log_message')
+  //   .select(`*, UserList(*)`)
+  //   .eq('user_id', smsUserId)
+  //   .order('created_at', true)
+  //
+  // smsMessages = smsMessages.map((d) => ({ ...d, name: `${d.UserList.firstName} ${d.UserList.lastName}` }))
 
-  smsMessages = smsMessages.map((d) => ({ ...d, name: `${d.UserList.firstName} ${d.UserList.lastName}` }))
-
-  if (smsMessages.length > 0) {
+  //if (smsMessages.length > 0) {
     let { data: user, error } = await supabase
       .from('UserList')
       .select('*')
@@ -46,7 +47,7 @@ const getSmsLogMessageByUserId = async (req, res) => {
       .from('UserList')
       .select(`*`)
       .eq('email', authEmail)
-  }
+  //}
 
   messages = [...messagesToUser, ...messagesFromUser].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
   messages = messages.map((d) => {
