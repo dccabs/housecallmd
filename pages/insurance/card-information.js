@@ -94,7 +94,6 @@ const CardInformation = () => {
                   variant="outlined"
                   color="secondary"
                   onChange={(e) => handleUpdate(e, setLocalGroupNumber)}
-                  required
                 />
               </Box>
               <Box
@@ -118,7 +117,7 @@ const CardInformation = () => {
                     color="secondary"
                     variant="contained"
                     size="large"
-                    disabled={!localGroupNumber || !localPlanNumber}
+                    disabled={!localPlanNumber}
                   >
                     Continue
                   </Button>
