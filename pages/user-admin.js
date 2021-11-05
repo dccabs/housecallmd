@@ -38,7 +38,7 @@ const TabPanel = (props) => {
 
 const UserAdmin = (props) => {
   const [authorized, setAuthorized] = useState(false)
-  const [tabValue, setTabValue] = useState(0)
+  const [tabValue, setTabValue] = useState(1)
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
