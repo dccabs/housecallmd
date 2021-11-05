@@ -125,6 +125,12 @@ const Users = ({ user, openSnackBar }) => {
                     {rowData.lastName}, {rowData.firstName}
                   </>
                 ),
+                customFilterAndSearch: (term, rowData) => {
+                  if (rowData.lastName.toLowerCase().indexOf(term.toLowerCase()) > -1 ||
+                    rowData.firstName.toLowerCase().indexOf(term.toLowerCase()) > -1) {
+                    return true;
+                  }
+                }
               },
               { title: 'Email', field: 'email' },
               {
@@ -152,6 +158,8 @@ const Users = ({ user, openSnackBar }) => {
             options={{
               paginationType: 'stepped',
               selection: true,
+              pageSize: 50,
+              pageSizeOptions: [50, 100, 200],
             }}
             actions={[
               {
