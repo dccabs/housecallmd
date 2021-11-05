@@ -152,6 +152,8 @@ const Users = ({ user, openSnackBar }) => {
             options={{
               paginationType: 'stepped',
               selection: true,
+              pageSize: 50,
+              pageSizeOptions: [50, 100, 200],
             }}
             actions={[
               {

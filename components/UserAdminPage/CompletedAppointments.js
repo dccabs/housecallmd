@@ -85,6 +85,9 @@ const CompletedAppointments = ({ openSnackBar }) => {
             data={completedAppointments}
             options={{
               paginationType: 'stepped',
+              sorted: true,
+              pageSize: 50,
+              pageSizeOptions: [50, 100, 200],
             }}
             onRowClick={(event, rowData) => {
               setOpen(true)
