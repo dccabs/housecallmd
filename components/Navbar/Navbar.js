@@ -8,6 +8,7 @@ import {
   IconButton,
   Drawer,
   makeStyles,
+  Button,
 } from '@material-ui/core'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -26,6 +27,7 @@ import {
 } from '@material-ui/icons'
 import { Skeleton } from '@material-ui/lab'
 import clearStore from '../../utils/clearStore'
+
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -101,6 +103,7 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -116,8 +119,10 @@ const Navbar = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res) {
+            console.log('res', res)
             setFirstName(res?.firstName ?? '')
             setLastName(res?.lastName ?? '')
+            setIsAdmin(res?.role === 'admin');
             setLoading(false)
           }
         })
@@ -164,6 +169,16 @@ const Navbar = () => {
                     HouseCall<span>MD</span>
                   </strong>
                 </Typography>
+
+                {isAdmin &&
+                <span style={{ marginLeft: 10 }}>
+                  <Link href="/user-admin">
+                    <a>
+                      <Button color="primary" variant="outlined" size="small">Admin</Button>
+                    </a>
+                  </Link>
+                </span>
+                }
               </Box>
             </a>
           </Link>
