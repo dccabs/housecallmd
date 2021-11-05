@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Box, CircularProgress } from '@material-ui/core'
 import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
-import moment from 'moment'
+import moment from 'moment-timezone';
+import tz from 'moment-timezone';
 
 // import UtilModal from '../UtilModal'
 import CustomModal from '../CustomModal/CustomModal'
@@ -78,10 +79,15 @@ const Appointments = ({ openSnackBar }) => {
               {
                 title: 'Date/Time',
                 field: 'time',
-                render: (rowData) => (
-                  <>{moment(rowData.time).format('MM/DD/YYYY - h:mm a')}</>
-                ),
-                defaultSort: 'asc',
+                render: (rowData) => {
+                  const date = rowData.time;
+                  var stillUtc = moment.utc(date).toDate();
+                  var local = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
+                  return (
+                    <>{moment(local).format('MM/DD/YYYY - h:mm a')}</>
+                  )
+                },
+                defaultSort: 'desc',
               },
             ]}
             data={appointments}
