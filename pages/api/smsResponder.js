@@ -47,7 +47,8 @@ const smsResponder = async (req, res) => {
           sender: From,
           isOwnMessage: false,
           isReply: true,
-          name: senderName
+          name: senderName,
+          user_id: userId,
         });
         
         const { data, error, status } = await supabase.from('sms_log_message').insert([{ ...logMessage, user_id: appointments.data[0].id }], { returning: 'minimal' })

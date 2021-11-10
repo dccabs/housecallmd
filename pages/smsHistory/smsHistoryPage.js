@@ -136,6 +136,13 @@ const SmsHistoryPage = memo((props) => {
     return <SkeletonChatPage />
   }
 
+  const refreshFeed = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false)
+    }, 1000)
+  }
+
   const handleOnSubmit = async (e) => {
     await e.preventDefault()
 
@@ -184,17 +191,19 @@ const SmsHistoryPage = memo((props) => {
               color="secondary"
               className={classes.icon}
             />
-            {userNameSmsOwner} SMS history
+            {userNameSmsOwner} SMS history - <Button size="small" variant="outlined" color="primary" style={{marginLeft: 10}} onClick={refreshFeed}>Refresh</Button>
           </Typography>
           <form>
             <Grid container direction="row" className={classes.mainGrid}>
               {/* {<PhoneNumberList user={user} />} */}
               <Grid item xs={12} sm={12} md={12}>
                 <Grid className={classes.gridItemChatList}>
-                  <MessageList
-                    user={{ ...user, smsUserId }}
-                    messageSent={messageSent}
-                  />
+                  {!loading &&
+                    <MessageList
+                      user={{ ...user, smsUserId }}
+                      messageSent={messageSent}
+                    />
+                  }
                 </Grid>
                 <Divider />
                 <Grid
