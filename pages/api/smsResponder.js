@@ -40,7 +40,7 @@ const smsResponder = async (req, res) => {
         
         const userId = appointments.data[0].id;
         const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
-        const smsHistoryPath = `${config.default.host}smsHistory/${userId}`;
+        const smsHistoryPath = `${process.env.NEXT_PUBLIC_HOST}/smsHistory/${userId}`;
 
         const response = await pusher.trigger("chat", "chat-event", {
           body: Body,
