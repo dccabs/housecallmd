@@ -195,7 +195,7 @@ const Navbar = () => {
               <CompanyMenu />
             </Box>
             <Box mr="2em">
-              <Link href="/" underline="none">
+              <Link href="/facility-covid-testing" underline="none">
                 <a>
                   <Typography>Covid 19 Information</Typography>
                 </a>
