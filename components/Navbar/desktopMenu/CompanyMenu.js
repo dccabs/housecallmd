@@ -109,13 +109,13 @@ const CompanyMenu = () => {
                   aria-labelledby="company-button"
                   onKeyDown={handleListKeyDown}
                 >
-                  <Link href="/">
-                    <a>
-                      <MenuItem onClick={handleClose} disableRipple>
-                        In the Press
-                      </MenuItem>
-                    </a>
-                  </Link>
+                  {/*<Link href="/">*/}
+                  {/*  <a>*/}
+                  {/*    <MenuItem onClick={handleClose} disableRipple>*/}
+                  {/*      In the Press*/}
+                  {/*    </MenuItem>*/}
+                  {/*  </a>*/}
+                  {/*</Link>*/}
                   <Link href="/">
                     <a>
                       <MenuItem onClick={handleClose} disableRipple>
@@ -130,13 +130,13 @@ const CompanyMenu = () => {
                       </MenuItem>
                     </a>
                   </Link>
-                  <Link href="/provider-groups">
-                    <a>
-                      <MenuItem onClick={handleClose} disableRipple>
-                        <Typography noWrap>Provider Groups</Typography>
-                      </MenuItem>
-                    </a>
-                  </Link>
+                  {/*<Link href="/provider-groups">*/}
+                  {/*  <a>*/}
+                  {/*    <MenuItem onClick={handleClose} disableRipple>*/}
+                  {/*      <Typography noWrap>Provider Groups</Typography>*/}
+                  {/*    </MenuItem>*/}
+                  {/*  </a>*/}
+                  {/*</Link>*/}
                 </MenuList>
               </ClickAwayListener>
             </Paper>
