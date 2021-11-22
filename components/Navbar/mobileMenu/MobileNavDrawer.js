@@ -100,11 +100,11 @@ const MobileMenu = [
     id: 3,
     headerMenu: 'Our Company',
     subMenu: [
-      {
-        id: 1,
-        name: 'In the Press',
-        url: '/',
-      },
+      // {
+      //   id: 1,
+      //   name: 'In the Press',
+      //   url: '/',
+      // },
       {
         id: 2,
         name: 'Blog',
@@ -115,11 +115,11 @@ const MobileMenu = [
         name: 'Contact Us',
         url: '/contact',
       },
-      {
-        id: 4,
-        name: 'Provider Groups',
-        url: '/provider-groups',
-      },
+      // {
+      //   id: 4,
+      //   name: 'Provider Groups',
+      //   url: '/provider-groups',
+      // },
     ],
   },
 ]
