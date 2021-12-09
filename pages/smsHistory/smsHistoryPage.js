@@ -14,6 +14,7 @@ import {
   Button,
   CircularProgress,
 } from '@material-ui/core'
+import { Alert, AlertTitle } from '@material-ui/lab';
 import { Auth } from '@supabase/ui'
 import { Send as SendIcon, ChatBubbleOutlineTwoTone } from '@material-ui/icons'
 
@@ -75,6 +76,7 @@ const SmsHistoryPage = memo((props) => {
   const { userId: smsUserId } = props
 
   const [loading, setLoading] = useState(false)
+  const [smsEnabled, setSMSEnabled] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
   const [success, setSuccess] = useState(false)
   const [authorized, setAuthorized] = useState(false)
@@ -127,6 +129,7 @@ const SmsHistoryPage = memo((props) => {
             const patientLastName = res?.lastName ?? ''
             setNameUserSmsOwner(patientFirstName.concat(' ', patientLastName))
             setNumber(res.phone)
+            setSMSEnabled(res.sms_enabled);
           }
         })
     }
@@ -211,6 +214,13 @@ const SmsHistoryPage = memo((props) => {
                   direction="row"
                   className={classes.gridItemMessage}
                 >
+                  {!smsEnabled &&
+                    <Alert severity="error" style={{width: '100%', margin: '2em 0'}}>
+                      <AlertTitle>Warning</AlertTitle>
+                      This user does not have SMS communications enabled.  You can send them a message, but they won't be able to respond to you.  Please turn on SMS_enabled in the user admin section to enable SMS communcations for this user.
+                    </Alert>
+                  }
+
                   <Grid
                     container
                     direction="row"
