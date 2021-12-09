@@ -116,7 +116,7 @@ const CompanyMenu = () => {
                   {/*    </MenuItem>*/}
                   {/*  </a>*/}
                   {/*</Link>*/}
-                  <Link href="/">
+                  <Link href="/blog">
                     <a>
                       <MenuItem onClick={handleClose} disableRipple>
                         Blog
