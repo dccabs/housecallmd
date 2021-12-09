@@ -5,7 +5,7 @@ import {
   Button,
   Dialog,
   DialogContent,
-  CircularProgress,
+  CircularProgress, FormControl, FormControlLabel, Checkbox
 } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
@@ -43,10 +43,15 @@ const Users = ({ user, openSnackBar }) => {
   const [rowData, setRowData] = useState({})
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [loading, setLoading] = useState(false)
+  const [smsToggleLoading, setSmsToggleLoading] = useState(false);
 
   const classes = useStyles()
 
   useEffect(async () => {
+    getUsers()
+  }, [])
+
+  const getUsers = async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/getAllUsers`, {
@@ -62,11 +67,10 @@ const Users = ({ user, openSnackBar }) => {
       const data = await res.json()
       setUsers(data)
     } catch (err) {
-      console.log(err)
     } finally {
       setLoading(false)
     }
-  }, [])
+  }
 
   const rowSelected = (rowData) => {
     setRowData(rowData)
@@ -110,6 +114,48 @@ const Users = ({ user, openSnackBar }) => {
     setOpenDialog(false)
   }
 
+  const handleSmsChange = (e, rowData) => {
+    setSmsToggleLoading(true);
+    const checked = e.target.checked;
+    const payload = {
+      id: rowData.id,
+      sms_enabled: e.target.checked,
+    }
+    fetch('/api/toggleSMS', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error)
+        } else {
+
+          const usersCopy = Object.assign(users, {})
+
+          const match = usersCopy.find(user => {
+            return user.id === rowData.id;
+          })
+
+          match.sms_enabled = checked;
+
+          setUsers(usersCopy);
+          setSmsToggleLoading(false);
+
+          // openSnackBar({
+          //   message: `SMS communications has been set to ${e.target.checked ? 'active' : 'inactive'}`,
+          //   snackSeverity: 'success',
+          // })
+        }
+      })
+      .catch((error) => {
+        setSmsToggleLoading(false);
+        openSnackBar({ message: error, snackSeverity: 'error' })
+      })
+  }
+
   return (
     <>
       <div>
@@ -131,6 +177,34 @@ const Users = ({ user, openSnackBar }) => {
                     return true;
                   }
                 }
+              },
+              {
+                title: 'SMS',
+                field: 'sms_enabled',
+                render: (rowData) => (
+                  <>
+                    <FormControl component="fieldset">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="secondary"
+                            checked={rowData.sms_enabled}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            onChange={(e) => {
+                              handleSmsChange(e, rowData);
+                            }}
+                            disabled={smsToggleLoading}
+                          />
+                        }
+                        label="Active"
+                        labelPlacement="end"
+                      />
+                    </FormControl>
+                  </>
+                ),
               },
               { title: 'Email', field: 'email' },
               {
