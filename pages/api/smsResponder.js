@@ -1,8 +1,6 @@
 require('dotenv').config()
 import smsClient from './lib/utils/sms';
 import { supabase } from '../../utils/initSupabase'
-import config from '../../utils/config';
-import moment from 'moment';
 import pusher from '../../utils/pusher';
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
