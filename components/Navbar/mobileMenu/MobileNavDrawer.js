@@ -108,7 +108,7 @@ const MobileMenu = [
       {
         id: 2,
         name: 'Blog',
-        url: '/',
+        url: '/blog',
       },
       {
         id: 3,

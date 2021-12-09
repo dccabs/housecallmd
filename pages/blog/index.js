@@ -24,6 +24,13 @@ const useStyles = makeStyles((theme) => ({
       padding: '.5em 0',
     },
   },
+  h2: {
+    marginTop: '.5em',
+  },
+  h3: {
+    fontSize: '2em',
+    fontWeight: 900
+  }
 }));
 
 const BlogPage = ({blogPostsPage}) => {
@@ -36,6 +43,7 @@ const BlogPage = ({blogPostsPage}) => {
 
   return (
     <Container component="main">
+      <Typography variant="h2" className={classes.h2}>Blog</Typography>
       {items.map((item, index) => {
         const { title, date, body } = item.fields;
         let path = title;
@@ -45,7 +53,7 @@ const BlogPage = ({blogPostsPage}) => {
         return (
           <Box my="3em" justifyContent="center" alignItems="center" key={`entry-${index}`}>
             <Box>
-              <Typography variant="h3" gutterBottom>
+              <Typography variant="h3" className={classes.h3} gutterBottom>
                 {title}
               </Typography>
             </Box>
