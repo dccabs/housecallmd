@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useRef, useEffect } from 'react'
 
 import {
   Typography,
@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Contact = () => {
+  const form = useRef(null)
   const classes = useStyles()
   const router = useRouter()
   const { session } = Auth.useUser()
@@ -77,6 +78,7 @@ const Contact = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
   const [localId, setLocalId] = useState('')
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const {
     hasInsurance,
@@ -94,12 +96,55 @@ const Contact = () => {
     email,
     address,
     city,
+    selectedFile,
     state,
     zip,
     phone,
     dob,
     setEmail,
   } = useStore()
+
+  useEffect(async () => {
+    if (isSuccess) {
+      try {
+        console.log(selectedFile);
+
+        let updatedUser;
+        let uploadedData;
+
+        if (selectedFile) {
+          uploadedData = await handleUploadImage(selectedFile);
+          
+        }
+
+        if (uploadedData.Key) {
+          updatedUser = {
+            card_information_image: uploadedData.Key,
+            email,
+          }
+      
+            const res = await fetch(`/api/updateUser`, {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(updatedUser),
+            })
+
+            console.log('res', res);
+        } 
+        
+          
+        } catch (err) {
+          console.log(err);
+          openSnackBar({ message: err, snackSeverity: 'error' })
+      } finally {
+        router.push('/visit-choice')
+        // router.back();
+      }
+    }
+  }, [isSuccess])
 
   const handleSubmit = (e) => {
     setEmail(localEmail)
@@ -137,11 +182,44 @@ const Contact = () => {
     setShowConfirmPassword(!showConfirmPassword)
   }
 
+  const handleUploadImage =  async (image) => {
+    try {
+
+      const file = image;
+      const fileExt = file.name.split('.').pop()
+      const fileName = `card-information-images/${Math.random()}.${fileExt}`
+      const filePath = `${fileName}`
+
+      let {data:uploadData, error: uploadError } = await supabase.storage
+        .from('card-information')
+        .upload(filePath, file)
+
+      if (uploadError) {
+        throw uploadError
+      }
+
+      console.log('uploadData', uploadData)
+      
+
+      return uploadData;
+
+    } catch (error) {
+      openSnackBar({ message: error, snackSeverity: 'error' })
+    } finally {
+      // setUploading(false)
+    }
+  }
+
   const addUser = async (newUser) => {
     //setOpen(true)
     const payload = {
       newUser,
     }
+
+    console.log('payload', payload);
+    console.log('newUser', newUser);
+
+
     fetch('/api/addUser', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -153,7 +231,7 @@ const Contact = () => {
         if (data.error) {
           throw Error(data.error)
         } else {
-          router.push('/visit-choice')
+          setIsSuccess(true);
         }
       })
       .catch((error) => {

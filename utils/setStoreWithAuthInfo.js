@@ -18,6 +18,7 @@ const clearStore = ({store , user}) => {
     setProvider,
     setPlanNumber,
     setGroupNumber,
+    setSelectedFile,
   } = store;
 
   setIsPolicyCardHolder(user.isPolicyCardHolder);
@@ -38,6 +39,7 @@ const clearStore = ({store , user}) => {
   setPlanNumber(user.planNumber);
   setGroupNumber(user.groupNumber);
   setHasInsurance(user.hasInsurance);
+  setSelectedFile(user.selectedFile);
 }
 
 export default clearStore

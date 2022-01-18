@@ -25,6 +25,7 @@ const useStore = create(
     dob: '',
     reason: '',
     insuranceOptOut: false,
+    selectedFile: null,
     setPolicyHolderFirstName: (policyHolderFirstName) =>
       set({ policyHolderFirstName }),
     setPolicyHolderLastName: (policyHolderLastName) =>
@@ -50,6 +51,7 @@ const useStore = create(
     setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
     setReason: (reason) => set({ reason }),
     setInsuranceOptOut: (insuranceOptOut) => set({ insuranceOptOut }),
+    setSelectedFile: (selectedFile) => set({ selectedFile })
   }))
 )
 
