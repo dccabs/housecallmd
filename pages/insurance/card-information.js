@@ -116,7 +116,6 @@ const CardInformation = () => {
             </InputLabel>
             <OutlinedInput
               id="outline-image-uploader"
-              value=""
               type="file"
               accept="image/*"
               component="span"
