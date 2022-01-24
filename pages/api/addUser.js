@@ -13,8 +13,15 @@ const addUser = async (req, res) => {
     .from('UserList')
     .insert([{ ...newUser }])
   
-  if (error) return res.status(401).json({ error: error.message })
-  return res.status(200).json(data)
+  console.log('data', data);
+  console.log('error', error);
+  
+  if (error) {
+    return res.status(401).json({ error: error.message })
+  }
+
+  
+  return res.status(200).json({data: data});
 }
 
 export default addUser

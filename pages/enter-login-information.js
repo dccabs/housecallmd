@@ -117,7 +117,7 @@ const Contact = () => {
           
         }
 
-        if (uploadedData.Key) {
+        if (uploadedData && uploadedData.Key) {
           updatedUser = {
             card_information_image: uploadedData.Key,
             email,
@@ -185,23 +185,26 @@ const Contact = () => {
   const handleUploadImage =  async (image) => {
     try {
 
-      const file = image;
-      const fileExt = file.name.split('.').pop()
-      const fileName = `card-information-images/${Math.random()}.${fileExt}`
-      const filePath = `${fileName}`
-
-      let {data:uploadData, error: uploadError } = await supabase.storage
-        .from('card-information')
-        .upload(filePath, file)
-
-      if (uploadError) {
-        throw uploadError
+      if (image) {
+        const file = image;
+        const fileExt = file.name.split('.').pop()
+        const fileName = `card-information-images/${Math.random()}.${fileExt}`
+        const filePath = `${fileName}`
+  
+        let {data:uploadData, error: uploadError } = await supabase.storage
+          .from('card-information')
+          .upload(filePath, file)
+  
+        if (uploadError) {
+          throw uploadError
+        }
+  
+        console.log('uploadData', uploadData)
+        
+  
+        return uploadData;
+        
       }
-
-      console.log('uploadData', uploadData)
-      
-
-      return uploadData;
 
     } catch (error) {
       openSnackBar({ message: error, snackSeverity: 'error' })
@@ -212,32 +215,30 @@ const Contact = () => {
 
   const addUser = async (newUser) => {
     //setOpen(true)
-    const payload = {
-      newUser,
+    try {
+      const userResult = await fetch('/api/addUser', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ newUser: newUser }),
+      });
+  
+      if (userResult && userResult.error) {
+        console.log('throw');
+        throw Error(data.error)
+      } else {
+        setIsSuccess(true);
+      }
+
+    } catch (error) {
+      console.log('Fetch catch error', error);
+      openSnackBar({ message: error, snackSeverity: 'error' })
     }
-
-    console.log('payload', payload);
-    console.log('newUser', newUser);
-
-
-    fetch('/api/addUser', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw Error(data.error)
-        } else {
-          setIsSuccess(true);
-        }
-      })
-      .catch((error) => {
-        openSnackBar({ message: error, snackSeverity: 'error' })
-      })
   }
+
+
   const loginUser = () => {
     supabase.auth.signUp({ email: localEmail, password }).then((response) => {
       response.error
@@ -280,7 +281,7 @@ const Contact = () => {
         zip,
         dob: moment(dob).format('L'),
         phone: phone.replace(/\s/g, ''),
-        uuid: response.data.user.id,
+        uuid: response.data.user.id
       }
       addUser(newUser)
     }
