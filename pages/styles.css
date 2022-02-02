@@ -6,3 +6,18 @@ body {
 footer {
   margin-top: auto;
 }
+
+/* input file image uploader */
+#outline-image-uploader {
+  padding: 0;
+  height: 56px;
+}
+input#outline-image-uploader[type=file]::file-selector-button {
+  border: none;
+  padding: 0.2em 0.6em;
+  border-radius: 0.2em;
+  height:100%;
+  background-color: #C85E67;
+  transition: 1s;
+  color: white;
+}

@@ -1,4 +1,11 @@
-import { Typography, Box, Button, TextField, InputLabel, OutlinedInput } from '@material-ui/core'
+import {
+  Typography,
+  Box,
+  Button,
+  TextField,
+  InputLabel,
+  OutlinedInput,
+} from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
@@ -7,6 +14,9 @@ import { useState } from 'react'
 import { Block } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
+  widthFull: {
+    width: '100%',
+  },
   h2: {
     marginTop: '.5em',
   },
@@ -59,7 +69,7 @@ const CardInformation = () => {
   }
 
   const handleSelect = (e, fn) => {
-    fn(e.target.files[0]);
+    fn(e.target.files[0])
   }
 
   return (
@@ -104,29 +114,34 @@ const CardInformation = () => {
                 color="secondary"
                 onChange={(e) => handleUpdate(e, setLocalGroupNumber)}
               />
-
-            <InputLabel
-              htmlFor="outline-image-uploader"
-              color="secondary"
-              variant="outlined"
-                style={{ background: '#ffffff', marginTop: '20px' }}
-              shrink
+              <Box 
+                 className={classes.textFields}
               >
-              Upload Image
-            </InputLabel>
-            <OutlinedInput
-              id="outline-image-uploader"
-              type="file"
-              accept="image/*"
-              component="span"
-              // variant="outlined"
-              color="secondary"
-              onChange={(e) => handleSelect (e, setLocalSelectedFile)}
-            >
-              Upload Image
-            </OutlinedInput>
+                <InputLabel
+                  label="Image"
+                  htmlFor="outline-image-uploader"
+                  color="secondary"
+                  variant="outlined"
+                  shrink
+                  className={classes.widthFull}
+                >
+                  Upload Image
+                </InputLabel>
+                <OutlinedInput
+                  id="outline-image-uploader"
+                  type="file"
+                  accept="image/*"
+                  component="span"
+                  variant="outlined"
+                  color="secondary"
+                  className={classes.widthFull}
+                  onChange={(e) => handleSelect(e, setLocalSelectedFile)}
+                >
+                  Upload Image
+                </OutlinedInput>
+              </Box>
             </Box>
-            
+
             <Box
               mt="2em"
               display="flex"
