@@ -16,6 +16,7 @@ import CustomModal from '../CustomModal/CustomModal'
 import UserInformationContent from '../UserInformationContent'
 import PersonIcon from '@material-ui/icons/Person'
 import { supabase } from '../../utils/initSupabase'
+import { DataUsageSharp } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -71,36 +72,36 @@ const Users = ({ user, openSnackBar }) => {
       })
       const data = await res.json()
 
-      await Promise.map(data, async (i) => {
-        let imageUrl = null;
-        if (i.card_information_image !== null) {
-          const imageFilePath = i.card_information_image.replace('card-information/', '');
-          console.log(imageFilePath);
+      // await Promise.map(data, async (i) => {
+      //   let imageUrl = null;
+      //   if (i.card_information_image !== null) {
+      //     const imageFilePath = i.card_information_image.replace('card-information/', '');
+      //     console.log(imageFilePath);
           
-          const { data: blobImage, err } = await supabase.storage.from('card-information').download(imageFilePath);
+      //     const { data: blobImage, err } = await supabase.storage.from('card-information').download(imageFilePath);
 
 
-          if (!err) {
-            imageUrl = URL.createObjectURL(blobImage);
-          }
+      //     if (!err) {
+      //       imageUrl = URL.createObjectURL(blobImage);
+      //     }
 
-          console.log('err', err);
+      //     console.log('err', err);
           
-        }
+      //   }
 
 
-        console.log('here', {
-          ...i,
-          newImagePath: imageUrl
-        });
+      //   console.log('here', {
+      //     ...i,
+      //     newImagePath: imageUrl
+      //   });
 
-        dataWithImage.push({
-          ...i,
-          newImagePath: imageUrl
-        })
-      });
+      //   dataWithImage.push({
+      //     ...i,
+      //     newImagePath: imageUrl
+      //   })
+      // });
       
-      setUsers(dataWithImage);
+      setUsers(data);
 
 
     } catch (err) {

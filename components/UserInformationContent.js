@@ -24,6 +24,8 @@ import MeetingCreated from './MeetingCreated'
 import SendSMS from './SendSMS'
 
 import states from '../public/constants/states'
+// import { Promise } from 'bluebird';
+import { supabase } from '../utils/initSupabase'
 
 const useStyles = makeStyles((theme) => ({
   fieldBox: {
@@ -72,6 +74,7 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
   const [state, setState] = useState('')
   const [zip, setZip] = useState('')
   const [imagePath, setImagePath] = useState();
+  const [imageFile, setImageFile] = useState();
 
   const [MeetingContent, setMeetingContent] = useState(false)
   const [currentDate, setCurrentDate] = useState(false)
@@ -93,7 +96,7 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
     setState(rowData.state)
     setZip(rowData.zip)
     setDob(moment(rowData.dob).format('YYYY-MM-DD'))
-    setImagePath(rowData.newImagePath);
+    setImagePath(rowData.card_information_image);
 
     try {
       setLoading(true)
@@ -110,8 +113,26 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
       setPolicyHolderLastName(data.policyHolderLastName)
       setPolicyHolderRelation(data.policyHolderRelation)
 
-      if (data.policyHolderDob && data.policyHolderDob !== 'Invalid date')
+      if (data.policyHolderDob && data.policyHolderDob !== 'Invalid date') {
         setPolicyHolderDob(moment(data.policyHolderDob).format('YYYY-MM-DD'))
+      }
+
+      let imageUrl;
+      if (rowData.card_information_image !== null) {
+        const imageFilePath = rowData.card_information_image.replace('card-information/', '');
+        console.log(imageFilePath);
+        
+        const { data: blobImage, err } = await supabase.storage.from('card-information').download(imageFilePath);
+
+        if (!err) {
+          imageUrl = URL.createObjectURL(blobImage);
+          setImageFile(imageUrl)
+        }
+
+        console.log('err', err);
+        
+      }
+      
     } catch (err) {
       throw err
     } finally {
@@ -213,7 +234,7 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
                 </Box>
                 
               <Box>
-                <img src={imagePath} style={{ width: '60%', maxWidth: '34rem' }}/>
+                <img src={imageFile} style={{ width: '60%', maxWidth: '34rem' }}/>
               </Box>
 
               <Collapse in={!checked} style={{ width: '100%' }}>
