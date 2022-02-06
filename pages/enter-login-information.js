@@ -199,7 +199,7 @@ const Contact = () => {
           throw uploadError
         }
   
-        console.log('uploadData', uploadData)
+        console.log('uploadData', uploadData) 
         
   
         return uploadData;

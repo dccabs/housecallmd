@@ -71,6 +71,7 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
   const [zip, setZip] = useState('')
+  const [imagePath, setImagePath] = useState();
 
   const [MeetingContent, setMeetingContent] = useState(false)
   const [currentDate, setCurrentDate] = useState(false)
@@ -92,6 +93,7 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
     setState(rowData.state)
     setZip(rowData.zip)
     setDob(moment(rowData.dob).format('YYYY-MM-DD'))
+    setImagePath(rowData.newImagePath);
 
     try {
       setLoading(true)
@@ -208,6 +210,10 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
                     onChange={() => setChecked(!checked)}
                   />
                 </FormControl>
+                </Box>
+                
+              <Box>
+                <img src={imagePath} style={{ width: '60%', maxWidth: '34rem' }}/>
               </Box>
 
               <Collapse in={!checked} style={{ width: '100%' }}>

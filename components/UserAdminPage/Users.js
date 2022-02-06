@@ -9,11 +9,13 @@ import {
 } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
+import { Promise } from 'bluebird';
 
 // import UtilModal from '../UtilModal'
 import CustomModal from '../CustomModal/CustomModal'
 import UserInformationContent from '../UserInformationContent'
 import PersonIcon from '@material-ui/icons/Person'
+import { supabase } from '../../utils/initSupabase'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -44,6 +46,7 @@ const Users = ({ user, openSnackBar }) => {
   const [rowsToDelete, setRowsToDelete] = useState([])
   const [loading, setLoading] = useState(false)
   const [smsToggleLoading, setSmsToggleLoading] = useState(false);
+  const [image, setImage] = useState();
 
   const classes = useStyles()
 
@@ -51,8 +54,10 @@ const Users = ({ user, openSnackBar }) => {
     getUsers()
   }, [])
 
+
   const getUsers = async () => {
     try {
+      let dataWithImage = [];
       setLoading(true)
       const res = await fetch(`/api/getAllUsers`, {
         method: 'POST',
@@ -65,14 +70,46 @@ const Users = ({ user, openSnackBar }) => {
         }),
       })
       const data = await res.json()
-      setUsers(data)
+
+      await Promise.map(data, async (i) => {
+        let imageUrl = null;
+        if (i.card_information_image !== null) {
+          const imageFilePath = i.card_information_image.replace('card-information/', '');
+          console.log(imageFilePath);
+          
+          const { data: blobImage, err } = await supabase.storage.from('card-information').download(imageFilePath);
+
+
+          if (!err) {
+            imageUrl = URL.createObjectURL(blobImage);
+          }
+
+          console.log('err', err);
+          
+        }
+
+
+        console.log('here', {
+          ...i,
+          newImagePath: imageUrl
+        });
+
+        dataWithImage.push({
+          ...i,
+          newImagePath: imageUrl
+        })
+      });
+      
+      setUsers(dataWithImage);
+
+
     } catch (err) {
     } finally {
       setLoading(false)
     }
   }
 
-  const rowSelected = (rowData) => {
+ const rowSelected = (rowData) => {
     setRowData(rowData)
     setOpen(true)
   }

@@ -20,6 +20,7 @@
     "@supabase/supabase-js": "^1.11.14",
     "@supabase/ui": "^0.26.1",
     "base64-arraybuffer": "^1.0.1",
+    "bluebird": "^3.7.2",
     "cleave.js": "^1.6.0",
     "contentful": "^9.1.5",
     "cuid": "^2.1.8",

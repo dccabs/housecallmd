@@ -13,6 +13,12 @@ const getAllUsers = async (req, res) => {
     .select('*')
     .order('email', true)
 
+  // get the card imge path 
+
+  // download the image and return together with the users object
+
+  // console.log('get all users', users);
+
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(users)
 }
