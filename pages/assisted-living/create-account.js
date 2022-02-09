@@ -16,37 +16,6 @@ const useStyles = makeStyles((theme) => ({
   h2: {
     marginTop: '.5em',
   },
-  content: {
-    '& p': {
-      maxWidth: '35rem',
-    },
-
-    [theme.breakpoints.up('sm')]: {
-      padding: '0 6em',
-    },
-  },
-  services: {
-    display: 'flex',
-    justifyContent: 'space-evenly',
-    flexWrap: 'wrap',
-    maxWidth: '1400px',
-  },
-  cta: {
-    backgroundColor: theme.palette.primary.main,
-    color: '#fff',
-
-    '& h4': {
-      maxWidth: '45rem',
-    },
-
-    '& p': {
-      maxWidth: '50rem',
-    },
-
-    '& a': {
-      color: '#fff',
-    },
-  },
   textFields: {
     margin: '0.5em 0',
   },
