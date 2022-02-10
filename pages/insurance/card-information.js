@@ -10,8 +10,12 @@ import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
-import { useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { Block } from '@material-ui/icons'
+import { supabase } from '../../utils/initSupabase'
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { SnackBarContext } from '../../components/SnackBar'
 
 const useStyles = makeStyles((theme) => ({
   widthFull: {
@@ -52,6 +56,8 @@ const CardInformation = () => {
   const [localPlanNumber, setLocalPlanNumber] = useState('')
   const [localGroupNumber, setLocalGroupNumber] = useState('')
   const [localSelectedFile, setLocalSelectedFile] = useState('')
+  const [isUploading, setIsUploading] = useState(false)
+  const openSnackBar = useContext(SnackBarContext)
 
   const classes = useStyles()
   const router = useRouter()
@@ -68,8 +74,40 @@ const CardInformation = () => {
     fn(e.target.value)
   }
 
-  const handleSelect = (e, fn) => {
-    fn(e.target.files[0])
+  const handleUpload = async (e) => {
+    setIsUploading(true);
+    try {
+      
+      if (e.target.files[0]) {
+        const file = e.target.files[0];
+        const fileExt = file.name.split('.').pop()
+        const fileName = `card-information-images/${Math.random()}.${fileExt}`
+        const filePath = `${fileName}`
+
+        console.log('filePath', filePath);
+  
+        let {data:uploadData, error: uploadError } = await supabase.storage
+          .from('card-information')
+          .upload(filePath, file)
+  
+        if (uploadError) {
+          throw uploadError
+        }
+
+        if (uploadData && uploadData.Key) {
+          console.log('uploadData', uploadData) 
+          setIsUploading(false);
+          setLocalSelectedFile(uploadData.Key);
+        }
+        return uploadData;
+      }
+      
+    } catch (error) {
+      setIsUploading(false);
+      openSnackBar({ message: error, snackSeverity: 'error' })
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -125,7 +163,8 @@ const CardInformation = () => {
                   shrink
                   className={classes.widthFull}
                 >
-                  Upload Image
+                {isUploading && <CircularProgress color="secondary"/>}
+                  {isUploading ? 'Uploading Image' : 'Uploaded Image'}
                 </InputLabel>
                 <OutlinedInput
                   id="outline-image-uploader"
@@ -135,9 +174,9 @@ const CardInformation = () => {
                   variant="outlined"
                   color="secondary"
                   className={classes.widthFull}
-                  onChange={(e) => handleSelect(e, setLocalSelectedFile)}
+                  onChange={(e) => handleUpload(e)}
                 >
-                  Upload Image
+                  {/* Upload Image */}
                 </OutlinedInput>
               </Box>
             </Box>

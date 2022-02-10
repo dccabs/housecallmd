@@ -104,47 +104,6 @@ const Contact = () => {
     setEmail,
   } = useStore()
 
-  useEffect(async () => {
-    if (isSuccess) {
-      try {
-        console.log(selectedFile);
-
-        let updatedUser;
-        let uploadedData;
-
-        if (selectedFile) {
-          uploadedData = await handleUploadImage(selectedFile);
-          
-        }
-
-        if (uploadedData && uploadedData.Key) {
-          updatedUser = {
-            card_information_image: uploadedData.Key,
-            email,
-          }
-      
-            const res = await fetch(`/api/updateUser`, {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(updatedUser),
-            })
-
-            console.log('res', res);
-        } 
-        
-          
-        } catch (err) {
-          console.log(err);
-          openSnackBar({ message: err, snackSeverity: 'error' })
-      } finally {
-        router.push('/visit-choice')
-        // router.back();
-      }
-    }
-  }, [isSuccess])
 
   const handleSubmit = (e) => {
     setEmail(localEmail)
@@ -214,6 +173,7 @@ const Contact = () => {
   }
 
   const addUser = async (newUser) => {
+    console.log('selectedFile', selectedFile);
     //setOpen(true)
     try {
       const userResult = await fetch('/api/addUser', {
@@ -222,7 +182,12 @@ const Contact = () => {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ newUser: newUser }),
+        body: JSON.stringify({
+          newUser: {
+            ...newUser,
+            card_information_image: selectedFile
+          }
+        }),
       });
   
       if (userResult && userResult.error) {
