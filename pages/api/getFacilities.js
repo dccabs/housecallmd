@@ -8,13 +8,13 @@ const getFacilities = async (req, res) => {
     throw Error('not authorized')
   }
 
-  let { data: users, error } = await supabase
+  let { data: facilities, error } = await supabase
     .from('facilities')
     .select('*')
     .order('id', true)
 
   if (error) return res.status(401).json({ error: error.message })
-  return res.status(200).json(users)
+  return res.status(200).json(facilities)
 }
 
 export default getFacilities
