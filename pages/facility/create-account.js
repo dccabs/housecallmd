@@ -1,9 +1,8 @@
 import { useContext, useState } from 'react'
-
+import Link from 'next/link'
 import {
   Typography,
   Box,
-  Button,
   TextField,
   Checkbox,
   FormControl,
@@ -13,6 +12,7 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
+  Button,
 } from '@material-ui/core'
 import { VisibilityOff, Visibility } from '@material-ui/icons'
 import Container from '../../components/Container'
@@ -403,7 +403,10 @@ const Contact = () => {
                     !confirmPassword ||
                     password !== confirmPassword ||
                     !localEmail ||
-                    !checked
+                    !checked ||
+                    !state ||
+                    !zip ||
+                    !phone
                   }
                   type="submit"
                   color="secondary"
@@ -412,6 +415,22 @@ const Contact = () => {
                 >
                   Create Account
                 </Button>
+              </Box>
+            </Box>
+            <Box
+              mt="1em"
+              display="flex"
+              justifyContent="center"
+              flexWrap="wrap"
+            >
+              <Box m="1em">
+                <Typography variant="body">
+                  Already have an account?{' '}
+                  <Link passHref href={'/login'}>
+                    <a>Login here</a>
+                  </Link>
+                  .
+                </Typography>
               </Box>
             </Box>
           </Box>
