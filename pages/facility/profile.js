@@ -67,10 +67,10 @@ const Contact = () => {
     }).then((res) => {
       console.log('res', res)
       if (res.ok) {
-        openSnackBar({
-          message: 'An email has been sent to HouseCall MD',
-          snackSeverity: 'success',
-        })
+        // openSnackBar({
+        //   message: 'An email has been sent to HouseCall MD',
+        //   snackSeverity: 'success',
+        // })
       } else {
         openSnackBar({
           message: 'There was an error.  Please try again later',
