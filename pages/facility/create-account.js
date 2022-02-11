@@ -65,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
 const Contact = () => {
   const classes = useStyles()
   const router = useRouter()
-  const { session } = Auth.useUser()
   const openSnackBar = useContext(SnackBarContext)
 
   const [fieldType, setFieldType] = useState('password')
