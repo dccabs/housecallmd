@@ -27,6 +27,7 @@ const sendNewAppointmentFetch = async (props) => {
     policyHolderRelation,
     insuranceOptOut,
     reason,
+    imageSignedUrl
 
   } = props;
   const sgResponse = await fetch(SENDGRID_API_URL, {
@@ -63,6 +64,8 @@ const sendNewAppointmentFetch = async (props) => {
               <br><br>
               
              <div style="font-weight: bold">Patient Using Insurance: ${hasInsurance && !insuranceOptOut}</div>
+             
+             <div>${hasInsurance && `<img src=${imageSignedUrl} style="width: 60%"/>`}</div>
              
              
               <div style="font-weight: bold">Reason for Visit: ${reason}</div>

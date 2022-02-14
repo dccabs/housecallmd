@@ -20,7 +20,7 @@ const clearStore = (store) => {
     setGroupNumber,
     setVisitChoice,
     setIsAuthenticated,
-    setSelectedFile,
+    setCardInformationImage,
   } = store;
 
   setPolicyHolderFirstName(''),
@@ -40,7 +40,7 @@ const clearStore = (store) => {
   setPlanNumber('');
   setGroupNumber('');
   setVisitChoice('');
-  setSelectedFile('');
+  setCardInformationImage('');
   setHasInsurance(false);
   setIsAuthenticated(false)
 }

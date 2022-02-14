@@ -96,7 +96,7 @@ const Contact = () => {
     email,
     address,
     city,
-    selectedFile,
+    card_information_image,
     state,
     zip,
     phone,
@@ -141,39 +141,8 @@ const Contact = () => {
     setShowConfirmPassword(!showConfirmPassword)
   }
 
-  const handleUploadImage =  async (image) => {
-    try {
-
-      if (image) {
-        const file = image;
-        const fileExt = file.name.split('.').pop()
-        const fileName = `card-information-images/${Math.random()}.${fileExt}`
-        const filePath = `${fileName}`
-  
-        let {data:uploadData, error: uploadError } = await supabase.storage
-          .from('card-information')
-          .upload(filePath, file)
-  
-        if (uploadError) {
-          throw uploadError
-        }
-  
-        console.log('uploadData', uploadData) 
-        
-  
-        return uploadData;
-        
-      }
-
-    } catch (error) {
-      openSnackBar({ message: error, snackSeverity: 'error' })
-    } finally {
-      // setUploading(false)
-    }
-  }
-
   const addUser = async (newUser) => {
-    console.log('selectedFile', selectedFile);
+    console.log('card_information_image', card_information_image);
     //setOpen(true)
     try {
       const userResult = await fetch('/api/addUser', {
@@ -185,7 +154,7 @@ const Contact = () => {
         body: JSON.stringify({
           newUser: {
             ...newUser,
-            card_information_image: selectedFile
+            card_information_image: card_information_image
           }
         }),
       });
@@ -195,6 +164,7 @@ const Contact = () => {
         throw Error(data.error)
       } else {
         setIsSuccess(true);
+        router.push('/visit-choice')
       }
 
     } catch (error) {

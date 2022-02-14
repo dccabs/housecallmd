@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CardInformation = () => {
-  const { setPlanNumber, setGroupNumber, setSelectedFile } = useStore()
+  const { setPlanNumber, setGroupNumber, setCardInformationImage } = useStore()
   const [localPlanNumber, setLocalPlanNumber] = useState('')
   const [localGroupNumber, setLocalGroupNumber] = useState('')
   const [localSelectedFile, setLocalSelectedFile] = useState('')
@@ -66,7 +66,7 @@ const CardInformation = () => {
     e.preventDefault()
     setPlanNumber(localPlanNumber)
     setGroupNumber(localGroupNumber)
-    setSelectedFile(localSelectedFile)
+    setCardInformationImage(localSelectedFile)
     router.push('/enter-profile-information')
   }
 
@@ -164,7 +164,7 @@ const CardInformation = () => {
                   className={classes.widthFull}
                 >
                 {isUploading && <CircularProgress color="secondary"/>}
-                  {isUploading ? 'Uploading Image' : 'Uploaded Image'}
+                  {isUploading ? 'Uploading Image' : 'Upload Image'}
                 </InputLabel>
                 <OutlinedInput
                   id="outline-image-uploader"

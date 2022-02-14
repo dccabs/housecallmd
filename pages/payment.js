@@ -19,6 +19,7 @@ import { useRouter } from 'next/router'
 import { useContext, useState, useEffect } from 'react'
 import { Auth } from '@supabase/ui'
 import moment from 'moment'
+import { supabase } from '../utils/initSupabase'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
@@ -61,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 const Payment = () => {
   const [processing, setProcessing] = useState(false)
   const [clientPhones, setClientPhones] = useState([])
+  const [imageSignedUrl, setImageSIgnUrl] = useState('')
 
   const classes = useStyles()
   const router = useRouter()
@@ -88,6 +90,7 @@ const Payment = () => {
     dob,
     reason,
     insuranceOptOut,
+    card_information_image,
   } = useStore()
 
   const newUser = {
@@ -113,6 +116,7 @@ const Payment = () => {
     reason,
     dob: moment(dob).format('L'),
     amount: 0,
+    card_information_image
   }
 
   useEffect(async () => {
@@ -177,9 +181,35 @@ const Payment = () => {
       })
   }
 
+  useEffect(async () => {
+    try {
+      let imageUrl;
+    
+      if (newUser.card_information_image !== null) {
+        const imageFilePath = newUser.card_information_image.replace('card-information/', '');
+        console.log(imageFilePath);
+        
+        const { data: signedUrl, err } = await supabase.storage.from('card-information').createSignedUrl(imageFilePath, 86400);
+  
+        if (!err) {
+          // imageUrl = URL.createObjectURL(blobImage);
+          imageUrl = signedUrl;
+          console.log('signedUrl', imageUrl);
+          // Object { signedURL: "https://tlcjcrceoownhmupvvtk.supabase.co/storage/v1/object/s…6MTY0NDQ3Njc5NX0.Z4YJxjGHfP7-ytmx16iS4q7UtpEsOV3_3oqdfGxRNmA" }
+          setImageSIgnUrl(imageUrl.signedUrl)
+        }
+      }
+    } catch(error) {
+      openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+    }
+  }, [newUser.card_information_image])
+
   const sendEmailAppointmentConfirmation = async () => {
     const payload = {
-      newUser,
+      newUser: {
+        ...newUser,
+        imageSignedUrl: imageSignedUrl 
+      }
     }
 
     await fetch('/api/sendAppointmentConfirmationEmail', {

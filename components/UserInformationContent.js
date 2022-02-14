@@ -122,10 +122,13 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
         const imageFilePath = rowData.card_information_image.replace('card-information/', '');
         console.log(imageFilePath);
         
-        const { data: blobImage, err } = await supabase.storage.from('card-information').download(imageFilePath);
+        const { data: signedUrl, err } = await supabase.storage.from('card-information').createSignedUrl(imageFilePath, 60);
 
         if (!err) {
-          imageUrl = URL.createObjectURL(blobImage);
+          // imageUrl = URL.createObjectURL(blobImage);
+          imageUrl = signedUrl;
+          console.log(imageUrl);
+          // Object { signedURL: "https://tlcjcrceoownhmupvvtk.supabase.co/storage/v1/object/s…6MTY0NDQ3Njc5NX0.Z4YJxjGHfP7-ytmx16iS4q7UtpEsOV3_3oqdfGxRNmA" }
           setImageFile(imageUrl)
         }
 
@@ -234,7 +237,12 @@ const UserInformationContent = memo(({ setOpen, rowData, users, setUsers }) => {
                 </Box>
                 
               <Box>
-                <img src={imageFile} style={{ width: '60%', maxWidth: '34rem' }}/>
+                  {imageFile && imageFile.signedURL &&
+                    <Link href={imageFile.signedURL}>
+                      <a target="_blank">
+                        <img src={imageFile.signedURL} style={{ width: '60%', maxWidth: '34rem' }} />
+                      </a>
+                    </Link>}
               </Box>
 
               <Collapse in={!checked} style={{ width: '100%' }}>

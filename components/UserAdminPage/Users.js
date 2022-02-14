@@ -71,38 +71,8 @@ const Users = ({ user, openSnackBar }) => {
         }),
       })
       const data = await res.json()
-
-      // await Promise.map(data, async (i) => {
-      //   let imageUrl = null;
-      //   if (i.card_information_image !== null) {
-      //     const imageFilePath = i.card_information_image.replace('card-information/', '');
-      //     console.log(imageFilePath);
-          
-      //     const { data: blobImage, err } = await supabase.storage.from('card-information').download(imageFilePath);
-
-
-      //     if (!err) {
-      //       imageUrl = URL.createObjectURL(blobImage);
-      //     }
-
-      //     console.log('err', err);
-          
-      //   }
-
-
-      //   console.log('here', {
-      //     ...i,
-      //     newImagePath: imageUrl
-      //   });
-
-      //   dataWithImage.push({
-      //     ...i,
-      //     newImagePath: imageUrl
-      //   })
-      // });
       
       setUsers(data);
-
 
     } catch (err) {
     } finally {
