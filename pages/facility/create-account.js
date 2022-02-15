@@ -13,10 +13,13 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  Select,
+  MenuItem,
 } from '@material-ui/core'
 import { VisibilityOff, Visibility } from '@material-ui/icons'
 import Container from '../../components/Container'
 import PhoneField from '../../components/PhoneField'
+import formatPhoneNumberE164 from '../../utils/formatPhoneNumberE164'
 
 import { SnackBarContext } from '../../components/SnackBar'
 
@@ -66,7 +69,7 @@ const Contact = () => {
   const classes = useStyles()
   const router = useRouter()
   const openSnackBar = useContext(SnackBarContext)
-
+  const [open, setOpen] = useState(true)
   const [fieldType, setFieldType] = useState('password')
   const [confirmFieldType, setConfirmFieldType] = useState('password')
   const [showPassword, setShowPassword] = useState(false)
@@ -77,17 +80,28 @@ const Contact = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
   const [localId, setLocalId] = useState('')
+  const [localFacilityPhone, setLocalFacilityPhone] = useState('')
+  const [
+    localPrimaryContactMobilePhone,
+    setLocalPrimaryContactMobilePhone,
+  ] = useState('')
+  const [localAddress, setLocalAddress] = useState('')
+  const [localCenterName, setLocalCenterName] = useState('')
+  const [localCity, setLocalCity] = useState('')
+  const [localState, setLocalState] = useState('')
+  const [localZip, setLocalZip] = useState('')
+  const [localPrimaryContactName, setLocalPrimaryContactName] = useState('')
+  const [localPrimaryContactShift, setLocalPrimaryContactShift] = useState('')
+  const [localSecondaryContactName, setLocalSecondaryContactName] = useState('')
+  const [
+    localSecondaryContactMobilePhone,
+    setLocalSecondaryContactMobilePhone,
+  ] = useState('')
+  const [localSecondaryContactShift, setLocalSecondaryContactShift] = useState(
+    ''
+  )
 
   const {
-    hasInsurance,
-    isPolicyCardHolder,
-    policyHolderFirstName,
-    policyHolderLastName,
-    policyHolderDob,
-    policyHolderRelation,
-    provider,
-    planNumber,
-    groupNumber,
     firstName,
     lastName,
     address,
@@ -97,6 +111,9 @@ const Contact = () => {
     phone,
     dob,
     setEmail,
+    facility_phone,
+    primary_contact_name,
+    primary_contact_mobile_phone,
   } = useStore()
 
   const handleSubmit = (e) => {
@@ -135,29 +152,6 @@ const Contact = () => {
     setShowConfirmPassword(!showConfirmPassword)
   }
 
-  const addUser = async (newUser) => {
-    //setOpen(true)
-    const payload = {
-      newUser,
-    }
-    fetch('/api/addUser', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw Error(data.error)
-        } else {
-          router.push('/visit-choice')
-        }
-      })
-      .catch((error) => {
-        openSnackBar({ message: error, snackSeverity: 'error' })
-      })
-  }
   const loginUser = () => {
     supabase.auth.signUp({ email: localEmail, password }).then((response) => {
       response.error
@@ -169,6 +163,32 @@ const Contact = () => {
     })
   }
 
+  const addFacility = async (newFacility) => {
+    setOpen(true)
+    console.log('newFacility', newFacility)
+    const payload = {
+      newFacility,
+    }
+    fetch('/api/addFacility', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error)
+        } else {
+          // router.push('/visit-choice')
+          openSnackBar({ message: 'SUCCESS', snackSeverity: 'success' })
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: error, snackSeverity: 'error' })
+      })
+  }
+
   const setToken = async (response) => {
     if (!response.data.access_token) {
       return
@@ -177,32 +197,32 @@ const Contact = () => {
       await setLocalEmail(response.data.user.email)
       await setLocalId(response.data.user.id)
       // TODO: fix this timeout
-      openSnackBar({
+      await openSnackBar({
         message: 'Logged in as ' + response.data.user.email,
         snackSeverity: 'success',
       })
-      let newUser = {
-        hasInsurance,
-        isPolicyCardHolder,
-        policyHolderFirstName,
-        policyHolderLastName,
-        policyHolderDob: moment(policyHolderDob).format('L'),
-        policyHolderRelation,
-        provider,
-        planNumber,
-        groupNumber,
-        firstName,
-        lastName,
-        email: response.data.user.email,
-        address,
-        city,
-        state,
-        zip,
-        dob: moment(dob).format('L'),
-        phone: phone.replace(/\s/g, ''),
-        uuid: response.data.user.id,
+      let newFacility = {
+        name: localCenterName,
+        address: localAddress,
+        city: localCity,
+        state: localState,
+        zip: localZip,
+        facility_phone: formatPhoneNumberE164(localFacilityPhone),
+        primary_contact_name: localPrimaryContactName,
+        primary_contact_mobile_phone: formatPhoneNumberE164(
+          localPrimaryContactMobilePhone
+        ),
+        primary_contact_shift: localPrimaryContactShift,
+        secondary_contact_name: localSecondaryContactName,
+        secondary_contact_mobile_phone: formatPhoneNumberE164(
+          localSecondaryContactMobilePhone
+        ),
+        secondary_contact_shift: localSecondaryContactShift,
+
+        auth_id: response.data.user.uuid,
       }
-      addUser(newUser)
+      console.log('newFacility payload:::', newFacility)
+      await addFacility(newFacility)
     }
   }
 
@@ -319,6 +339,8 @@ const Contact = () => {
                 variant="outlined"
                 color="secondary"
                 required
+                value={localCenterName}
+                onChange={(e) => setLocalCenterName(e.target.value)}
               />
               <TextField
                 fullWidth
@@ -328,6 +350,18 @@ const Contact = () => {
                 rows={4}
                 variant="outlined"
                 color="secondary"
+                value={localAddress}
+                onChange={(e) => setLocalAddress(e.target.value)}
+                required
+              />
+              <TextField
+                fullWidth
+                className={classes.textFields}
+                label="City"
+                variant="outlined"
+                color="secondary"
+                value={localCity}
+                onChange={(e) => setLocalCity(e.target.value)}
                 required
               />
               <TextField
@@ -336,6 +370,8 @@ const Contact = () => {
                 label="State"
                 variant="outlined"
                 color="secondary"
+                value={localState}
+                onChange={(e) => setLocalState(e.target.value)}
                 required
               />
               <TextField
@@ -346,6 +382,8 @@ const Contact = () => {
                 color="secondary"
                 fullWidth
                 required
+                value={localZip}
+                onChange={(e) => setLocalZip(e.target.value)}
               />
               <TextField
                 className={classes.textFields}
@@ -355,6 +393,8 @@ const Contact = () => {
                 variant="outlined"
                 color="secondary"
                 required
+                value={localFacilityPhone}
+                onChange={(e) => setLocalFacilityPhone(e.target.value)}
                 InputProps={{
                   inputComponent: PhoneField,
                 }}
@@ -363,20 +403,93 @@ const Contact = () => {
               <TextField
                 fullWidth
                 className={classes.textFields}
-                label="Primary Account First Name"
+                label="Primary Account Name"
                 variant="outlined"
                 color="secondary"
+                value={localPrimaryContactName}
+                onChange={(e) => setLocalPrimaryContactName(e.target.value)}
                 required
               />
 
               <TextField
-                fullWidth
                 className={classes.textFields}
-                label="Primary Account Last Name"
+                fullWidth
+                type="tel"
+                label="Primary Contact Mobile Phone"
                 variant="outlined"
                 color="secondary"
                 required
+                value={localPrimaryContactMobilePhone}
+                onChange={(e) =>
+                  setLocalPrimaryContactMobilePhone(e.target.value)
+                }
+                InputProps={{
+                  inputComponent: PhoneField,
+                }}
               />
+
+              <FormControl variant="outlined" className={classes.textFields}>
+                <InputLabel id="primary_contact_shift" color="secondary">
+                  Primary Contact Shift
+                </InputLabel>
+                <Select
+                  labelId="primary_contact_shift"
+                  label="Primary Contact Shift"
+                  color="secondary"
+                  value={localPrimaryContactShift}
+                  onChange={(e) => setLocalPrimaryContactShift(e.target.value)}
+                >
+                  <MenuItem value="day">Day</MenuItem>
+                  <MenuItem value="night">Night</MenuItem>
+                </Select>
+              </FormControl>
+
+              <TextField
+                fullWidth
+                className={classes.textFields}
+                label="Secondary Account Name"
+                variant="outlined"
+                color="secondary"
+                value={localSecondaryContactName}
+                onChange={(e) => setLocalSecondaryContactName(e.target.value)}
+                required
+              />
+
+              <TextField
+                className={classes.textFields}
+                fullWidth
+                type="tel"
+                label="Primary Contact Mobile Phone"
+                variant="outlined"
+                color="secondary"
+                required
+                value={localSecondaryContactMobilePhone}
+                onChange={(e) =>
+                  setLocalSecondaryContactMobilePhone(e.target.value)
+                }
+                InputProps={{
+                  inputComponent: PhoneField,
+                }}
+              />
+
+              <FormControl variant="outlined" className={classes.textFields}>
+                <InputLabel id="primary_contact_shift" color="secondary">
+                  Secondary Contact Shift
+                </InputLabel>
+                <Select
+                  labelId="primary_contact_shift"
+                  label="Primary Contact Shift"
+                  color="secondary"
+                  value={localSecondaryContactShift}
+                  onChange={(e) =>
+                    setLocalSecondaryContactShift(e.target.value)
+                  }
+                >
+                  <MenuItem value="day">Day</MenuItem>
+                  <MenuItem value="night">Night</MenuItem>
+                </Select>
+              </FormControl>
+
               <Box mt="1em" width="100%" maxWidth="34rem">
                 <FormControl component="fieldset">
                   <FormControlLabel
@@ -401,11 +514,11 @@ const Contact = () => {
                     !password ||
                     !confirmPassword ||
                     password !== confirmPassword ||
-                    !localEmail ||
-                    !checked ||
-                    !state ||
-                    !zip ||
-                    !phone
+                    !localEmail
+                    // !checked ||
+                    // !state ||
+                    // !zip ||
+                    // !phone
                   }
                   type="submit"
                   color="secondary"
@@ -423,7 +536,7 @@ const Contact = () => {
               flexWrap="wrap"
             >
               <Box m="1em">
-                <Typography variant="body">
+                <Typography variant="body1">
                   Already have an account?{' '}
                   <Link passHref href={'/login'}>
                     <a>Login here</a>

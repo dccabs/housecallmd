@@ -3,7 +3,7 @@ import { supabase } from '../../utils/initSupabase'
 const addFacility = async (req, res) => {
   const { newFacility } = req.body
 
-  if (!newUser || newUser === 'undefined') {
+  if (!newFacility || newFacility === 'undefined') {
     throw Error('null data value')
   }
 
