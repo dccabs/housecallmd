@@ -148,7 +148,6 @@ const Contact = () => {
 
   const addFacility = async (newFacility) => {
     setOpen(true)
-    console.log('newFacility', newFacility)
     const payload = {
       newFacility,
     }
@@ -202,9 +201,8 @@ const Contact = () => {
         ),
         secondary_contact_shift: localSecondaryContactShift,
 
-        auth_id: response.data.user.uuid,
+        uuid: response.data.user.uuid,
       }
-      console.log('newFacility payload:::', newFacility)
       await addFacility(newFacility)
     }
   }
