@@ -202,7 +202,7 @@ const Contact = () => {
         ),
         secondary_contact_shift: localSecondaryContactShift,
 
-        uuid: response.data.user.id,
+        auth_id: response.data.user.id,
       }
       await addFacility(newFacility)
     }
