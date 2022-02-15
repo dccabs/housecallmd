@@ -177,6 +177,11 @@ const addPatientPage = () => {
           alignItems="center"
           justifyContent="center"
         >
+          <Typography>
+            Please enter all the information to add a new{' '}
+            <strong style={{ color: '#0092b8' }}>patient</strong>. All fields
+            are required unless marked optional.
+          </Typography>
           {Object.keys(formData).map((key) => {
             const field = formData[key]
             if (field.type === 'textField') {
