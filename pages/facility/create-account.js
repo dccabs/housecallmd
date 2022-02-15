@@ -178,6 +178,7 @@ const Contact = () => {
       await setEmail(response.data.user.email)
       await setLocalEmail(response.data.user.email)
       await setLocalId(response.data.user.id)
+      console.log('response', response)
       // TODO: fix this timeout
       await openSnackBar({
         message: 'Logged in as ' + response.data.user.email,
@@ -201,7 +202,7 @@ const Contact = () => {
         ),
         secondary_contact_shift: localSecondaryContactShift,
 
-        uuid: response.data.user.uuid,
+        uuid: response.data.user.id,
       }
       await addFacility(newFacility)
     }
