@@ -24,11 +24,8 @@ import formatPhoneNumberE164 from '../../utils/formatPhoneNumberE164'
 import { SnackBarContext } from '../../components/SnackBar'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
 import { supabase } from '../../utils/initSupabase'
-import { Auth } from '@supabase/ui'
-import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -67,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Contact = () => {
   const classes = useStyles()
-  const router = useRouter()
   const openSnackBar = useContext(SnackBarContext)
   const [open, setOpen] = useState(true)
   const [fieldType, setFieldType] = useState('password')
@@ -101,20 +97,7 @@ const Contact = () => {
     ''
   )
 
-  const {
-    firstName,
-    lastName,
-    address,
-    city,
-    state,
-    zip,
-    phone,
-    dob,
-    setEmail,
-    facility_phone,
-    primary_contact_name,
-    primary_contact_mobile_phone,
-  } = useStore()
+  const { setEmail } = useStore()
 
   const handleSubmit = (e) => {
     setEmail(localEmail)
@@ -191,7 +174,7 @@ const Contact = () => {
 
   const setToken = async (response) => {
     if (!response.data.access_token) {
-      return
+      return null
     } else {
       await setEmail(response.data.user.email)
       await setLocalEmail(response.data.user.email)
