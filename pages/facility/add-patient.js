@@ -118,14 +118,14 @@ const addPatientPage = () => {
     patientPowerOfAttorneyName: {
       type: 'textField',
       value: '',
-      label: "Patient's Power of Attorney Name",
-      required: true,
+      label: "Patient's Power of Attorney Name (Optional)",
+      required: false,
     },
     patientPowerOfAttorneyPhoneNumber: {
       type: 'phoneNumber',
       value: '',
-      label: "Patient's Power of Attorney Phone Number",
-      required: true,
+      label: "Patient's Power of Attorney Phone Number (Optional)",
+      required: false,
     },
   })
 
