@@ -77,10 +77,6 @@ const Contact = () => {
   const [localEmail, setLocalEmail] = useState('')
   const [localId, setLocalId] = useState('')
   const [localFacilityPhone, setLocalFacilityPhone] = useState('')
-  const [
-    localPrimaryContactMobilePhone,
-    setLocalPrimaryContactMobilePhone,
-  ] = useState('')
   const [localAddress, setLocalAddress] = useState('')
   const [localCenterName, setLocalCenterName] = useState('')
   const [localCity, setLocalCity] = useState('')
@@ -88,6 +84,10 @@ const Contact = () => {
   const [localZip, setLocalZip] = useState('')
   const [localPrimaryContactName, setLocalPrimaryContactName] = useState('')
   const [localPrimaryContactShift, setLocalPrimaryContactShift] = useState('')
+  const [
+    localPrimaryContactMobilePhone,
+    setLocalPrimaryContactMobilePhone,
+  ] = useState('')
   const [localSecondaryContactName, setLocalSecondaryContactName] = useState('')
   const [
     localSecondaryContactMobilePhone,
@@ -197,9 +197,9 @@ const Contact = () => {
         ),
         primary_contact_shift: localPrimaryContactShift,
         secondary_contact_name: localSecondaryContactName,
-        secondary_contact_mobile_phone: formatPhoneNumberE164(
-          localSecondaryContactMobilePhone
-        ),
+        secondary_contact_mobile_phone: localSecondaryContactMobilePhone
+          ? formatPhoneNumberE164(localSecondaryContactMobilePhone)
+          : '',
         secondary_contact_shift: localSecondaryContactShift,
 
         auth_id: response.data.user.id,
@@ -423,6 +423,7 @@ const Contact = () => {
                 >
                   <MenuItem value="day">Day</MenuItem>
                   <MenuItem value="night">Night</MenuItem>
+                  <MenuItem value="both">Both</MenuItem>
                 </Select>
               </FormControl>
 
@@ -434,17 +435,15 @@ const Contact = () => {
                 color="secondary"
                 value={localSecondaryContactName}
                 onChange={(e) => setLocalSecondaryContactName(e.target.value)}
-                required
               />
 
               <TextField
                 className={classes.textFields}
                 fullWidth
                 type="tel"
-                label="Primary Contact Mobile Phone"
+                label="Secondary Contact Mobile Phone"
                 variant="outlined"
                 color="secondary"
-                required
                 value={localSecondaryContactMobilePhone}
                 onChange={(e) =>
                   setLocalSecondaryContactMobilePhone(e.target.value)
@@ -469,6 +468,7 @@ const Contact = () => {
                 >
                   <MenuItem value="day">Day</MenuItem>
                   <MenuItem value="night">Night</MenuItem>
+                  <MenuItem value="both">Both</MenuItem>
                 </Select>
               </FormControl>
 
@@ -498,19 +498,16 @@ const Contact = () => {
                     password !== confirmPassword ||
                     !localEmail ||
                     !checked ||
-                    !state ||
-                    !zip ||
-                    !phone ||
+                    !localState ||
+                    !localZip ||
+                    !localFacilityPhone ||
                     !localCenterName ||
                     !localCity ||
                     !localState ||
                     !localZip ||
                     !localPrimaryContactName ||
                     !localPrimaryContactShift ||
-                    !localPrimaryContactMobilePhone ||
-                    !localSecondaryContactName ||
-                    !localSecondaryContactMobilePhone ||
-                    !localSecondaryContactShift
+                    !localPrimaryContactMobilePhone
                   }
                   type="submit"
                   color="secondary"
