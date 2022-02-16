@@ -496,11 +496,21 @@ const Contact = () => {
                     !password ||
                     !confirmPassword ||
                     password !== confirmPassword ||
-                    !localEmail
-                    // !checked ||
-                    // !state ||
-                    // !zip ||
-                    // !phone
+                    !localEmail ||
+                    !checked ||
+                    !state ||
+                    !zip ||
+                    !phone ||
+                    !localCenterName ||
+                    !localCity ||
+                    !localState ||
+                    !localZip ||
+                    !localPrimaryContactName ||
+                    !localPrimaryContactShift ||
+                    !localPrimaryContactMobilePhone ||
+                    !localSecondaryContactName ||
+                    !localSecondaryContactMobilePhone ||
+                    !localSecondaryContactShift
                   }
                   type="submit"
                   color="secondary"
