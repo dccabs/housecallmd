@@ -95,7 +95,6 @@ const EditAccount = () => {
     const json = await fetchData.json()
     const data = json[0]
     setDataFetched(true)
-    console.log('data', data)
     if (!isEmpty(data)) {
       setLocalCenterName(data.name)
       setLocalAddress(data.address)
