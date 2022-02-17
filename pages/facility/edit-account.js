@@ -69,7 +69,6 @@ const EditAccount = () => {
   const [localState, setLocalState] = useState('')
   const [localZip, setLocalZip] = useState('')
   const [localPrimaryContactName, setLocalPrimaryContactName] = useState('')
-
   const { setEmail } = useStore()
 
   const getFacilities = async () => {
@@ -90,6 +89,7 @@ const EditAccount = () => {
       setLocalZip(data.zip)
       setLocalFacilityPhone(data.facility_phone)
       setLocalPrimaryContactName(data.primary_contact_name)
+      setLocalEmail(user.email)
     }
   }
 
