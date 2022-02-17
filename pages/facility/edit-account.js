@@ -17,7 +17,6 @@ import { SnackBarContext } from '../../components/SnackBar'
 
 import { makeStyles } from '@material-ui/core/styles'
 import useStore from '../../zustand/store'
-import { supabase } from '../../utils/initSupabase'
 import { Auth } from '@supabase/ui'
 import isEmpty from '../../utils/isEmpty'
 
@@ -59,12 +58,6 @@ const useStyles = makeStyles((theme) => ({
 const EditAccount = () => {
   const { user } = Auth.useUser()
   const [dataFetched, setDataFetched] = useState(false)
-  useEffect(() => {
-    if (user && !dataFetched) {
-      fetchFacilityData()
-    }
-  })
-
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const [open, setOpen] = useState(true)
@@ -81,7 +74,7 @@ const EditAccount = () => {
 
   const { setEmail } = useStore()
 
-  const fetchFacilityData = async () => {
+  const getFacilities = async () => {
     const fetchData = await fetch('/api/getFacilities', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -105,85 +98,44 @@ const EditAccount = () => {
   const handleSubmit = (e) => {
     setEmail(localEmail)
     e.preventDefault()
-    loginUser()
+    const payload = {
+      name: localCenterName,
+      address: localAddress,
+      city: localCity,
+      state: localState,
+      zip: localZip,
+      facility_phone: formatPhoneNumberE164(localFacilityPhone),
+      primary_contact_name: localPrimaryContactName,
+      auth_id: user.id,
+    }
+    updateFacilityData(payload)
+  }
+
+  const updateFacilityData = async (payload) => {
+    const updateData = await fetch('/api/updateFacility', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+    const json = await updateData.json()
+    if (!json.success) {
+      openSnackBar({
+        message: json.error.message,
+        snackSeverity: 'error',
+      })
+    }
   }
 
   const handleEmailUpdate = (e) => {
     setLocalEmail(e.target.value)
   }
 
-  const loginUser = () => {
-    supabase.auth.signUp({ email: localEmail, password }).then((response) => {
-      response.error
-        ? openSnackBar({
-            message: response.error.message,
-            snackSeverity: 'error',
-          })
-        : setToken(response)
-    })
-  }
-
-  const addFacility = async (newFacility) => {
-    setOpen(true)
-    const payload = {
-      newFacility,
+  useEffect(() => {
+    if (user && !dataFetched) {
+      getFacilities()
     }
-    fetch('/api/addFacility', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw Error(data.error)
-        } else {
-          // router.push('/visit-choice')
-          openSnackBar({ message: 'SUCCESS', snackSeverity: 'success' })
-        }
-      })
-      .catch((error) => {
-        openSnackBar({ message: error, snackSeverity: 'error' })
-      })
-  }
-
-  const setToken = async (response) => {
-    if (!response.data.access_token) {
-      return null
-    } else {
-      await setEmail(response.data.user.email)
-      await setLocalEmail(response.data.user.email)
-      await setLocalId(response.data.user.id)
-      console.log('response', response)
-      // TODO: fix this timeout
-      await openSnackBar({
-        message: 'Logged in as ' + response.data.user.email,
-        snackSeverity: 'success',
-      })
-      let newFacility = {
-        name: localCenterName,
-        address: localAddress,
-        city: localCity,
-        state: localState,
-        zip: localZip,
-        facility_phone: formatPhoneNumberE164(localFacilityPhone),
-        primary_contact_name: localPrimaryContactName,
-        primary_contact_mobile_phone: formatPhoneNumberE164(
-          localPrimaryContactMobilePhone
-        ),
-        primary_contact_shift: localPrimaryContactShift,
-        secondary_contact_name: localSecondaryContactName,
-        secondary_contact_mobile_phone: localSecondaryContactMobilePhone
-          ? formatPhoneNumberE164(localSecondaryContactMobilePhone)
-          : '',
-        secondary_contact_shift: localSecondaryContactShift,
-
-        auth_id: response.data.user.id,
-      }
-      await addFacility(newFacility)
-    }
-  }
+  })
 
   return (
     <Container>
@@ -332,8 +284,7 @@ const EditAccount = () => {
                     !localCity ||
                     !localState ||
                     !localZip ||
-                    !localPrimaryContactName ||
-                    !localPrimaryContactMobilePhone
+                    !localPrimaryContactName
                   }
                   type="submit"
                   color="secondary"
