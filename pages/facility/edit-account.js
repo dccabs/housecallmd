@@ -4,10 +4,11 @@ import {
   Typography,
   Box,
   TextField,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@material-ui/core'
 import Container from '../../components/Container'
 import PhoneField from '../../components/PhoneField'
@@ -60,7 +61,6 @@ const EditAccount = () => {
   const [dataFetched, setDataFetched] = useState(false)
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
-  const [checked, setChecked] = useState(false)
   const [localEmail, setLocalEmail] = useState('')
   const [localFacilityPhone, setLocalFacilityPhone] = useState('')
   const [localAddress, setLocalAddress] = useState('')
@@ -69,6 +69,19 @@ const EditAccount = () => {
   const [localState, setLocalState] = useState('')
   const [localZip, setLocalZip] = useState('')
   const [localPrimaryContactName, setLocalPrimaryContactName] = useState('')
+  const [localPrimaryContactShift, setLocalPrimaryContactShift] = useState('')
+  const [
+    localPrimaryContactMobilePhone,
+    setLocalPrimaryContactMobilePhone,
+  ] = useState('')
+  const [localSecondaryContactName, setLocalSecondaryContactName] = useState('')
+  const [
+    localSecondaryContactMobilePhone,
+    setLocalSecondaryContactMobilePhone,
+  ] = useState('')
+  const [localSecondaryContactShift, setLocalSecondaryContactShift] = useState(
+    ''
+  )
   const { setEmail } = useStore()
 
   const getFacilities = async () => {
@@ -81,6 +94,7 @@ const EditAccount = () => {
     const json = await fetchData.json()
     const data = json[0]
     setDataFetched(true)
+    console.log('data', data)
     if (!isEmpty(data)) {
       setLocalCenterName(data.name)
       setLocalAddress(data.address)
@@ -89,6 +103,13 @@ const EditAccount = () => {
       setLocalZip(data.zip)
       setLocalFacilityPhone(data.facility_phone)
       setLocalPrimaryContactName(data.primary_contact_name)
+      setLocalPrimaryContactMobilePhone(data.primary_contact_mobile_phone)
+      setLocalPrimaryContactShift(data.primary_contact_shift)
+
+      setLocalSecondaryContactName(data.secondary_contact_name)
+      setLocalSecondaryContactMobilePhone(data.secondary_contact_mobile_phone)
+      setLocalSecondaryContactShift(data.secondary_contact_shift)
+
       setLocalEmail(user.email)
     }
   }
@@ -104,6 +125,15 @@ const EditAccount = () => {
       zip: localZip,
       facility_phone: formatPhoneNumberE164(localFacilityPhone),
       primary_contact_name: localPrimaryContactName,
+      primary_contact_mobile_phone: formatPhoneNumberE164(
+        localPrimaryContactMobilePhone
+      ),
+      primary_contact_shift: localPrimaryContactShift,
+      secondary_contact_name: localSecondaryContactName,
+      secondary_contact_mobile_phone: localSecondaryContactMobilePhone
+        ? formatPhoneNumberE164(localSecondaryContactMobilePhone)
+        : '',
+      secondary_contact_shift: localSecondaryContactShift,
       auth_id: user.id,
     }
     updateFacilityData(payload).then(() => {
@@ -257,17 +287,84 @@ const EditAccount = () => {
                 helperText="Please enter the name of the primary administration contact"
               />
 
-              <Box mt="1em" width="100%" maxWidth="34rem">
-                <FormControl component="fieldset">
-                  <FormControlLabel
-                    value="Terms"
-                    control={<Checkbox color="secondary" checked={checked} />}
-                    label="Accept terms and conditions of HousecallMD"
-                    labelPlacement="end"
-                    onChange={() => setChecked(!checked)}
-                  />
-                </FormControl>
-              </Box>
+              <TextField
+                className={classes.textFields}
+                fullWidth
+                type="tel"
+                label="Primary Contact Mobile Phone"
+                variant="outlined"
+                color="secondary"
+                required
+                value={localPrimaryContactMobilePhone}
+                onChange={(e) =>
+                  setLocalPrimaryContactMobilePhone(e.target.value)
+                }
+                InputProps={{
+                  inputComponent: PhoneField,
+                }}
+              />
+
+              <FormControl variant="outlined" className={classes.textFields}>
+                <InputLabel id="primary_contact_shift" color="secondary">
+                  Primary Contact Shift
+                </InputLabel>
+                <Select
+                  labelId="primary_contact_shift"
+                  label="Primary Contact Shift"
+                  color="secondary"
+                  value={localPrimaryContactShift}
+                  onChange={(e) => setLocalPrimaryContactShift(e.target.value)}
+                >
+                  <MenuItem value="day">Day</MenuItem>
+                  <MenuItem value="night">Night</MenuItem>
+                  <MenuItem value="both">Both</MenuItem>
+                </Select>
+              </FormControl>
+
+              <TextField
+                fullWidth
+                className={classes.textFields}
+                label="Secondary Account Name"
+                variant="outlined"
+                color="secondary"
+                value={localSecondaryContactName}
+                onChange={(e) => setLocalSecondaryContactName(e.target.value)}
+              />
+
+              <TextField
+                className={classes.textFields}
+                fullWidth
+                type="tel"
+                label="Secondary Contact Mobile Phone"
+                variant="outlined"
+                color="secondary"
+                value={localSecondaryContactMobilePhone}
+                onChange={(e) =>
+                  setLocalSecondaryContactMobilePhone(e.target.value)
+                }
+                InputProps={{
+                  inputComponent: PhoneField,
+                }}
+              />
+
+              <FormControl variant="outlined" className={classes.textFields}>
+                <InputLabel id="secondary_contact_shift" color="secondary">
+                  Secondary Contact Shift
+                </InputLabel>
+                <Select
+                  labelId="secondary_contact_shift"
+                  label="Secondary Contact Shift"
+                  color="secondary"
+                  value={localSecondaryContactShift}
+                  onChange={(e) =>
+                    setLocalSecondaryContactShift(e.target.value)
+                  }
+                >
+                  <MenuItem value="day">Day</MenuItem>
+                  <MenuItem value="night">Night</MenuItem>
+                  <MenuItem value="both">Both</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
             <Box
               mt="2em"
@@ -279,7 +376,6 @@ const EditAccount = () => {
                 <Button
                   disabled={
                     !localEmail ||
-                    !checked ||
                     !localState ||
                     !localZip ||
                     !localFacilityPhone ||
@@ -287,14 +383,16 @@ const EditAccount = () => {
                     !localCity ||
                     !localState ||
                     !localZip ||
-                    !localPrimaryContactName
+                    !localPrimaryContactName ||
+                    !localSecondaryContactMobilePhone ||
+                    !localSecondaryContactShift
                   }
                   type="submit"
                   color="secondary"
                   variant="contained"
                   size="large"
                 >
-                  Create Account
+                  Update Account
                 </Button>
               </Box>
             </Box>
