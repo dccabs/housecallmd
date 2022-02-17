@@ -13,13 +13,14 @@ import {
 import Container from '../../components/Container'
 import PhoneField from '../../components/PhoneField'
 import formatPhoneNumberE164 from '../../utils/formatPhoneNumberE164'
-
+import STATES from '../../public/constants/states'
 import { SnackBarContext } from '../../components/SnackBar'
 
 import { makeStyles } from '@material-ui/core/styles'
 import useStore from '../../zustand/store'
 import { Auth } from '@supabase/ui'
 import isEmpty from '../../utils/isEmpty'
+import MuiSelect from '../../components/MuiSelect'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -238,16 +239,23 @@ const EditAccount = () => {
                 onChange={(e) => setLocalCity(e.target.value)}
                 required
               />
-              <TextField
-                fullWidth
-                className={classes.textFields}
+              <MuiSelect
+                name="state"
                 label="State"
-                variant="outlined"
-                color="secondary"
+                defaultValue=""
                 value={localState}
-                onChange={(e) => setLocalState(e.target.value)}
-                required
-              />
+                onChange={(e) => {
+                  setLocalState(e.target.value)
+                }}
+              >
+                {STATES.map((state, index) => {
+                  return (
+                    <MenuItem key={index} value={state.abbreviation}>
+                      {state.name}
+                    </MenuItem>
+                  )
+                })}
+              </MuiSelect>
               <TextField
                 className={classes.textFields}
                 type="number"
