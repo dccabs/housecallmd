@@ -106,7 +106,12 @@ const EditAccount = () => {
       primary_contact_name: localPrimaryContactName,
       auth_id: user.id,
     }
-    updateFacilityData(payload)
+    updateFacilityData(payload).then(() => {
+      openSnackBar({
+        message: 'Success',
+        snackSeverity: 'success',
+      })
+    })
   }
 
   const updateFacilityData = async (payload) => {
