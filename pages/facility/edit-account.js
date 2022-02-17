@@ -306,7 +306,7 @@ const EditAccount = () => {
             >
               <Box m="1em">
                 <Typography variant="body1">
-                  <Link passHref href={'/assisted-living/profile'}>
+                  <Link passHref href={'/facility/profile'}>
                     <a>Back to profile</a>
                   </Link>
                   .
