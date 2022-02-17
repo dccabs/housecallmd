@@ -4,14 +4,15 @@ import { supabase } from '../../utils/initSupabase'
 const getFacilities = async (req, res) => {
   const body = req.body
 
-  if (body.user.role !== 'authenticated') {
-    throw Error('not authorized')
-  }
+  // if (body.user.role !== 'authenticated') {
+  //   throw Error('not authorized')
+  // }
 
   let { data: facilities, error } = await supabase
     .from('facilities')
-    .select('*')
-    .order('id', true)
+    .select('name')
+
+  console.log('error', error)
 
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(facilities)

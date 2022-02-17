@@ -35,7 +35,7 @@ function UserAdmin(props) {
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
-  useEffect(() => {
+  useEffect(async () => {
     if (user) {
       fetch('/api/getSingleUser', {
         method: 'POST',
@@ -54,6 +54,11 @@ function UserAdmin(props) {
             })
           }
         })
+
+      const getFacilities = await fetch('/api/getFacilities', {
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+      })
     }
   }, [user])
 
