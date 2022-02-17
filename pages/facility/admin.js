@@ -3,6 +3,7 @@ import { Typography, Box, Tabs, Tab } from '@material-ui/core'
 
 import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../../components/SnackBar'
+import Centers from '../../components/Facility/Centers'
 
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
@@ -54,11 +55,6 @@ function UserAdmin(props) {
             })
           }
         })
-
-      const getFacilities = await fetch('/api/getFacilities', {
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-      })
     }
   }, [user])
 
@@ -80,7 +76,7 @@ function UserAdmin(props) {
             <h1>USERS GOES HERE</h1>
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
-            <h1>CENTERS GOES HERE</h1>
+            <Centers user={user} />
           </TabPanel>
         </>
       )}
