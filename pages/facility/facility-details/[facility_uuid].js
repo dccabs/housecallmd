@@ -1,7 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { NextSeo } from 'next-seo'
 import xhrHeader from '../../../constants/xhrHeader'
-import { Typography, Box, Table, TableRow, TableCell } from '@material-ui/core'
+import {
+  Typography,
+  Box,
+  Table,
+  TableRow,
+  TableCell,
+  CircularProgress,
+} from '@material-ui/core'
 import Container from '../../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
@@ -93,10 +100,14 @@ const FacilityDetails = () => {
       ) : (
         <Container>
           {loading ? (
-            <Typography>
-              {/*@TODO: MAKE THIS LOOK NICER*/}
-              <Skeleton variant="text" height="10em" animation="wave" />
-            </Typography>
+            <Box
+              my="1em"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CircularProgress />
+            </Box>
           ) : (
             <>
               <Typography variant="h2" className={classes.h2}>
