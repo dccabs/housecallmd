@@ -3,7 +3,7 @@ import getPatientByFacilityId from '../../utils/mock/getPatientByFacilityId.json
 
 const getFacilityById = async (req, res) => {
   const { id } = req.body
-
+  console.log('id', id)
   if (!id || id === 'undefined') {
     throw Error('User ID not found')
     return res.status(400).json({ error: 'User Not Found' })
@@ -13,14 +13,15 @@ const getFacilityById = async (req, res) => {
     .from('facilities')
     .select('*')
     .eq('auth_id', id)
-
-  const data = {
-    ...facilities[0],
-    patients: getPatientByFacilityId,
+  if (facilities) {
+    const data = {
+      ...facilities[0],
+      patients: getPatientByFacilityId,
+    }
+    return res.status(200).json(data)
   }
 
-  if (error) return res.status(401).json({ error: error.message })
-  return res.status(200).json(data)
+  if (error) return res.status(400).json({ error: error.message })
 }
 
 export default getFacilityById
