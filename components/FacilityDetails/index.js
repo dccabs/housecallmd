@@ -1,81 +1,89 @@
-import { Table, TableCell, TableRow, Typography } from '@material-ui/core'
+import { Table, TableCell, TableRow, Typography, Box } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React from 'react'
 import useStyles from './use-styles'
 import tableCols from './table-cols'
+import Container from '../Container'
 
 const FacilityDetails = ({ facility }) => {
-  const classes = useStyles()
+  const classes = useStyles({
+    h2: {
+      paddingBottom: 60,
+      color: 'red',
+    },
+  })
   return (
     <>
-      <Typography variant="h2" className={classes.h2}>
-        {facility?.name}
-      </Typography>
+      <Container>
 
-      <Typography variant="h3" className={classes.h2}>
-        Facility Information
-      </Typography>
-      <Table>
-        <TableRow>
-          <TableCell variant="head" className={classes.tableHead}>
-            Address:
-          </TableCell>
-          <TableCell>
-            {facility?.address}
-            <br />
-            {facility?.city}, {facility?.state} {facility?.zip}
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell variant="head" className={classes.tableHead}>
-            Primary Contact Name:
-          </TableCell>
-          <TableCell>{facility?.primary_contact_name}</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell variant="head" className={classes.tableHead}>
-            Primary Contact Phone:
-          </TableCell>
-          <TableCell>{facility?.primary_contact_mobile_phone}</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell variant="head" className={classes.tableHead}>
-            Primary Contact Shift:
-          </TableCell>
-          <TableCell>{facility?.primary_contact_shift}</TableCell>
-        </TableRow>
-        {facility?.secondary_contact_name && (
+        <Typography variant="h2" className={classes.h2}>
+          {facility?.name}
+        </Typography>
+
+        <Table>
           <TableRow>
             <TableCell variant="head" className={classes.tableHead}>
-              Secondary Contact Name:
+              Address:
             </TableCell>
-            <TableCell>{facility?.secondary_contact_name}</TableCell>
+            <TableCell>
+              {facility?.address}
+              <br />
+              {facility?.city}, {facility?.state} {facility?.zip}
+            </TableCell>
           </TableRow>
-        )}
-
-        {facility?.secondary_contact_mobile_phone && (
           <TableRow>
             <TableCell variant="head" className={classes.tableHead}>
-              Secondary Contact Phone:
+              Primary Contact Name:
             </TableCell>
-            <TableCell>{facility?.secondary_contact_mobile_phone}</TableCell>
+            <TableCell>{facility?.primary_contact_name}</TableCell>
           </TableRow>
-        )}
-
-        {facility?.secondary_contact_shift && (
           <TableRow>
             <TableCell variant="head" className={classes.tableHead}>
-              Secondary Contact Shift:
+              Primary Contact Phone:
             </TableCell>
-            <TableCell>{facility?.secondary_contact_shift}</TableCell>
+            <TableCell>{facility?.primary_contact_mobile_phone}</TableCell>
           </TableRow>
-        )}
-      </Table>
-      <MaterialTable
-        title="Patient Information"
-        columns={tableCols}
-        data={facility?.patients}
-      />
+          <TableRow>
+            <TableCell variant="head" className={classes.tableHead}>
+              Primary Contact Shift:
+            </TableCell>
+            <TableCell>{facility?.primary_contact_shift}</TableCell>
+          </TableRow>
+          {facility?.secondary_contact_name && (
+            <TableRow>
+              <TableCell variant="head" className={classes.tableHead}>
+                Secondary Contact Name:
+              </TableCell>
+              <TableCell>{facility?.secondary_contact_name}</TableCell>
+            </TableRow>
+          )}
+
+          {facility?.secondary_contact_mobile_phone && (
+            <TableRow>
+              <TableCell variant="head" className={classes.tableHead}>
+                Secondary Contact Phone:
+              </TableCell>
+              <TableCell>{facility?.secondary_contact_mobile_phone}</TableCell>
+            </TableRow>
+          )}
+
+          {facility?.secondary_contact_shift && (
+            <TableRow>
+              <TableCell variant="head" className={classes.tableHead}>
+                Secondary Contact Shift:
+              </TableCell>
+              <TableCell>{facility?.secondary_contact_shift}</TableCell>
+            </TableRow>
+          )}
+        </Table>
+      </Container>
+      <Box style={{padding:30}}>
+        <MaterialTable
+          title="Facility Accounts"
+          columns={tableCols}
+          data={facility?.patients}
+        />
+      </Box>
     </>
   )
 }
