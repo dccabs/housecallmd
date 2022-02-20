@@ -55,7 +55,7 @@ const FacilityDetailsPage = () => {
           </Typography>
         </Container>
       ) : (
-        <Container>
+        <>
           {loading ? (
             <Box
               my="1em"
@@ -70,7 +70,7 @@ const FacilityDetailsPage = () => {
               <FacilityDetails facility={facility} />
             </>
           )}
-        </Container>
+        </>
       )}
     </>
   )

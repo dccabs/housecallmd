@@ -9,14 +9,22 @@ const getFacilityById = async (req, res) => {
     return res.status(400).json({ error: 'User Not Found' })
   }
 
+
+
   let { data: facilities, error } = await supabase
     .from('facilities')
     .select('*')
     .eq('auth_id', id)
+
+  let { data: patients, patientsError } = await supabase
+    .from('facility_patients')
+    .select('*')
+    .eq('facility_auth_id', id)
+
   if (facilities) {
     const data = {
       ...facilities[0],
-      patients: getPatientByFacilityId,
+      patients,
     }
     return res.status(200).json(data)
   }
