@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Box, CircularProgress } from '@material-ui/core'
 import MaterialTable from 'material-table'
+import xhrHeader from '../../../constants/xhrHeader'
+import shiftEnums from '../../../constants/shift'
+import router from 'next/router'
 
 const Centers = ({ user }) => {
   const [rowData, setRowData] = useState(false)
@@ -12,9 +15,7 @@ const Centers = ({ user }) => {
     if (user) {
       setLoading(true)
       const getFacilities = await fetch('/api/getFacilities', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
+        ...xhrHeader,
         body: JSON.stringify({ user }),
       })
       const data = getFacilities.json()
@@ -25,10 +26,10 @@ const Centers = ({ user }) => {
     }
   }, [user])
 
-  const shiftEnums = {
-    night: 'Night',
-    day: 'Day',
-    both: 'Both',
+  function handleClick(id) {
+    router.push({
+      pathname: `/facility/facility-details/${id}`,
+    })
   }
 
   return (
@@ -102,6 +103,7 @@ const Centers = ({ user }) => {
             onRowClick={(event, rowData) => {
               setOpen(true)
               setRowData(rowData)
+              handleClick(rowData.auth_id)
             }}
           />
         </>
