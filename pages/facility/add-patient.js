@@ -14,6 +14,8 @@ import MuiSelect from '../../components/MuiSelect'
 import PhoneField from '../../components/PhoneField'
 import providerOptions from '../../public/constants/providerOptions'
 import { useEffect } from 'react'
+import xhrHeader from '../../constants/xhrHeader'
+import { Auth } from '@supabase/ui'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -38,21 +40,22 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const addPatientPage = () => {
+  const { user } = Auth.useUser()
   const [hasSecondary, setHasSecondary] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: {
+    first_name: {
       type: 'textField',
       value: '',
       label: 'First Name',
       required: true,
     },
-    lastName: {
+    last_name: {
       type: 'textField',
       value: '',
       label: 'Last Name',
       required: true,
     },
-    dateOfBirth: {
+    date_of_birth: {
       type: 'muiPicker',
       value: null,
       label: 'Date of birth',
@@ -65,63 +68,63 @@ const addPatientPage = () => {
       label: 'Sex',
       required: true,
     },
-    insurancePolicyProvider: {
+    policy_provider: {
       type: 'autoComplete',
       value: '',
       options: providerOptions,
       label: 'Insurance Policy Provider',
       required: true,
     },
-    insurancePolicyNumber: {
+    policy_number: {
       type: 'textField',
       value: '',
       label: 'Insurance Policy Number',
       required: true,
     },
-    uploadCardFront: {
+    policy_image_front: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Front Photo',
       required: true,
     },
-    uploadCardBack: {
+    policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Back Photo',
       required: true,
     },
-    secondaryInsurancePolicyProvider: {
+    secondary_policy_provider: {
       type: 'autoComplete',
       value: '',
       options: providerOptions,
       label: 'Secondary Insurance Policy Provider (Optional)',
       required: false,
     },
-    secondaryInsurancePolicyNumber: {
+    secondary_policy_number: {
       type: 'textField',
       value: '',
       label: 'Secondary Insurance Policy Number (Optional)',
       required: false,
     },
-    secondaryUploadCardFront: {
+    secondary_policy_image_front: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Front Photo',
       required: false,
     },
-    secondaryUploadCardBack: {
+    secondary_policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Back Photo',
       required: false,
     },
-    patientPowerOfAttorneyName: {
+    poa_name: {
       type: 'textField',
       value: '',
       label: "Patient's Power of Attorney Name (Optional)",
       required: false,
     },
-    patientPowerOfAttorneyPhoneNumber: {
+    poa_phone_number: {
       type: 'phoneNumber',
       value: '',
       label: "Patient's Power of Attorney Phone Number (Optional)",
@@ -133,14 +136,14 @@ const addPatientPage = () => {
 
   useEffect(() => {
     if (
-      formData['secondaryInsurancePolicyProvider'].value ||
-      formData['secondaryInsurancePolicyNumber'].value
+      formData['secondary_policy_provider'].value ||
+      formData['secondary_policy_number'].value
     ) {
       setHasSecondary(true)
     } else {
       setHasSecondary(false)
-      formData['secondaryUploadCardFront'].value = ''
-      formData['secondaryUploadCardBack'].value = ''
+      formData['secondary_policy_image_front'].value = ''
+      formData['secondary_policy_image_back'].value = ''
     }
   }, [formData])
 
@@ -158,9 +161,13 @@ const addPatientPage = () => {
     setFormData(newFormData)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
+    const createPatient = await fetch('/api/createPatient', {
+      ...xhrHeader,
+      body: JSON.stringify({ formData, user }),
+    })
+    console.log(createPatient)
     console.log('Form submitted', formData)
   }
 
