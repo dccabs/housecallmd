@@ -28,7 +28,6 @@ import {
 import { Skeleton } from '@material-ui/lab'
 import clearStore from '../../utils/clearStore'
 
-
 const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: '#fff',
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.up('sm')]: {
       width: '100%',
-      maxWidth: 1300,
+      maxWidth: 1400,
       margin: 'auto',
     },
   },
@@ -103,7 +102,7 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -122,7 +121,7 @@ const Navbar = () => {
             console.log('res', res)
             setFirstName(res?.firstName ?? '')
             setLastName(res?.lastName ?? '')
-            setIsAdmin(res?.role === 'admin');
+            setIsAdmin(res?.role === 'admin')
             setLoading(false)
           }
         })
@@ -147,10 +146,7 @@ const Navbar = () => {
         open={drawerToggle}
         onClose={() => setDrawerToggle(false)}
       >
-        <MobileNavDrawer
-          loading={loading}
-          setDrawerToggle={setDrawerToggle}
-        />
+        <MobileNavDrawer loading={loading} setDrawerToggle={setDrawerToggle} />
       </Drawer>
 
       <AppBar position="static" className={classes.appBar}>
@@ -170,15 +166,37 @@ const Navbar = () => {
                   </strong>
                 </Typography>
 
-                {isAdmin &&
-                <span style={{ marginLeft: 10 }}>
-                  <Link href="/user-admin">
-                    <a>
-                      <Button color="primary" variant="outlined" size="small">Admin</Button>
-                    </a>
-                  </Link>
-                </span>
-                }
+                {isAdmin && (
+                  <Box display="flex">
+                    <span style={{ marginLeft: 10 }}>
+                      <Link href="/user-admin">
+                        <a>
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                          >
+                            Admin
+                          </Button>
+                        </a>
+                      </Link>
+                    </span>
+
+                    <span style={{ marginLeft: 10 }}>
+                      <Link href="/facility/admin">
+                        <a>
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                          >
+                            Assisted Living Admin
+                          </Button>
+                        </a>
+                      </Link>
+                    </span>
+                  </Box>
+                )}
               </Box>
             </a>
           </Link>
