@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import {
@@ -13,7 +13,6 @@ import Container from '../../components/Container'
 import MuiSelect from '../../components/MuiSelect'
 import PhoneField from '../../components/PhoneField'
 import providerOptions from '../../public/constants/providerOptions'
-import { useEffect } from 'react'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -36,6 +35,27 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
+
+const patientData = {
+  firstName: 'John',
+  lastName: 'Smith',
+  dateofBirth: '03/02/2022',
+  sex: 'Male',
+  insurancePolicyProvider: 'Anthem',
+  insurancePolicyNumber: '123',
+  uploadCardFront: {
+    name: 'front.jpg',
+  },
+  uploadCardBack: {
+    name: 'back.jpg',
+  },
+  secondaryInsurancePolicyProvider: '',
+  secondaryInsurancePolicyNumber: '',
+  secondaryUploadCardFront: '',
+  secondaryUploadCardBack: '',
+  patientPowerOfAttorneyName: '',
+  patientPowerOfAttorneyPhoneNumber: '',
+}
 
 const editPatientPage = () => {
   const [hasSecondary, setHasSecondary] = useState(false)
@@ -130,6 +150,19 @@ const editPatientPage = () => {
   })
 
   const classes = useStyles()
+
+  useEffect(() => {
+    let currentData = {}
+
+    Object.keys(patientData).forEach((key) => {
+      currentData[key] = {
+        ...formData[key],
+        value: patientData[key],
+      }
+    })
+
+    setFormData(currentData)
+  }, [patientData])
 
   useEffect(() => {
     if (
