@@ -36,7 +36,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const addPatientPage = () => {
+const patientData = {
+  firstName: 'John',
+  lastName: 'Smith',
+  dateofBirth: '03/02/2022',
+  sex: 'Male',
+  insurancePolicyProvider: 'Anthem',
+  insurancePolicyNumber: '123',
+  uploadCardFront: {
+    name: 'front.jpg',
+  },
+  uploadCardBack: {
+    name: 'back.jpg',
+  },
+  secondaryInsurancePolicyProvider: '',
+  secondaryInsurancePolicyNumber: '',
+  secondaryUploadCardFront: '',
+  secondaryUploadCardBack: '',
+  patientPowerOfAttorneyName: '',
+  patientPowerOfAttorneyPhoneNumber: '',
+}
+
+const editPatientPage = () => {
   const [hasSecondary, setHasSecondary] = useState(false)
   const [formData, setFormData] = useState({
     firstName: {
@@ -131,6 +152,19 @@ const addPatientPage = () => {
   const classes = useStyles()
 
   useEffect(() => {
+    let currentData = {}
+
+    Object.keys(patientData).forEach((key) => {
+      currentData[key] = {
+        ...formData[key],
+        value: patientData[key],
+      }
+    })
+
+    setFormData(currentData)
+  }, [patientData])
+
+  useEffect(() => {
     if (
       formData['secondaryInsurancePolicyProvider'].value ||
       formData['secondaryInsurancePolicyNumber'].value
@@ -166,7 +200,7 @@ const addPatientPage = () => {
   return (
     <Container>
       <Typography variant="h2" className={classes.h2}>
-        Add New Patient
+        Edit Patient Information
       </Typography>
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
         <Box
@@ -177,9 +211,9 @@ const addPatientPage = () => {
           justifyContent="center"
         >
           <Typography>
-            Please enter all the information to add a new{' '}
-            <strong style={{ color: '#0092b8' }}>patient</strong>. All fields
-            are required unless marked optional.
+            Please edit the{' '}
+            <strong style={{ color: '#0092b8' }}>patient</strong> information
+            then hit the update button to save.
           </Typography>
           {Object.keys(formData).map((key) => {
             const field = formData[key]
@@ -398,7 +432,7 @@ const addPatientPage = () => {
                 )
               }
             >
-              Continue
+              Save
             </Button>
           </Box>
         </Box>
@@ -407,4 +441,4 @@ const addPatientPage = () => {
   )
 }
 
-export default addPatientPage
+export default editPatientPage
