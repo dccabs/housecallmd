@@ -11,6 +11,8 @@ const createPatient = async (req, res) => {
     payload[key] = formData[key].value
   })
 
+  payload['facility_auth_id'] = user.id
+
   if (!user) {
     return res.status(500).json({ error: 'User not logged in' })
   }
@@ -22,6 +24,7 @@ const createPatient = async (req, res) => {
   const { data, error } = await supabase
     .from('facility_patients')
     .insert([payload])
+
   if (data) {
     return res.status(200).json(data)
   }
