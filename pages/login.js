@@ -82,8 +82,13 @@ const login = () => {
   }
 
   const setToken = (response) => {
+    console.log('response', response);
     openSnackBar({ message: 'Logged in as ' + response.user.email })
-    router.push('/returning-user')
+    if (response?.user?.user_metadata?.facility) {
+      router.push('/facility/profile')
+    } else {
+      router.push('/returning-user')
+    }
   }
 
   const handlePasswordUpdate = (e) => {

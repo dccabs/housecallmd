@@ -28,6 +28,7 @@ import useStore from '../../zustand/store'
 import { supabase } from '../../utils/initSupabase'
 import MuiSelect from '../../components/MuiSelect'
 import STATES from '../../public/constants/states'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Contact = () => {
+  const router = useRouter()
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
   const [open, setOpen] = useState(true)
@@ -138,7 +140,7 @@ const Contact = () => {
   }
 
   const loginUser = () => {
-    supabase.auth.signUp({ email: localEmail, password }).then((response) => {
+    supabase.auth.signUp({ email: localEmail, password, user_metadata: {faciltiy: true} }).then((response) => {
       response.error
         ? openSnackBar({
             message: response.error.message,
@@ -164,8 +166,8 @@ const Contact = () => {
         if (data.error) {
           throw Error(data.error)
         } else {
-          // router.push('/visit-choice')
-          openSnackBar({ message: 'SUCCESS', snackSeverity: 'success' })
+          router.push('/facility/profile')
+          // openSnackBar({ message: 'SUCCESS', snackSeverity: 'success' })
         }
       })
       .catch((error) => {
@@ -177,10 +179,12 @@ const Contact = () => {
     if (!response.data.access_token) {
       return null
     } else {
+      const { user, error } = await supabase.auth.update({
+        data: { facility: true }
+      })
       await setEmail(response.data.user.email)
       await setLocalEmail(response.data.user.email)
       await setLocalId(response.data.user.id)
-      console.log('response', response)
       // TODO: fix this timeout
       await openSnackBar({
         message: 'Logged in as ' + response.data.user.email,
@@ -380,7 +384,7 @@ const Contact = () => {
                 className={classes.textFields}
                 fullWidth
                 type="tel"
-                label="Phone"
+                label="Facility Phone Number"
                 variant="outlined"
                 color="secondary"
                 required
@@ -394,7 +398,7 @@ const Contact = () => {
               <TextField
                 fullWidth
                 className={classes.textFields}
-                label="Primary Account Name"
+                label="Primary Contact Name"
                 variant="outlined"
                 color="secondary"
                 value={localPrimaryContactName}
