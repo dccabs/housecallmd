@@ -104,6 +104,8 @@ const Navbar = () => {
   const [lastName, setLastName] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
 
+  console.log('user', user)
+
   useEffect(() => {
     if (user) {
       setLoading(true)
@@ -251,13 +253,23 @@ const Navbar = () => {
                 </Link>
               </Box>
             )}
-            <Box style={{marginLeft: 30}}>
-              <Link href="/facility/">
-                <Typography align="right" style={{ cursor: 'pointer' }}>
-                  <a><Button color="primary" variant="contained">Facilities</Button></a>
-                </Typography>
-              </Link>
-            </Box>
+            {user?.user_metadata?.facility ?
+              <Box style={{marginLeft: 30}}>
+                <Link href="/facility/profile">
+                  <Typography align="right" style={{ cursor: 'pointer' }}>
+                    <a><Button color="primary" variant="contained">My facility Account</Button></a>
+                  </Typography>
+                </Link>
+              </Box>
+            :
+              <Box style={{marginLeft: 30}}>
+                <Link href="/facility/">
+                  <Typography align="right" style={{ cursor: 'pointer' }}>
+                    <a><Button color="primary" variant="contained">Facilities</Button></a>
+                  </Typography>
+                </Link>
+              </Box>
+            }
           </Box>
 
           {/* mobile */}
