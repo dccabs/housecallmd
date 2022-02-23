@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   authLinks: {
     color: theme.typography.color,
-
+    alignItems: 'center',
     '& a': {
       fontWeight: 600,
       color: theme.typography.color,
@@ -251,6 +251,13 @@ const Navbar = () => {
                 </Link>
               </Box>
             )}
+            <Box style={{marginLeft: 30}}>
+              <Link href="/facility/">
+                <Typography align="right" style={{ cursor: 'pointer' }}>
+                  <a><Button color="primary" variant="contained">Facilities</Button></a>
+                </Typography>
+              </Link>
+            </Box>
           </Box>
 
           {/* mobile */}

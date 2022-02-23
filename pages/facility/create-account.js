@@ -214,19 +214,18 @@ const Contact = () => {
     <Container>
       <Box>
         <Typography variant="h2" className={classes.h2}>
-          Sign up for an Assisted Living Center Account
+          Create a Facility Account
         </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <Box
+          <div
             mt="1em"
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
           >
-            <Typography>
-              Please enter your email and password to finish creating your
-              account.
+            <Typography style={{margin: '2em 0 2em'}}>
+              Please enter your facility information below to create your account.
             </Typography>
             <Box
               display="flex"
@@ -235,6 +234,7 @@ const Contact = () => {
               justifyContent="center"
             >
               <TextField
+                fullWidth
                 value={localEmail}
                 className={classes.textFields}
                 fullWidth
@@ -245,7 +245,7 @@ const Contact = () => {
                 required
                 onChange={handleEmailUpdate}
               />
-              <FormControl className={classes.textFields} variant="outlined">
+              <FormControl className={classes.textFields} variant="outlined" fullWidth>
                 <InputLabel
                   htmlFor="outlined-password"
                   color="secondary"
@@ -543,7 +543,7 @@ const Contact = () => {
                 </Typography>
               </Box>
             </Box>
-          </Box>
+          </div>
         </form>
       </Box>
     </Container>
