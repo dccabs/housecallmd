@@ -1,10 +1,15 @@
 import { useContext, useEffect, useState } from 'react'
 import { NextSeo } from 'next-seo'
-import { Typography, Box, Button, TextField } from '@material-ui/core'
+import {
+  Typography,
+  Box,
+  CircularProgress
+} from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from '../../components/SnackBar'
 import { Auth } from '@supabase/ui'
+import MaterialTable from 'material-table'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -34,19 +39,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+
 const Contact = () => {
   const classes = useStyles()
-  const [localName, setLocalName] = useState('')
-  const [localEmail, setLocalEmail] = useState('')
-  const [localPhone, setLocalPhone] = useState('')
-  const [localComment, setLocalComment] = useState('')
+  const [state, setState] = useState({});
+  const [loading, setLoading] = useState(true)
 
   const { user } = Auth.useUser()
 
 
   useEffect(() => {
     if (user) {
-      console.log('user', user.id)
       fetchProfileInformation();
     }
   }, [user])
@@ -64,18 +67,17 @@ const Contact = () => {
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
       body: JSON.stringify(payload),
-    }).then((res) => {
-      console.log('res', res)
-      if (res.ok) {
-        // openSnackBar({
-        //   message: 'An email has been sent to HouseCall MD',
-        //   snackSeverity: 'success',
-        // })
+    }).then((res) => res.json())
+     .then((data) => {
+      if (data) {
+        setState({...data})
+        setLoading(false)
       } else {
         openSnackBar({
           message: 'There was an error.  Please try again later',
           error: 'error',
         })
+        setLoading(false)
       }
     })
   }
@@ -94,40 +96,73 @@ const Contact = () => {
           url: `https://www.housecallmd.org/facility/profile`,
         }}
       />
+      {loading &&
+      <Box
+        my="8em"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <CircularProgress />
+      </Box>
+      }
+      {!loading &&
       <Container>
         <Box>
           <Typography variant="h2" className={classes.h2}>
-            My Facility Account
+            {state.name}
           </Typography>
-          <form style={{ width: '100%' }}>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-            </Box>
-            <Box
-              mt="2em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  size="large"
-                  disabled={!localName || !localEmail || !localComment}
-                >
-                  Submit
-                </Button>
-              </Box>
-            </Box>
-          </form>
+          <div style={{marginTop: '1em'}}>
+            {state.address}
+          </div>
+          <div>
+            {state.city}, {state.state} {state.zip}
+          </div>
+          <div>
+            Primary Contact: {state.primary_contact_name}
+          </div>
+          <div>
+            Phone: {state.facility_phone}
+          </div>
+
+          <div style={{marginTop: '4em'}}>
+          </div>
+
+          <MaterialTable
+            title="Patients"
+            columns={[
+              {
+                title: 'First Name',
+                field: 'first_name',
+              },
+              {
+                title: 'Last Name',
+                field: 'last_name',
+              },
+            ]}
+            data={state.patients}
+            options={{
+              paginationType: 'stepped',
+              selection: true,
+              pageSize: 50,
+              pageSizeOptions: [50, 100, 200],
+            }}
+            // actions={[
+            //   {
+            //     tooltip: 'Remove All Selected Users',
+            //     icon: 'delete',
+            //     onClick: (event, data) => {
+            //       setRowsToDelete(data)
+            //       setOpenDialog(true)
+            //     },
+            //   },
+            // ]}
+            //onRowClick={(event, rowData) => rowSelected(rowData)}
+          />
+
         </Box>
       </Container>
+      }
     </>
   )
 }
