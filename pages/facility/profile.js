@@ -3,13 +3,16 @@ import { NextSeo } from 'next-seo'
 import {
   Typography,
   Box,
-  CircularProgress
+  CircularProgress,
+  Button,
 } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from '../../components/SnackBar'
 import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
+import Link from 'next/link';
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -41,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Contact = () => {
+  const router = useRouter()
   const classes = useStyles()
   const [state, setState] = useState({});
   const [loading, setLoading] = useState(true)
@@ -125,7 +129,12 @@ const Contact = () => {
             Phone: {state.facility_phone}
           </div>
 
-          <div style={{marginTop: '4em'}}>
+          <div style={{margin: '2em 0'}}>
+            <Button
+              onClick={() => router.push('add-patient')}
+              color="primary"
+              variant="contained"
+            >Add New Patient</Button>
           </div>
 
           <MaterialTable

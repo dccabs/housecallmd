@@ -264,7 +264,7 @@ const Navbar = () => {
               </Box>
             ) : (
               <Box style={{ marginLeft: 30 }}>
-                <Link href="/facility/">
+                <Link href="/facility/create-account">
                   <Typography align="right" style={{ cursor: 'pointer' }}>
                     <a>
                       <Button color="primary" variant="contained">
