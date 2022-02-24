@@ -42,10 +42,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+
 const addPatientPage = () => {
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
   const [hasSecondary, setHasSecondary] = useState(false)
+  const [formValid, setFormValid] = useState(false);
   const [formData, setFormData] = useState({
     firstName: {
       type: 'textField',
@@ -123,14 +125,14 @@ const addPatientPage = () => {
     secondaryUploadCardFront: {
       type: 'fileUpload',
       value: '',
-      label: 'Upload Card Front Photo',
+      label: 'Upload Card Front Photo (Optional)',
       required: false,
       key: 'secondary_policy_image_front',
     },
     secondaryUploadCardBack: {
       type: 'fileUpload',
       value: '',
-      label: 'Upload Card Back Photo',
+      label: 'Upload Card Back Photo (Optional)',
       required: false,
       key: 'secondary_policy_image_back',
     },
@@ -163,7 +165,22 @@ const addPatientPage = () => {
       formData['secondaryUploadCardFront'].value = ''
       formData['secondaryUploadCardBack'].value = ''
     }
+    validateForm();
   }, [formData])
+
+  const validateForm = () => {
+    console.log('validateForm')
+    let isValid = true;
+    console.log('formData', formData)
+
+    Object.keys(formData).forEach(item => {
+      console.log('item', item)
+      if (formData[item].required && !formData[item].value) {
+        isValid = false;
+      }
+    })
+    setFormValid(isValid);
+  }
 
   const addPatient = async (newPatient) => {
     const payload = {};
@@ -490,11 +507,7 @@ const addPatientPage = () => {
               color="secondary"
               variant="contained"
               size="large"
-              // disabled={
-              //   !Object.keys(formData).every(
-              //     (key) => formData[key].value || !formData[key].required
-              //   )
-              // }
+              disabled={!formValid}
             >
               Continue
             </Button>
