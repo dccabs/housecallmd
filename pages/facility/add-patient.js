@@ -13,6 +13,10 @@ import Container from '../../components/Container'
 import MuiSelect from '../../components/MuiSelect'
 import PhoneField from '../../components/PhoneField'
 import providerOptions from '../../public/constants/providerOptions'
+import { supabase } from '../../utils/initSupabase';
+import { v4 as uuidv4 } from 'uuid'
+const NEXT_PUBLIC_SUPABASE_STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL;
+import Image from 'next/image'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -143,8 +147,41 @@ const addPatientPage = () => {
     }
   }, [formData])
 
-  const handleUpdate = (args) => {
+
+  const uploadPhoto = async (args) => {
+    console.log('uploadPhoto', args)
     const { val, objKey } = args
+    const type = val.type.split('/')[1];
+    const uuid = uuidv4();
+    const photo = val;
+    const { data, error } = await supabase
+      .storage
+      .from('card-information')
+      .upload(`card-information-images/facility/${uuid}.${type}`, photo, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) {
+      return res.status(401).json({ error: error.message })
+    } else {
+      const newFormData = {
+        ...formData,
+        [objKey]: {
+          ...formData[objKey],
+          value: data.Key,
+        },
+      }
+      setFormData(newFormData)
+    }
+  }
+
+  const handleUpdate = (args) => {
+    const { val, objKey, type } = args
+    if (type === 'fileUpload') {
+      uploadPhoto(args)
+      return false;
+    }
 
     const newFormData = {
       ...formData,
@@ -163,6 +200,7 @@ const addPatientPage = () => {
     console.log('Form submitted', formData)
   }
 
+  console.log('formData', formData)
   return (
     <Container>
       <Typography variant="h2" className={classes.h2}>
@@ -271,6 +309,7 @@ const addPatientPage = () => {
                 />
               )
             } else if (field.type === 'fileUpload') {
+              console.log('field', field)
               return (
                 <div style={{ width: '100%', maxWidth: '34rem' }} key={key}>
                   {key === 'secondaryUploadCardFront' ||
@@ -303,13 +342,20 @@ const addPatientPage = () => {
                                 handleUpdate({
                                   val: e.target.files[0],
                                   objKey: key,
+                                  type: 'fileUpload',
                                 })
                               }
                             />
                           </Button>
-                          <p>
-                            {field.value ? field.value.name : 'No file chosen'}
-                          </p>
+                          <div style={{position: 'relative', width: 500, marginTop: 10}}>
+                            {field.value ?
+                              <img
+                                style={{maxWidth: 500}}
+                                src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
+                                // layout="fill"
+                              />
+                              : 'No file chosen'}
+                          </div>
                         </Box>
                       </Box>
                     )
@@ -326,28 +372,36 @@ const addPatientPage = () => {
                       >
                         <strong>{field.label}</strong>
                       </Typography>
-                      <Box display="flex">
-                        <Button
-                          variant="contained"
-                          component="label"
-                          style={{ marginRight: '0.5em' }}
-                        >
-                          Upload File
-                          <input
-                            type="file"
-                            accept="image/*"
-                            hidden
-                            onChange={(e) =>
-                              handleUpdate({
-                                val: e.target.files[0],
-                                objKey: key,
-                              })
-                            }
-                          />
-                        </Button>
-                        <p>
-                          {field.value ? field.value.name : 'No file chosen'}
-                        </p>
+                      <Box>
+                        <div style={{flex: 1}}>
+                          <Button
+                            variant="contained"
+                            component="label"
+                            style={{ marginRight: '0.5em' }}
+                          >
+                            Upload File
+                            <input
+                              type="file"
+                              accept="image/*"
+                              hidden
+                              onChange={(e) =>
+                                handleUpdate({
+                                  val: e.target.files[0],
+                                  objKey: key,
+                                  type: 'fileUpload',
+                                })
+                              }
+                            />
+                          </Button>
+                        </div>
+                        <div style={{position: 'relative', width: 500, marginTop: 10}}>
+                          {field.value ?
+                            <img
+                              style={{maxWidth: 500}}
+                              src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
+                            />
+                            : 'No file chosen'}
+                        </div>
                       </Box>
                     </Box>
                   )}
