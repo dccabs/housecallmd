@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.up('sm')]: {
       width: '100%',
-      maxWidth: 1400,
+      maxWidth: 1500,
       margin: 'auto',
     },
   },
@@ -104,8 +104,6 @@ const Navbar = () => {
   const [lastName, setLastName] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
 
-  console.log('user', user)
-
   useEffect(() => {
     if (user) {
       setLoading(true)
@@ -120,7 +118,6 @@ const Navbar = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res) {
-            console.log('res', res)
             setFirstName(res?.firstName ?? '')
             setLastName(res?.lastName ?? '')
             setIsAdmin(res?.role === 'admin')
@@ -253,23 +250,31 @@ const Navbar = () => {
                 </Link>
               </Box>
             )}
-            {user?.user_metadata?.facility ?
-              <Box style={{marginLeft: 30}}>
+            {user?.user_metadata?.facility ? (
+              <Box style={{ marginLeft: 30 }}>
                 <Link href="/facility/profile">
                   <Typography align="right" style={{ cursor: 'pointer' }}>
-                    <a><Button color="primary" variant="contained">My facility Account</Button></a>
+                    <a>
+                      <Button color="primary" variant="contained">
+                        My facility Account
+                      </Button>
+                    </a>
                   </Typography>
                 </Link>
               </Box>
-            :
-              <Box style={{marginLeft: 30}}>
+            ) : (
+              <Box style={{ marginLeft: 30 }}>
                 <Link href="/facility/">
                   <Typography align="right" style={{ cursor: 'pointer' }}>
-                    <a><Button color="primary" variant="contained">Facilities</Button></a>
+                    <a>
+                      <Button color="primary" variant="contained">
+                        Facilities
+                      </Button>
+                    </a>
                   </Typography>
                 </Link>
               </Box>
-            }
+            )}
           </Box>
 
           {/* mobile */}

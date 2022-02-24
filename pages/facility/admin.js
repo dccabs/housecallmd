@@ -3,6 +3,7 @@ import { Typography, Box, Tabs, Tab } from '@material-ui/core'
 
 import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../../components/SnackBar'
+import Users from '../../components/Facility/Users'
 import Centers from '../../components/Facility/Centers'
 
 const a11yProps = (index) => ({
@@ -73,7 +74,7 @@ function UserAdmin(props) {
           </Box>
 
           <TabPanel value={tabValue} index={0}>
-            <h1>USERS GOES HERE</h1>
+            <Users user={user} />
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
             <Centers user={user} />
