@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import {
@@ -13,6 +13,12 @@ import Container from '../../components/Container'
 import MuiSelect from '../../components/MuiSelect'
 import PhoneField from '../../components/PhoneField'
 import providerOptions from '../../public/constants/providerOptions'
+import { supabase } from '../../utils/initSupabase';
+import { Auth } from '@supabase/ui'
+
+import { v4 as uuidv4 } from 'uuid'
+import { SnackBarContext } from '../../components/SnackBar'
+const NEXT_PUBLIC_SUPABASE_STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL;
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -36,26 +42,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+
 const addPatientPage = () => {
+  const openSnackBar = useContext(SnackBarContext)
+  const { user } = Auth.useUser()
   const [hasSecondary, setHasSecondary] = useState(false)
+  const [formValid, setFormValid] = useState(false);
   const [formData, setFormData] = useState({
     firstName: {
       type: 'textField',
       value: '',
       label: 'First Name',
       required: true,
+      key: 'first_name',
     },
     lastName: {
       type: 'textField',
       value: '',
       label: 'Last Name',
       required: true,
+      key: 'last_name',
     },
     dateOfBirth: {
       type: 'muiPicker',
       value: null,
       label: 'Date of birth',
       required: true,
+      key: 'date_of_birth'
     },
     sex: {
       type: 'muiSelect',
@@ -63,6 +76,7 @@ const addPatientPage = () => {
       options: ['Male', 'Female'],
       label: 'Sex',
       required: true,
+      key: 'sex',
     },
     insurancePolicyProvider: {
       type: 'autoComplete',
@@ -70,24 +84,28 @@ const addPatientPage = () => {
       options: providerOptions,
       label: 'Insurance Policy Provider',
       required: true,
+      key: 'policy_provider'
     },
     insurancePolicyNumber: {
       type: 'textField',
       value: '',
       label: 'Insurance Policy Number',
       required: true,
+      key: 'policy_number',
     },
     uploadCardFront: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Front Photo',
       required: true,
+      key: 'policy_image_front',
     },
     uploadCardBack: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Back Photo',
       required: true,
+      key: 'policy_image_back',
     },
     secondaryInsurancePolicyProvider: {
       type: 'autoComplete',
@@ -95,36 +113,42 @@ const addPatientPage = () => {
       options: providerOptions,
       label: 'Secondary Insurance Policy Provider (Optional)',
       required: false,
+      key: 'secondary_policy_provider',
     },
     secondaryInsurancePolicyNumber: {
       type: 'textField',
       value: '',
       label: 'Secondary Insurance Policy Number (Optional)',
       required: false,
+      key: 'secondary_policy_number',
     },
     secondaryUploadCardFront: {
       type: 'fileUpload',
       value: '',
-      label: 'Upload Card Front Photo',
+      label: 'Upload Card Front Photo (Optional)',
       required: false,
+      key: 'secondary_policy_image_front',
     },
     secondaryUploadCardBack: {
       type: 'fileUpload',
       value: '',
-      label: 'Upload Card Back Photo',
+      label: 'Upload Card Back Photo (Optional)',
       required: false,
+      key: 'secondary_policy_image_back',
     },
     patientPowerOfAttorneyName: {
       type: 'textField',
       value: '',
       label: "Patient's Power of Attorney Name (Optional)",
       required: false,
+      key: 'poa_name',
     },
     patientPowerOfAttorneyPhoneNumber: {
       type: 'phoneNumber',
       value: '',
       label: "Patient's Power of Attorney Phone Number (Optional)",
       required: false,
+      key: 'poa_phone_number',
     },
   })
 
@@ -141,10 +165,87 @@ const addPatientPage = () => {
       formData['secondaryUploadCardFront'].value = ''
       formData['secondaryUploadCardBack'].value = ''
     }
+    validateForm();
   }, [formData])
 
-  const handleUpdate = (args) => {
+  const validateForm = () => {
+    console.log('validateForm')
+    let isValid = true;
+    console.log('formData', formData)
+
+    Object.keys(formData).forEach(item => {
+      console.log('item', item)
+      if (formData[item].required && !formData[item].value) {
+        isValid = false;
+      }
+    })
+    setFormValid(isValid);
+  }
+
+  const addPatient = async (newPatient) => {
+    const payload = {};
+    Object.keys(newPatient).forEach(item => {
+      const key = newPatient[item].key;
+      const value = newPatient[item].value;
+      payload[key] = value;
+    })
+
+    payload.facility_auth_id = user.id;
+
+    fetch('/api/addFacilityPatient', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw Error(data.error)
+        } else {
+          openSnackBar({ message: 'New Patient Added', snackSeverity: 'success' })
+          router.push('/facility-profile')
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: 'Error', snackSeverity: 'error' })
+      })
+  }
+
+
+  const uploadPhoto = async (args) => {
     const { val, objKey } = args
+    const type = val.type.split('/')[1];
+    const uuid = uuidv4();
+    const photo = val;
+    const { data, error } = await supabase
+      .storage
+      .from('card-information')
+      .upload(`card-information-images/facility/${uuid}.${type}`, photo, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) {
+      return res.status(401).json({ error: error.message })
+    } else {
+      const newFormData = {
+        ...formData,
+        [objKey]: {
+          ...formData[objKey],
+          value: data.Key,
+        },
+      }
+      setFormData(newFormData)
+    }
+  }
+
+  const handleUpdate = (args) => {
+    const { val, objKey, type } = args
+    if (type === 'fileUpload') {
+      uploadPhoto(args)
+      return false;
+    }
 
     const newFormData = {
       ...formData,
@@ -159,8 +260,7 @@ const addPatientPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
-    console.log('Form submitted', formData)
+    addPatient(formData);
   }
 
   return (
@@ -288,7 +388,7 @@ const addPatientPage = () => {
                         >
                           <strong>{field.label}</strong>
                         </Typography>
-                        <Box display="flex">
+                        <Box>
                           <Button
                             variant="contained"
                             component="label"
@@ -303,13 +403,20 @@ const addPatientPage = () => {
                                 handleUpdate({
                                   val: e.target.files[0],
                                   objKey: key,
+                                  type: 'fileUpload',
                                 })
                               }
                             />
                           </Button>
-                          <p>
-                            {field.value ? field.value.name : 'No file chosen'}
-                          </p>
+                          <div style={{position: 'relative', width: 500, marginTop: 10}}>
+                            {field.value ?
+                              <img
+                                style={{maxWidth: 500}}
+                                src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
+                                // layout="fill"
+                              />
+                              : 'No file chosen'}
+                          </div>
                         </Box>
                       </Box>
                     )
@@ -326,28 +433,36 @@ const addPatientPage = () => {
                       >
                         <strong>{field.label}</strong>
                       </Typography>
-                      <Box display="flex">
-                        <Button
-                          variant="contained"
-                          component="label"
-                          style={{ marginRight: '0.5em' }}
-                        >
-                          Upload File
-                          <input
-                            type="file"
-                            accept="image/*"
-                            hidden
-                            onChange={(e) =>
-                              handleUpdate({
-                                val: e.target.files[0],
-                                objKey: key,
-                              })
-                            }
-                          />
-                        </Button>
-                        <p>
-                          {field.value ? field.value.name : 'No file chosen'}
-                        </p>
+                      <Box>
+                        <div style={{flex: 1}}>
+                          <Button
+                            variant="contained"
+                            component="label"
+                            style={{ marginRight: '0.5em' }}
+                          >
+                            Upload File
+                            <input
+                              type="file"
+                              accept="image/*"
+                              hidden
+                              onChange={(e) =>
+                                handleUpdate({
+                                  val: e.target.files[0],
+                                  objKey: key,
+                                  type: 'fileUpload',
+                                })
+                              }
+                            />
+                          </Button>
+                        </div>
+                        <div style={{position: 'relative', width: 500, marginTop: 10}}>
+                          {field.value ?
+                            <img
+                              style={{maxWidth: 500}}
+                              src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
+                            />
+                            : 'No file chosen'}
+                        </div>
                       </Box>
                     </Box>
                   )}
@@ -392,11 +507,7 @@ const addPatientPage = () => {
               color="secondary"
               variant="contained"
               size="large"
-              disabled={
-                !Object.keys(formData).every(
-                  (key) => formData[key].value || !formData[key].required
-                )
-              }
+              disabled={!formValid}
             >
               Continue
             </Button>
