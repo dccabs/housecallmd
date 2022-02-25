@@ -111,66 +111,78 @@ const Contact = () => {
       </Box>
       }
       {!loading &&
-      <Container>
-        <Box>
-          <Typography variant="h2" className={classes.h2}>
-            {state.name}
-          </Typography>
-          <div style={{marginTop: '1em'}}>
-            {state.address}
-          </div>
-          <div>
-            {state.city}, {state.state} {state.zip}
-          </div>
-          <div>
-            Primary Contact: {state.primary_contact_name}
-          </div>
-          <div>
-            Phone: {state.facility_phone}
-          </div>
+        <>
+          <Container>
+            <Box>
+              <Typography variant="h2" className={classes.h2}>
+                {state.name}
+              </Typography>
+              <div style={{marginTop: '1em'}}>
+                {state.address}
+              </div>
+              <div>
+                {state.city}, {state.state} {state.zip}
+              </div>
+              <div>
+                Primary Contact: {state.primary_contact_name}
+              </div>
+              <div>
+                Phone: {state.facility_phone}
+              </div>
 
-          <div style={{margin: '2em 0'}}>
-            <Button
-              onClick={() => router.push('add-patient')}
-              color="primary"
-              variant="contained"
-            >Add New Patient</Button>
-          </div>
+              <div style={{margin: '2em 0'}}>
+                <Button
+                  onClick={() => router.push('add-patient')}
+                  color="primary"
+                  variant="contained"
+                >Add New Patient</Button>
+              </div>
+            </Box>
+          </Container>
+          <Box style={{padding: '0 40px'}}>
+            <MaterialTable
+              title="Patients"
+              columns={[
+                {
+                  title: 'First Name',
+                  field: 'first_name',
+                },
+                {
+                  title: 'Last Name',
+                  field: 'last_name',
+                },
+                {
+                  title: 'Date of Birth',
+                  field: 'date_of_birth',
+                },
+              ]}
+              data={state.patients}
+              options={{
+                paginationType: 'stepped',
+                selection: true,
+                pageSize: 50,
+                pageSizeOptions: [50, 100, 200],
+              }}
+              onRowClick={(event, rowData) => {
+                console.log('rowData', rowData)
+                const { id } = rowData;
+                router.push(`/facility/user/${id}`)
+              }}
+              // actions={[
+              //   {
+              //     tooltip: 'Remove All Selected Users',
+              //     icon: 'delete',
+              //     onClick: (event, data) => {
+              //       setRowsToDelete(data)
+              //       setOpenDialog(true)
+              //     },
+              //   },
+              // ]}
+              //onRowClick={(event, rowData) => rowSelected(rowData)}
+            />
 
-          <MaterialTable
-            title="Patients"
-            columns={[
-              {
-                title: 'First Name',
-                field: 'first_name',
-              },
-              {
-                title: 'Last Name',
-                field: 'last_name',
-              },
-            ]}
-            data={state.patients}
-            options={{
-              paginationType: 'stepped',
-              selection: true,
-              pageSize: 50,
-              pageSizeOptions: [50, 100, 200],
-            }}
-            // actions={[
-            //   {
-            //     tooltip: 'Remove All Selected Users',
-            //     icon: 'delete',
-            //     onClick: (event, data) => {
-            //       setRowsToDelete(data)
-            //       setOpenDialog(true)
-            //     },
-            //   },
-            // ]}
-            //onRowClick={(event, rowData) => rowSelected(rowData)}
-          />
-
-        </Box>
-      </Container>
+          </Box>
+        </>
       }
     </>
   )
