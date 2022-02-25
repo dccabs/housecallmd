@@ -82,6 +82,9 @@ const FacilityDetails = ({ facility }) => {
           title="Facility Accounts"
           columns={tableCols}
           data={facility?.patients}
+          onRowClick={(event, rowData) => {
+            console.log('rowData', rowData)
+          }}
         />
       </Box>
     </>

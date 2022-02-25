@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Typography, Box, Button, TextField, MenuItem } from '@material-ui/core'
+import { Typography, Box, Button, TextField, MenuItem, CircularProgress } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import {
   MuiPickersUtilsProvider,
@@ -19,6 +19,7 @@ import { Auth } from '@supabase/ui'
 import { v4 as uuidv4 } from 'uuid'
 import { SnackBarContext } from '../../components/SnackBar'
 const NEXT_PUBLIC_SUPABASE_STORAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL;
+import { useRouter} from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -44,10 +45,12 @@ const useStyles = makeStyles((theme) => ({
 
 
 const addPatientPage = () => {
+  const router = useRouter()
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
   const [hasSecondary, setHasSecondary] = useState(false)
   const [formValid, setFormValid] = useState(false);
+  const [loading, setLoading]= useState(false);
   const [formData, setFormData] = useState({
     firstName: {
       type: 'textField',
@@ -182,6 +185,10 @@ const addPatientPage = () => {
     setFormValid(isValid);
   }
 
+  const returnToProfilePage = () => {
+    router.push('/facility/profile')
+  }
+
   const addPatient = async (newPatient) => {
     const payload = {};
     Object.keys(newPatient).forEach(item => {
@@ -191,6 +198,7 @@ const addPatientPage = () => {
     })
 
     payload.facility_auth_id = user.id;
+    setLoading(true);
 
     fetch('/api/addFacilityPatient', {
       method: 'POST',
@@ -200,15 +208,18 @@ const addPatientPage = () => {
     })
       .then((res) => res.json())
       .then((data) => {
+        setLoading(false);
+
         if (data.error) {
           throw Error(data.error)
         } else {
-          openSnackBar({ message: 'New Patient Added', snackSeverity: 'success' })
-          router.push('/facility-profile')
+          //console.log('success message')
+          returnToProfilePage();
+          openSnackBar({ message: "New Patient Added", snackSeverity: 'success' })
         }
       })
       .catch((error) => {
-        openSnackBar({ message: 'Error', snackSeverity: 'error' })
+        openSnackBar({ message: error, snackSeverity: 'error' })
       })
   }
 
@@ -265,9 +276,23 @@ const addPatientPage = () => {
 
   return (
     <Container>
+
       <Typography variant="h2" className={classes.h2}>
         Add New Patient
       </Typography>
+
+      {loading &&
+      <Box
+        my="8em"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <CircularProgress />
+      </Box>
+      }
+
+      {!loading &&
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
         <Box
           mt="1em"
@@ -514,6 +539,8 @@ const addPatientPage = () => {
           </Box>
         </Box>
       </form>
+      }
+
     </Container>
   )
 }

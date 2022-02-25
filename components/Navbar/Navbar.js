@@ -250,31 +250,33 @@ const Navbar = () => {
                 </Link>
               </Box>
             )}
-            {user?.user_metadata?.facility ? (
+            {user?.user_metadata?.facility && (
               <Box style={{ marginLeft: 30 }}>
                 <Link href="/facility/profile">
                   <Typography align="right" style={{ cursor: 'pointer' }}>
                     <a>
                       <Button color="primary" variant="contained">
-                        My facility Account
-                      </Button>
-                    </a>
-                  </Typography>
-                </Link>
-              </Box>
-            ) : (
-              <Box style={{ marginLeft: 30 }}>
-                <Link href="/facility/create-account">
-                  <Typography align="right" style={{ cursor: 'pointer' }}>
-                    <a>
-                      <Button color="primary" variant="contained">
-                        Facilities
+                        Facility Dashboard
                       </Button>
                     </a>
                   </Typography>
                 </Link>
               </Box>
             )}
+
+            {!user &&
+            <Box style={{ marginLeft: 30 }}>
+              <Link href="/facility/create-account">
+                <Typography align="right" style={{ cursor: 'pointer' }}>
+                  <a>
+                    <Button color="primary" variant="contained">
+                      Facilities
+                    </Button>
+                  </a>
+                </Typography>
+              </Link>
+            </Box>
+            }
           </Box>
 
           {/* mobile */}
