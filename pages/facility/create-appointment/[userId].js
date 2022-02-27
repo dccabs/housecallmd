@@ -22,6 +22,7 @@ import useStore from '../../../zustand/store'
 import visitPricing from '../../../public/constants/visitPricing'
 import billOfRights from '../../../public/constants/bill_of_rights'
 import privacyPolicy from '../../../public/constants/privacyPolicy'
+import xhrHeader from '../../../constants/xhrHeader'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -76,6 +77,7 @@ const CreateAppointment = () => {
   const [agreePPToggle, setAgreePPToggle] = useState(false)
   const [borOpen, setBorOpen] = useState(false)
   const [ppOpen, setPPOpen] = useState(false)
+  const [patient, setPatient] = useState('')
   const store = useStore()
   const {
     setVisitChoice,
@@ -88,10 +90,21 @@ const CreateAppointment = () => {
   const router = useRouter()
   const { user, session } = Auth.useUser()
 
-  useEffect(() => {
+  useEffect(async () => {
+    const id = router.query.userId
     if (user) {
       setLocalFirstName(store.firstName)
       setLoading(false)
+    }
+
+    if (id) {
+      const facilityPatientById = await fetch('/api/getFacilityPatientById', {
+        ...xhrHeader,
+        body: JSON.stringify({ id }),
+      })
+
+      const data = await facilityPatientById.json()
+      setPatient(data)
     }
   }, [user])
 
@@ -150,7 +163,7 @@ const CreateAppointment = () => {
                   justifyContent="center"
                 >
                   <Typography variant="h4">
-                    <span>Hi {firstName}, </span>
+                    <span>Hi {patient.first_name}, </span>
                     What type of visit would you like?
                   </Typography>
                   <Box
