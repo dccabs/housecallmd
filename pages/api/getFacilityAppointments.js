@@ -11,19 +11,30 @@ const getFacilityAppointments = async (req, res) => {
   const col = patientId ? 'userId' : facilityId ? 'facilityId' : '*'
   const val = patientId ? patientId : facilityId ? facilityId : null
 
-  let { data: patients, patientsError } = await supabase
-    .from('facility_appointments')
-    .select('*')
-    .eq(col, val)
+  if (val === null) {
+    let { data: patients, patientsError } = await supabase
+      .from('facility_appointments')
+      .select('*')
 
-  console.log('patients', patients)
+    if (patientsError) {
+      console.error(patientsError.message)
+      return res.status(401).json({ patientsError })
+    }
 
-  if (patientsError) {
-    console.error(patientsError.message)
-    return res.status(401).json({ patientsError })
+    return res.status(200).json(patients)
+  } else {
+    let { data: patients, patientsError } = await supabase
+      .from('facility_appointments')
+      .select('*')
+      .eq(col, val)
+
+    if (patientsError) {
+      console.error(patientsError.message)
+      return res.status(401).json({ patientsError })
+    }
+
+    return res.status(200).json(patients)
   }
-
-  return res.status(200).json(patients)
 }
 
 export default getFacilityAppointments
