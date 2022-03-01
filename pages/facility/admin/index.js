@@ -2,9 +2,9 @@ import { useState, useEffect, useContext } from 'react'
 import { Typography, Box, Tabs, Tab } from '@material-ui/core'
 
 import { Auth } from '@supabase/ui'
-import { SnackBarContext } from '../../components/SnackBar'
-import Users from '../../components/Facility/Users'
-import Centers from '../../components/Facility/Centers'
+import { SnackBarContext } from '../../../components/SnackBar'
+import Users from '../../../components/Facility/Users'
+import Centers from '../../../components/Facility/Centers'
 
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,

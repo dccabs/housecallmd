@@ -26,7 +26,7 @@ const index = ({ user }) => {
 
   const handleClick = (id) => {
     router.push({
-      pathname: `/facility/admin/user/${id}`,
+      pathname: `/facility/admin/user-details/${id}`,
     })
   }
 
