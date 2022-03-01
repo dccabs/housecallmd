@@ -286,6 +286,7 @@ const editPatientPage = () => {
                     handleUpdate({ val: value, objKey: key })
                   }
                   key={key}
+                  value={field.value}
                   freeSolo
                   disableClearable
                   renderInput={(params) => (
