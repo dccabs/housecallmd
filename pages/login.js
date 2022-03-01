@@ -17,6 +17,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { supabase } from '../utils/initSupabase'
 import { useRouter } from 'next/router'
+import validateEmail from '../utils/validateEmail';
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -60,8 +61,53 @@ const login = () => {
   const classes = useStyles()
   const router = useRouter()
 
+  const handleUserNameSubmit = () => {
+    const payload = {
+      username: localEmail,
+      password,
+    }
+    fetch('/api/login', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then(async (data) => {
+        if (data.error) {
+          throw Error(data.message)
+        } else {
+          const supabasePayload = {
+            email: data.email,
+            password: payload.password,
+          }
+          supabase.auth
+            .signIn(supabasePayload)
+            .then((response) => {
+              response.error
+                ? openSnackBar({
+                  message: response.error.message,
+                  snackSeverity: 'error',
+                })
+                : setToken(response)
+            })
+            .catch((err) => {
+              openSnackBar({ message: err, snackSeverity: 'error' })
+            })
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+      })
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
+    const isValidEmail = validateEmail(localEmail);
+    if (!isValidEmail) {
+      handleUserNameSubmit();
+      return false;
+    }
     const payload = {
       email: localEmail,
       password,
@@ -123,8 +169,8 @@ const login = () => {
               value={localEmail}
               className={classes.textFields}
               fullWidth
-              type="email"
-              label="Email"
+              type="text"
+              label="Email or Username"
               variant="outlined"
               color="secondary"
               required
