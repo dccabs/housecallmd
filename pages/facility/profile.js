@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const Contact = () => {
+const Profile = () => {
   const router = useRouter()
   const classes = useStyles()
   const [state, setState] = useState({});
@@ -188,4 +188,4 @@ const Contact = () => {
   )
 }
 
-export default Contact
+export default Profile
