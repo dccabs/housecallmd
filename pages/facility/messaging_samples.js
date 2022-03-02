@@ -63,7 +63,8 @@ const Messages = () => {
 
   const getAllMessages = () => {
     const payload = {
-     facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
+      // facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
+      // patientId: 3,
     }
 
     fetch('/api/getAllFacilityMessages', {

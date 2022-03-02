@@ -4,8 +4,7 @@ import { supabase } from '../../utils/initSupabase'
 const getAllFacilityMessages = async (req, res) => {
   // const token = req.headers.token
   const facilityId = req.body?.facilityId;
-
-  console.log('facilityId', facilityId)
+  const patientId = req.body?.patientId;
   //
   // if (!email || email === 'undefined') {
   //   throw Error('null data value')
@@ -38,16 +37,21 @@ const getAllFacilityMessages = async (req, res) => {
     .from('facility_patients')
     .select('*')
 
+
   let messagesQuery = supabase
     .from('facility_messages')
     .select('*')
 
-  if (facilityId) {
-    console.log('run this query')
+  if (facilityId && !patientId) {
     messagesQuery = supabase
       .from('facility_messages')
       .select('*')
       .or(`sender.eq.${facilityId},recipient.eq.${facilityId}`)
+  } else if (!facilityId && patientId) {
+    messagesQuery = supabase
+      .from('facility_messages')
+      .select('*')
+      .eq('patient_id', patientId);
   }
 
   let { data: messages, messagesError } = await messagesQuery;
@@ -84,13 +88,12 @@ const getAllFacilityMessages = async (req, res) => {
       message: entry.message,
       sender: senderObj,
       sentFromHouseCall,
-      timestamp: entry.timestamp,
+      timestamp: entry.created_at,
     }
 
   })
 
-  const sortedMessages = newMessages.sort((a, b) => (a.timestamp > b.timestamp) ? 1 : -1)
-
+  const sortedMessages = newMessages.sort((a, b) => (b.timestamp > a.timestamp) ? 1 : -1)
 
   const newData = [
     ...sortedMessages,
