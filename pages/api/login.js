@@ -23,9 +23,6 @@ const Login = async (req, res) => {
     return item.id === match?.auth_id;
   })
 
-  console.log('matchingUser', matchingUser);
-  console.log('match', match)
-
   if (match && matchingUser) {
     const email = matchingUser?.email;
     const { session, error } = await supabase.auth.signIn({
