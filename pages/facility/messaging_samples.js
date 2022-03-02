@@ -62,15 +62,15 @@ const Messages = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   const getAllMessages = () => {
-    // const payload = {
-    //   id: user.id,
-    // }
+    const payload = {
+     facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
+    }
 
     fetch('/api/getAllFacilityMessages', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
-      // body: JSON.stringify(payload),
+      body: JSON.stringify(payload),
     }).then((res) => res.json())
       .then((data) => {
         console.log('data', data)
@@ -100,26 +100,27 @@ const Messages = () => {
             </Typography>
           </div>
           <div>
-            {messages.length && messages.map((entry, index) => {
+            {messages && messages.map((entry, index) => {
               return (
                 <div
                   style={{
-                    background: '#e3e3e3',
+                    background: entry.sentFromHouseCall ? 'lightBlue' : '#e3e3e3',
                     padding: 15,
                     borderRadius: 10,
+                    marginBottom: 20,
                   }}
                   key={`message-${index}`}
                 >
-                  <div><strong>From:</strong> {entry.sender}</div>
-                  <div><strong>To:</strong> {entry.recipient}</div>
+                  <div><strong>From:</strong> <strong>{entry.sentFromHouseCall ? 'HOUSECALLMD:' : null}</strong>{entry?.sender?.name}</div>
+                  {/*<div><strong>To:</strong> {entry.recipient}</div>*/}
                   <div>
                     <strong>Message:</strong> {entry.message}
                   </div>
+                  {/*<div>*/}
+                  {/*  <strong>Timestamp</strong>: {entry.created_at}*/}
+                  {/*</div>*/}
                   <div>
-                    <strong>Timestamp</strong>: {entry.created_at}
-                  </div>
-                  <div>
-                    <strong>Patient: </strong> {entry.patient_id}
+                    <strong>Patient: </strong> {entry.patient_name}
                   </div>
                 </div>
               )
