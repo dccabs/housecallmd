@@ -5,6 +5,7 @@ import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../../../components/SnackBar'
 import Users from '../../../components/Facility/Users'
 import Centers from '../../../components/Facility/Centers'
+import Messages from '../../../components/Facility/Messages'
 
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
@@ -70,6 +71,7 @@ function UserAdmin(props) {
             >
               <Tab label="Users" {...a11yProps(0)} wrap />
               <Tab label="Centers" {...a11yProps(1)} />
+              <Tab label="Messages" {...a11yProps(1)} />
             </Tabs>
           </Box>
 
@@ -78,6 +80,9 @@ function UserAdmin(props) {
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
             <Centers user={user} />
+          </TabPanel>
+          <TabPanel value={tabValue} index={2}>
+            <Messages user={user} />
           </TabPanel>
         </>
       )}
