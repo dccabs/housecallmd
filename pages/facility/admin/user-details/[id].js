@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import {
   Typography,
@@ -26,6 +26,7 @@ import Container from '../../../../components/Container'
 import MuiSelect from '../../../../components/MuiSelect'
 import PhoneField from '../../../../components/PhoneField'
 import providerOptions from '../../../../public/constants/providerOptions'
+import { SnackBarContext} from '../../../../components/SnackBar'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -56,12 +57,17 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const UserDetailsPage = () => {
+  const openSnackBar = useContext(SnackBarContext)
   const [editable, setEditable] = useState(false)
   const [userName, setUserName] = useState('')
   const [facilityId, setFacilityId] = useState('')
   const [facilityName, setFacilityName] = useState('')
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
+    id: {
+      type: null,
+      value: '',
+    },
     first_name: {
       type: 'textField',
       value: '',
@@ -213,6 +219,32 @@ const UserDetailsPage = () => {
     }
   }
 
+  const updateFacilityPatient = (payload) => {
+    fetch('/api/updateFacilityPatient', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        updatedPatient: payload,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success ) {
+          openSnackBar({
+            message: 'Patient information has been updated',
+            snackSeverity: 'success',
+          })
+          setEditable(false);
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+        }
+      })
+  }
+
   const handleUpdate = (args) => {
     const { val, objKey } = args
 
@@ -229,11 +261,15 @@ const UserDetailsPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const payloadObj = {}
 
-    console.log('Form submitted', formData)
+    Object.keys(formData).forEach(key => {
+      payloadObj[key] = formData[key].value;
+    })
+
+    updateFacilityPatient(payloadObj);
+
   }
-
-  console.log('formData', formData)
 
   return (
     <Container>
@@ -272,7 +308,6 @@ const UserDetailsPage = () => {
               {Object.keys(formData).map((key) => {
                 const field = formData[key]
                 if (field.type === 'textField') {
-                  console.log('field', field)
                   return (
                     <TextField
                       className={classes.textFields}

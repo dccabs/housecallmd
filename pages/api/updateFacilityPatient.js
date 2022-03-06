@@ -1,7 +1,7 @@
 import { supabase } from '../../utils/initSupabase'
 
 const updateFacilityPatient = async (req, res) => {
-  const updatedPatient = req.body
+  const {updatedPatient} = req.body
 
   if (!updatedPatient || updatedPatient === 'undefined') {
     throw Error('null data value')
