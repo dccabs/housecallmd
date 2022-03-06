@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import {
   Typography,
@@ -26,6 +26,7 @@ import Container from '../../../../components/Container'
 import MuiSelect from '../../../../components/MuiSelect'
 import PhoneField from '../../../../components/PhoneField'
 import providerOptions from '../../../../public/constants/providerOptions'
+import { SnackBarContext} from '../../../../components/SnackBar'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -56,26 +57,40 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const UserDetailsPage = () => {
+  const openSnackBar = useContext(SnackBarContext)
   const [editable, setEditable] = useState(false)
   const [userName, setUserName] = useState('')
   const [facilityId, setFacilityId] = useState('')
   const [facilityName, setFacilityName] = useState('')
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
+    id: {
+      type: null,
+      value: '',
+    },
     first_name: {
       type: 'textField',
       value: '',
       label: 'First Name',
+      sequence: 10,
     },
     last_name: {
       type: 'textField',
       value: '',
       label: 'Last Name',
+      sequence: 20,
+    },
+    room_number: {
+      type: 'textField',
+      value: '',
+      label: 'Room Number',
+      sequence: 30,
     },
     date_of_birth: {
       type: 'muiPicker',
       value: null,
       label: 'Date of birth',
+      sequence: 40,
     },
     sex: {
       type: 'muiSelect',
@@ -83,60 +98,71 @@ const UserDetailsPage = () => {
       options: ['Male', 'Female'],
       label: 'Sex',
       required: true,
+      sequence: 50,
     },
     policy_provider: {
       type: 'autoComplete',
       value: '',
       options: providerOptions,
       label: 'Insurance Policy Provider',
+      sequence: 60,
     },
     policy_number: {
       type: 'textField',
       value: '',
       label: 'Insurance Policy Number',
+      sequence: 70,
     },
     policy_image_front: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Front Photo',
+      sequence: 80,
     },
     policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Back Photo',
+      sequence: 90,
     },
     secondary_policy_provider: {
       type: 'autoComplete',
       value: '',
       options: providerOptions,
       label: 'Secondary Insurance Policy Provider',
+      sequence: 100,
     },
     secondary_policy_number: {
       type: 'textField',
       value: '',
       label: 'Secondary Insurance Policy Number',
+      sequence: 110,
     },
     secondary_policy_image_front: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Secondary Card Front Photo',
       required: false,
+      sequence: 120,
     },
     secondary_policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Secondary Card Back Photo',
       required: false,
+      sequence: 130,
     },
     poa_name: {
       type: 'textField',
       value: '',
       label: "Patient's Power of Attorney Name",
+      sequence: 140,
     },
     poa_phone_number: {
       type: 'phoneNumber',
       value: '',
       label: "Patient's Power of Attorney Phone Number",
+      sequence: 150,
     },
   })
 
@@ -158,18 +184,14 @@ const UserDetailsPage = () => {
       })
         .then((res) => res.json())
         .then((res) => {
-          Object.keys(res).forEach((key) => {
+          Object.keys(formData).forEach((key) => {
             currentData[key] = {
               ...formData[key],
               value: res[key],
             }
           })
 
-          getFacility(currentData.facility_auth_id.value)
-
-          delete currentData.id
-          delete currentData.facility_auth_id
-          delete currentData.created_at
+          getFacility(res.facility_auth_id)
 
           setFormData(currentData)
           setUserName(
@@ -197,6 +219,32 @@ const UserDetailsPage = () => {
     }
   }
 
+  const updateFacilityPatient = (payload) => {
+    fetch('/api/updateFacilityPatient', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        updatedPatient: payload,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success ) {
+          openSnackBar({
+            message: 'Patient information has been updated',
+            snackSeverity: 'success',
+          })
+          setEditable(false);
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+        }
+      })
+  }
+
   const handleUpdate = (args) => {
     const { val, objKey } = args
 
@@ -213,8 +261,14 @@ const UserDetailsPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const payloadObj = {}
 
-    console.log('Form submitted', formData)
+    Object.keys(formData).forEach(key => {
+      payloadObj[key] = formData[key].value;
+    })
+
+    updateFacilityPatient(payloadObj);
+
   }
 
   return (

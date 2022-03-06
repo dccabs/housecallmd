@@ -72,6 +72,13 @@ const editPatientPage = () => {
       label: 'Last Name',
       required: true,
     },
+    roomNumber: {
+      type: 'textField',
+      value: '',
+      label: 'Room Number',
+      required: true,
+      key: 'room_number',
+    },
     dateOfBirth: {
       type: 'muiPicker',
       value: null,
