@@ -118,7 +118,7 @@ const Navbar = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res) {
-            setFirstName(res?.firstName ?? '')
+            setFirstName(res?.firstName ? res?.firstName : res?.name)
             setLastName(res?.lastName ?? '')
             setIsAdmin(res?.role === 'admin')
             setLoading(false)
@@ -264,19 +264,19 @@ const Navbar = () => {
               </Box>
             )}
 
-            {!user &&
-            <Box style={{ marginLeft: 30 }}>
-              <Link href="/facility/create-account">
-                <Typography align="right" style={{ cursor: 'pointer' }}>
-                  <a>
-                    <Button color="primary" variant="contained">
-                      Facilities
-                    </Button>
-                  </a>
-                </Typography>
-              </Link>
-            </Box>
-            }
+            {!user && (
+              <Box style={{ marginLeft: 30 }}>
+                <Link href="/facility/create-account">
+                  <Typography align="right" style={{ cursor: 'pointer' }}>
+                    <a>
+                      <Button color="primary" variant="contained">
+                        Facilities
+                      </Button>
+                    </a>
+                  </Typography>
+                </Link>
+              </Box>
+            )}
           </Box>
 
           {/* mobile */}

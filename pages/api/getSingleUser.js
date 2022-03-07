@@ -14,8 +14,25 @@ const getAllUsers = async (req, res) => {
     .select('*')
     .eq('email', email)
 
-  if (error) return res.status(401).json({ error: error.message })
-  return res.status(200).json(users[0])
+  if (!users.length) {
+    let { data: users, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+
+    if (error) return res.status(401).json({ error: error.message })
+
+    let { data: facility, error2 } = await supabase
+      .from('facilities')
+      .select('*')
+      .eq('auth_id', users[0].id)
+
+    if (error2) return res.status(401).json({ error: error2.message })
+    return res.status(200).json(facility[0])
+  } else {
+    if (error) return res.status(401).json({ error: error.message })
+    return res.status(200).json(users[0])
+  }
 }
 
 export default getAllUsers

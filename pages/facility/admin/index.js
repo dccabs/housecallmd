@@ -3,6 +3,7 @@ import { Typography, Box, Tabs, Tab } from '@material-ui/core'
 
 import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../../../components/SnackBar'
+import useStore from '../../../zustand/store'
 import Users from '../../../components/Facility/Users'
 import Centers from '../../../components/Facility/Centers'
 
@@ -36,6 +37,7 @@ function UserAdmin(props) {
   const [tabValue, setTabValue] = useState(1)
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
+  const { facilityAdminTableTab, setFacilityAdminTableTab } = useStore()
 
   useEffect(async () => {
     if (user) {
@@ -59,6 +61,10 @@ function UserAdmin(props) {
     }
   }, [user])
 
+  useEffect(() => {
+    setTabValue(facilityAdminTableTab)
+  }, [facilityAdminTableTab])
+
   return (
     <>
       {authorized && (
@@ -66,7 +72,7 @@ function UserAdmin(props) {
           <Box mt="1em">
             <Tabs
               value={tabValue}
-              onChange={(e, newValue) => setTabValue(newValue)}
+              onChange={(e, newValue) => setFacilityAdminTableTab(newValue)}
             >
               <Tab label="Users" {...a11yProps(0)} wrap />
               <Tab label="Centers" {...a11yProps(1)} />
