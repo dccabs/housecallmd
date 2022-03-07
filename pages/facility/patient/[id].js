@@ -15,10 +15,8 @@ import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import Users from '../../../components/UserAdminPage/Users'
-import Appointments from '../../../components/UserAdminPage/Appointments'
-import CompletedAppointments from '../../../components/UserAdminPage/CompletedAppointments'
-import PhoneNumbers from '../../../components/UserAdminPage/PhoneNumbers'
+import Message from '../../../components/Facility/Message'
+
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -75,6 +73,8 @@ const Patient = () => {
   const [state, setState] = useState({});
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true)
+  const [messages, setMessages] = useState([]);
+  const [messagesLoading, setMessagesLoading] = useState(true)
 
   const { user } = Auth.useUser()
 
@@ -94,6 +94,12 @@ const Patient = () => {
       fetchPatientInformation();
     }
   }, [patientId])
+
+  useEffect(() => {
+    if (tabValue === 0 && patientId) {
+      getPatientMessages();
+    }
+  }, [tabValue, patientId])
 
   const openSnackBar = useContext(SnackBarContext)
 
@@ -123,6 +129,34 @@ const Patient = () => {
       })
   }
 
+  const getPatientMessages = () => {
+    const payload = {
+      // facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
+      patientId,
+    }
+
+    setMessagesLoading(true)
+
+    fetch('/api/getAllFacilityMessages', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    }).then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setMessages(data)
+          setMessagesLoading(false)
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+          setMessagesLoading(false)
+        }
+      })
+  }
+
   return (
     <>
       {loading &&
@@ -143,10 +177,22 @@ const Patient = () => {
               {state.first_name} {state.last_name}
             </Typography>
           </Box>
-          <Box style={{marginTop: 40}}>
-            <Button variant="contained" color="secondary" size="large">
-              Request New Appointment
-            </Button>
+          {state.room_number &&
+            <Box>
+              Room Number: {state.room_number}
+            </Box>
+          }
+          <Box style={{display: 'flex', marginTop: 40}}>
+            <Box style={{marginRight: 20}}>
+              <Button variant="contained" color="secondary" size="large">
+                Request New Appointment
+              </Button>
+            </Box>
+            <Box>
+              <Button variant="contained" color="secondary" size="large">
+                Send a Message About This Patient
+              </Button>
+            </Box>
           </Box>
           <Box style={{marginTop: 40}}>
             <Tabs
@@ -159,10 +205,29 @@ const Patient = () => {
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
-              Information
+              {messagesLoading &&
+              <Box
+                my="8em"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <CircularProgress />
+              </Box>
+              }
+              {messages.length === 0 && !messagesLoading &&
+                <div>
+                  No messages for this user
+                </div>
+              }
+              {messages.length > 0 && !messagesLoading && messages.map((entry, index) => {
+                return (
+                  <Message entry={entry} index={index} />
+                )
+              })}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              Messages
+              Information
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               Appointments
