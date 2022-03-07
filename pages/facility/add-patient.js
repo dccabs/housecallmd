@@ -70,7 +70,7 @@ const addPatientPage = () => {
       type: 'textField',
       value: '',
       label: 'Room Number',
-      required: true,
+      required: false,
       key: 'room_number',
     },
     dateOfBirth: {
