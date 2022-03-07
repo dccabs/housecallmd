@@ -3,9 +3,9 @@ import { NextSeo } from 'next-seo'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import { Typography, Box, CircularProgress } from '@material-ui/core'
-import xhrHeader from '../../../constants/xhrHeader'
-import Container from '../../../components/Container'
-import FacilityDetails from '../../../components/FacilityDetails'
+import xhrHeader from '../../../../constants/xhrHeader'
+import Container from '../../../../components/Container'
+import FacilityDetails from '../../../../components/FacilityDetails'
 
 const FacilityDetailsPage = () => {
   const [facility, setFacility] = useState()
