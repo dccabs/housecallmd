@@ -184,7 +184,7 @@ const addPatientPage = () => {
     console.log('formData', formData)
 
     Object.keys(formData).forEach(item => {
-      console.log('item', item)
+      console.log('item', formData[item])
       if (formData[item].required && !formData[item].value) {
         isValid = false;
       }
@@ -344,7 +344,7 @@ const addPatientPage = () => {
                     value={field.value}
                     onChange={(value) =>
                       handleUpdate({
-                        val: moment(value).format('DD/MM/YYYY'),
+                        val: value,
                         objKey: key,
                       })
                     }
@@ -381,7 +381,7 @@ const addPatientPage = () => {
                   className={classes.textFields}
                   options={field.options}
                   onChange={(e, value) =>
-                    handleUpdate({ val: value, objKey: key })
+                    handleUpdate({ val: e.target.value, objKey: key })
                   }
                   key={key}
                   freeSolo
@@ -395,7 +395,7 @@ const addPatientPage = () => {
                       variant="outlined"
                       value={field.value}
                       onChange={(e, value) =>
-                        handleUpdate({ val: value, objKey: key })
+                        handleUpdate({ val: e.target.value, objKey: key })
                       }
                       InputProps={{ ...params.InputProps, type: 'search' }}
                     />
