@@ -28,7 +28,7 @@ const Centers = ({ user }) => {
 
   function handleClick(id) {
     router.push({
-      pathname: `/facility/facility-details/${id}`,
+      pathname: `/facility/admin/facility-details/${id}`,
     })
   }
 
