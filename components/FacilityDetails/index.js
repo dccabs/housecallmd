@@ -4,8 +4,11 @@ import React from 'react'
 import useStyles from './use-styles'
 import tableCols from './table-cols'
 import Container from '../Container'
+import { useRouter } from 'next/router'
 
 const FacilityDetails = ({ facility }) => {
+  const router = useRouter()
+
   const classes = useStyles({
     h2: {
       paddingBottom: 60,
@@ -83,7 +86,8 @@ const FacilityDetails = ({ facility }) => {
           columns={tableCols}
           data={facility?.patients}
           onRowClick={(event, rowData) => {
-            console.log('rowData', rowData)
+            const id = rowData.id;
+            router.push(`/facility/admin/user-details/${id}`)
           }}
         />
       </Box>

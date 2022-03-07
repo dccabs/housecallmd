@@ -70,7 +70,7 @@ const addPatientPage = () => {
       type: 'textField',
       value: '',
       label: 'Room Number',
-      required: true,
+      required: false,
       key: 'room_number',
     },
     dateOfBirth: {
@@ -179,12 +179,8 @@ const addPatientPage = () => {
   }, [formData])
 
   const validateForm = () => {
-    console.log('validateForm')
     let isValid = true;
-    console.log('formData', formData)
-
     Object.keys(formData).forEach(item => {
-      console.log('item', item)
       if (formData[item].required && !formData[item].value) {
         isValid = false;
       }
@@ -220,7 +216,6 @@ const addPatientPage = () => {
         if (data.error) {
           throw Error(data.error)
         } else {
-          //console.log('success message')
           returnToProfilePage();
           openSnackBar({ message: "New Patient Added", snackSeverity: 'success' })
         }
@@ -344,7 +339,7 @@ const addPatientPage = () => {
                     value={field.value}
                     onChange={(value) =>
                       handleUpdate({
-                        val: moment(value).format('DD/MM/YYYY'),
+                        val: value,
                         objKey: key,
                       })
                     }
@@ -381,7 +376,7 @@ const addPatientPage = () => {
                   className={classes.textFields}
                   options={field.options}
                   onChange={(e, value) =>
-                    handleUpdate({ val: value, objKey: key })
+                    handleUpdate({ val: e.target.value, objKey: key })
                   }
                   key={key}
                   freeSolo
@@ -395,7 +390,7 @@ const addPatientPage = () => {
                       variant="outlined"
                       value={field.value}
                       onChange={(e, value) =>
-                        handleUpdate({ val: value, objKey: key })
+                        handleUpdate({ val: e.target.value, objKey: key })
                       }
                       InputProps={{ ...params.InputProps, type: 'search' }}
                     />

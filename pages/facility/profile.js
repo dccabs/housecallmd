@@ -164,9 +164,8 @@ const Profile = () => {
                 pageSizeOptions: [50, 100, 200],
               }}
               onRowClick={(event, rowData) => {
-                console.log('rowData', rowData)
                 const { id } = rowData;
-                router.push(`/facility/user/${id}`)
+                router.push(`/facility/patient/${id}`)
               }}
               // actions={[
               //   {
