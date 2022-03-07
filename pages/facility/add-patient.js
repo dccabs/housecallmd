@@ -179,12 +179,8 @@ const addPatientPage = () => {
   }, [formData])
 
   const validateForm = () => {
-    console.log('validateForm')
     let isValid = true;
-    console.log('formData', formData)
-
     Object.keys(formData).forEach(item => {
-      console.log('item', formData[item])
       if (formData[item].required && !formData[item].value) {
         isValid = false;
       }
@@ -220,7 +216,6 @@ const addPatientPage = () => {
         if (data.error) {
           throw Error(data.error)
         } else {
-          //console.log('success message')
           returnToProfilePage();
           openSnackBar({ message: "New Patient Added", snackSeverity: 'success' })
         }
