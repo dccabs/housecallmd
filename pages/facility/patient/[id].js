@@ -3,10 +3,11 @@ import { NextSeo } from 'next-seo'
 import {
   Typography,
   Box,
+  Flex,
   CircularProgress,
   Button,
   Tabs,
-  Tab, IconButton, Tooltip
+  Tab, IconButton, Tooltip, Modal, TextField
 } from '@material-ui/core'
 import Container from 'components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -75,6 +76,11 @@ const Patient = () => {
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(true)
+  const [messageModalOpen, setMessageModalOpen] = useState(true)
+  const [message, setMessage] = useState('');
+  const [messageLoading, setMessageLoading] = useState(false);
+
+
 
   const { user } = Auth.useUser()
 
@@ -157,6 +163,57 @@ const Patient = () => {
       })
   }
 
+  const sendMessage = () => {
+    /// payload should be like this
+    /*
+    newMessage = {
+      created_at: new Date(),
+      sender: string uuid,
+      recipient: string uuid or null if housecall md
+      patient_id: number or null if no patient associated
+      message: string,
+      viewed_by_recipient: false,
+    }
+    */
+    const payload = {
+      created_at: new Date(),
+      sender: user.id,
+      recipient: null,
+      patient_id: patientId,
+      message,
+      viewed_by_recipient: false,
+    }
+
+    setMessagesLoading(true);
+    console.log('payload', payload);
+
+    fetch('/api/addFacilityMessage', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    }).then((res) => res.json())
+      .then((data) => {
+        setMessagesLoading(false);
+        setMessageModalOpen(false)
+        if (data) {
+          openSnackBar({
+            message: 'Message successfully sent',
+            // error: 'error',
+          })
+          setLoading(false)
+          getPatientMessages();
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+        }
+      })
+
+    console.log('payload', payload)
+  }
+
   return (
     <>
       {loading &&
@@ -202,7 +259,9 @@ const Patient = () => {
               </Button>
             </Box>
             <Box>
-              <Button variant="contained" color="secondary" size="large">
+              <Button
+                onClick={() => setMessageModalOpen(true)}
+                variant="contained" color="secondary" size="large">
                 Send a Message About This Patient
               </Button>
             </Box>
@@ -249,6 +308,39 @@ const Patient = () => {
         </Container>
       </>
       }
+      <Modal
+        open={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+      >
+        <Box style={{
+          backgroundColor: '#fff',
+          width: 500,
+          margin: '10% auto',
+          padding: 40,
+          borderRadius: 10,
+        }}>
+          <Typography variant="h5" className={classes.h2} style={{marginBottom: '1em'}}>
+            Send a message to HouseCall MD about {state.first_name} {state.last_name}
+          </Typography>
+          <TextField
+            placeholder="MultiLine with rows: 2 and rowsMax: 4"
+            multiline
+            rows={8}
+            maxRows={8}
+            fullWidth
+            variant="outlined"
+            onChange={(e) => setMessage(e.target.value)}
+            disabled={messagesLoading}
+          />
+          <Button
+            disabled={!message}
+            onClick={sendMessage}
+            style={{marginTop: '1em'}} size="small" variant="contained" color="secondary">Send Message</Button>
+            {messagesLoading &&
+              <CircularProgress />
+            }
+        </Box>
+      </Modal>
     </>);
         {/*    <div style={{marginTop: '1em'}}>*/}
         {/*      {state.address}*/}
