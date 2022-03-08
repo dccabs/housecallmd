@@ -17,8 +17,6 @@ import MaterialTable from 'material-table'
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
-import EditPatient from 'omponents/Facility/EditPatient'
-
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -175,6 +173,11 @@ const Patient = () => {
       <>
         <Container>
           <Box>
+            <Box>
+              <div
+                onClick={() => router.back()}
+                className="link">Go Back</div>
+            </Box>
             <Typography variant="h2" className={classes.h2}>
               {state.first_name} {state.last_name}
               <Tooltip title="Edit Patient Details">
@@ -236,9 +239,9 @@ const Patient = () => {
                 )
               })}
             </TabPanel>
-            <TabPanel value={tabValue} index={1}>
-              <EditPatient />
-            </TabPanel>
+            {/*<TabPanel value={tabValue} index={1}>*/}
+            {/*  <EditPatient />*/}
+            {/*</TabPanel>*/}
             <TabPanel value={tabValue} index={2}>
               Appointments
             </TabPanel>

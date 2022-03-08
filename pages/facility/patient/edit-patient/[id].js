@@ -15,7 +15,6 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers'
-import EditIcon from '@material-ui/icons/Edit'
 import DateFnsUtils from '@date-io/date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
@@ -62,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UserDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
-  const [editable, setEditable] = useState(false)
+  const [editable, setEditable] = useState(true)
   const [userName, setUserName] = useState('')
   const [facilityId, setFacilityId] = useState('')
   const [facilityName, setFacilityName] = useState('')
@@ -329,18 +328,15 @@ const UserDetailsPage = () => {
       {formData && userName && facilityName && !loading ? (
         <>
           <Box>
+            <Box>
+              <div
+                onClick={() => router.back()}
+                className="link">Go Back</div>
+            </Box>
             <Box display="flex" alignItems="end">
               <Typography variant="h2" className={classes.h2}>
                 {userName}
               </Typography>
-              <Tooltip title="Edit Patient Details">
-                <IconButton
-                  component="span"
-                  onClick={() => setEditable(!editable)}
-                >
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
             </Box>
 
             <Typography className={classes.facilityLink} variant="h6">
