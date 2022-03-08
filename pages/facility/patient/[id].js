@@ -6,16 +6,18 @@ import {
   CircularProgress,
   Button,
   Tabs,
-  Tab,
+  Tab, IconButton, Tooltip
 } from '@material-ui/core'
-import Container from '../../../components/Container'
+import Container from 'components/Container'
 import { makeStyles } from '@material-ui/core/styles'
-import { SnackBarContext } from '../../../components/SnackBar'
+import { SnackBarContext } from 'components/SnackBar'
+import EditIcon from '@material-ui/icons/Edit'
 import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import Message from '../../../components/Facility/Message'
+import Message from 'components/Facility/Message'
+import EditPatient from 'omponents/Facility/EditPatient'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -175,6 +177,14 @@ const Patient = () => {
           <Box>
             <Typography variant="h2" className={classes.h2}>
               {state.first_name} {state.last_name}
+              <Tooltip title="Edit Patient Details">
+                <IconButton
+                  component="span"
+                  onClick={() => router.push(`/facility/patient/edit-patient/${patientId}`)}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
             </Typography>
           </Box>
           {state.room_number &&
@@ -200,8 +210,8 @@ const Patient = () => {
               onChange={(e, newValue) => setTabValue(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Appointments" {...a11yProps(1)}  />
-              <Tab label="Information" {...a11yProps(2)}  />
+              <Tab label="Information" {...a11yProps(1)}  />
+              <Tab label="Appointments" {...a11yProps(2)}  />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -227,7 +237,7 @@ const Patient = () => {
               })}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              Information
+              <EditPatient />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               Appointments

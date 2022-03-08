@@ -529,6 +529,9 @@ const UserDetailsPage = () => {
                       InputProps={{
                         inputComponent: PhoneField,
                       }}
+                      InputLabelProps={{
+                        shrink: true,
+                    }}
                       key={key}
                       disabled={!editable}
                       fullWidth

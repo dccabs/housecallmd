@@ -21,13 +21,13 @@ import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 import { Auth } from '@supabase/ui'
 import Link from 'next/link'
-import { supabase } from 'utils/initSupabase'
+import { supabase } from '../../../utils/initSupabase'
 
-import Container from 'components/Container'
-import MuiSelect from 'components/MuiSelect'
-import PhoneField from 'components/PhoneField'
-import providerOptions from 'public/constants/providerOptions'
-import { SnackBarContext } from 'components/SnackBar'
+import Container from '../../../components/Container'
+import MuiSelect from '../../../components/MuiSelect'
+import PhoneField from '../../../components/PhoneField'
+import providerOptions from '../../../public/constants/providerOptions'
+import { SnackBarContext } from '../../../components/SnackBar'
 import { v4 as uuidv4 } from 'uuid'
 const NEXT_PUBLIC_SUPABASE_STORAGE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
@@ -529,6 +529,9 @@ const UserDetailsPage = () => {
                       InputProps={{
                         inputComponent: PhoneField,
                       }}
+                      InputLabelProps={{
+                        shrink: true,
+                    }}
                       key={key}
                       disabled={!editable}
                       fullWidth

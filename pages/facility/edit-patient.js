@@ -9,10 +9,10 @@ import DateFnsUtils from '@date-io/date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 
-import Container from '../../components/Container'
-import MuiSelect from '../../components/MuiSelect'
-import PhoneField from '../../components/PhoneField'
-import providerOptions from '../../public/constants/providerOptions'
+import Container from 'components/Container'
+import MuiSelect from 'components/MuiSelect'
+import PhoneField from 'components/PhoneField'
+import providerOptions from 'public/constants/providerOptions'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
