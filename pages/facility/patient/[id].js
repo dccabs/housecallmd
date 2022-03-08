@@ -18,6 +18,7 @@ import MaterialTable from 'material-table'
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -76,15 +77,15 @@ const Patient = () => {
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(true)
-  const [messageModalOpen, setMessageModalOpen] = useState(true)
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [message, setMessage] = useState('');
   const [messageLoading, setMessageLoading] = useState(false);
 
 
+  const openSnackBar = useContext(SnackBarContext)
 
   const { user } = Auth.useUser()
 
-  console.log('router', router.query)
   const patientId = router.query.id;
 
   const a11yProps = (index) => {
@@ -99,15 +100,28 @@ const Patient = () => {
     if (patientId) {
       fetchPatientInformation();
     }
+    setTimeout(() => {
+      // requestTimer();
+    }, 1000)
   }, [patientId])
+
+  const requestTimer = (() => {
+    setTimeout(() => {
+      console.log('requestTimer');
+      getPatientMessages();
+      openSnackBar({
+        message: 'Fetching messages',
+        // error: 'error',
+      })
+      requestTimer();
+    }, 10000)
+  })
 
   useEffect(() => {
     if (tabValue === 0 && patientId) {
       getPatientMessages();
     }
   }, [tabValue, patientId])
-
-  const openSnackBar = useContext(SnackBarContext)
 
   const fetchPatientInformation = () => {
     const payload = {
@@ -121,7 +135,6 @@ const Patient = () => {
       body: JSON.stringify(payload),
     }).then((res) => res.json())
       .then((data) => {
-        console.log('data', data)
         if (data) {
           setState({...data})
           setLoading(false)
@@ -164,17 +177,6 @@ const Patient = () => {
   }
 
   const sendMessage = () => {
-    /// payload should be like this
-    /*
-    newMessage = {
-      created_at: new Date(),
-      sender: string uuid,
-      recipient: string uuid or null if housecall md
-      patient_id: number or null if no patient associated
-      message: string,
-      viewed_by_recipient: false,
-    }
-    */
     const payload = {
       created_at: new Date(),
       sender: user.id,
@@ -183,9 +185,7 @@ const Patient = () => {
       message,
       viewed_by_recipient: false,
     }
-
     setMessagesLoading(true);
-    console.log('payload', payload);
 
     fetch('/api/addFacilityMessage', {
       method: 'POST',
@@ -201,7 +201,6 @@ const Patient = () => {
             message: 'Message successfully sent',
             // error: 'error',
           })
-          setLoading(false)
           getPatientMessages();
         } else {
           openSnackBar({
@@ -272,8 +271,7 @@ const Patient = () => {
               onChange={(e, newValue) => setTabValue(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Information" {...a11yProps(1)}  />
-              <Tab label="Appointments" {...a11yProps(2)}  />
+              <Tab label="Appointments" {...a11yProps(1)}  />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -287,21 +285,32 @@ const Patient = () => {
                 <CircularProgress />
               </Box>
               }
+              {!messagesLoading &&
+              <Box style={{marginBottom: '1em'}}>
+                <Tooltip title="Check for new messages">
+                  <IconButton
+                    component="span"
+                    onClick={getPatientMessages}
+                  >
+                    <RefreshIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              }
               {messages.length === 0 && !messagesLoading &&
                 <div>
                   No messages for this user
                 </div>
               }
-              {messages.length > 0 && !messagesLoading && messages.map((entry, index) => {
-                return (
-                  <Message entry={entry} index={index} />
-                )
-              })}
+              <Box>
+                {messages.length > 0 && !messagesLoading && messages.map((entry, index) => {
+                  return (
+                    <Message entry={entry} index={index} />
+                  )
+                })}
+              </Box>
             </TabPanel>
-            {/*<TabPanel value={tabValue} index={1}>*/}
-            {/*  <EditPatient />*/}
-            {/*</TabPanel>*/}
-            <TabPanel value={tabValue} index={2}>
+            <TabPanel value={tabValue} index={1}>
               Appointments
             </TabPanel>
           </Box>
@@ -314,7 +323,8 @@ const Patient = () => {
       >
         <Box style={{
           backgroundColor: '#fff',
-          width: 500,
+          maxWidth: 700,
+          width: '90%',
           margin: '10% auto',
           padding: 40,
           borderRadius: 10,

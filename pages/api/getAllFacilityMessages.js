@@ -81,12 +81,38 @@ const getAllFacilityMessages = async (req, res) => {
       name: sentFromHouseCall ? `${senderMatch.firstName} ${senderMatch.lastName}` : senderMatch?.name,
     }
 
+    let sentToHouseCall = false;
+
+    if (!entry.recipient) {
+      sentToHouseCall = true;
+    }
+
+    let recipientMatch = entry.recipient && houseCallUsers.find(user => {
+      if ((user.uuid === entry.recipient && user.role === 'admin')) {
+        sentToHouseCall = true;
+        return true;
+      }
+    })
+
+    if (!sentToHouseCall) {
+      recipientMatch = facilities.find(facility => {
+        return facility.auth_id === entry.recipient;
+      })
+    }
+
+
+    const recipientObj = {
+      name: sentToHouseCall ? `${recipientMatch?.firstName} ${recipientMatch?.lastName}` : recipientMatch?.name,
+    }
+
 
     return {
       patient_id: patientMatch.id,
       patient_name: `${patientMatch.first_name} ${patientMatch.last_name}`,
       message: entry.message,
       sender: senderObj,
+      recipient: recipientObj,
+      sentToHouseCall,
       sentFromHouseCall,
       timestamp: entry.created_at,
     }
