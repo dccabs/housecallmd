@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Box, CircularProgress } from '@material-ui/core'
 import MaterialTable from 'material-table'
-import xhrHeader from '../../../constants/xhrHeader'
+import xhrHeader from 'constants/xhrHeader'
 import router from 'next/router'
 
 const index = ({ user }) => {

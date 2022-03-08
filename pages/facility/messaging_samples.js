@@ -5,6 +5,7 @@ import {
   Box,
   CircularProgress,
   Button,
+  TextField,
 } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -13,6 +14,7 @@ import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
 import Link from 'next/link';
 import { useRouter } from 'next/router'
+import Message from '../../components/Facility/Message'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -49,6 +51,7 @@ const Messages = () => {
   const [state, setState] = useState({});
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState('');
 
 
   const { user } = Auth.useUser()
@@ -88,6 +91,55 @@ const Messages = () => {
       })
   }
 
+  const sendMessage = () => {
+    /// payload should be like this
+    /*
+    newMessage = {
+      created_at: new Date(),
+      sender: string uuid,
+      recipient: string uuid or null if housecall md
+      patient_id: number or null if no patient associated
+      message: string,
+      viewed_by_recipient: false,
+    }
+    */
+    const payload = {
+      created_at: new Date(),
+      sender: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
+      recipient: null,
+      patient_id: 3,
+      message,
+      viewed_by_recipient: false,
+    }
+
+    fetch('/api/addFacilityMessage', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    }).then((res) => res.json())
+      .then((data) => {
+        console.log('data', data)
+        if (data) {
+          //setMessages(data)
+          openSnackBar({
+            message: 'Message successfully sent',
+            // error: 'error',
+          })
+          setLoading(false)
+          getAllMessages();
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+         // setLoading(false)
+        }
+      })
+
+    console.log('payload', payload)
+  }
+
   return (
     <>
       <Container>
@@ -100,30 +152,25 @@ const Messages = () => {
               All messages
             </Typography>
           </div>
+          <Box style={{marginBottom: '2em'}}>
+            <TextField
+              placeholder="MultiLine with rows: 2 and rowsMax: 4"
+              multiline
+              rows={2}
+              maxRows={4}
+              fullWidth
+              variant="outlined"
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <Button
+              disabled={!message}
+              onClick={sendMessage}
+              style={{marginTop: '1em'}} size="small" variant="contained" color="secondary">Send Message</Button>
+          </Box>
           <div>
             {messages && messages.map((entry, index) => {
               return (
-                <div
-                  style={{
-                    background: entry.sentFromHouseCall ? 'lightBlue' : '#e3e3e3',
-                    padding: 15,
-                    borderRadius: 10,
-                    marginBottom: 20,
-                  }}
-                  key={`message-${index}`}
-                >
-                  <div><strong>From:</strong> <strong>{entry.sentFromHouseCall ? 'HOUSECALLMD:' : null}</strong>{entry?.sender?.name}</div>
-                  {/*<div><strong>To:</strong> {entry.recipient}</div>*/}
-                  <div>
-                    <strong>Message:</strong> {entry.message}
-                  </div>
-                  {/*<div>*/}
-                  {/*  <strong>Timestamp</strong>: {entry.created_at}*/}
-                  {/*</div>*/}
-                  <div>
-                    <strong>Patient: </strong> {entry.patient_name}
-                  </div>
-                </div>
+                <Message entry={entry} index={index} />
               )
             })}
           </div>

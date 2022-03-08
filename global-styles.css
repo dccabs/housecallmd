@@ -1,3 +1,8 @@
 html, body, #__next {
   height: 100%;
 }
+
+.link {
+  color: blue;
+  text-decoration: underline;
+}
