@@ -262,6 +262,7 @@ const UserDetailsPage = () => {
       [objKey]: {
         ...formData[objKey],
         loading: true,
+        value: '',
       },
     })
     const { data, error } = await supabase.storage
