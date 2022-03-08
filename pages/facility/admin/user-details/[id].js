@@ -101,7 +101,6 @@ const UserDetailsPage = () => {
       value: '',
       options: ['Male', 'Female'],
       label: 'Sex',
-      required: true,
       sequence: 50,
     },
     policy_provider: {
@@ -122,12 +121,14 @@ const UserDetailsPage = () => {
       value: '',
       label: 'Upload Card Front Photo',
       sequence: 80,
+      loading: false,
     },
     policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Back Photo',
       sequence: 90,
+      loading: false,
     },
     secondary_policy_provider: {
       type: 'autoComplete',
@@ -146,15 +147,15 @@ const UserDetailsPage = () => {
       type: 'fileUpload',
       value: '',
       label: 'Upload Secondary Card Front Photo',
-      required: false,
       sequence: 120,
+      loading: false,
     },
     secondary_policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Secondary Card Back Photo',
-      required: false,
       sequence: 130,
+      loading,
     },
     poa_name: {
       type: 'textField',
@@ -254,6 +255,15 @@ const UserDetailsPage = () => {
     const type = val.type.split('/')[1]
     const uuid = uuidv4()
     const photo = val
+
+    // set loading true
+    setFormData({
+      ...formData,
+      [objKey]: {
+        ...formData[objKey],
+        loading: true,
+      },
+    })
     const { data, error } = await supabase.storage
       .from('card-information')
       .upload(`card-information-images/facility/${uuid}.${type}`, photo, {
@@ -262,12 +272,21 @@ const UserDetailsPage = () => {
       })
 
     if (error) {
+      setFormData({
+        ...formData,
+        [objKey]: {
+          ...formData[objKey],
+          loading: false,
+        },
+      })
+
       return res.status(401).json({ error: error.message })
     } else {
       const newFormData = {
         ...formData,
         [objKey]: {
           ...formData[objKey],
+          loading: false,
           value: data.Key,
         },
       }
@@ -481,8 +500,11 @@ const UserDetailsPage = () => {
                               <img
                                 style={{ maxWidth: 500 }}
                                 src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
-                                // layout="fill"
                               />
+                            ) : field.loading ? (
+                              <Box my="1em">
+                                <CircularProgress />
+                              </Box>
                             ) : (
                               'No file chosen'
                             )}
