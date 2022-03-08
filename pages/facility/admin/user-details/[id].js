@@ -21,12 +21,16 @@ import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 import { Auth } from '@supabase/ui'
 import Link from 'next/link'
+import { supabase } from '../../../../utils/initSupabase'
 
 import Container from '../../../../components/Container'
 import MuiSelect from '../../../../components/MuiSelect'
 import PhoneField from '../../../../components/PhoneField'
 import providerOptions from '../../../../public/constants/providerOptions'
-import { SnackBarContext} from '../../../../components/SnackBar'
+import { SnackBarContext } from '../../../../components/SnackBar'
+import { v4 as uuidv4 } from 'uuid'
+const NEXT_PUBLIC_SUPABASE_STORAGE_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -97,7 +101,6 @@ const UserDetailsPage = () => {
       value: '',
       options: ['Male', 'Female'],
       label: 'Sex',
-      required: true,
       sequence: 50,
     },
     policy_provider: {
@@ -118,12 +121,14 @@ const UserDetailsPage = () => {
       value: '',
       label: 'Upload Card Front Photo',
       sequence: 80,
+      loading: false,
     },
     policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Back Photo',
       sequence: 90,
+      loading: false,
     },
     secondary_policy_provider: {
       type: 'autoComplete',
@@ -142,15 +147,15 @@ const UserDetailsPage = () => {
       type: 'fileUpload',
       value: '',
       label: 'Upload Secondary Card Front Photo',
-      required: false,
       sequence: 120,
+      loading: false,
     },
     secondary_policy_image_back: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Secondary Card Back Photo',
-      required: false,
       sequence: 130,
+      loading,
     },
     poa_name: {
       type: 'textField',
@@ -230,12 +235,12 @@ const UserDetailsPage = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res.success ) {
+        if (res.success) {
           openSnackBar({
             message: 'Patient information has been updated',
             snackSeverity: 'success',
           })
-          setEditable(false);
+          setEditable(false)
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',
@@ -245,8 +250,57 @@ const UserDetailsPage = () => {
       })
   }
 
-  const handleUpdate = (args) => {
+  const uploadPhoto = async (args) => {
     const { val, objKey } = args
+    const type = val.type.split('/')[1]
+    const uuid = uuidv4()
+    const photo = val
+
+    // set loading true
+    setFormData({
+      ...formData,
+      [objKey]: {
+        ...formData[objKey],
+        loading: true,
+        value: '',
+      },
+    })
+    const { data, error } = await supabase.storage
+      .from('card-information')
+      .upload(`card-information-images/facility/${uuid}.${type}`, photo, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+    if (error) {
+      setFormData({
+        ...formData,
+        [objKey]: {
+          ...formData[objKey],
+          loading: false,
+        },
+      })
+
+      return res.status(401).json({ error: error.message })
+    } else {
+      const newFormData = {
+        ...formData,
+        [objKey]: {
+          ...formData[objKey],
+          loading: false,
+          value: data.Key,
+        },
+      }
+      setFormData(newFormData)
+    }
+  }
+
+  const handleUpdate = (args) => {
+    const { val, objKey, type } = args
+    if (type === 'fileUpload') {
+      uploadPhoto(args)
+      return false
+    }
 
     const newFormData = {
       ...formData,
@@ -263,12 +317,11 @@ const UserDetailsPage = () => {
     e.preventDefault()
     const payloadObj = {}
 
-    Object.keys(formData).forEach(key => {
-      payloadObj[key] = formData[key].value;
+    Object.keys(formData).forEach((key) => {
+      payloadObj[key] = formData[key].value
     })
 
-    updateFacilityPatient(payloadObj);
-
+    updateFacilityPatient(payloadObj)
   }
 
   return (
@@ -414,29 +467,49 @@ const UserDetailsPage = () => {
                         >
                           <strong>{field.label}</strong>
                         </Typography>
-                        <Box display="flex">
-                          <Button
-                            variant="contained"
-                            component="label"
-                            style={{ marginRight: '0.5em' }}
-                            disabled={!editable}
+                        <Box>
+                          <div style={{ flex: 1 }}>
+                            <Button
+                              variant="contained"
+                              component="label"
+                              style={{ marginRight: '0.5em' }}
+                              disabled={!editable}
+                            >
+                              Upload File
+                              <input
+                                type="file"
+                                accept="image/*"
+                                hidden
+                                onChange={(e) =>
+                                  handleUpdate({
+                                    val: e.target.files[0],
+                                    objKey: key,
+                                    type: 'fileUpload',
+                                  })
+                                }
+                              />
+                            </Button>
+                          </div>
+                          <div
+                            style={{
+                              position: 'relative',
+                              width: 500,
+                              marginTop: 10,
+                            }}
                           >
-                            Upload File
-                            <input
-                              type="file"
-                              accept="image/*"
-                              hidden
-                              onChange={(e) =>
-                                handleUpdate({
-                                  val: e.target.files[0],
-                                  objKey: key,
-                                })
-                              }
-                            />
-                          </Button>
-                          <p>
-                            {field.value ? field.value.name : 'No file chosen'}
-                          </p>
+                            {field.value ? (
+                              <img
+                                style={{ maxWidth: 500 }}
+                                src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
+                              />
+                            ) : field.loading ? (
+                              <Box my="1em">
+                                <CircularProgress />
+                              </Box>
+                            ) : (
+                              'No file chosen'
+                            )}
+                          </div>
                         </Box>
                       </Box>
                     </div>
