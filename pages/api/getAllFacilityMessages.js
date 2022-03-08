@@ -102,7 +102,7 @@ const getAllFacilityMessages = async (req, res) => {
 
 
     const recipientObj = {
-      name: sentToHouseCall ? `${recipientMatch?.firstName} ${recipientMatch?.lastName}` : recipientMatch?.name,
+      name: sentToHouseCall && recipientMatch?.firstName ? `HouseCall MD - ${recipientMatch?.firstName} ${recipientMatch?.lastName}` : sentToHouseCall && !recipientMatch?.firstName ? 'HouseCall MD' : recipientMatch?.name,
     }
 
 
