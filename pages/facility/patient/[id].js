@@ -3,10 +3,11 @@ import { NextSeo } from 'next-seo'
 import {
   Typography,
   Box,
+  Flex,
   CircularProgress,
   Button,
   Tabs,
-  Tab, IconButton, Tooltip
+  Tab, IconButton, Tooltip, Modal, TextField
 } from '@material-ui/core'
 import Container from 'components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -17,6 +18,7 @@ import MaterialTable from 'material-table'
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -75,10 +77,15 @@ const Patient = () => {
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(true)
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
+  const [message, setMessage] = useState('');
+  const [messageLoading, setMessageLoading] = useState(false);
+
+
+  const openSnackBar = useContext(SnackBarContext)
 
   const { user } = Auth.useUser()
 
-  console.log('router', router.query)
   const patientId = router.query.id;
 
   const a11yProps = (index) => {
@@ -93,15 +100,28 @@ const Patient = () => {
     if (patientId) {
       fetchPatientInformation();
     }
+    setTimeout(() => {
+      // requestTimer();
+    }, 1000)
   }, [patientId])
+
+  const requestTimer = (() => {
+    setTimeout(() => {
+      console.log('requestTimer');
+      getPatientMessages();
+      openSnackBar({
+        message: 'Fetching messages',
+        // error: 'error',
+      })
+      requestTimer();
+    }, 10000)
+  })
 
   useEffect(() => {
     if (tabValue === 0 && patientId) {
       getPatientMessages();
     }
   }, [tabValue, patientId])
-
-  const openSnackBar = useContext(SnackBarContext)
 
   const fetchPatientInformation = () => {
     const payload = {
@@ -115,7 +135,6 @@ const Patient = () => {
       body: JSON.stringify(payload),
     }).then((res) => res.json())
       .then((data) => {
-        console.log('data', data)
         if (data) {
           setState({...data})
           setLoading(false)
@@ -155,6 +174,43 @@ const Patient = () => {
           setMessagesLoading(false)
         }
       })
+  }
+
+  const sendMessage = () => {
+    const payload = {
+      created_at: new Date(),
+      sender: user.id,
+      recipient: null,
+      patient_id: patientId,
+      message,
+      viewed_by_recipient: false,
+    }
+    setMessagesLoading(true);
+
+    fetch('/api/addFacilityMessage', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    }).then((res) => res.json())
+      .then((data) => {
+        setMessagesLoading(false);
+        setMessageModalOpen(false)
+        if (data) {
+          openSnackBar({
+            message: 'Message successfully sent',
+            // error: 'error',
+          })
+          getPatientMessages();
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+        }
+      })
+
+    console.log('payload', payload)
   }
 
   return (
@@ -202,7 +258,9 @@ const Patient = () => {
               </Button>
             </Box>
             <Box>
-              <Button variant="contained" color="secondary" size="large">
+              <Button
+                onClick={() => setMessageModalOpen(true)}
+                variant="contained" color="secondary" size="large">
                 Send a Message About This Patient
               </Button>
             </Box>
@@ -213,8 +271,7 @@ const Patient = () => {
               onChange={(e, newValue) => setTabValue(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Information" {...a11yProps(1)}  />
-              <Tab label="Appointments" {...a11yProps(2)}  />
+              <Tab label="Appointments" {...a11yProps(1)}  />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -228,27 +285,72 @@ const Patient = () => {
                 <CircularProgress />
               </Box>
               }
+              {!messagesLoading &&
+              <Box style={{marginBottom: '1em'}}>
+                <Tooltip title="Check for new messages">
+                  <IconButton
+                    component="span"
+                    onClick={getPatientMessages}
+                  >
+                    <RefreshIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              }
               {messages.length === 0 && !messagesLoading &&
                 <div>
                   No messages for this user
                 </div>
               }
-              {messages.length > 0 && !messagesLoading && messages.map((entry, index) => {
-                return (
-                  <Message entry={entry} index={index} />
-                )
-              })}
+              <Box>
+                {messages.length > 0 && !messagesLoading && messages.map((entry, index) => {
+                  return (
+                    <Message entry={entry} index={index} />
+                  )
+                })}
+              </Box>
             </TabPanel>
-            {/*<TabPanel value={tabValue} index={1}>*/}
-            {/*  <EditPatient />*/}
-            {/*</TabPanel>*/}
-            <TabPanel value={tabValue} index={2}>
+            <TabPanel value={tabValue} index={1}>
               Appointments
             </TabPanel>
           </Box>
         </Container>
       </>
       }
+      <Modal
+        open={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+      >
+        <Box style={{
+          backgroundColor: '#fff',
+          maxWidth: 700,
+          width: '90%',
+          margin: '10% auto',
+          padding: 40,
+          borderRadius: 10,
+        }}>
+          <Typography variant="h5" className={classes.h2} style={{marginBottom: '1em'}}>
+            Send a message to HouseCall MD about {state.first_name} {state.last_name}
+          </Typography>
+          <TextField
+            placeholder="MultiLine with rows: 2 and rowsMax: 4"
+            multiline
+            rows={8}
+            maxRows={8}
+            fullWidth
+            variant="outlined"
+            onChange={(e) => setMessage(e.target.value)}
+            disabled={messagesLoading}
+          />
+          <Button
+            disabled={!message}
+            onClick={sendMessage}
+            style={{marginTop: '1em'}} size="small" variant="contained" color="secondary">Send Message</Button>
+            {messagesLoading &&
+              <CircularProgress />
+            }
+        </Box>
+      </Modal>
     </>);
         {/*    <div style={{marginTop: '1em'}}>*/}
         {/*      {state.address}*/}
