@@ -19,6 +19,7 @@
     "@stripe/stripe-js": "^1.14.0",
     "@supabase/supabase-js": "^1.11.14",
     "@supabase/ui": "^0.26.1",
+    "aos": "^3.0.0-beta.6",
     "cleave.js": "^1.6.0",
     "contentful": "^9.1.5",
     "cuid": "^2.1.8",

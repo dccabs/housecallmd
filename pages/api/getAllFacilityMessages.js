@@ -64,7 +64,7 @@ const getAllFacilityMessages = async (req, res) => {
 
     let sentFromHouseCall = false;
     let senderMatch = houseCallUsers.find(user => {
-      if (user.uuid === entry.sender) {
+      if (user.uuid === entry.sender && user.role === 'admin') {
         sentFromHouseCall = true;
         return true;
       }

@@ -15,6 +15,9 @@ import theme from '../theme'
 
 import Layout from '../components/Layout'
 
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // You can also use <link> for styles
+
 const generateClassName = createGenerateClassName()
 
 export default function MyApp(props) {
@@ -22,6 +25,8 @@ export default function MyApp(props) {
   const nextRouter = useRouter()
 
   useEffect(() => {
+    AOS.init();
+
     const path = router.asPath
     const paramIndex = path.indexOf('#')
     if (paramIndex !== -1) {
