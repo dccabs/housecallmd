@@ -201,6 +201,10 @@ const Profile = () => {
                       field: 'last_name',
                     },
                     {
+                      title: 'Room Number',
+                      field: 'room_number',
+                    },
+                    {
                       title: 'Date of Birth',
                       field: 'date_of_birth',
                     },

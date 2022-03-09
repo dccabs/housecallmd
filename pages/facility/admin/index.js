@@ -74,15 +74,23 @@ function UserAdmin(props) {
               value={tabValue}
               onChange={(e, newValue) => setFacilityAdminTableTab(newValue)}
             >
-              <Tab label="Users" {...a11yProps(0)} wrap />
-              <Tab label="Centers" {...a11yProps(1)} />
+              <Tab label="Messages" {...a11yProps(0)} wrap />
+              <Tab label="Appointments" {...a11yProps(1)} />
+              <Tab label="Users" {...a11yProps(2)} wrap />
+              <Tab label="Centers" {...a11yProps(3)} />
             </Tabs>
           </Box>
 
           <TabPanel value={tabValue} index={0}>
+            Messages
+          </TabPanel>
+          <TabPanel value={tabValue} index={2}>
+            Appointments
+          </TabPanel>
+          <TabPanel value={tabValue} index={2}>
             <Users user={user} />
           </TabPanel>
-          <TabPanel value={tabValue} index={1}>
+          <TabPanel value={tabValue} index={3}>
             <Centers user={user} />
           </TabPanel>
         </>
