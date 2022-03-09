@@ -333,17 +333,22 @@ const UserDetailsPage = () => {
                 onClick={() => router.back()}
                 className="link">Go Back</div>
             </Box>
-            <Box display="flex" alignItems="end">
-              <Typography variant="h2" className={classes.h2}>
-                {userName}
-              </Typography>
+            <Box>
+              <div>
+                <Typography variant="h2" className={classes.h2}>
+                  Edit Patient
+                </Typography>
+              </div>
+              {/*<Typography variant="h3" className={classes.h3}>*/}
+              {/*  {userName}*/}
+              {/*</Typography>*/}
             </Box>
 
-            <Typography className={classes.facilityLink} variant="h6">
-              <Link href={`/facility/admin/facility-details/${facilityId}`}>
-                <a>Member of {facilityName}</a>
-              </Link>
-            </Typography>
+            {/*<Typography className={classes.facilityLink} variant="h6">*/}
+            {/*  <Link href={`/facility/admin/facility-details/${facilityId}`}>*/}
+            {/*    <a>Member of {facilityName}</a>*/}
+            {/*  </Link>*/}
+            {/*</Typography>*/}
           </Box>
 
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
