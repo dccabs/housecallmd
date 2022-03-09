@@ -80,17 +80,6 @@ const FacilityDetails = ({ facility }) => {
           )}
         </Table>
       </Container>
-      <Box style={{padding:30}}>
-        <MaterialTable
-          title="Facility Accounts"
-          columns={tableCols}
-          data={facility?.patients}
-          onRowClick={(event, rowData) => {
-            const id = rowData.id;
-            router.push(`/facility/admin/user-details/${id}`)
-          }}
-        />
-      </Box>
     </>
   )
 }
