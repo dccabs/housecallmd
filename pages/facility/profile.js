@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from '../../components/SnackBar'
 import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
-import Link from 'next/link'
+import AppointmentTable from '../../components/AppointmentTable'
 import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
@@ -218,47 +218,7 @@ const Profile = () => {
               Messages
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <MaterialTable
-                title="Patients"
-                columns={[
-                  {
-                    title: 'First Name',
-                    field: 'firstName',
-                  },
-                  {
-                    title: 'Last Name',
-                    field: 'lastName',
-                  },
-                  {
-                    title: 'Visit Choice',
-                    field: 'visitChoice',
-                  },
-                  {
-                    title: 'Visit Reason',
-                    field: 'visitReason',
-                  },
-
-                  {
-                    title: 'Note',
-                    field: 'note',
-                  },
-                  {
-                    title: 'Date/Time',
-                    field: 'time',
-                  },
-                ]}
-                data={appointments}
-                options={{
-                  paginationType: 'stepped',
-                  selection: true,
-                  pageSize: 50,
-                  pageSizeOptions: [50, 100, 200],
-                }}
-                // onRowClick={(event, rowData) => {
-                //   const { id } = rowData
-                //   router.push(`/facility/patient/${id}`)
-                // }}
-              />
+              <AppointmentTable appointments={appointments} />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               <MaterialTable
