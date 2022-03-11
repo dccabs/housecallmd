@@ -15,6 +15,7 @@ import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
 import AppointmentTable from '../../components/AppointmentTable'
 import { useRouter } from 'next/router'
+import xhrHeader from '../../constants/xhrHeader'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -77,10 +78,8 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       fetchProfileInformation()
-    }
-    if (appointments) {
       fetchFacilityAppointments().then((data) => {
-        const patients = state.patients
+        const { patients } = state
         if (patients) {
           data.forEach((appointment) => {
             const patient = patients.filter(
@@ -94,8 +93,10 @@ const Profile = () => {
           })
         }
       })
-      setAppointments(appointmentsWithPatientName)
     }
+
+    setAppointments(appointmentsWithPatientName)
+    console.log('appointments', appointments)
   }, [user])
 
   const a11yProps = (index) => {
@@ -114,9 +115,7 @@ const Profile = () => {
     const getFacilityAppointments = await fetch(
       '/api/getFacilityAppointments',
       {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
+        ...xhrHeader,
         body: JSON.stringify(payload),
       }
     )

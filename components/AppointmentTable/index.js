@@ -1,7 +1,7 @@
 import MaterialTable from 'material-table'
 
 function AppointmentTable({ appointments }) {
-  console.log('appointments', appointments)
+  console.log('AppointmentTable', appointments)
   return (
     <MaterialTable
       title="Appointments"
