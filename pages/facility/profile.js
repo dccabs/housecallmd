@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from '../../components/SnackBar'
 import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
-import Link from 'next/link'
+import Link from 'next/link';
 import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
@@ -64,37 +64,20 @@ const TabPanel = (props) => {
   )
 }
 
+
 const Profile = () => {
   const router = useRouter()
   const classes = useStyles()
-  const [state, setState] = useState({})
+  const [state, setState] = useState({});
   const [loading, setLoading] = useState(true)
-  const [tabValue, setTabValue] = useState(0)
-  const [appointments, setAppointments] = useState([])
+  const [tabValue, setTabValue] = useState(0);
 
   const { user } = Auth.useUser()
-  const appointmentsWithPatientName = []
+
+
   useEffect(() => {
     if (user) {
-      fetchProfileInformation()
-    }
-    if (appointments) {
-      fetchFacilityAppointments().then((data) => {
-        const patients = state.patients
-        if (patients) {
-          data.forEach((appointment) => {
-            const patient = patients.filter(
-              (patient) => patient.id === appointment.userId
-            )
-            const obj = {
-              firstName: patient[0].first_name,
-              lastName: patient[0].last_name,
-            }
-            appointmentsWithPatientName.push({ ...appointment, ...obj })
-          })
-        }
-      })
-      setAppointments(appointmentsWithPatientName)
+      fetchProfileInformation();
     }
   }, [user])
 
@@ -107,22 +90,6 @@ const Profile = () => {
 
   const openSnackBar = useContext(SnackBarContext)
 
-  const fetchFacilityAppointments = async () => {
-    const payload = {
-      user,
-    }
-    const getFacilityAppointments = await fetch(
-      '/api/getFacilityAppointments',
-      {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify(payload),
-      }
-    )
-    return await getFacilityAppointments.json()
-  }
-
   const fetchProfileInformation = () => {
     const payload = {
       id: user.id,
@@ -132,20 +99,19 @@ const Profile = () => {
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
       body: JSON.stringify(payload),
+    }).then((res) => res.json())
+     .then((data) => {
+      if (data) {
+        setState({...data})
+        setLoading(false)
+      } else {
+        openSnackBar({
+          message: 'There was an error.  Please try again later',
+          error: 'error',
+        })
+        setLoading(false)
+      }
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) {
-          setState({ ...data })
-          setLoading(false)
-        } else {
-          openSnackBar({
-            message: 'There was an error.  Please try again later',
-            error: 'error',
-          })
-          setLoading(false)
-        }
-      })
   }
 
   return (
@@ -162,141 +128,114 @@ const Profile = () => {
           url: `https://www.housecallmd.org/facility/profile`,
         }}
       />
-      {loading && (
-        <Box
-          my="8em"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <CircularProgress />
-        </Box>
-      )}
-      {!loading && (
+      {loading &&
+      <Box
+        my="8em"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <CircularProgress />
+      </Box>
+      }
+      {!loading &&
         <>
           <Container>
             <Box>
               <Typography variant="h2" className={classes.h2}>
                 {state.name}
               </Typography>
-              <div style={{ marginTop: '1em' }}>{state.address}</div>
+              <div style={{marginTop: '1em'}}>
+                {state.address}
+              </div>
               <div>
                 {state.city}, {state.state} {state.zip}
               </div>
-              <div>Primary Contact: {state.primary_contact_name}</div>
-              <div>Phone: {state.facility_phone}</div>
+              <div>
+                Primary Contact: {state.primary_contact_name}
+              </div>
+              <div>
+                Phone: {state.facility_phone}
+              </div>
 
-              <div style={{ margin: '2em 0' }}>
+              <div style={{margin: '2em 0'}}>
                 <Button
                   onClick={() => router.push('add-patient')}
                   color="primary"
                   variant="contained"
-                >
-                  Add New Resident
-                </Button>
+                >Add New Resident</Button>
                 <Button
-                  style={{ marginLeft: 20 }}
+                  style={{marginLeft: 20}}
                   onClick={() => router.push('add-patient')}
                   color="primary"
                   variant="contained"
-                >
-                  Create New Appointment
-                </Button>
+                >Create New Appointment</Button>
               </div>
             </Box>
           </Container>
-          <Box style={{ padding: '0 10px' }}>
+          <Box style={{padding: '0 10px'}}>
             <Tabs
               value={tabValue}
               onChange={(e, newValue) => setTabValue(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Appointments" {...a11yProps(1)} onClick={() => {}} />
-              <Tab label="Residents" {...a11yProps(2)} />
+              <Tab label="Appointments" {...a11yProps(1)}  />
+              <Tab label="Residents" {...a11yProps(2)}  />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
               Messages
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <MaterialTable
-                title="Patients"
-                columns={[
-                  {
-                    title: 'First Name',
-                    field: 'firstName',
-                  },
-                  {
-                    title: 'Last Name',
-                    field: 'lastName',
-                  },
-                  {
-                    title: 'Visit Choice',
-                    field: 'visitChoice',
-                  },
-                  {
-                    title: 'Visit Reason',
-                    field: 'visitReason',
-                  },
-
-                  {
-                    title: 'Note',
-                    field: 'note',
-                  },
-                  {
-                    title: 'Date/Time',
-                    field: 'time',
-                  },
-                ]}
-                data={appointments}
-                options={{
-                  paginationType: 'stepped',
-                  selection: true,
-                  pageSize: 50,
-                  pageSizeOptions: [50, 100, 200],
-                }}
-                // onRowClick={(event, rowData) => {
-                //   const { id } = rowData
-                //   router.push(`/facility/patient/${id}`)
-                // }}
-              />
+              Appointments
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
-              <MaterialTable
-                title="Patients"
-                columns={[
-                  {
-                    title: 'First Name',
-                    field: 'first_name',
-                  },
-                  {
-                    title: 'Last Name',
-                    field: 'last_name',
-                  },
-                  {
-                    title: 'Room Number',
-                    field: 'room_number',
-                  },
-                  {
-                    title: 'Date of Birth',
-                    field: 'date_of_birth',
-                  },
-                ]}
-                data={state.patients}
-                options={{
-                  paginationType: 'stepped',
-                  selection: true,
-                  pageSize: 50,
-                  pageSizeOptions: [50, 100, 200],
-                }}
-                onRowClick={(event, rowData) => {
-                  const { id } = rowData
-                  router.push(`/facility/patient/${id}`)
-                }}
-              />
+                <MaterialTable
+                  title="Patients"
+                  columns={[
+                    {
+                      title: 'First Name',
+                      field: 'first_name',
+                    },
+                    {
+                      title: 'Last Name',
+                      field: 'last_name',
+                    },
+                    {
+                      title: 'Room Number',
+                      field: 'room_number',
+                    },
+                    {
+                      title: 'Date of Birth',
+                      field: 'date_of_birth',
+                    },
+                  ]}
+                  data={state.patients}
+                  options={{
+                    paginationType: 'stepped',
+                    selection: true,
+                    pageSize: 50,
+                    pageSizeOptions: [50, 100, 200],
+                  }}
+                  onRowClick={(event, rowData) => {
+                    const { id } = rowData;
+                    router.push(`/facility/patient/${id}`)
+                  }}
+                  // actions={[
+                  //   {
+                  //     tooltip: 'Remove All Selected Users',
+                  //     icon: 'delete',
+                  //     onClick: (event, data) => {
+                  //       setRowsToDelete(data)
+                  //       setOpenDialog(true)
+                  //     },
+                  //   },
+                  // ]}
+                  //onRowClick={(event, rowData) => rowSelected(rowData)}
+                />
             </TabPanel>
           </Box>
         </>
-      )}
+      }
     </>
   )
 }
