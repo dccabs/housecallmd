@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
+import useStore from '../../../../zustand/store'
 import {
   Typography,
   Box,
@@ -93,6 +94,7 @@ const UserDetailsPage = () => {
   const [loading, setLoading] = useState(false)
   const [tabValue, setTabValue] = useState(0)
   const [appointments, setAppointments] = useState([])
+  const { userDetailsTableTab, setUserDetailsTableTab } = useStore()
   const [formData, setFormData] = useState({
     id: {
       type: null,
@@ -208,6 +210,10 @@ const UserDetailsPage = () => {
   const { user } = Auth.useUser()
   const router = useRouter()
   const { id: userId } = router.query
+
+  useEffect(() => {
+    setTabValue(userDetailsTableTab)
+  }, [userDetailsTableTab])
 
   useEffect(() => {
     let currentData = {}
@@ -405,7 +411,7 @@ const UserDetailsPage = () => {
           <Box style={{ marginTop: 40 }}>
             <Tabs
               value={tabValue}
-              onChange={(e, newValue) => setTabValue(newValue)}
+              onChange={(e, newValue) => setUserDetailsTableTab(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
               <Tab label="Appointments" {...a11yProps(1)} />

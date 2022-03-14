@@ -9,6 +9,7 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 import Container from '../components/Container'
@@ -17,7 +18,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { supabase } from '../utils/initSupabase'
 import { useRouter } from 'next/router'
-import validateEmail from '../utils/validateEmail';
+import validateEmail from '../utils/validateEmail'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -58,6 +59,7 @@ const login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
+  const [loading, setLoading] = useState(false)
   const classes = useStyles()
   const router = useRouter()
 
@@ -86,27 +88,31 @@ const login = () => {
             .then((response) => {
               response.error
                 ? openSnackBar({
-                  message: response.error.message,
-                  snackSeverity: 'error',
-                })
+                    message: response.error.message,
+                    snackSeverity: 'error',
+                  })
                 : setToken(response)
+              setLoading(false)
             })
             .catch((err) => {
               openSnackBar({ message: err, snackSeverity: 'error' })
+              setLoading(false)
             })
         }
       })
       .catch((error) => {
         openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        setLoading(false)
       })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const isValidEmail = validateEmail(localEmail);
+    setLoading(true)
+    const isValidEmail = validateEmail(localEmail)
     if (!isValidEmail) {
-      handleUserNameSubmit();
-      return false;
+      handleUserNameSubmit()
+      return false
     }
     const payload = {
       email: localEmail,
@@ -121,9 +127,11 @@ const login = () => {
               snackSeverity: 'error',
             })
           : setToken(response)
+        setLoading(false)
       })
       .catch((err) => {
         openSnackBar({ message: err.response.text, snackSeverity: 'error' })
+        setLoading(false)
       })
   }
 
@@ -175,6 +183,7 @@ const login = () => {
               color="secondary"
               required
               onChange={handleEmailUpdate}
+              disabled={loading ? loading : false}
             />
             <FormControl className={classes.textFields} variant="outlined">
               <InputLabel
@@ -193,6 +202,7 @@ const login = () => {
                 color="secondary"
                 required
                 onChange={handlePasswordUpdate}
+                disabled={loading ? loading : false}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton onClick={handlePasswordClick} edge="end">
@@ -234,7 +244,10 @@ const login = () => {
                 variant="contained"
                 size="large"
               >
-                Login
+                Login{' '}
+                {loading && (
+                  <CircularProgress color="text-white" size="1.3em" />
+                )}
               </Button>
             </Box>
           </Box>

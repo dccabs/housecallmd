@@ -94,8 +94,6 @@ function UserAdmin(props) {
     setTabValue(facilityAdminTableTab)
   }, [facilityAdminTableTab])
 
-  console.log(appointments)
-
   return (
     <>
       {authorized && (

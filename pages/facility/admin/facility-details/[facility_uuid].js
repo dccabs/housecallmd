@@ -2,13 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { NextSeo } from 'next-seo'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
-import {
-  Typography,
-  Box,
-  CircularProgress,
-  Tabs,
-  Tab,
-} from '@material-ui/core'
+import useStore from '../../../../zustand/store'
+import { Typography, Box, CircularProgress, Tabs, Tab } from '@material-ui/core'
 import xhrHeader from '../../../../constants/xhrHeader'
 import Container from '../../../../components/Container'
 import FacilityDetails from '../../../../components/FacilityDetails'
@@ -39,7 +34,8 @@ const FacilityDetailsPage = () => {
   const [facility, setFacility] = useState()
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0)
+  const { facilityDetailsTableTab, setFacilityDetailsTableTab } = useStore()
 
   const router = useRouter()
 
@@ -49,6 +45,10 @@ const FacilityDetailsPage = () => {
       'aria-controls': `simple-tabpanel-${index}`,
     }
   }
+
+  useEffect(() => {
+    setTabValue(facilityDetailsTableTab)
+  }, [facilityDetailsTableTab])
 
   useEffect(async () => {
     if (!facility) {
@@ -108,14 +108,14 @@ const FacilityDetailsPage = () => {
               <FacilityDetails facility={facility} />
             </>
           )}
-          <Box style={{padding:10}}>
+          <Box style={{ padding: 10 }}>
             <Tabs
               value={tabValue}
-              onChange={(e, newValue) => setTabValue(newValue)}
+              onChange={(e, newValue) => setFacilityDetailsTableTab(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Appointments" {...a11yProps(1)}  />
-              <Tab label="Residents" {...a11yProps(2)}  />
+              <Tab label="Appointments" {...a11yProps(1)} />
+              <Tab label="Residents" {...a11yProps(2)} />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
               Messages
@@ -129,7 +129,7 @@ const FacilityDetailsPage = () => {
                 columns={tableCols}
                 data={facility?.patients}
                 onRowClick={(event, rowData) => {
-                  const id = rowData.id;
+                  const id = rowData.id
                   router.push(`/facility/admin/user-details/${id}`)
                 }}
               />

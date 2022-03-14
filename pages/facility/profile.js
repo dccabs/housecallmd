@@ -16,6 +16,8 @@ import MaterialTable from 'material-table'
 import AppointmentTable from '../../components/AppointmentTable'
 import { useRouter } from 'next/router'
 import xhrHeader from '../../constants/xhrHeader'
+import { useRouter } from 'next/router'
+import useStore from '../../zustand/store'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -71,11 +73,11 @@ const Profile = () => {
   const [state, setState] = useState({})
   const [loading, setLoading] = useState(true)
   const [tabValue, setTabValue] = useState(0)
-
   const { user } = Auth.useUser()
 
   useEffect(() => {
     if (user) {
+      fetchProfileInformation();
       fetchProfileInformation()
       fetchFacilityAppointments().then((data) => {
         const { patients } = state
@@ -93,9 +95,14 @@ const Profile = () => {
         }
       })
     }
-
     setAppointments(appointmentsWithPatientName)
   }, [user])
+
+  const { facilityProfileTableTab, setFacilityProfileTableTab } = useStore()
+
+  useEffect(() => {
+    setTabValue(facilityProfileTableTab)
+  }, [facilityProfileTableTab])
 
   const a11yProps = (index) => {
     return {
@@ -205,7 +212,7 @@ const Profile = () => {
           <Box style={{ padding: '0 10px' }}>
             <Tabs
               value={tabValue}
-              onChange={(e, newValue) => setTabValue(newValue)}
+              onChange={(e, newValue) => setFacilityProfileTableTab(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
               <Tab label="Appointments" {...a11yProps(1)} />

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { NextSeo } from 'next-seo'
+import useStore from '../../../zustand/store'
 import {
   Typography,
   Box,
@@ -22,6 +23,8 @@ import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import xhrHeader from '../../../constants/xhrHeader'
+import MaterialTable from 'material-table'
+import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -83,6 +86,7 @@ const Patient = () => {
   const [message, setMessage] = useState('')
   const [messageLoading, setMessageLoading] = useState(false)
   const [appointments, setAppointments] = useState([])
+  const { facilityPatientTableTab, setFacilityPatientTableTab } = useStore()
 
   const openSnackBar = useContext(SnackBarContext)
 
@@ -90,6 +94,7 @@ const Patient = () => {
 
   const patientId = router.query.id
   const appointmentsWithPatientName = []
+
   const a11yProps = (index) => {
     return {
       id: `simple-tab-${index}`,
@@ -98,7 +103,12 @@ const Patient = () => {
   }
 
   useEffect(() => {
+    setTabValue(facilityPatientTableTab)
+  }, [facilityPatientTableTab])
+
+  useEffect(() => {
     if (patientId) {
+      fetchPatientInformation();
       fetchPatientInformation()
       if (state) {
         fetchFacilityAppointments().then((appointments) => {
@@ -293,7 +303,7 @@ const Patient = () => {
             <Box style={{ marginTop: 40 }}>
               <Tabs
                 value={tabValue}
-                onChange={(e, newValue) => setTabValue(newValue)}
+                onChange={(e, newValue) => setFacilityPatientTableTab(newValue)}
               >
                 <Tab label="Messages" {...a11yProps(0)} />
                 <Tab label="Appointments" {...a11yProps(1)} />
