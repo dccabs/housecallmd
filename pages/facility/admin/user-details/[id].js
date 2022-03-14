@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
+import useStore from '../../../../zustand/store'
 import {
   Typography,
   Box,
@@ -89,7 +90,8 @@ const UserDetailsPage = () => {
   const [facilityId, setFacilityId] = useState('')
   const [facilityName, setFacilityName] = useState('')
   const [loading, setLoading] = useState(false)
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0)
+  const { userDetailsTableTab, setUserDetailsTableTab } = useStore()
   const [formData, setFormData] = useState({
     id: {
       type: null,
@@ -205,6 +207,10 @@ const UserDetailsPage = () => {
   const { user } = Auth.useUser()
   const router = useRouter()
   const { id: userId } = router.query
+
+  useEffect(() => {
+    setTabValue(userDetailsTableTab)
+  }, [userDetailsTableTab])
 
   useEffect(() => {
     let currentData = {}
@@ -367,7 +373,7 @@ const UserDetailsPage = () => {
                 <IconButton
                   component="span"
                   onClick={() => {
-                    setTabValue(2);
+                    setTabValue(2)
                     setEditable(true)
                   }}
                 >
@@ -383,14 +389,14 @@ const UserDetailsPage = () => {
             </Typography>
           </Box>
 
-          <Box style={{marginTop: 40}}>
+          <Box style={{ marginTop: 40 }}>
             <Tabs
               value={tabValue}
-              onChange={(e, newValue) => setTabValue(newValue)}
+              onChange={(e, newValue) => setUserDetailsTableTab(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Appointments" {...a11yProps(1)}  />
-              <Tab label="Patient INformation" {...a11yProps(2)}  />
+              <Tab label="Appointments" {...a11yProps(1)} />
+              <Tab label="Patient INformation" {...a11yProps(2)} />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -496,7 +502,10 @@ const UserDetailsPage = () => {
                               onChange={(e, value) =>
                                 handleUpdate({ val: value, objKey: key })
                               }
-                              InputProps={{ ...params.InputProps, type: 'search' }}
+                              InputProps={{
+                                ...params.InputProps,
+                                type: 'search',
+                              }}
                             />
                           )}
                           disabled={!editable}
@@ -504,7 +513,10 @@ const UserDetailsPage = () => {
                       )
                     } else if (field.type === 'fileUpload') {
                       return (
-                        <div style={{ width: '100%', maxWidth: '34rem' }} key={key}>
+                        <div
+                          style={{ width: '100%', maxWidth: '34rem' }}
+                          key={key}
+                        >
                           <Box
                             display="flex"
                             flexDirection="column"
