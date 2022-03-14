@@ -4,7 +4,6 @@ import useStore from '../../../zustand/store'
 import {
   Typography,
   Box,
-  Flex,
   CircularProgress,
   Button,
   Tabs,
@@ -19,11 +18,13 @@ import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from 'components/SnackBar'
 import EditIcon from '@material-ui/icons/Edit'
 import { Auth } from '@supabase/ui'
-import MaterialTable from 'material-table'
-import Link from 'next/link'
+import AppointmentTable from '../../../components/AppointmentTable'
 import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
 import RefreshIcon from '@material-ui/icons/Refresh'
+import xhrHeader from '../../../constants/xhrHeader'
+import MaterialTable from 'material-table'
+import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -84,6 +85,7 @@ const Patient = () => {
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [messageLoading, setMessageLoading] = useState(false)
+  const [appointments, setAppointments] = useState([])
   const { facilityPatientTableTab, setFacilityPatientTableTab } = useStore()
 
   const openSnackBar = useContext(SnackBarContext)
@@ -91,6 +93,7 @@ const Patient = () => {
   const { user } = Auth.useUser()
 
   const patientId = router.query.id
+  const appointmentsWithPatientName = []
 
   const a11yProps = (index) => {
     return {
@@ -105,7 +108,17 @@ const Patient = () => {
 
   useEffect(() => {
     if (patientId) {
+      fetchPatientInformation();
       fetchPatientInformation()
+      if (state) {
+        fetchFacilityAppointments().then((appointments) => {
+          const nameObj = {
+            firstName: state.first_name,
+            lastName: state.last_name,
+          }
+          setAppointments({ ...nameObj, ...appointments[0] })
+        })
+      }
     }
     setTimeout(() => {
       // requestTimer();
@@ -136,9 +149,7 @@ const Patient = () => {
     }
 
     fetch('/api/getFacilityPatientById', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
+      ...xhrHeader,
       body: JSON.stringify(payload),
     })
       .then((res) => res.json())
@@ -156,6 +167,21 @@ const Patient = () => {
       })
   }
 
+  const fetchFacilityAppointments = async () => {
+    const payload = {
+      patientId,
+      user,
+    }
+    const getFacilityAppointments = await fetch(
+      '/api/getFacilityAppointments',
+      {
+        ...xhrHeader,
+        body: JSON.stringify(payload),
+      }
+    )
+    return await getFacilityAppointments.json()
+  }
+
   const getPatientMessages = () => {
     const payload = {
       // facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
@@ -165,9 +191,7 @@ const Patient = () => {
     setMessagesLoading(true)
 
     fetch('/api/getAllFacilityMessages', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
+      ...xhrHeader,
       body: JSON.stringify(payload),
     })
       .then((res) => res.json())
@@ -317,7 +341,7 @@ const Patient = () => {
                 </Box>
               </TabPanel>
               <TabPanel value={tabValue} index={1}>
-                Appointments
+                <AppointmentTable appointments={[appointments]} />
               </TabPanel>
             </Box>
           </Container>

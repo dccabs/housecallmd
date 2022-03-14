@@ -13,7 +13,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from '../../components/SnackBar'
 import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
-import Link from 'next/link'
+import AppointmentTable from '../../components/AppointmentTable'
+import xhrHeader from '../../constants/xhrHeader'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
 
@@ -71,19 +72,36 @@ const Profile = () => {
   const [state, setState] = useState({})
   const [loading, setLoading] = useState(true)
   const [tabValue, setTabValue] = useState(0)
-  const { facilityProfileTableTab, setFacilityProfileTableTab } = useStore()
-
   const { user } = Auth.useUser()
+
+  useEffect(() => {
+    if (user) {
+      fetchProfileInformation();
+      fetchProfileInformation()
+      fetchFacilityAppointments().then((data) => {
+        const { patients } = state
+        if (patients) {
+          data.forEach((appointment) => {
+            const patient = patients.filter(
+              (patient) => patient.id === appointment.userId
+            )
+            const obj = {
+              firstName: patient[0].first_name,
+              lastName: patient[0].last_name,
+            }
+            appointmentsWithPatientName.push({ ...appointment, ...obj })
+          })
+        }
+      })
+    }
+    setAppointments(appointmentsWithPatientName)
+  }, [user])
+
+  const { facilityProfileTableTab, setFacilityProfileTableTab } = useStore()
 
   useEffect(() => {
     setTabValue(facilityProfileTableTab)
   }, [facilityProfileTableTab])
-
-  useEffect(() => {
-    if (user) {
-      fetchProfileInformation()
-    }
-  }, [user])
 
   const a11yProps = (index) => {
     return {
@@ -93,6 +111,20 @@ const Profile = () => {
   }
 
   const openSnackBar = useContext(SnackBarContext)
+
+  const fetchFacilityAppointments = async () => {
+    const payload = {
+      user,
+    }
+    const getFacilityAppointments = await fetch(
+      '/api/getFacilityAppointments',
+      {
+        ...xhrHeader,
+        body: JSON.stringify(payload),
+      }
+    )
+    return await getFacilityAppointments.json()
+  }
 
   const fetchProfileInformation = () => {
     const payload = {
@@ -189,7 +221,7 @@ const Profile = () => {
               Messages
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              Appointments
+              <AppointmentTable appointments={appointments} />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               <MaterialTable

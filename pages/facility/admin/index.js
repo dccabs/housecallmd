@@ -6,6 +6,8 @@ import { SnackBarContext } from '../../../components/SnackBar'
 import useStore from '../../../zustand/store'
 import Users from '../../../components/Facility/Users'
 import Centers from '../../../components/Facility/Centers'
+import AppointmentTable from '../../../components/AppointmentTable'
+import xhrHeader from '../../../constants/xhrHeader'
 
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
@@ -34,13 +36,40 @@ function TabPanel(props) {
 
 function UserAdmin(props) {
   const [authorized, setAuthorized] = useState(false)
-  const [tabValue, setTabValue] = useState(0)
+  const [tabValue, setTabValue] = useState(1)
+  const [appointments, setAppointments] = useState([])
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
   const { facilityAdminTableTab, setFacilityAdminTableTab } = useStore()
 
   useEffect(async () => {
     if (user) {
+      const getAllAppointments = await fetch('/api/getFacilityAppointments', {
+        ...xhrHeader,
+        body: JSON.stringify({ user }),
+      })
+
+      const getAllFacilityPatients = await fetch(
+        '/api/getAllFacilityPatients',
+        {
+          ...xhrHeader,
+          body: JSON.stringify({ user }),
+        }
+      )
+
+      const appointmentData = await getAllAppointments.json()
+      const patientData = await getAllFacilityPatients.json()
+
+      appointmentData.map((appointment) => {
+        const user = patientData.filter(
+          (patient) => patient.id === appointment.userId
+        )
+        appointment.firstName = user[0].first_name
+        appointment.lastName = user[0].last_name
+      })
+
+      setAppointments(appointmentData)
+
       fetch('/api/getSingleUser', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -85,7 +114,7 @@ function UserAdmin(props) {
             Messages
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
-            Appointments
+            <AppointmentTable appointments={appointments} />
           </TabPanel>
           <TabPanel value={tabValue} index={2}>
             <Users user={user} />

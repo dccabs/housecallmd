@@ -32,6 +32,8 @@ import PhoneField from 'components/PhoneField'
 import providerOptions from 'public/constants/providerOptions'
 import { SnackBarContext } from 'components/SnackBar'
 import { v4 as uuidv4 } from 'uuid'
+import AppointmentTable from '../../../../components/AppointmentTable'
+import xhrHeader from '../../../../constants/xhrHeader'
 const NEXT_PUBLIC_SUPABASE_STORAGE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
 
@@ -91,6 +93,7 @@ const UserDetailsPage = () => {
   const [facilityName, setFacilityName] = useState('')
   const [loading, setLoading] = useState(false)
   const [tabValue, setTabValue] = useState(0)
+  const [appointments, setAppointments] = useState([])
   const { userDetailsTableTab, setUserDetailsTableTab } = useStore()
   const [formData, setFormData] = useState({
     id: {
@@ -218,9 +221,7 @@ const UserDetailsPage = () => {
     if (user && userId) {
       setLoading(true)
       fetch('/api/getFacilityPatientById', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
+        ...xhrHeader,
         body: JSON.stringify({ id: userId }),
       })
         .then((res) => res.json())
@@ -233,6 +234,13 @@ const UserDetailsPage = () => {
           })
 
           getFacility(res.facility_auth_id)
+          getPatientAppointments(user)
+            .then((data) => {
+              return data.filter((item) => item.userId.toString() === userId)
+            })
+            .then((data) => {
+              setAppointments(data)
+            })
 
           setFormData(currentData)
           setUserName(
@@ -241,6 +249,17 @@ const UserDetailsPage = () => {
         })
     }
   }, [user, userId])
+
+  const getPatientAppointments = async (user) => {
+    if (user) {
+      const getAppointments = await fetch('/api/getFacilityAppointments', {
+        ...xhrHeader,
+        body: JSON.stringify({ user }),
+      })
+      const data = await getAppointments.json()
+      return data
+    }
+  }
 
   const getFacility = (id) => {
     if (id) {
@@ -396,14 +415,14 @@ const UserDetailsPage = () => {
             >
               <Tab label="Messages" {...a11yProps(0)} />
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Patient INformation" {...a11yProps(2)} />
+              <Tab label="Patient Information" {...a11yProps(2)} />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
               Messages
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              Appointments
+              <AppointmentTable appointments={appointments} hideName />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               <form onSubmit={handleSubmit} style={{ width: '100%' }}>
