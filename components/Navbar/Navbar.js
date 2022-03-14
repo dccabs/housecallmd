@@ -95,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = () => {
   const classes = useStyles()
   const store = useStore()
+  const { setFacilityAdminTableTab } = useStore()
   const router = useRouter()
   const { user, session } = Auth.useUser()
   const openSnackBar = useContext(SnackBarContext)
@@ -188,6 +189,7 @@ const Navbar = () => {
                             color="primary"
                             variant="outlined"
                             size="small"
+                            onClick={() => setFacilityAdminTableTab(0)}
                           >
                             Assisted Living Admin
                           </Button>

@@ -26,6 +26,10 @@ const useStore = create(
     reason: '',
     insuranceOptOut: false,
     facilityAdminTableTab: 0,
+    userDetailsTableTab: 0,
+    facilityDetailsTableTab: 0,
+    facilityProfileTableTab: 0,
+    facilityPatientTableTab: 0,
     setPolicyHolderFirstName: (policyHolderFirstName) =>
       set({ policyHolderFirstName }),
     setPolicyHolderLastName: (policyHolderLastName) =>
@@ -53,6 +57,14 @@ const useStore = create(
     setInsuranceOptOut: (insuranceOptOut) => set({ insuranceOptOut }),
     setFacilityAdminTableTab: (facilityAdminTableTab) =>
       set({ facilityAdminTableTab }),
+    setUserDetailsTableTab: (userDetailsTableTab) =>
+      set({ userDetailsTableTab }),
+    setFacilityDetailsTableTab: (facilityDetailsTableTab) =>
+      set({ facilityDetailsTableTab }),
+    setFacilityProfileTableTab: (facilityProfileTableTab) =>
+      set({ facilityProfileTableTab }),
+    setFacilityPatientTableTab: (facilityPatientTableTab) =>
+      set({ facilityPatientTableTab }),
   }))
 )
 

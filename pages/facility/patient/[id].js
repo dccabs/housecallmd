@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { NextSeo } from 'next-seo'
+import useStore from '../../../zustand/store'
 import {
   Typography,
   Box,
@@ -7,7 +8,11 @@ import {
   CircularProgress,
   Button,
   Tabs,
-  Tab, IconButton, Tooltip, Modal, TextField
+  Tab,
+  IconButton,
+  Tooltip,
+  Modal,
+  TextField,
 } from '@material-ui/core'
 import Container from 'components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -15,10 +20,10 @@ import { SnackBarContext } from 'components/SnackBar'
 import EditIcon from '@material-ui/icons/Edit'
 import { Auth } from '@supabase/ui'
 import MaterialTable from 'material-table'
-import Link from 'next/link';
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from '@material-ui/icons/Refresh'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -68,25 +73,24 @@ const TabPanel = (props) => {
   )
 }
 
-
 const Patient = () => {
   const router = useRouter()
   const classes = useStyles()
-  const [state, setState] = useState({});
-  const [tabValue, setTabValue] = useState(0);
+  const [state, setState] = useState({})
+  const [tabValue, setTabValue] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([])
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
-  const [message, setMessage] = useState('');
-  const [messageLoading, setMessageLoading] = useState(false);
-
+  const [message, setMessage] = useState('')
+  const [messageLoading, setMessageLoading] = useState(false)
+  const { facilityPatientTableTab, setFacilityPatientTableTab } = useStore()
 
   const openSnackBar = useContext(SnackBarContext)
 
   const { user } = Auth.useUser()
 
-  const patientId = router.query.id;
+  const patientId = router.query.id
 
   const a11yProps = (index) => {
     return {
@@ -95,31 +99,34 @@ const Patient = () => {
     }
   }
 
+  useEffect(() => {
+    setTabValue(facilityPatientTableTab)
+  }, [facilityPatientTableTab])
 
   useEffect(() => {
     if (patientId) {
-      fetchPatientInformation();
+      fetchPatientInformation()
     }
     setTimeout(() => {
       // requestTimer();
     }, 1000)
   }, [patientId])
 
-  const requestTimer = (() => {
+  const requestTimer = () => {
     setTimeout(() => {
-      console.log('requestTimer');
-      getPatientMessages();
+      console.log('requestTimer')
+      getPatientMessages()
       openSnackBar({
         message: 'Fetching messages',
         // error: 'error',
       })
-      requestTimer();
+      requestTimer()
     }, 10000)
-  })
+  }
 
   useEffect(() => {
     if (tabValue === 0 && patientId) {
-      getPatientMessages();
+      getPatientMessages()
     }
   }, [tabValue, patientId])
 
@@ -133,10 +140,11 @@ const Patient = () => {
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
       body: JSON.stringify(payload),
-    }).then((res) => res.json())
+    })
+      .then((res) => res.json())
       .then((data) => {
         if (data) {
-          setState({...data})
+          setState({ ...data })
           setLoading(false)
         } else {
           openSnackBar({
@@ -161,7 +169,8 @@ const Patient = () => {
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
       body: JSON.stringify(payload),
-    }).then((res) => res.json())
+    })
+      .then((res) => res.json())
       .then((data) => {
         if (data) {
           setMessages(data)
@@ -185,23 +194,24 @@ const Patient = () => {
       message,
       viewed_by_recipient: false,
     }
-    setMessagesLoading(true);
+    setMessagesLoading(true)
 
     fetch('/api/addFacilityMessage', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
       body: JSON.stringify(payload),
-    }).then((res) => res.json())
+    })
+      .then((res) => res.json())
       .then((data) => {
-        setMessagesLoading(false);
+        setMessagesLoading(false)
         setMessageModalOpen(false)
         if (data) {
           openSnackBar({
             message: 'Message successfully sent',
             // error: 'error',
           })
-          getPatientMessages();
+          getPatientMessages()
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',
@@ -215,122 +225,122 @@ const Patient = () => {
 
   return (
     <>
-      {loading &&
-      <Box
-        my="8em"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <CircularProgress />
-      </Box>
-      }
-      {!loading &&
-      <>
-        <Container>
-          <Box>
+      {loading && (
+        <Box
+          my="8em"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress />
+        </Box>
+      )}
+      {!loading && (
+        <>
+          <Container>
             <Box>
-              <div
-                onClick={() => router.back()}
-                className="link">Go Back</div>
-            </Box>
-            <Typography variant="h2" className={classes.h2}>
-              {state.first_name} {state.last_name}
-              <Tooltip title="Edit Patient Details">
-                <IconButton
-                  component="span"
-                  onClick={() => router.push(`/facility/patient/edit-patient/${patientId}`)}
-                >
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            </Typography>
-          </Box>
-          {state.room_number &&
-            <Box>
-              Room Number: {state.room_number}
-            </Box>
-          }
-          <Box style={{display: 'flex', marginTop: 40}}>
-            <Box style={{marginRight: 20}}>
-              <Button variant="contained" color="secondary" size="large">
-                Request New Appointment
-              </Button>
-            </Box>
-            <Box>
-              <Button
-                onClick={() => setMessageModalOpen(true)}
-                variant="contained" color="secondary" size="large">
-                Send a Message About This Patient
-              </Button>
-            </Box>
-          </Box>
-          <Box style={{marginTop: 40}}>
-            <Tabs
-              value={tabValue}
-              onChange={(e, newValue) => setTabValue(newValue)}
-            >
-              <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Appointments" {...a11yProps(1)}  />
-            </Tabs>
-
-            <TabPanel value={tabValue} index={0}>
-              {messagesLoading &&
-              <Box
-                my="8em"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <CircularProgress />
+              <Box>
+                <div onClick={() => router.back()} className="link">
+                  Go Back
+                </div>
               </Box>
-              }
-              {!messagesLoading &&
-              <Box style={{marginBottom: '1em'}}>
-                <Tooltip title="Check for new messages">
+              <Typography variant="h2" className={classes.h2}>
+                {state.first_name} {state.last_name}
+                <Tooltip title="Edit Patient Details">
                   <IconButton
                     component="span"
-                    onClick={getPatientMessages}
+                    onClick={() =>
+                      router.push(`/facility/patient/edit-patient/${patientId}`)
+                    }
                   >
-                    <RefreshIcon />
+                    <EditIcon />
                   </IconButton>
                 </Tooltip>
+              </Typography>
+            </Box>
+            {state.room_number && <Box>Room Number: {state.room_number}</Box>}
+            <Box style={{ display: 'flex', marginTop: 40 }}>
+              <Box style={{ marginRight: 20 }}>
+                <Button variant="contained" color="secondary" size="large">
+                  Request New Appointment
+                </Button>
               </Box>
-              }
-              {messages.length === 0 && !messagesLoading &&
-                <div>
-                  No messages for this user
-                </div>
-              }
               <Box>
-                {messages.length > 0 && !messagesLoading && messages.map((entry, index) => {
-                  return (
-                    <Message entry={entry} index={index} />
-                  )
-                })}
+                <Button
+                  onClick={() => setMessageModalOpen(true)}
+                  variant="contained"
+                  color="secondary"
+                  size="large"
+                >
+                  Send a Message About This Patient
+                </Button>
               </Box>
-            </TabPanel>
-            <TabPanel value={tabValue} index={1}>
-              Appointments
-            </TabPanel>
-          </Box>
-        </Container>
-      </>
-      }
-      <Modal
-        open={messageModalOpen}
-        onClose={() => setMessageModalOpen(false)}
-      >
-        <Box style={{
-          backgroundColor: '#fff',
-          maxWidth: 700,
-          width: '90%',
-          margin: '10% auto',
-          padding: 40,
-          borderRadius: 10,
-        }}>
-          <Typography variant="h5" className={classes.h2} style={{marginBottom: '1em'}}>
-            Send a message to HouseCall MD about {state.first_name} {state.last_name}
+            </Box>
+            <Box style={{ marginTop: 40 }}>
+              <Tabs
+                value={tabValue}
+                onChange={(e, newValue) => setFacilityPatientTableTab(newValue)}
+              >
+                <Tab label="Messages" {...a11yProps(0)} />
+                <Tab label="Appointments" {...a11yProps(1)} />
+              </Tabs>
+
+              <TabPanel value={tabValue} index={0}>
+                {messagesLoading && (
+                  <Box
+                    my="8em"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <CircularProgress />
+                  </Box>
+                )}
+                {!messagesLoading && (
+                  <Box style={{ marginBottom: '1em' }}>
+                    <Tooltip title="Check for new messages">
+                      <IconButton component="span" onClick={getPatientMessages}>
+                        <RefreshIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+                {messages.length === 0 && !messagesLoading && (
+                  <div>No messages for this user</div>
+                )}
+                <Box>
+                  {messages.length > 0 &&
+                    !messagesLoading &&
+                    messages.map((entry, index) => {
+                      return <Message entry={entry} index={index} />
+                    })}
+                </Box>
+              </TabPanel>
+              <TabPanel value={tabValue} index={1}>
+                Appointments
+              </TabPanel>
+            </Box>
+          </Container>
+        </>
+      )}
+      <Modal open={messageModalOpen} onClose={() => setMessageModalOpen(false)}>
+        <Box
+          style={{
+            backgroundColor: '#fff',
+            maxWidth: 700,
+            width: '90%',
+            margin: '10% auto',
+            padding: 40,
+            borderRadius: 10,
+          }}
+        >
+          <Typography
+            variant="h5"
+            className={classes.h2}
+            style={{ marginBottom: '1em' }}
+          >
+            Send a message to HouseCall MD about {state.first_name}{' '}
+            {state.last_name}
           </Typography>
           <TextField
             placeholder="MultiLine with rows: 2 and rowsMax: 4"
@@ -345,68 +355,175 @@ const Patient = () => {
           <Button
             disabled={!message}
             onClick={sendMessage}
-            style={{marginTop: '1em'}} size="small" variant="contained" color="secondary">Send Message</Button>
-            {messagesLoading &&
-              <CircularProgress />
-            }
+            style={{ marginTop: '1em' }}
+            size="small"
+            variant="contained"
+            color="secondary"
+          >
+            Send Message
+          </Button>
+          {messagesLoading && <CircularProgress />}
         </Box>
       </Modal>
-    </>);
-        {/*    <div style={{marginTop: '1em'}}>*/}
-        {/*      {state.address}*/}
-        {/*    </div>*/}
-        {/*    <div>*/}
-        {/*      {state.city}, {state.state} {state.zip}*/}
-        {/*    </div>*/}
-        {/*    <div>*/}
-        {/*      Primary Contact: {state.primary_contact_name}*/}
-        {/*    </div>*/}
-        {/*    <div>*/}
-        {/*      Phone: {state.facility_phone}*/}
-        {/*    </div>*/}
+    </>
+  )
+  {
+    /*    <div style={{marginTop: '1em'}}>*/
+  }
+  {
+    /*      {state.address}*/
+  }
+  {
+    /*    </div>*/
+  }
+  {
+    /*    <div>*/
+  }
+  {
+    /*      {state.city}, {state.state} {state.zip}*/
+  }
+  {
+    /*    </div>*/
+  }
+  {
+    /*    <div>*/
+  }
+  {
+    /*      Primary Contact: {state.primary_contact_name}*/
+  }
+  {
+    /*    </div>*/
+  }
+  {
+    /*    <div>*/
+  }
+  {
+    /*      Phone: {state.facility_phone}*/
+  }
+  {
+    /*    </div>*/
+  }
 
-        {/*    <div style={{margin: '2em 0'}}>*/}
-        {/*      <Button*/}
-        {/*        onClick={() => router.push('add-patient')}*/}
-        {/*        color="primary"*/}
-        {/*        variant="contained"*/}
-        {/*      >Add New Patient</Button>*/}
-        {/*    </div>*/}
-        {/*  </Box>*/}
-        {/*</Container>*/}
-        {/*<Box style={{padding: '0 40px'}}>*/}
-        {/*  <MaterialTable*/}
-        {/*    title="Patients"*/}
-        {/*    columns={[*/}
-        {/*      {*/}
-        {/*        title: 'First Name',*/}
-        {/*        field: 'first_name',*/}
-        {/*      },*/}
-        {/*      {*/}
-        {/*        title: 'Last Name',*/}
-        {/*        field: 'last_name',*/}
-        {/*      },*/}
-        {/*      {*/}
-        {/*        title: 'Date of Birth',*/}
-        {/*        field: 'date_of_birth',*/}
-        {/*      },*/}
-        {/*    ]}*/}
-        {/*    data={state.patients}*/}
-        {/*    options={{*/}
-        {/*      paginationType: 'stepped',*/}
-        {/*      selection: true,*/}
-        {/*      pageSize: 50,*/}
-        {/*      pageSizeOptions: [50, 100, 200],*/}
-        {/*    }}*/}
-        {/*    onRowClick={(event, rowData) => {*/}
-        {/*      console.log('rowData', rowData)*/}
-        {/*      const { id } = rowData;*/}
-        {/*      router.push(`/facility/user/${id}`)*/}
-        {/*    }}*/}
-        {/*  />*/}
-    //   </>
-    //   }
-    // </>
+  {
+    /*    <div style={{margin: '2em 0'}}>*/
+  }
+  {
+    /*      <Button*/
+  }
+  {
+    /*        onClick={() => router.push('add-patient')}*/
+  }
+  {
+    /*        color="primary"*/
+  }
+  {
+    /*        variant="contained"*/
+  }
+  {
+    /*      >Add New Patient</Button>*/
+  }
+  {
+    /*    </div>*/
+  }
+  {
+    /*  </Box>*/
+  }
+  {
+    /*</Container>*/
+  }
+  {
+    /*<Box style={{padding: '0 40px'}}>*/
+  }
+  {
+    /*  <MaterialTable*/
+  }
+  {
+    /*    title="Patients"*/
+  }
+  {
+    /*    columns={[*/
+  }
+  {
+    /*      {*/
+  }
+  {
+    /*        title: 'First Name',*/
+  }
+  {
+    /*        field: 'first_name',*/
+  }
+  {
+    /*      },*/
+  }
+  {
+    /*      {*/
+  }
+  {
+    /*        title: 'Last Name',*/
+  }
+  {
+    /*        field: 'last_name',*/
+  }
+  {
+    /*      },*/
+  }
+  {
+    /*      {*/
+  }
+  {
+    /*        title: 'Date of Birth',*/
+  }
+  {
+    /*        field: 'date_of_birth',*/
+  }
+  {
+    /*      },*/
+  }
+  {
+    /*    ]}*/
+  }
+  {
+    /*    data={state.patients}*/
+  }
+  {
+    /*    options={{*/
+  }
+  {
+    /*      paginationType: 'stepped',*/
+  }
+  {
+    /*      selection: true,*/
+  }
+  {
+    /*      pageSize: 50,*/
+  }
+  {
+    /*      pageSizeOptions: [50, 100, 200],*/
+  }
+  {
+    /*    }}*/
+  }
+  {
+    /*    onRowClick={(event, rowData) => {*/
+  }
+  {
+    /*      console.log('rowData', rowData)*/
+  }
+  {
+    /*      const { id } = rowData;*/
+  }
+  {
+    /*      router.push(`/facility/user/${id}`)*/
+  }
+  {
+    /*    }}*/
+  }
+  {
+    /*  />*/
+  }
+  //   </>
+  //   }
+  // </>
 }
 
 export default Patient
