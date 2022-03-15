@@ -4,15 +4,17 @@ const genericCols = [
   {
     title: 'First Name',
     field: 'firstName',
+    render: (rowData) => rowData.facility_patients.first_name,
   },
   {
     title: 'Last Name',
     field: 'lastName',
+    render: (rowData) => rowData.facility_patients.last_name,
   },
-  {
-    title: 'Visit Choice',
-    field: 'visitChoice',
-  },
+  // {
+  //   title: 'Visit Choice',
+  //   field: 'visitChoice',
+  // },
   {
     title: 'Visit Reason',
     field: 'visitReason',

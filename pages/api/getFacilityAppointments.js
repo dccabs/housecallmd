@@ -14,7 +14,9 @@ const getFacilityAppointments = async (req, res) => {
   if (val === null) {
     let { data: patients, patientsError } = await supabase
       .from('facility_appointments')
-      .select('*')
+      .select(`*,
+    facility_patients (*),
+    facilities (*)`);
 
     if (patientsError) {
       console.error(patientsError.message)
@@ -25,7 +27,9 @@ const getFacilityAppointments = async (req, res) => {
   } else {
     let { data: patients, patientsError } = await supabase
       .from('facility_appointments')
-      .select('*')
+      .select(`*,
+    facility_patients (*),
+    facilities (*)`)
       .eq(col, val)
 
     if (patientsError) {
