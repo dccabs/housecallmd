@@ -73,33 +73,27 @@ const Profile = () => {
   const [loading, setLoading] = useState(true)
   const [tabValue, setTabValue] = useState(0)
   const [appointments, setAppointments] = useState([])
+  const [appointmentsLoading, setAppointmentsLoading] = useState(true)
   const { user } = Auth.useUser()
   const appointmentsWithPatientName = []
 
-  useEffect(() => {
+  useEffect(async () => {
     if (user) {
-      fetchProfileInformation();
-      fetchProfileInformation()
-      fetchFacilityAppointments().then((data) => {
-        const { patients } = state
-        if (patients) {
-          data.forEach((appointment) => {
-            const patient = patients.filter(
-              (patient) => patient.id === appointment.userId
-            )
-            const obj = {
-              firstName: patient[0].first_name,
-              lastName: patient[0].last_name,
-            }
-            appointmentsWithPatientName.push({ ...appointment, ...obj })
-          })
-        }
-      })
+      await fetchProfileInformation().then(() => {
+        setLoading(false);
+      });
     }
-    setAppointments(appointmentsWithPatientName)
   }, [user])
 
   const { facilityProfileTableTab, setFacilityProfileTableTab } = useStore()
+
+  useEffect(async () => {
+    if (tabValue === 1 && Object.keys(state).length !== 0) {
+      const data = await fetchFacilityAppointments();
+      setAppointments(data);
+      setAppointmentsLoading(false)
+    }
+  }, [tabValue, state])
 
   useEffect(() => {
     setTabValue(facilityProfileTableTab)
@@ -117,6 +111,7 @@ const Profile = () => {
   const fetchFacilityAppointments = async () => {
     const payload = {
       user,
+      facilityId: state.id,
     }
     const getFacilityAppointments = await fetch(
       '/api/getFacilityAppointments',
@@ -128,11 +123,12 @@ const Profile = () => {
     return await getFacilityAppointments.json()
   }
 
-  const fetchProfileInformation = () => {
+  const fetchProfileInformation = async () => {
     const payload = {
       id: user.id,
     }
-    fetch('/api/getFacilityById', {
+    let returnData = {};
+    await fetch('/api/getFacilityById', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
@@ -142,7 +138,7 @@ const Profile = () => {
       .then((data) => {
         if (data) {
           setState({ ...data })
-          setLoading(false)
+          returnData = {...data};
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',
@@ -151,6 +147,7 @@ const Profile = () => {
           setLoading(false)
         }
       })
+    return returnData;
   }
 
   return (
@@ -223,7 +220,11 @@ const Profile = () => {
               Messages
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <AppointmentTable appointments={appointments} />
+              {appointmentsLoading ?
+                <CircularProgress />
+                :
+                <AppointmentTable appointments={appointments} />
+              }
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               <MaterialTable
