@@ -6,7 +6,7 @@ import {
   CircularProgress,
   Button,
   Tabs,
-  Tab,
+  Tab, Tooltip, IconButton
 } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -17,6 +17,9 @@ import AppointmentTable from '../../components/AppointmentTable'
 import xhrHeader from '../../constants/xhrHeader'
 import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
+import Message from 'components/Facility/Message'
+import RefreshIcon from '@material-ui/icons/Refresh'
+
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -74,6 +77,9 @@ const Profile = () => {
   const [tabValue, setTabValue] = useState(0)
   const [appointments, setAppointments] = useState([])
   const [appointmentsLoading, setAppointmentsLoading] = useState(true)
+  const [messages, setMessages] = useState([])
+  const [messagesLoading, setMessagesLoading] = useState(true)
+
   const { user } = Auth.useUser()
   const appointmentsWithPatientName = []
 
@@ -93,6 +99,9 @@ const Profile = () => {
       setAppointments(data);
       setAppointmentsLoading(false)
     }
+    if (tabValue === 0 && user?.id) {
+      getFacilityMessages();
+    }
   }, [tabValue, state])
 
   useEffect(() => {
@@ -104,6 +113,32 @@ const Profile = () => {
       id: `simple-tab-${index}`,
       'aria-controls': `simple-tabpanel-${index}`,
     }
+  }
+
+  const getFacilityMessages = () => {
+    const payload = {
+      facilityId: user.id,
+    }
+
+    setMessagesLoading(true)
+
+    fetch('/api/getAllFacilityMessages', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setMessages(data)
+          setMessagesLoading(false)
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+          setMessagesLoading(false)
+        }
+      })
   }
 
   const openSnackBar = useContext(SnackBarContext)
@@ -217,11 +252,46 @@ const Profile = () => {
               <Tab label="Residents" {...a11yProps(2)} />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-              Messages
+              {messagesLoading && (
+                <Box
+                  my="8em"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+              {!messagesLoading && (
+                <Box style={{ marginBottom: '1em' }}>
+                  <Tooltip title="Check for new messages">
+                    <IconButton component="span" onClick={getFacilityMessages}>
+                      <RefreshIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              {messages.length === 0 && !messagesLoading && (
+                <div>No messages for this user</div>
+              )}
+              <Box>
+                {messages.length > 0 &&
+                !messagesLoading &&
+                messages.map((entry, index) => {
+                  return <Message entry={entry} index={index} />
+                })}
+              </Box>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               {appointmentsLoading ?
-                <CircularProgress />
+                <Box
+                  my="8em"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CircularProgress />
+                </Box>
                 :
                 <AppointmentTable appointments={appointments} />
               }
