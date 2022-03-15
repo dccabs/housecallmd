@@ -72,7 +72,9 @@ const Profile = () => {
   const [state, setState] = useState({})
   const [loading, setLoading] = useState(true)
   const [tabValue, setTabValue] = useState(0)
+  const [appointments, setAppointments] = useState([])
   const { user } = Auth.useUser()
+  const appointmentsWithPatientName = []
 
   useEffect(() => {
     if (user) {

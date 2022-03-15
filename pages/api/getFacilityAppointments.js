@@ -25,7 +25,11 @@ const getFacilityAppointments = async (req, res) => {
   } else {
     let { data: patients, patientsError } = await supabase
       .from('facility_appointments')
-      .select('*')
+      // .select('*')
+      // .eq(col, val)
+      .select(`*,
+    facility_patients (*),
+    facilities (*)`)
       .eq(col, val)
 
     if (patientsError) {
