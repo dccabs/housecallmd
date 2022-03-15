@@ -236,9 +236,6 @@ const UserDetailsPage = () => {
           getFacility(res.facility_auth_id)
           getPatientAppointments(user)
             .then((data) => {
-              return data.filter((item) => item.userId.toString() === userId)
-            })
-            .then((data) => {
               setAppointments(data)
             })
 
@@ -254,7 +251,7 @@ const UserDetailsPage = () => {
     if (user) {
       const getAppointments = await fetch('/api/getFacilityAppointments', {
         ...xhrHeader,
-        body: JSON.stringify({ user }),
+        body: JSON.stringify({ user, patientId: userId }),
       })
       const data = await getAppointments.json()
       return data

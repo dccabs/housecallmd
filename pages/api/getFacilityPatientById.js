@@ -11,7 +11,9 @@ const getFacilityPatientById = async (req, res) => {
 
   let { data: users, error } = await supabase
     .from('facility_patients')
-    .select('*')
+    .select(`*,
+      facility_info:facility_auth_id (*)
+    `)
     .eq('id', id)
 
   if (error) return res.status(401).json({ error: error.message })
