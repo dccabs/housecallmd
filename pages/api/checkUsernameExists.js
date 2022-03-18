@@ -11,7 +11,7 @@ const checkUsernameExists = async (req, res) => {
     .from('facilities')
     .select('*')
     .eq('user_name', username)
-  console.log(data)
+
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(data)
 }

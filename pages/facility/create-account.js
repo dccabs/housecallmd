@@ -89,6 +89,8 @@ const Contact = () => {
   const [localZip, setLocalZip] = useState('')
   const [localPrimaryContactName, setLocalPrimaryContactName] = useState('')
   const [localPrimaryContactShift, setLocalPrimaryContactShift] = useState('')
+  const [usernameAvailable, setUsernameAvailable] = useState(true)
+  const [usernameValid, setUsernameValid] = useState(true)
   const [
     localPrimaryContactMobilePhone,
     setLocalPrimaryContactMobilePhone,
@@ -140,20 +142,35 @@ const Contact = () => {
     setShowConfirmPassword(!showConfirmPassword)
   }
 
+  const checkUsernameHasSpecialCharacters = () => {
+    const specialChars = /[`!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~ ]/
+
+    const valid = specialChars.test(localUsername)
+
+    return !valid
+  }
+
   const checkUsername = async () => {
-    try {
-      const res = await fetch('/api/checkUsernameExists', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify({ username: localUsername }),
-      })
+    const valid = checkUsernameHasSpecialCharacters()
 
-      const data = await res.json()
+    if (!valid) setUsernameValid(false)
+    else {
+      setUsernameValid(true)
+      try {
+        const res = await fetch('/api/checkUsernameExists', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ username: localUsername }),
+        })
 
-      console.log(data)
-    } catch (err) {
-      console.log(err)
+        const data = await res.json()
+
+        if (!data.length) setUsernameAvailable(true)
+        else setUsernameAvailable(false)
+      } catch (err) {
+        throw Error(err)
+      }
     }
   }
 
@@ -231,7 +248,7 @@ const Contact = () => {
           ? formatPhoneNumberE164(localSecondaryContactMobilePhone)
           : '',
         secondary_contact_shift: localSecondaryContactShift,
-
+        user_name: localUsername,
         auth_id: response.data.user.id,
       }
       await addFacility(newFacility)
@@ -262,9 +279,16 @@ const Contact = () => {
                 label="Choose Username"
                 variant="outlined"
                 color="secondary"
-                helperText="Username must not have special characters."
+                helperText={
+                  !usernameAvailable
+                    ? 'Username already exists'
+                    : !usernameValid
+                    ? 'Username must not have special characters.'
+                    : ''
+                }
                 onBlur={checkUsername}
                 onChange={(e) => setLocalUsername(e.target.value)}
+                error={!usernameAvailable || !usernameValid}
                 required
                 fullWidth
               />
@@ -554,7 +578,9 @@ const Contact = () => {
                     !localZip ||
                     !localPrimaryContactName ||
                     !localPrimaryContactShift ||
-                    !localPrimaryContactMobilePhone
+                    !localPrimaryContactMobilePhone ||
+                    !usernameAvailable ||
+                    !usernameValid
                   }
                   type="submit"
                   color="secondary"
