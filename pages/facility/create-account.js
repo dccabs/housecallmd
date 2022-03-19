@@ -78,6 +78,7 @@ const Contact = () => {
   const [checked, setChecked] = useState(false)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [localUsername, setLocalUsername] = useState('')
   const [localEmail, setLocalEmail] = useState('')
   const [localId, setLocalId] = useState('')
   const [localFacilityPhone, setLocalFacilityPhone] = useState('')
@@ -88,6 +89,8 @@ const Contact = () => {
   const [localZip, setLocalZip] = useState('')
   const [localPrimaryContactName, setLocalPrimaryContactName] = useState('')
   const [localPrimaryContactShift, setLocalPrimaryContactShift] = useState('')
+  const [usernameAvailable, setUsernameAvailable] = useState(true)
+  const [usernameValid, setUsernameValid] = useState(true)
   const [
     localPrimaryContactMobilePhone,
     setLocalPrimaryContactMobilePhone,
@@ -139,15 +142,53 @@ const Contact = () => {
     setShowConfirmPassword(!showConfirmPassword)
   }
 
+  const checkUsernameHasSpecialCharacters = () => {
+    const specialChars = /[`!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~ ]/
+
+    const valid = specialChars.test(localUsername)
+
+    return !valid
+  }
+
+  const checkUsername = async () => {
+    const valid = checkUsernameHasSpecialCharacters()
+
+    if (!valid) setUsernameValid(false)
+    else {
+      setUsernameValid(true)
+      try {
+        const res = await fetch('/api/checkUsernameExists', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ username: localUsername }),
+        })
+
+        const data = await res.json()
+
+        if (!data.length) setUsernameAvailable(true)
+        else setUsernameAvailable(false)
+      } catch (err) {
+        throw Error(err)
+      }
+    }
+  }
+
   const loginUser = () => {
-    supabase.auth.signUp({ email: localEmail, password, user_metadata: {faciltiy: true} }).then((response) => {
-      response.error
-        ? openSnackBar({
-            message: response.error.message,
-            snackSeverity: 'error',
-          })
-        : setToken(response)
-    })
+    supabase.auth
+      .signUp({
+        email: localEmail,
+        password,
+        user_metadata: { faciltiy: true },
+      })
+      .then((response) => {
+        response.error
+          ? openSnackBar({
+              message: response.error.message,
+              snackSeverity: 'error',
+            })
+          : setToken(response)
+      })
   }
 
   const addFacility = async (newFacility) => {
@@ -180,7 +221,7 @@ const Contact = () => {
       return null
     } else {
       const { user, error } = await supabase.auth.update({
-        data: { facility: true }
+        data: { facility: true },
       })
       await setEmail(response.data.user.email)
       await setLocalEmail(response.data.user.email)
@@ -207,7 +248,7 @@ const Contact = () => {
           ? formatPhoneNumberE164(localSecondaryContactMobilePhone)
           : '',
         secondary_contact_shift: localSecondaryContactShift,
-
+        user_name: localUsername,
         auth_id: response.data.user.id,
       }
       await addFacility(newFacility)
@@ -221,15 +262,10 @@ const Contact = () => {
           Create a Facility Account
         </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <div
-            mt="1em"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Typography style={{margin: '2em 0 2em'}}>
-              Please enter your facility information below to create your account.
+          <div>
+            <Typography style={{ margin: '2em 0 2em' }}>
+              Please enter your facility information below to create your
+              account.
             </Typography>
             <Box
               display="flex"
@@ -238,7 +274,25 @@ const Contact = () => {
               justifyContent="center"
             >
               <TextField
+                className={classes.textFields}
+                type="text"
+                label="Choose Username"
+                variant="outlined"
+                color="secondary"
+                helperText={
+                  !usernameAvailable
+                    ? 'Username already exists'
+                    : !usernameValid
+                    ? 'Username must not have special characters.'
+                    : ''
+                }
+                onBlur={checkUsername}
+                onChange={(e) => setLocalUsername(e.target.value)}
+                error={!usernameAvailable || !usernameValid}
+                required
                 fullWidth
+              />
+              <TextField
                 value={localEmail}
                 className={classes.textFields}
                 fullWidth
@@ -249,7 +303,11 @@ const Contact = () => {
                 required
                 onChange={handleEmailUpdate}
               />
-              <FormControl className={classes.textFields} variant="outlined" fullWidth>
+              <FormControl
+                className={classes.textFields}
+                variant="outlined"
+                fullWidth
+              >
                 <InputLabel
                   htmlFor="outlined-password"
                   color="secondary"
@@ -520,7 +578,9 @@ const Contact = () => {
                     !localZip ||
                     !localPrimaryContactName ||
                     !localPrimaryContactShift ||
-                    !localPrimaryContactMobilePhone
+                    !localPrimaryContactMobilePhone ||
+                    !usernameAvailable ||
+                    !usernameValid
                   }
                   type="submit"
                   color="secondary"
