@@ -114,7 +114,7 @@ function UserAdmin(props) {
             Messages
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
-            <AppointmentTable appointments={appointments} />
+            <AppointmentTable appointments={appointments} admin />
           </TabPanel>
           <TabPanel value={tabValue} index={2}>
             <Users user={user} />
