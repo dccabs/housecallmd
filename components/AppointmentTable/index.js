@@ -3,18 +3,14 @@ import MaterialTable from 'material-table'
 const genericCols = [
   {
     title: 'First Name',
-    field: 'firstName',
+    field: 'first_name',
     render: (rowData) => rowData.facility_patients.first_name,
   },
   {
     title: 'Last Name',
-    field: 'lastName',
+    field: 'last_name',
     render: (rowData) => rowData.facility_patients.last_name,
   },
-  // {
-  //   title: 'Visit Choice',
-  //   field: 'visitChoice',
-  // },
   {
     title: 'Visit Reason',
     field: 'visitReason',
@@ -32,10 +28,6 @@ const genericCols = [
 
 const patientCols = [
   {
-    title: 'Visit Choice',
-    field: 'visitChoice',
-  },
-  {
     title: 'Visit Reason',
     field: 'visitReason',
   },
@@ -51,11 +43,11 @@ const patientCols = [
   {
     title: 'Status',
     field: 'completed',
-    render: (rowData) => (rowData ? 'Completed' : 'Not Completed'),
+    render: (rowData) => (rowData.completed ? 'Completed' : 'Not Completed'),
   },
 ]
 
-function AppointmentTable({ appointments, hideName }) {
+function AppointmentTable({ appointments, hideName = false, hideNote = false }) {
   return (
     <MaterialTable
       title="Appointments"
