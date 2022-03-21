@@ -34,6 +34,8 @@ import { SnackBarContext } from 'components/SnackBar'
 import { v4 as uuidv4 } from 'uuid'
 import AppointmentTable from '../../../../components/AppointmentTable'
 import xhrHeader from '../../../../constants/xhrHeader'
+import RefreshIcon from '@material-ui/icons/Refresh'
+import Message from '../../../../components/Facility/Message'
 const NEXT_PUBLIC_SUPABASE_STORAGE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
 
@@ -87,6 +89,11 @@ const TabPanel = (props) => {
 
 const UserDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
+  const [messages, setMessages] = useState([])
+  const [messagesLoading, setMessagesLoading] = useState(true)
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
+  const [message, setMessage] = useState('')
+
   const [editable, setEditable] = useState(false)
   const [userName, setUserName] = useState('')
   const [facilityId, setFacilityId] = useState('')
@@ -258,6 +265,39 @@ const UserDetailsPage = () => {
     }
   }
 
+  useEffect(() => {
+    if (tabValue === 0 && userId) {
+      getPatientMessages()
+    }
+  }, [tabValue, userId])
+
+  const getPatientMessages = () => {
+    const payload = {
+      // facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
+      patientId: userId,
+    }
+
+    setMessagesLoading(true)
+
+    fetch('/api/getAllFacilityMessages', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setMessages(data)
+          setMessagesLoading(false)
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+          setMessagesLoading(false)
+        }
+      })
+  }
+
   const getFacility = (id) => {
     if (id) {
       setLoading(true)
@@ -416,7 +456,35 @@ const UserDetailsPage = () => {
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
-              Messages
+              {messagesLoading && (
+                <Box
+                  my="8em"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+              {!messagesLoading && (
+                <Box style={{ marginBottom: '1em' }}>
+                  <Tooltip title="Check for new messages">
+                    <IconButton component="span" onClick={getPatientMessages}>
+                      <RefreshIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              {messages.length === 0 && !messagesLoading && (
+                <div>No messages for this user</div>
+              )}
+              <Box>
+                {messages.length > 0 &&
+                !messagesLoading &&
+                messages.map((entry, index) => {
+                  return <Message entry={entry} index={index} />
+                })}
+              </Box>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               <AppointmentTable appointments={appointments} hideName />

@@ -105,7 +105,6 @@ const Patient = () => {
   useEffect(() => {
     if (patientId) {
       fetchPatientInformation();
-      fetchPatientInformation()
       if (state) {
         fetchFacilityAppointments().then((appointments) => {
           setAppointments(appointments)
@@ -331,7 +330,7 @@ const Patient = () => {
                 </Box>
               </TabPanel>
               <TabPanel value={tabValue} index={1}>
-                <AppointmentTable appointments={appointments} hideName />
+                <AppointmentTable appointments={appointments} hideName hideNote />
               </TabPanel>
             </Box>
           </Container>

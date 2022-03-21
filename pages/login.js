@@ -238,15 +238,15 @@ const login = () => {
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
               <Button
-                disabled={!password || !localEmail}
+                disabled={!password || !localEmail || loading}
                 type="submit"
                 color="secondary"
                 variant="contained"
                 size="large"
               >
-                Login{' '}
+                {loading ? 'Logging In' : 'Log in'}
                 {loading && (
-                  <CircularProgress color="text-white" size="1.3em" />
+                  <CircularProgress color="secondary" size="1.3em" style={{color: '#0092b8', position: 'relative', left: 20}} />
                 )}
               </Button>
             </Box>
