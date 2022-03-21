@@ -3,12 +3,14 @@ import { NextSeo } from 'next-seo'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../../../zustand/store'
-import { Typography, Box, CircularProgress, Tabs, Tab } from '@material-ui/core'
+import { Typography, Box, CircularProgress, Tabs, Tab, Tooltip, IconButton } from '@material-ui/core'
 import xhrHeader from '../../../../constants/xhrHeader'
 import Container from '../../../../components/Container'
 import FacilityDetails from '../../../../components/FacilityDetails'
 import MaterialTable from 'material-table'
 import tableCols from '../../../../components/FacilityDetails/table-cols'
+import RefreshIcon from '@material-ui/icons/Refresh'
+import Message from '../../../../components/Facility/Message'
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props
@@ -35,6 +37,12 @@ const FacilityDetailsPage = () => {
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [tabValue, setTabValue] = useState(0)
+
+  const [messages, setMessages] = useState([])
+  const [messagesLoading, setMessagesLoading] = useState(true)
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
+  const [message, setMessage] = useState('')
+
   const { facilityDetailsTableTab, setFacilityDetailsTableTab } = useStore()
 
   const router = useRouter()
@@ -71,6 +79,40 @@ const FacilityDetailsPage = () => {
       }
     }
   })
+
+  useEffect(() => {
+    if (tabValue === 0 && facility) {
+      getFacilityMessages()
+    }
+  }, [tabValue, facility])
+
+  const getFacilityMessages = () => {
+    const { facility_uuid } = router.query
+    const payload = {
+      facilityId: facility_uuid,
+      // patientId: userId,
+    }
+
+    setMessagesLoading(true)
+
+    fetch('/api/getAllFacilityMessages', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setMessages(data)
+          setMessagesLoading(false)
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+          setMessagesLoading(false)
+        }
+      })
+  }
 
   return (
     <>
@@ -118,7 +160,35 @@ const FacilityDetailsPage = () => {
               <Tab label="Residents" {...a11yProps(2)} />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-              Messages
+              {messagesLoading && (
+                <Box
+                  my="8em"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+              {!messagesLoading && (
+                <Box style={{ marginBottom: '1em' }}>
+                  <Tooltip title="Check for new messages">
+                    <IconButton component="span" onClick={getFacilityMessages}>
+                      <RefreshIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              {messages.length === 0 && !messagesLoading && (
+                <div>No messages for this user</div>
+              )}
+              <Box>
+                {messages.length > 0 &&
+                !messagesLoading &&
+                messages.map((entry, index) => {
+                  return <Message entry={entry} index={index} />
+                })}
+              </Box>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               Appointments
