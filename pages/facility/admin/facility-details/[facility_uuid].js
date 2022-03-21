@@ -224,6 +224,12 @@ const FacilityDetailsPage = () => {
                   const id = rowData.id
                   router.push(`/facility/admin/user-details/${id}`)
                 }}
+                options={{
+                  paginationType: 'stepped',
+                  selection: true,
+                  pageSize: 50,
+                  pageSizeOptions: [50, 100, 200],
+                }}
               />
             </TabPanel>
           </Box>
