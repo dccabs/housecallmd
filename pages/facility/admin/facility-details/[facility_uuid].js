@@ -11,6 +11,9 @@ import MaterialTable from 'material-table'
 import tableCols from '../../../../components/FacilityDetails/table-cols'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../../components/Facility/Message'
+import AppointmentTable from '../../../../components/AppointmentTable'
+import { Auth } from '@supabase/ui'
+
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props
@@ -33,6 +36,8 @@ const TabPanel = (props) => {
 }
 
 const FacilityDetailsPage = () => {
+  const { user } = Auth.useUser()
+
   const [facility, setFacility] = useState()
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -42,6 +47,7 @@ const FacilityDetailsPage = () => {
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [message, setMessage] = useState('')
+  const [appointments, setAppointments] = useState([])
 
   const { facilityDetailsTableTab, setFacilityDetailsTableTab } = useStore()
 
@@ -80,9 +86,25 @@ const FacilityDetailsPage = () => {
     }
   })
 
+  const getFacilityAppointments = async () => {
+    if (facility) {
+      const getAppointments = await fetch('/api/getFacilityAppointments', {
+        ...xhrHeader,
+        body: JSON.stringify({ user, facilityId: facility.id }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setAppointments(data);
+      })
+    }
+  }
+
   useEffect(() => {
     if (tabValue === 0 && facility) {
       getFacilityMessages()
+    }
+    if (tabValue === 1 && facility) {
+      getFacilityAppointments()
     }
   }, [tabValue, facility])
 
@@ -191,7 +213,7 @@ const FacilityDetailsPage = () => {
               </Box>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              Appointments
+              <AppointmentTable appointments={appointments} />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               <MaterialTable
