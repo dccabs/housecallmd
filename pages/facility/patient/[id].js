@@ -105,7 +105,6 @@ const Patient = () => {
   useEffect(() => {
     if (patientId) {
       fetchPatientInformation();
-      fetchPatientInformation()
       if (state) {
         fetchFacilityAppointments().then((appointments) => {
           setAppointments(appointments)

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Typography, Box, Tabs, Tab } from '@material-ui/core'
+import { Typography, Box, Tabs, Tab, CircularProgress, Tooltip, IconButton } from '@material-ui/core'
 
 import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../../../components/SnackBar'
@@ -8,6 +8,8 @@ import Users from '../../../components/Facility/Users'
 import Centers from '../../../components/Facility/Centers'
 import AppointmentTable from '../../../components/AppointmentTable'
 import xhrHeader from '../../../constants/xhrHeader'
+import RefreshIcon from '@material-ui/icons/Refresh'
+import Message from '../../../components/Facility/Message'
 
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
@@ -38,6 +40,12 @@ function UserAdmin(props) {
   const [authorized, setAuthorized] = useState(false)
   const [tabValue, setTabValue] = useState(1)
   const [appointments, setAppointments] = useState([])
+  const [messages, setMessages] = useState([])
+  const [messagesLoading, setMessagesLoading] = useState(true)
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
+  const [message, setMessage] = useState('')
+  const [messageLoading, setMessageLoading] = useState(false)
+
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
   const { facilityAdminTableTab, setFacilityAdminTableTab } = useStore()
@@ -94,6 +102,72 @@ function UserAdmin(props) {
     setTabValue(facilityAdminTableTab)
   }, [facilityAdminTableTab])
 
+  useEffect(() => {
+    if (tabValue === 0) {
+      getAllMessages()
+    }
+  }, [tabValue])
+
+  const getAllMessages = () => {
+    const payload = {}
+
+    setMessagesLoading(true)
+
+    fetch('/api/getAllFacilityMessages', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setMessages(data)
+          setMessagesLoading(false)
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+          setMessagesLoading(false)
+        }
+      })
+  }
+
+  const sendMessage = () => {
+    const payload = {
+      created_at: new Date(),
+      sender: user.id,
+      recipient: null,
+      patient_id: patientId,
+      message,
+      viewed_by_recipient: false,
+    }
+    setMessagesLoading(true)
+
+    fetch('/api/addFacilityMessage', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setMessagesLoading(false)
+        setMessageModalOpen(false)
+        if (data) {
+          openSnackBar({
+            message: 'Message successfully sent',
+            // error: 'error',
+          })
+          getAllMessages()
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+        }
+      })
+  }
+
   return (
     <>
       {authorized && (
@@ -111,7 +185,35 @@ function UserAdmin(props) {
           </Box>
 
           <TabPanel value={tabValue} index={0}>
-            Messages
+            {messagesLoading && (
+              <Box
+                my="8em"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <CircularProgress />
+              </Box>
+            )}
+            {!messagesLoading && (
+              <Box style={{ marginBottom: '1em' }}>
+                <Tooltip title="Check for new messages">
+                  <IconButton component="span" onClick={getAllMessages}>
+                    <RefreshIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+            {messages.length === 0 && !messagesLoading && (
+              <div>No messages for this user</div>
+            )}
+            <Box>
+              {messages.length > 0 &&
+              !messagesLoading &&
+              messages.map((entry, index) => {
+                return <Message entry={entry} index={index} />
+              })}
+            </Box>
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
             <AppointmentTable appointments={appointments} admin />
