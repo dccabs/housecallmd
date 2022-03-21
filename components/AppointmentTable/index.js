@@ -3,12 +3,12 @@ import MaterialTable from 'material-table'
 const publicWithName = [
   {
     title: 'First Name',
-    field: 'first_name',
+    field: 'firstName',
     render: (rowData) => rowData.facility_patients.first_name,
   },
   {
     title: 'Last Name',
-    field: 'last_name',
+    field: 'lastName',
     render: (rowData) => rowData.facility_patients.last_name,
   },
   {
@@ -18,6 +18,11 @@ const publicWithName = [
   {
     title: 'Date/Time',
     field: 'time',
+  },
+  {
+    title: 'Status',
+    field: 'completed',
+    render: (rowData) => (rowData.completed ? 'Completed' : 'Not Completed'),
   },
 ]
 
@@ -40,12 +45,13 @@ const publicWithoutName = [
 const adminWithName = [
   {
     title: 'First Name',
-    field: 'first_name',
+    field: 'firstName',
     render: (rowData) => rowData.facility_patients.first_name,
   },
   {
     title: 'Last Name',
-    field: 'last_name',
+    field: 'lastName',
+    hidden: true,
     render: (rowData) => rowData.facility_patients.last_name,
   },
   {
@@ -60,6 +66,11 @@ const adminWithName = [
   {
     title: 'Date/Time',
     field: 'time',
+  },
+  {
+    title: 'Status',
+    field: 'completed',
+    render: (rowData) => (rowData.completed ? 'Completed' : 'Not Completed'),
   },
 ]
 
