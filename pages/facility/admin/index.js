@@ -80,6 +80,15 @@ function UserAdmin(props) {
     }
   }, [user])
 
+  useEffect(() => {
+    if (!messagesLoading && !user) {
+      openSnackBar({
+        message: 'You are not authorized to view this page',
+        snackSeverity: 'error',
+      })
+    }
+  }, [user, messagesLoading])
+
   useEffect(async () => {
     if (authorized && user) {
       const getAllAppointments = await fetch('/api/getFacilityAppointments', {
