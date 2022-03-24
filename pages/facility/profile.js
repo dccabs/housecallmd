@@ -6,7 +6,11 @@ import {
   CircularProgress,
   Button,
   Tabs,
-  Tab, Tooltip, IconButton
+  Tab,
+  Tooltip,
+  IconButton,
+  Modal,
+  Paper, InputLabel, Select, MenuItem, FormControl
 } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -79,6 +83,7 @@ const Profile = () => {
   const [appointmentsLoading, setAppointmentsLoading] = useState(true)
   const [messages, setMessages] = useState([])
   const [messagesLoading, setMessagesLoading] = useState(true)
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
 
   const { user } = Auth.useUser()
   const appointmentsWithPatientName = []
@@ -113,6 +118,10 @@ const Profile = () => {
       id: `simple-tab-${index}`,
       'aria-controls': `simple-tabpanel-${index}`,
     }
+  }
+
+  const handlePatientSelect = (e) => {
+    router.push(`/facility/create-appointment/${e.target.value}`)
   }
 
   const getFacilityMessages = () => {
@@ -233,7 +242,7 @@ const Profile = () => {
                 </Button>
                 <Button
                   style={{ marginLeft: 20 }}
-                  onClick={() => router.push('add-patient')}
+                  onClick={() => setAppointmentModalOpen(true)}
                   color="primary"
                   variant="contained"
                 >
@@ -344,6 +353,47 @@ const Profile = () => {
           </Box>
         </>
       )}
+
+      <Modal
+        open={appointmentModalOpen}
+        onClose={() => setAppointmentModalOpen(false)}
+        // onClick={() => setAppointmentModalOpen(false)}
+      >
+        <div
+          style={{
+            width: '50%',
+            margin: 'auto',
+            minWidth: 350,
+            paddingTop: '30%',
+          }}
+        >
+          <Paper>
+            <div style={{
+              padding: 40,
+            }}>
+              <h3>Choose a Resident</h3>
+                <Box mt="1em">
+                  <Select
+                    fullWidth
+                    id="select-patient"
+                    placeholder={'Select Patient'}
+                    variant='outlined'
+                    onChange={handlePatientSelect}
+                  >
+                    <MenuItem selected>Choose A Resident</MenuItem>
+                    {state?.patients && state.patients.map((patient) => {
+                      return (
+                        <MenuItem value={patient.id} selected>
+                          {patient.first_name} {patient.last_name}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </Box>
+            </div>
+          </Paper>
+        </div>
+      </Modal>
     </>
   )
 }
