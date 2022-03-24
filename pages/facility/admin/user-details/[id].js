@@ -89,8 +89,9 @@ const TabPanel = (props) => {
 
 const UserDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
+  const [authorized, setAuthorized] = useState(false)
   const [messages, setMessages] = useState([])
-  const [messagesLoading, setMessagesLoading] = useState(true)
+  const [messagesLoading, setMessagesLoading] = useState(false)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [message, setMessage] = useState('')
 
@@ -223,9 +224,31 @@ const UserDetailsPage = () => {
   }, [userDetailsTableTab])
 
   useEffect(() => {
+    if (user) {
+      fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: user.email }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.role === 'admin') {
+            setAuthorized(true)
+          } else {
+            openSnackBar({
+              message: 'You are not authorized to view this page',
+              snackSeverity: 'error',
+            })
+          }
+        })
+    }
+  }, [user])
+
+  useEffect(() => {
     let currentData = {}
 
-    if (user && userId) {
+    if (authorized && user && userId) {
       setLoading(true)
       fetch('/api/getFacilityPatientById', {
         ...xhrHeader,
@@ -241,10 +264,9 @@ const UserDetailsPage = () => {
           })
 
           getFacility(res.facility_auth_id)
-          getPatientAppointments(user)
-            .then((data) => {
-              setAppointments(data)
-            })
+          getPatientAppointments(user).then((data) => {
+            setAppointments(data)
+          })
 
           setFormData(currentData)
           setUserName(
@@ -252,7 +274,7 @@ const UserDetailsPage = () => {
           )
         })
     }
-  }, [user, userId])
+  }, [authorized, user, userId])
 
   const getPatientAppointments = async (user) => {
     if (user) {
@@ -418,7 +440,7 @@ const UserDetailsPage = () => {
 
   return (
     <Container>
-      {formData && userName && facilityName && !loading ? (
+      {formData && userName && facilityName && authorized && !loading ? (
         <>
           <Box>
             <Box display="flex" alignItems="end">
@@ -480,10 +502,10 @@ const UserDetailsPage = () => {
               )}
               <Box>
                 {messages.length > 0 &&
-                !messagesLoading &&
-                messages.map((entry, index) => {
-                  return <Message entry={entry} index={index} />
-                })}
+                  !messagesLoading &&
+                  messages.map((entry, index) => {
+                    return <Message entry={entry} index={index} />
+                  })}
               </Box>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
@@ -706,7 +728,7 @@ const UserDetailsPage = () => {
             </TabPanel>
           </Box>
         </>
-      ) : (
+      ) : loading ? (
         <Box
           my="1em"
           display="flex"
@@ -715,7 +737,7 @@ const UserDetailsPage = () => {
         >
           <CircularProgress />
         </Box>
-      )}
+      ) : null}
     </Container>
   )
 }

@@ -1,5 +1,13 @@
 import { useState, useEffect, useContext } from 'react'
-import { Typography, Box, Tabs, Tab, CircularProgress, Tooltip, IconButton } from '@material-ui/core'
+import {
+  Typography,
+  Box,
+  Tabs,
+  Tab,
+  CircularProgress,
+  Tooltip,
+  IconButton,
+} from '@material-ui/core'
 
 import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../../../components/SnackBar'
@@ -50,8 +58,39 @@ function UserAdmin(props) {
   const { user } = Auth.useUser()
   const { facilityAdminTableTab, setFacilityAdminTableTab } = useStore()
 
-  useEffect(async () => {
+  useEffect(() => {
     if (user) {
+      fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: user.email }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.role === 'admin') {
+            setAuthorized(true)
+          } else {
+            openSnackBar({
+              message: 'You are not authorized to view this page',
+              snackSeverity: 'error',
+            })
+          }
+        })
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (!messagesLoading && !user) {
+      openSnackBar({
+        message: 'You are not authorized to view this page',
+        snackSeverity: 'error',
+      })
+    }
+  }, [user, messagesLoading])
+
+  useEffect(async () => {
+    if (authorized && user) {
       const getAllAppointments = await fetch('/api/getFacilityAppointments', {
         ...xhrHeader,
         body: JSON.stringify({ user }),
@@ -77,26 +116,8 @@ function UserAdmin(props) {
       })
 
       setAppointments(appointmentData)
-
-      fetch('/api/getSingleUser', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify({ email: user.email }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.role === 'admin') {
-            setAuthorized(true)
-          } else {
-            openSnackBar({
-              message: 'You are not authorized to view this page',
-              snackSeverity: 'error',
-            })
-          }
-        })
     }
-  }, [user])
+  }, [authorized, user])
 
   useEffect(() => {
     setTabValue(facilityAdminTableTab)
@@ -209,10 +230,10 @@ function UserAdmin(props) {
             )}
             <Box>
               {messages.length > 0 &&
-              !messagesLoading &&
-              messages.map((entry, index) => {
-                return <Message entry={entry} index={index} />
-              })}
+                !messagesLoading &&
+                messages.map((entry, index) => {
+                  return <Message entry={entry} index={index} />
+                })}
             </Box>
           </TabPanel>
           <TabPanel value={tabValue} index={1}>

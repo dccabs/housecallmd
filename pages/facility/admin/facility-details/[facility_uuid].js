@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { NextSeo } from 'next-seo'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import useStore from '../../../../zustand/store'
-import { Typography, Box, CircularProgress, Tabs, Tab, Tooltip, IconButton } from '@material-ui/core'
+import {
+  Typography,
+  Box,
+  CircularProgress,
+  Tabs,
+  Tab,
+  Tooltip,
+  IconButton,
+} from '@material-ui/core'
 import xhrHeader from '../../../../constants/xhrHeader'
+import { SnackBarContext } from 'components/SnackBar'
 import Container from '../../../../components/Container'
 import FacilityDetails from '../../../../components/FacilityDetails'
 import MaterialTable from 'material-table'
@@ -13,7 +22,6 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../../components/Facility/Message'
 import AppointmentTable from '../../../../components/AppointmentTable'
 import { Auth } from '@supabase/ui'
-
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props
@@ -37,12 +45,11 @@ const TabPanel = (props) => {
 
 const FacilityDetailsPage = () => {
   const { user } = Auth.useUser()
-
+  const [authorized, setAuthorized] = useState(false)
   const [facility, setFacility] = useState()
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [tabValue, setTabValue] = useState(0)
-
   const [messages, setMessages] = useState([])
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
@@ -50,7 +57,7 @@ const FacilityDetailsPage = () => {
   const [appointments, setAppointments] = useState([])
 
   const { facilityDetailsTableTab, setFacilityDetailsTableTab } = useStore()
-
+  const openSnackBar = useContext(SnackBarContext)
   const router = useRouter()
 
   const a11yProps = (index) => {
@@ -64,8 +71,30 @@ const FacilityDetailsPage = () => {
     setTabValue(facilityDetailsTableTab)
   }, [facilityDetailsTableTab])
 
+  useEffect(() => {
+    if (user) {
+      fetch('/api/getSingleUser', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: user.email }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.role === 'admin') {
+            setAuthorized(true)
+          } else {
+            openSnackBar({
+              message: 'You are not authorized to view this page',
+              snackSeverity: 'error',
+            })
+          }
+        })
+    }
+  }, [user])
+
   useEffect(async () => {
-    if (!facility) {
+    if (!facility && authorized && user) {
       const { facility_uuid } = router.query
       if (facility_uuid) {
         const fetchFacilityData = await fetch('/api/getFacilityById', {
@@ -83,19 +112,30 @@ const FacilityDetailsPage = () => {
           setLoading(false)
         }
       }
+    } else {
+      setLoading(false)
     }
   })
 
-  const getFacilityAppointments = async () => {
+  useEffect(() => {
+    if (!loading && !user) {
+      openSnackBar({
+        message: 'You are not authorized to view this page',
+        snackSeverity: 'error',
+      })
+    }
+  }, [user, loading])
+
+  const getFacilityAppointments = () => {
     if (facility) {
-      const getAppointments = await fetch('/api/getFacilityAppointments', {
+      fetch('/api/getFacilityAppointments', {
         ...xhrHeader,
         body: JSON.stringify({ user, facilityId: facility.id }),
       })
         .then((res) => res.json())
         .then((data) => {
-          setAppointments(data);
-      })
+          setAppointments(data)
+        })
     }
   }
 
@@ -138,101 +178,110 @@ const FacilityDetailsPage = () => {
 
   return (
     <>
-      <NextSeo
-        title="My Facility Account | House Call MD"
-        description="My Facility Account |  House Call MD."
-        canonical="https://www.housecallmd.org"
-        openGraph={{
-          type: 'website',
-          title: 'My Facility Account | House Call MD',
-          description: 'My Facility Account in House Call MD',
-          locale: 'en_US',
-          url: `https://www.housecallmd.org/facility/facility-details`,
-        }}
-      />
-      {error ? (
-        <Container>
-          <Typography variant="body1" className={classes.error}>
-            Sorry, there has been an error
-          </Typography>
-        </Container>
-      ) : (
+      {authorized && (
         <>
-          {loading ? (
-            <Box
-              my="1em"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <CircularProgress />
-            </Box>
+          <NextSeo
+            title="My Facility Account | House Call MD"
+            description="My Facility Account |  House Call MD."
+            canonical="https://www.housecallmd.org"
+            openGraph={{
+              type: 'website',
+              title: 'My Facility Account | House Call MD',
+              description: 'My Facility Account in House Call MD',
+              locale: 'en_US',
+              url: `https://www.housecallmd.org/facility/facility-details`,
+            }}
+          />
+          {error ? (
+            <Container>
+              <Typography variant="body1" className={classes.error}>
+                Sorry, there has been an error
+              </Typography>
+            </Container>
           ) : (
             <>
-              <FacilityDetails facility={facility} />
-            </>
-          )}
-          <Box style={{ padding: 10 }}>
-            <Tabs
-              value={tabValue}
-              onChange={(e, newValue) => setFacilityDetailsTableTab(newValue)}
-            >
-              <Tab label="Messages" {...a11yProps(0)} />
-              <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Residents" {...a11yProps(2)} />
-            </Tabs>
-            <TabPanel value={tabValue} index={0}>
-              {messagesLoading && (
+              {loading ? (
                 <Box
-                  my="8em"
+                  my="1em"
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
                 >
                   <CircularProgress />
                 </Box>
+              ) : (
+                <>
+                  <FacilityDetails facility={facility} />
+                </>
               )}
-              {!messagesLoading && (
-                <Box style={{ marginBottom: '1em' }}>
-                  <Tooltip title="Check for new messages">
-                    <IconButton component="span" onClick={getFacilityMessages}>
-                      <RefreshIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
-              {messages.length === 0 && !messagesLoading && (
-                <div>No messages for this user</div>
-              )}
-              <Box>
-                {messages.length > 0 &&
-                !messagesLoading &&
-                messages.map((entry, index) => {
-                  return <Message entry={entry} index={index} />
-                })}
+              <Box style={{ padding: 10 }}>
+                <Tabs
+                  value={tabValue}
+                  onChange={(e, newValue) =>
+                    setFacilityDetailsTableTab(newValue)
+                  }
+                >
+                  <Tab label="Messages" {...a11yProps(0)} />
+                  <Tab label="Appointments" {...a11yProps(1)} />
+                  <Tab label="Residents" {...a11yProps(2)} />
+                </Tabs>
+                <TabPanel value={tabValue} index={0}>
+                  {messagesLoading && (
+                    <Box
+                      my="8em"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <CircularProgress />
+                    </Box>
+                  )}
+                  {!messagesLoading && (
+                    <Box style={{ marginBottom: '1em' }}>
+                      <Tooltip title="Check for new messages">
+                        <IconButton
+                          component="span"
+                          onClick={getFacilityMessages}
+                        >
+                          <RefreshIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  )}
+                  {messages.length === 0 && !messagesLoading && (
+                    <div>No messages for this user</div>
+                  )}
+                  <Box>
+                    {messages.length > 0 &&
+                      !messagesLoading &&
+                      messages.map((entry, index) => {
+                        return <Message entry={entry} index={index} />
+                      })}
+                  </Box>
+                </TabPanel>
+                <TabPanel value={tabValue} index={1}>
+                  <AppointmentTable appointments={appointments} />
+                </TabPanel>
+                <TabPanel value={tabValue} index={2}>
+                  <MaterialTable
+                    title="Residents"
+                    columns={tableCols}
+                    data={facility?.patients}
+                    onRowClick={(event, rowData) => {
+                      const id = rowData.id
+                      router.push(`/facility/admin/user-details/${id}`)
+                    }}
+                    options={{
+                      paginationType: 'stepped',
+                      selection: true,
+                      pageSize: 50,
+                      pageSizeOptions: [50, 100, 200],
+                    }}
+                  />
+                </TabPanel>
               </Box>
-            </TabPanel>
-            <TabPanel value={tabValue} index={1}>
-              <AppointmentTable appointments={appointments} />
-            </TabPanel>
-            <TabPanel value={tabValue} index={2}>
-              <MaterialTable
-                title="Residents"
-                columns={tableCols}
-                data={facility?.patients}
-                onRowClick={(event, rowData) => {
-                  const id = rowData.id
-                  router.push(`/facility/admin/user-details/${id}`)
-                }}
-                options={{
-                  paginationType: 'stepped',
-                  selection: true,
-                  pageSize: 50,
-                  pageSizeOptions: [50, 100, 200],
-                }}
-              />
-            </TabPanel>
-          </Box>
+            </>
+          )}
         </>
       )}
     </>
