@@ -1,304 +1,121 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
   Typography,
   Box,
   Button,
-  Radio,
-  RadioGroup,
-  FormControl,
   TextField,
-  FormControlLabel,
   CircularProgress,
-  Switch,
-  Modal,
-  Paper,
 } from '@material-ui/core'
 import Container from '../../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import { Auth } from '@supabase/ui'
-
-import useStore from '../../../zustand/store'
-import visitPricing from '../../../public/constants/visitPricing'
-import billOfRights from '../../../public/constants/bill_of_rights'
-import privacyPolicy from '../../../public/constants/privacyPolicy'
 import xhrHeader from '../../../constants/xhrHeader'
+import { SnackBarContext } from 'components/SnackBar'
+
 
 const useStyles = makeStyles((theme) => ({
   h2: {
     marginTop: '.5em',
-  },
-  buttonLinks: {
-    '@media screen and (max-width: 700px)': {
-      '&:nth-child(2)': {
-        order: -1,
-      },
-    },
-
-    '& button': {
-      padding: '1em',
-      fontWeight: 600,
-      width: '16rem',
-
-      '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-      },
-    },
-    '& a': {
-      textaDecoration: 'none',
-    },
-  },
-  toggleText: {
-    color: theme.palette.secondary.main,
-    cursor: 'pointer',
-
-    '&:hover': {
-      textDecoration: 'underline',
-      textDecorationColor: theme.palette.secondary.main,
-    },
-  },
-  modal: {
-    margin: '8em auto',
-    padding: '4em',
-    maxWidth: '50rem',
-    outline: 'none',
   },
 }))
 
 const maxCharacters = 240
 
 const CreateAppointment = () => {
-  const [localReason, setLocalReason] = useState('')
-  const [maxLength, setMaxLength] = useState(maxCharacters)
-  const [value, setValue] = useState('video')
-  const [loading, setLoading] = useState(false)
-  const [firstName, setLocalFirstName] = useState(null)
-  const [agreeBorToggle, setAgreeBorToggle] = useState(false)
-  const [agreePPToggle, setAgreePPToggle] = useState(false)
-  const [borOpen, setBorOpen] = useState(false)
-  const [ppOpen, setPPOpen] = useState(false)
-  const [patient, setPatient] = useState('')
-  const store = useStore()
-  const {
-    setVisitChoice,
-    hasInsurance,
-    isAuthenticated,
-    setReason,
-    insuranceOptOut,
-  } = store
+  const openSnackBar = useContext(SnackBarContext)
+
+  const [localReason, setLocalReason] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [patientData, setPatientData] = useState(null)
+  const [visitReason, setVisitReason] = useState(null)
+
   const classes = useStyles()
   const router = useRouter()
   const { user, session } = Auth.useUser()
+  const { userId } = router.query
 
-  useEffect(async () => {
-    const id = router.query.userId
-    if (user) {
-      setLocalFirstName(store.firstName)
-      setLoading(false)
+  useEffect(() => {
+    if (userId) {
+      fetchPatientInformation()
+    }
+  }, [userId])
+
+  const fetchPatientInformation = () => {
+    const payload = {
+      id: userId,
     }
 
-    if (id) {
-      const facilityPatientById = await fetch('/api/getFacilityPatientById', {
-        ...xhrHeader,
-        body: JSON.stringify({ id }),
+    fetch('/api/getFacilityPatientById', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setPatientData({ ...data })
+          setLoading(false)
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+          setLoading(false)
+        }
       })
+  }
 
-      const data = await facilityPatientById.json()
-      setPatient(data)
+  const createAppointment = () => {
+    const payload = {
+      user,
+      appointmentData: {
+        visitReason,
+        userId,
+        facilityId: patientData?.facility_info?.id,
+        completed: false,
+        time: new Date(),
+        note: '',
+        created_at: new Date(),
+      }
     }
-  }, [user])
 
-  const handleChange = (event) => {
-    setValue(event.target.value)
+
+    setLoading(true);
+    fetch('/api/addFacilitiesAppointment', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setLoading(false)
+          openSnackBar({
+            message: 'Appointment Sent to HouseCall MD',
+            snackSeverity: 'success',
+          })
+          setVisitReason(null)
+          router.back();
+        } else {
+          openSnackBar({
+            message: 'There was an error.  Please try again later',
+            error: 'error',
+          })
+          setLoading(false)
+        }
+      })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setVisitChoice(value)
-    setReason(localReason)
-    router.push('/payment')
+  const handleSubmit = () => {
+    createAppointment();
   }
-
-  const billOfRightsText = (
-    <Paper className={classes.modal}>{billOfRights}</Paper>
-  )
-
-  const ppText = <Paper className={classes.modal}>{privacyPolicy}</Paper>
-
-  const usingInsurance = hasInsurance && !insuranceOptOut
 
   return (
     <>
-      <Modal
-        open={borOpen}
-        onClose={() => setBorOpen(false)}
-        onClick={() => setBorOpen(false)}
-        style={{ overflowY: 'scroll' }}
-      >
-        {billOfRightsText}
-      </Modal>
-
-      <Modal
-        open={ppOpen}
-        onClose={() => setPPOpen(false)}
-        onClick={() => setPPOpen(false)}
-        style={{ overflowY: 'scroll' }}
-      >
-        {ppText}
-      </Modal>
-
       <Container>
         <Box>
-          <Typography className={classes.h2} variant="h2">
-            Create Appointment
-          </Typography>
-          {!loading && firstName ? (
-            <>
-              <form onSubmit={handleSubmit}>
-                <Box
-                  mt="2em"
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Typography variant="h4">
-                    <span>Hi {patient.first_name}, </span>
-                    What type of visit would you like?
-                  </Typography>
-                  <Box
-                    mt="1em"
-                    width="100%"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <FormControl component="fieldset">
-                      <RadioGroup
-                        name="visit"
-                        value={value}
-                        onChange={handleChange}
-                      >
-                        <FormControlLabel
-                          value="video"
-                          control={<Radio />}
-                          label={`Video/Telemedicine Visit (${
-                            usingInsurance
-                              ? 'No additonal fee with insurance'
-                              : `$${visitPricing.noInsurance.pricing.video}`
-                          })`}
-                        />
-                        <FormControlLabel
-                          value="phone"
-                          control={<Radio />}
-                          label={`Phone Visit ($${
-                            usingInsurance
-                              ? visitPricing.insurance.pricing.phone
-                              : visitPricing.noInsurance.pricing.phone
-                          })`}
-                        />
-                        <FormControlLabel
-                          value="in_person"
-                          control={<Radio />}
-                          label={`Housecall, In person visit at home ($${
-                            usingInsurance
-                              ? visitPricing.insurance.pricing.in_person
-                              : visitPricing.noInsurance.pricing.in_person
-                          })`}
-                        />
-                      </RadioGroup>
-
-                      <Box mt="2em">
-                        <TextField
-                          fullWidth
-                          type="text"
-                          label="Reason for visit *"
-                          variant="outlined"
-                          color="secondary"
-                          multiline
-                          rows={4}
-                          inputProps={{ maxLength: maxCharacters }}
-                          helperText={maxLength}
-                          value={localReason}
-                          onChange={(e) => {
-                            setLocalReason(e.target.value)
-                            setMaxLength(maxCharacters - e.target.value.length)
-                          }}
-                        />
-                      </Box>
-
-                      <Box mt="2em" display="flex" alignItems="center">
-                        <Box mr="1em">
-                          <Switch
-                            checked={agreeBorToggle}
-                            onChange={() => setAgreeBorToggle(!agreeBorToggle)}
-                            color="secondary"
-                          />
-                        </Box>
-
-                        <Typography
-                          className={classes.toggleText}
-                          onClick={() => setBorOpen(true)}
-                        >
-                          I have read HouseCallMD's patient bill of rights
-                        </Typography>
-                      </Box>
-                      <Box mt="1em" display="flex" alignItems="center">
-                        <Box mr="1em">
-                          <Switch
-                            checked={agreePPToggle}
-                            onChange={() => setAgreePPToggle(!agreePPToggle)}
-                            color="secondary"
-                          />
-                        </Box>
-
-                        <Typography
-                          className={classes.toggleText}
-                          onClick={() => setPPOpen(true)}
-                        >
-                          I have read HouseCallMD's Notice of Privacy Practices
-                        </Typography>
-                      </Box>
-                    </FormControl>
-                  </Box>
-
-                  <Box
-                    mt="1em"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    flexWrap="wrap"
-                    width="100%"
-                  >
-                    <Box m="1em" className={classes.buttonLinks}>
-                      <Button
-                        onClick={() => router.back()}
-                        color="secondary"
-                        variant="contained"
-                      >
-                        Back
-                      </Button>
-                    </Box>
-                    <Box m="1em" className={classes.buttonLinks}>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        variant="contained"
-                        size="large"
-                        disabled={
-                          !localReason || !agreeBorToggle || !agreePPToggle
-                        }
-                      >
-                        Submit Appointment Request
-                      </Button>
-                    </Box>
-                  </Box>
-                </Box>
-              </form>
-            </>
-          ) : (
+          {loading && (
             <Box
-              my="1em"
+              my="8em"
               display="flex"
               justifyContent="center"
               alignItems="center"
@@ -306,6 +123,56 @@ const CreateAppointment = () => {
               <CircularProgress />
             </Box>
           )}
+          {!loading &&
+            <div>
+              <Typography className={classes.h2} variant="h2">
+                Create An Appointment for {patientData?.first_name}
+              </Typography>
+
+              <div style={{
+                margin: '40px 0',
+                fontSize: 16,
+              }}>
+                <div>
+                  {patientData?.first_name} {patientData?.last_name}
+                </div>
+                <div>
+                  Member of {patientData?.facility_info?.name}
+                </div>
+                {patientData?.date_of_birth &&
+                <div>
+                  Date of Birth: {patientData?.date_of_birth}
+                </div>
+                }
+                {patientData?.room_number &&
+                <div>Room Number: {patientData.room_number}</div>
+                }
+              </div>
+
+              <div style={{marginBottom: 40}}>
+                <TextField
+                  placeholder="Visit Reason"
+                  multiline
+                  rows={8}
+                  maxRows={8}
+                  fullWidth
+                  variant="outlined"
+                  onChange={(e) => setVisitReason(e.target.value)}
+                  // disabled={messagesLoading}
+                />
+              </div>
+
+              <div>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="large"
+                  onClick={handleSubmit}
+                  disabled={!visitReason}
+                >Submit</Button>
+              </div>
+            </div>
+          }
         </Box>
       </Container>
     </>
