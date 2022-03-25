@@ -274,7 +274,7 @@ const Patient = () => {
             {state.room_number && <Box>Room Number: {state.room_number}</Box>}
             <Box style={{ display: 'flex', marginTop: 40 }}>
               <Box style={{ marginRight: 20 }}>
-                <Button variant="contained" color="secondary" size="large">
+                <Button variant="contained" color="secondary" size="large" onClick={() => router.push(`/facility/create-appointment/${patientId}`)}>
                   Request New Appointment
                 </Button>
               </Box>
