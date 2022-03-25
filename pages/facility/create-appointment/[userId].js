@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import Link from 'next/link';
 import {
   Typography,
   Box,
@@ -6,6 +7,8 @@ import {
   TextField,
   CircularProgress,
 } from '@material-ui/core'
+import Alert from '@material-ui/lab/Alert';
+
 import Container from '../../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
@@ -26,9 +29,12 @@ const CreateAppointment = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   const [localReason, setLocalReason] = useState('');
-  const [loading, setLoading] = useState(true)
-  const [patientData, setPatientData] = useState(null)
-  const [visitReason, setVisitReason] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const [patientData, setPatientData] = useState(null);
+  const [visitReason, setVisitReason] = useState(null);
+  const [cardImageError, setCardImageError] = useState(false);
+  const [seconaryCardImageError, setSecondaryCardImageError] = useState(false);
+  const [idError, setIdError] = useState(false)
 
   const classes = useStyles()
   const router = useRouter()
@@ -40,6 +46,20 @@ const CreateAppointment = () => {
       fetchPatientInformation()
     }
   }, [userId])
+
+  useEffect(() => {
+    if (patientData) {
+      console.log('patient', patientData)
+      !patientData.policy_image_back || !patientData.policy_image_front ? setCardImageError(true) : setCardImageError(false);
+      patientData.id_image === null ? setIdError(true) : setIdError(false);
+
+      if (patientData.secondary_policy_number) {
+        if (!patientData.secondary_policy_image_back || !patientData.secondary_policy_image_front) {
+          setSecondaryCardImageError(true)
+        }
+      }
+    }
+  }, [patientData])
 
   const fetchPatientInformation = () => {
     const payload = {
@@ -149,15 +169,50 @@ const CreateAppointment = () => {
                 }
               </div>
 
+              {(cardImageError || seconaryCardImageError || idError) &&
+              <div style={{margin: '40px 0'}}>
+                <Alert severity="error">
+                  Before you can make an appointment for this resident.  You need to address the following issues.
+
+                  <ul>
+                    {cardImageError &&
+                    <li style={{margin: '20px 0'}}>
+                      Upload front and back images of <strong>primary</strong> insurance policy card
+                    </li>
+                    }
+                    {seconaryCardImageError &&
+                    <li style={{margin: '20px 0'}}>
+                      Upload front and back images of <strong>secondary</strong> insurance policy card
+                    </li>
+                    }
+
+                    {idError &&
+                    <li style={{margin: '20px 0'}}>
+                      Upload image of resident identification (Passport, State id, DL)
+                    </li>
+                    }
+                  </ul>
+
+                  <Link href={`/facility/patient/edit-patient/${patientData.id}`}>
+                    <a>
+                      Click here to add this information.
+                    </a>
+                  </Link>
+
+                </Alert>
+              </div>
+              }
+
               <div style={{marginBottom: 40}}>
                 <TextField
                   placeholder="Visit Reason"
                   multiline
                   rows={8}
-                  maxRows={8}
+                  maxrows={8}
                   fullWidth
                   variant="outlined"
                   onChange={(e) => setVisitReason(e.target.value)}
+                  disabled={cardImageError || idError || seconaryCardImageError}
                   // disabled={messagesLoading}
                 />
               </div>

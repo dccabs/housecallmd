@@ -57,7 +57,10 @@ const addPatientPage = () => {
   const { user } = Auth.useUser()
   const [hasSecondary, setHasSecondary] = useState(false)
   const [formValid, setFormValid] = useState(false)
+  const [showCardUpload, setShowCardUpload] = useState(false)
+  const [showPoaInputs, setShowPOAInputs] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [activeSection, setactiveSection] = useState('info');
   const [formData, setFormData] = useState({
     firstName: {
       type: 'textField',
@@ -65,6 +68,7 @@ const addPatientPage = () => {
       label: 'First Name',
       required: true,
       key: 'first_name',
+      section: 'info',
     },
     lastName: {
       type: 'textField',
@@ -72,6 +76,7 @@ const addPatientPage = () => {
       label: 'Last Name',
       required: true,
       key: 'last_name',
+      section: 'info',
     },
     roomNumber: {
       type: 'textField',
@@ -79,6 +84,7 @@ const addPatientPage = () => {
       label: 'Room Number',
       required: false,
       key: 'room_number',
+      section: 'info',
     },
     dateOfBirth: {
       type: 'muiPicker',
@@ -86,6 +92,7 @@ const addPatientPage = () => {
       label: 'Date of birth',
       required: true,
       key: 'date_of_birth',
+      section: 'info',
     },
     sex: {
       type: 'muiSelect',
@@ -94,6 +101,7 @@ const addPatientPage = () => {
       label: 'Sex',
       required: true,
       key: 'sex',
+      section: 'info',
     },
     insurancePolicyProvider: {
       type: 'autoComplete',
@@ -102,6 +110,7 @@ const addPatientPage = () => {
       label: 'Insurance Policy Provider',
       required: true,
       key: 'policy_provider',
+      section: 'info',
     },
     insurancePolicyNumber: {
       type: 'textField',
@@ -109,67 +118,85 @@ const addPatientPage = () => {
       label: 'Insurance Policy Number',
       required: true,
       key: 'policy_number',
+      section: 'info',
     },
     uploadCardFront: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Front Photo',
-      required: true,
+      required: false,
       key: 'policy_image_front',
       loading: false,
+      section: 'cardInfo',
     },
     uploadCardBack: {
       type: 'fileUpload',
       value: '',
       label: 'Upload Card Back Photo',
-      required: true,
+      required: false,
       key: 'policy_image_back',
       loading: false,
+      section: 'cardInfo',
+    },
+    uploadIdFront: {
+      type: 'fileUpload',
+      value: '',
+      label: 'Upload Identification Photo',
+      required: false,
+      key: 'id_image',
+      loading: false,
+      section: 'idInfo',
     },
     secondaryInsurancePolicyProvider: {
       type: 'autoComplete',
       value: '',
       options: providerOptions,
-      label: 'Secondary Insurance Policy Provider (Optional)',
+      label: 'Secondary Insurance Policy Provider',
       required: false,
       key: 'secondary_policy_provider',
+      section: 'info',
     },
     secondaryInsurancePolicyNumber: {
       type: 'textField',
       value: '',
-      label: 'Secondary Insurance Policy Number (Optional)',
+      label: 'Secondary Insurance Policy Number',
       required: false,
       key: 'secondary_policy_number',
+      section: 'info',
     },
     secondaryUploadCardFront: {
       type: 'fileUpload',
       value: '',
-      label: 'Upload Card Front Photo (Optional)',
+      label: 'Upload Card Front Photo',
       required: false,
       key: 'secondary_policy_image_front',
       loading: false,
+      section: 'cardInfo',
     },
     secondaryUploadCardBack: {
       type: 'fileUpload',
       value: '',
-      label: 'Upload Card Back Photo (Optional)',
+      label: 'Upload Card Back Photo',
       required: false,
       key: 'secondary_policy_image_back',
       loading: false,
+      section: 'cardInfo',
     },
     patientPowerOfAttorneyName: {
       type: 'textField',
       value: '',
-      label: "Patient's Power of Attorney Name (Optional)",
+      label: "Patient's Power of Attorney Name",
       required: false,
       key: 'poa_name',
+      section: 'poaInfo',
     },
     patientPowerOfAttorneyPhoneNumber: {
       type: 'phoneNumber',
       value: '',
-      label: "Patient's Power of Attorney Phone Number (Optional)",
+      label: "Patient's Power of Attorney Phone Number",
       required: false,
       key: 'poa_phone_number',
+      section: 'poaInfo',
     },
   })
 
@@ -192,7 +219,8 @@ const addPatientPage = () => {
   const validateForm = () => {
     let isValid = true
     Object.keys(formData).forEach((item) => {
-      if (formData[item].required && !formData[item].value) {
+      if (formData[item].section !== activeSection) return;
+      if (formData[item].required && !formData[item]?.value?.toString()) {
         isValid = false
       }
     })
@@ -235,7 +263,8 @@ const addPatientPage = () => {
         }
       })
       .catch((error) => {
-        openSnackBar({ message: error, snackSeverity: 'error' })
+        console.log('error', error)
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
       })
   }
 
@@ -304,13 +333,60 @@ const addPatientPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    addPatient(formData)
+    if (activeSection === 'info') {
+      setactiveSection('cardInfo')
+    }
+    if (activeSection === 'cardInfo') {
+      setactiveSection('idInfo')
+    }
+    if (activeSection === 'idInfo') {
+      setactiveSection('poaInfo')
+    }
+    if (activeSection === 'poaInfo') {
+      addPatient(formData)
+    }
+  }
+
+  const handleBack = (e) => {
+    e.preventDefault()
+    if (activeSection === 'info') {
+      router.back();
+    }
+    if (activeSection === 'cardInfo') {
+      setactiveSection('info')
+    }
+    if (activeSection === 'idInfo') {
+      setactiveSection('cardInfo')
+    }
+    if (activeSection === 'poaInfo') {
+      setactiveSection('idInfo')
+    }
+    //addPatient(formData)
   }
 
   return (
     <Container>
       <Typography variant="h2" className={classes.h2}>
-        Add New Patient
+        {activeSection === 'info' &&
+          <span>
+            Add New Resident
+          </span>
+        }
+        {activeSection === 'cardInfo' &&
+        <span>
+          Resident Insurance
+        </span>
+        }
+        {activeSection === 'idInfo' &&
+        <span>
+            Resident Identification
+          </span>
+        }
+        {activeSection === 'poaInfo' &&
+        <span>
+            Resident Power of Attorney
+          </span>
+        }
       </Typography>
 
       {loading && (
@@ -333,13 +409,39 @@ const addPatientPage = () => {
             alignItems="center"
             justifyContent="center"
           >
+            {activeSection === 'info' &&
             <Typography>
               Please enter all the information to add a new{' '}
-              <strong style={{ color: '#0092b8' }}>patient</strong>. All fields
-              are required unless marked optional.
+              <strong style={{ color: '#0092b8' }}>patient</strong>.
             </Typography>
+            }
+            {activeSection === 'cardInfo' &&
+            <Typography>
+              Please upload the front and back of each insurance card. Uploading images of insurance cards decreases the risk of faulty billing or denial of care.
+              <br />
+              <br />
+              <span style={{color: 'red'}}>*Note: This will be required when requesting an appointment</span>
+            </Typography>
+            }
+
+            {activeSection === 'idInfo' &&
+            <Typography>
+              Please upload an image of the patient's identification (Drivers License, State ID, or Passport)
+              <br />
+              <br />
+              <span style={{color: 'red'}}>*Note: This will be required when requesting an appointment</span>
+            </Typography>
+            }
+
+            {activeSection === 'poaInfo' &&
+            <Typography>
+              Please insert the resident's Power of Attorney information if applicable.
+            </Typography>
+            }
+
             {Object.keys(formData).map((key) => {
               const field = formData[key]
+              if (field.section !== activeSection) return null;
               if (field.type === 'textField') {
                 return (
                   <TextField
@@ -574,7 +676,7 @@ const addPatientPage = () => {
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
               <Button
-                onClick={() => router.back()}
+                onClick={handleBack}
                 color="secondary"
                 variant="contained"
               >
