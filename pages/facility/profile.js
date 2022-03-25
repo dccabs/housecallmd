@@ -283,7 +283,7 @@ const Profile = () => {
               {messages.length === 0 && !messagesLoading && (
                 <div>No messages for this user</div>
               )}
-              <Box>
+              <Box className="profile-messages">
                 {messages.length > 0 &&
                 !messagesLoading &&
                 messages.map((entry, index) => {
