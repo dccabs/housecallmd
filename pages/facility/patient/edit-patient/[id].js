@@ -156,6 +156,13 @@ const UserDetailsPage = () => {
       sequence: 130,
       loading,
     },
+    id_image: {
+      type: 'fileUpload',
+      value: '',
+      label: 'Upload ID (DL, State ID, Passport)',
+      sequence: 130,
+      loading: false,
+    },
     poa_name: {
       type: 'textField',
       value: '',
@@ -336,7 +343,7 @@ const UserDetailsPage = () => {
             <Box>
               <div>
                 <Typography variant="h2" className={classes.h2}>
-                  Edit Patient
+                  Edit Patient - {userName}
                 </Typography>
               </div>
               {/*<Typography variant="h3" className={classes.h3}>*/}
