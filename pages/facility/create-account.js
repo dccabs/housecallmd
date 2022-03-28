@@ -239,7 +239,7 @@ const Contact = () => {
         state: localState,
         zip: localZip,
         facility_phone: formatPhoneNumberE164(localFacilityPhone),
-        facility_fax: formatPhoneNumberE164(localFacilityFax),
+        fax_number: formatPhoneNumberE164(localFacilityFax),
         primary_contact_name: localPrimaryContactName,
         primary_contact_mobile_phone: formatPhoneNumberE164(
           localPrimaryContactMobilePhone
