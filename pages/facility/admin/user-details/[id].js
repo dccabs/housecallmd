@@ -191,7 +191,14 @@ const UserDetailsPage = () => {
       value: '',
       label: 'Upload Secondary Card Back Photo',
       sequence: 130,
-      loading,
+      loading: false,
+    },
+    id_image: {
+      type: 'fileUpload',
+      value: '',
+      label: 'Upload ID (DL, State ID, Passport)',
+      sequence: 130,
+      loading: false,
     },
     poa_name: {
       type: 'textField',
