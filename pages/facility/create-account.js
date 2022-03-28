@@ -82,6 +82,7 @@ const Contact = () => {
   const [localEmail, setLocalEmail] = useState('')
   const [localId, setLocalId] = useState('')
   const [localFacilityPhone, setLocalFacilityPhone] = useState('')
+  const [localFacilityFax, setLocalFacilityFax] = useState('')
   const [localAddress, setLocalAddress] = useState('')
   const [localCenterName, setLocalCenterName] = useState('')
   const [localCity, setLocalCity] = useState('')
@@ -238,6 +239,7 @@ const Contact = () => {
         state: localState,
         zip: localZip,
         facility_phone: formatPhoneNumberE164(localFacilityPhone),
+        facility_fax: formatPhoneNumberE164(localFacilityFax),
         primary_contact_name: localPrimaryContactName,
         primary_contact_mobile_phone: formatPhoneNumberE164(
           localPrimaryContactMobilePhone
@@ -452,6 +454,20 @@ const Contact = () => {
                   inputComponent: PhoneField,
                 }}
               />
+              <TextField
+                className={classes.textFields}
+                fullWidth
+                type="tel"
+                label="Facility Fax Number"
+                variant="outlined"
+                color="secondary"
+                required
+                value={localFacilityFax}
+                onChange={(e) => setLocalFacilityFax(e.target.value)}
+                InputProps={{
+                  inputComponent: PhoneField,
+                }}
+              />
 
               <TextField
                 fullWidth
@@ -572,6 +588,7 @@ const Contact = () => {
                     !localState ||
                     !localZip ||
                     !localFacilityPhone ||
+                    !localFacilityFax ||
                     !localCenterName ||
                     !localCity ||
                     !localState ||
