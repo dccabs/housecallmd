@@ -1,20 +1,14 @@
 import { useContext, useState, useEffect } from 'react'
-import Link from 'next/link'
 import {
   Typography,
   Box,
   TextField,
-  Checkbox,
   FormControl,
-  FormControlLabel,
-  FormHelperText,
-  OutlinedInput,
   InputLabel,
-  InputAdornment,
-  IconButton,
   Button,
   Select,
   MenuItem,
+  CircularProgress,
 } from '@material-ui/core'
 import Container from '../../../../components/Container'
 import PhoneField from '../../../../components/PhoneField'
@@ -66,14 +60,13 @@ const EditFacilityPage = () => {
   const { facility_uuid } = router.query
   const classes = useStyles()
   const openSnackBar = useContext(SnackBarContext)
-  const [open, setOpen] = useState(true)
-  const [fieldType, setFieldType] = useState('password')
-  const [confirmFieldType, setConfirmFieldType] = useState('password')
-  const [checked, setChecked] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [updateLoading, setUpdateLoading] = useState(false)
+  const [updated, setUpdated] = useState(false)
   const [localUsername, setLocalUsername] = useState('')
   const [localEmail, setLocalEmail] = useState('')
-  const [localId, setLocalId] = useState('')
   const [localFacilityPhone, setLocalFacilityPhone] = useState('')
+  const [localFacilityFax, setLocalFacilityFax] = useState('')
   const [localAddress, setLocalAddress] = useState('')
   const [localCenterName, setLocalCenterName] = useState('')
   const [localCity, setLocalCity] = useState('')
@@ -81,8 +74,6 @@ const EditFacilityPage = () => {
   const [localZip, setLocalZip] = useState('')
   const [localPrimaryContactName, setLocalPrimaryContactName] = useState('')
   const [localPrimaryContactShift, setLocalPrimaryContactShift] = useState('')
-  const [usernameAvailable, setUsernameAvailable] = useState(true)
-  const [usernameValid, setUsernameValid] = useState(true)
   const [
     localPrimaryContactMobilePhone,
     setLocalPrimaryContactMobilePhone,
@@ -105,293 +96,363 @@ const EditFacilityPage = () => {
         body: JSON.stringify({ id: facility_uuid }),
       })
       const data = await res.json()
-      console.log(data)
+
       if (data.error) {
         throw Error(data.error)
       } else {
-        setLocalUsername(data.user_name)
+        setLocalUsername(data.user_name !== null ? data.user_name : '')
         // setLocalEmail(data.email)
-        setLocalCenterName(data.name)
-        setLocalAddress(data.address)
-        setLocalCity(data.city)
-        setLocalState(data.state)
+        setLocalCenterName(data.name !== null ? data.name : '')
+        setLocalAddress(data.address !== null ? data.address : '')
+        setLocalCity(data.city !== null ? data.city : '')
+        setLocalState(data.state !== null ? data.state : '')
+        setLocalZip(data.zip !== null ? data.zip : '')
+        setLocalFacilityPhone(
+          data.facility_phone !== null ? data.facility_phone : ''
+        )
+        setLocalFacilityFax(data.fax_number !== null ? data.fax_number : '')
+        setLocalPrimaryContactName(
+          data.primary_contact_name !== null ? data.primary_contact_name : ''
+        )
+        setLocalPrimaryContactMobilePhone(
+          data.primary_contact_mobile_phone !== null
+            ? data.primary_contact_mobile_phone
+            : ''
+        )
+        setLocalPrimaryContactShift(
+          data.primary_contact_shift !== null ? data.primary_contact_shift : ''
+        )
+        setLocalSecondaryContactName(
+          data.secondary_contact_name !== null
+            ? data.secondary_contact_name
+            : ''
+        )
+        setLocalSecondaryContactMobilePhone(
+          data.secondary_contact_mobile_phone !== null
+            ? data.secondary_contact_mobile_phone
+            : ''
+        )
+        setLocalSecondaryContactShift(
+          data.secondary_contact_shift !== null
+            ? data.secondary_contact_shift
+            : ''
+        )
+
+        setLoading(false)
       }
     }
   }, [facility_uuid])
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    const payload = {
+      name: localCenterName,
+      address: localAddress,
+      city: localCity,
+      state: localState,
+      zip: localZip,
+      facility_phone: localFacilityPhone,
+      primary_contact_name: localPrimaryContactName,
+      primary_contact_mobile_phone: localPrimaryContactMobilePhone,
+      primary_contact_shift: localPrimaryContactShift,
+      secondary_contact_name: localSecondaryContactName,
+      secondary_contact_mobile_phone: localSecondaryContactMobilePhone,
+      secondary_contact_shift: localSecondaryContactShift,
+      fax_number: localFacilityFax,
+    }
+    setUpdateLoading(true)
+    fetch('/api/updateFacilityInfo', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({ id: facility_uuid, updatedFacility: payload }),
+    }).then((res) =>
+      res.json().then((data) => {
+        setUpdateLoading(false)
+        if (!data.error) {
+          openSnackBar({
+            message: 'Facility updated',
+            snackSeverity: 'success',
+          })
+          setUpdated(true)
+        } else {
+          openSnackBar({
+            message: data.error,
+            snackSeverity: 'error',
+          })
+        }
+      })
+    )
   }
 
   return (
-    <Container>
-      <Box>
-        <Typography variant="h2" className={classes.h2}>
-          Edit Facility Account
-        </Typography>
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <div>
-            <Typography style={{ margin: '2em 0 2em' }}>
-              Please enter your facility information below.
+    <>
+      {loading ? (
+        <Box
+          mt="4em"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Container>
+          <Box>
+            <Typography variant="h2" className={classes.h2}>
+              Edit Facility Account
             </Typography>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <TextField
-                className={classes.textFields}
-                type="text"
-                label="Choose Username"
-                variant="outlined"
-                color="secondary"
-                value={localUsername}
-                onChange={(e) => setLocalUsername(e.target.value)}
-                required
-                fullWidth
-                disabled
-              />
-              <TextField
-                className={classes.textFields}
-                fullWidth
-                type="email"
-                label="Email"
-                variant="outlined"
-                color="secondary"
-                value={localEmail}
-                onChange={(e) => setLocalEmail(e.target.value)}
-                required
-                disabled
-              />
-              <TextField
-                fullWidth
-                className={classes.textFields}
-                label="Center Name"
-                variant="outlined"
-                color="secondary"
-                required
-                value={localCenterName}
-                onChange={(e) => setLocalCenterName(e.target.value)}
-              />
-              <TextField
-                fullWidth
-                className={classes.textFields}
-                label="Center Address"
-                multiline
-                rows={4}
-                variant="outlined"
-                color="secondary"
-                value={localAddress}
-                onChange={(e) => setLocalAddress(e.target.value)}
-                required
-              />
-              <TextField
-                fullWidth
-                className={classes.textFields}
-                label="City"
-                variant="outlined"
-                color="secondary"
-                value={localCity}
-                onChange={(e) => setLocalCity(e.target.value)}
-                required
-              />
-              <MuiSelect
-                name="state"
-                label="State"
-                defaultValue=""
-                value={localState}
-                onChange={(e) => {
-                  setLocalState(e.target.value)
-                }}
-              >
-                {STATES.map((state, index) => {
-                  return (
-                    <MenuItem key={index} value={state.abbreviation}>
-                      {state.name}
-                    </MenuItem>
-                  )
-                })}
-              </MuiSelect>
-              <TextField
-                className={classes.textFields}
-                type="number"
-                label="Zip"
-                variant="outlined"
-                color="secondary"
-                fullWidth
-                required
-                value={localZip}
-                onChange={(e) => setLocalZip(e.target.value)}
-              />
-              <TextField
-                className={classes.textFields}
-                fullWidth
-                type="tel"
-                label="Facility Phone Number"
-                variant="outlined"
-                color="secondary"
-                required
-                value={localFacilityPhone}
-                onChange={(e) => setLocalFacilityPhone(e.target.value)}
-                InputProps={{
-                  inputComponent: PhoneField,
-                }}
-              />
-
-              <TextField
-                fullWidth
-                className={classes.textFields}
-                label="Primary Contact Name"
-                variant="outlined"
-                color="secondary"
-                value={localPrimaryContactName}
-                onChange={(e) => setLocalPrimaryContactName(e.target.value)}
-                required
-              />
-
-              <TextField
-                className={classes.textFields}
-                fullWidth
-                type="tel"
-                label="Primary Contact Mobile Phone"
-                variant="outlined"
-                color="secondary"
-                required
-                value={localPrimaryContactMobilePhone}
-                onChange={(e) =>
-                  setLocalPrimaryContactMobilePhone(e.target.value)
-                }
-                InputProps={{
-                  inputComponent: PhoneField,
-                }}
-              />
-
-              <FormControl variant="outlined" className={classes.textFields}>
-                <InputLabel id="primary_contact_shift" color="secondary">
-                  Primary Contact Shift
-                </InputLabel>
-                <Select
-                  labelId="primary_contact_shift"
-                  label="Primary Contact Shift"
-                  color="secondary"
-                  value={localPrimaryContactShift}
-                  onChange={(e) => setLocalPrimaryContactShift(e.target.value)}
-                >
-                  <MenuItem value="day">Day</MenuItem>
-                  <MenuItem value="night">Night</MenuItem>
-                  <MenuItem value="both">Both</MenuItem>
-                </Select>
-              </FormControl>
-
-              <TextField
-                fullWidth
-                className={classes.textFields}
-                label="Secondary Account Name"
-                variant="outlined"
-                color="secondary"
-                value={localSecondaryContactName}
-                onChange={(e) => setLocalSecondaryContactName(e.target.value)}
-              />
-
-              <TextField
-                className={classes.textFields}
-                fullWidth
-                type="tel"
-                label="Secondary Contact Mobile Phone"
-                variant="outlined"
-                color="secondary"
-                value={localSecondaryContactMobilePhone}
-                onChange={(e) =>
-                  setLocalSecondaryContactMobilePhone(e.target.value)
-                }
-                InputProps={{
-                  inputComponent: PhoneField,
-                }}
-              />
-
-              <FormControl variant="outlined" className={classes.textFields}>
-                <InputLabel id="primary_contact_shift" color="secondary">
-                  Secondary Contact Shift
-                </InputLabel>
-                <Select
-                  labelId="primary_contact_shift"
-                  label="Primary Contact Shift"
-                  color="secondary"
-                  value={localSecondaryContactShift}
-                  onChange={(e) =>
-                    setLocalSecondaryContactShift(e.target.value)
-                  }
-                >
-                  <MenuItem value="day">Day</MenuItem>
-                  <MenuItem value="night">Night</MenuItem>
-                  <MenuItem value="both">Both</MenuItem>
-                </Select>
-              </FormControl>
-
-              <Box mt="1em" width="100%" maxWidth="34rem">
-                <FormControl component="fieldset">
-                  <FormControlLabel
-                    value="Terms"
-                    control={<Checkbox color="secondary" checked={checked} />}
-                    label="Accept terms and conditions of HousecallMD"
-                    labelPlacement="end"
-                    onChange={() => setChecked(!checked)}
-                  />
-                </FormControl>
-              </Box>
-            </Box>
-            <Box
-              mt="2em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  disabled={
-                    !localEmail ||
-                    !localState ||
-                    !localZip ||
-                    !localFacilityPhone ||
-                    !localCenterName ||
-                    !localCity ||
-                    !localState ||
-                    !localZip ||
-                    !localPrimaryContactName ||
-                    !localPrimaryContactShift ||
-                    !localPrimaryContactMobilePhone ||
-                    !checked
-                  }
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  size="large"
-                >
-                  Create Account
-                </Button>
-              </Box>
-            </Box>
-            <Box
-              mt="1em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box m="1em">
-                <Typography variant="body1">
-                  Already have an account?{' '}
-                  <Link passHref href={'/login'}>
-                    <a>Login here</a>
-                  </Link>
-                  .
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+              <div>
+                <Typography style={{ margin: '2em 0 2em' }}>
+                  Please enter your facility information below.
                 </Typography>
-              </Box>
-            </Box>
-          </div>
-        </form>
-      </Box>
-    </Container>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <TextField
+                    className={classes.textFields}
+                    type="text"
+                    label="Choose Username"
+                    variant="outlined"
+                    color="secondary"
+                    value={localUsername}
+                    onChange={(e) => setLocalUsername(e.target.value)}
+                    fullWidth
+                    disabled
+                  />
+                  <TextField
+                    className={classes.textFields}
+                    fullWidth
+                    type="email"
+                    label="Email"
+                    variant="outlined"
+                    color="secondary"
+                    value={localEmail}
+                    onChange={(e) => setLocalEmail(e.target.value)}
+                    disabled
+                  />
+                  <TextField
+                    fullWidth
+                    className={classes.textFields}
+                    label="Center Name"
+                    variant="outlined"
+                    color="secondary"
+                    value={localCenterName}
+                    onChange={(e) => setLocalCenterName(e.target.value)}
+                  />
+                  <TextField
+                    fullWidth
+                    className={classes.textFields}
+                    label="Center Address"
+                    multiline
+                    rows={4}
+                    variant="outlined"
+                    color="secondary"
+                    value={localAddress}
+                    onChange={(e) => setLocalAddress(e.target.value)}
+                  />
+                  <TextField
+                    fullWidth
+                    className={classes.textFields}
+                    label="City"
+                    variant="outlined"
+                    color="secondary"
+                    value={localCity}
+                    onChange={(e) => setLocalCity(e.target.value)}
+                  />
+                  <MuiSelect
+                    name="state"
+                    label="State"
+                    defaultValue=""
+                    value={localState}
+                    onChange={(e) => {
+                      setLocalState(e.target.value)
+                    }}
+                  >
+                    {STATES.map((state, index) => {
+                      return (
+                        <MenuItem key={index} value={state.abbreviation}>
+                          {state.name}
+                        </MenuItem>
+                      )
+                    })}
+                  </MuiSelect>
+                  <TextField
+                    className={classes.textFields}
+                    type="number"
+                    label="Zip"
+                    variant="outlined"
+                    color="secondary"
+                    fullWidth
+                    value={localZip}
+                    onChange={(e) => setLocalZip(e.target.value)}
+                  />
+                  <TextField
+                    className={classes.textFields}
+                    fullWidth
+                    type="tel"
+                    label="Facility Phone Number"
+                    variant="outlined"
+                    color="secondary"
+                    value={localFacilityPhone}
+                    onChange={(e) => setLocalFacilityPhone(e.target.value)}
+                    InputProps={{
+                      inputComponent: PhoneField,
+                    }}
+                  />
+
+                  <TextField
+                    className={classes.textFields}
+                    fullWidth
+                    type="tel"
+                    label="Facility Fax Number"
+                    variant="outlined"
+                    color="secondary"
+                    value={localFacilityFax}
+                    onChange={(e) => setLocalFacilityFax(e.target.value)}
+                    InputProps={{
+                      inputComponent: PhoneField,
+                    }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    className={classes.textFields}
+                    label="Primary Contact Name"
+                    variant="outlined"
+                    color="secondary"
+                    value={localPrimaryContactName}
+                    onChange={(e) => setLocalPrimaryContactName(e.target.value)}
+                  />
+
+                  <TextField
+                    className={classes.textFields}
+                    fullWidth
+                    type="tel"
+                    label="Primary Contact Mobile Phone"
+                    variant="outlined"
+                    color="secondary"
+                    value={localPrimaryContactMobilePhone}
+                    onChange={(e) =>
+                      setLocalPrimaryContactMobilePhone(e.target.value)
+                    }
+                    InputProps={{
+                      inputComponent: PhoneField,
+                    }}
+                  />
+
+                  <FormControl
+                    variant="outlined"
+                    className={classes.textFields}
+                  >
+                    <InputLabel id="primary_contact_shift" color="secondary">
+                      Primary Contact Shift
+                    </InputLabel>
+                    <Select
+                      labelId="primary_contact_shift"
+                      label="Primary Contact Shift"
+                      color="secondary"
+                      value={localPrimaryContactShift}
+                      onChange={(e) =>
+                        setLocalPrimaryContactShift(e.target.value)
+                      }
+                    >
+                      <MenuItem value="day">Day</MenuItem>
+                      <MenuItem value="night">Night</MenuItem>
+                      <MenuItem value="both">Both</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <TextField
+                    fullWidth
+                    className={classes.textFields}
+                    label="Secondary Account Name"
+                    variant="outlined"
+                    color="secondary"
+                    value={localSecondaryContactName}
+                    onChange={(e) =>
+                      setLocalSecondaryContactName(e.target.value)
+                    }
+                  />
+
+                  <TextField
+                    className={classes.textFields}
+                    fullWidth
+                    type="tel"
+                    label="Secondary Contact Mobile Phone"
+                    variant="outlined"
+                    color="secondary"
+                    value={localSecondaryContactMobilePhone}
+                    onChange={(e) =>
+                      setLocalSecondaryContactMobilePhone(e.target.value)
+                    }
+                    InputProps={{
+                      inputComponent: PhoneField,
+                    }}
+                  />
+
+                  <FormControl
+                    variant="outlined"
+                    className={classes.textFields}
+                  >
+                    <InputLabel id="primary_contact_shift" color="secondary">
+                      Secondary Contact Shift
+                    </InputLabel>
+                    <Select
+                      labelId="primary_contact_shift"
+                      label="Primary Contact Shift"
+                      color="secondary"
+                      value={localSecondaryContactShift}
+                      onChange={(e) =>
+                        setLocalSecondaryContactShift(e.target.value)
+                      }
+                    >
+                      <MenuItem value="day">Day</MenuItem>
+                      <MenuItem value="night">Night</MenuItem>
+                      <MenuItem value="both">Both</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box
+                  mt="2em"
+                  display="flex"
+                  justifyContent="center"
+                  flexWrap="wrap"
+                >
+                  {updateLoading ? (
+                    <Box
+                      m="1em"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <CircularProgress />
+                    </Box>
+                  ) : (
+                    <Box m="1em" className={classes.buttonLinks}>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        variant="contained"
+                        size="large"
+                        disabled={updated}
+                      >
+                        Update
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+              </div>
+            </form>
+          </Box>
+        </Container>
+      )}
+    </>
   )
 }
 
