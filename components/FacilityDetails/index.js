@@ -1,10 +1,19 @@
-import { Table, TableCell, TableRow, Typography, Box } from '@material-ui/core'
+import {
+  Table,
+  TableCell,
+  TableRow,
+  Typography,
+  Box,
+  Tooltip,
+  IconButton,
+} from '@material-ui/core'
 import MaterialTable from 'material-table'
 import React from 'react'
 import useStyles from './use-styles'
 import tableCols from './table-cols'
 import Container from '../Container'
 import { useRouter } from 'next/router'
+import EditIcon from '@material-ui/icons/Edit'
 
 const FacilityDetails = ({ facility }) => {
   const router = useRouter()
@@ -18,10 +27,21 @@ const FacilityDetails = ({ facility }) => {
   return (
     <>
       <Container>
-
-        <Typography variant="h2" className={classes.h2}>
-          {facility?.name}
-        </Typography>
+        <Box display="flex" alignItems="end">
+          <Typography variant="h2" className={classes.h2}>
+            {facility?.name}
+          </Typography>
+          <Tooltip title="Edit Facility Details">
+            <IconButton
+              component="span"
+              onClick={() =>
+                router.push(`/facility/admin/edit-facility/${facility?.id}`)
+              }
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
 
         <Table>
           <TableRow>
