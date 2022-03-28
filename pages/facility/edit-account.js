@@ -64,6 +64,7 @@ const EditAccount = () => {
   const openSnackBar = useContext(SnackBarContext)
   const [localEmail, setLocalEmail] = useState('')
   const [localFacilityPhone, setLocalFacilityPhone] = useState('')
+  const [localFacilityFax, setLocalFacilityFax] = useState('')
   const [localAddress, setLocalAddress] = useState('')
   const [localCenterName, setLocalCenterName] = useState('')
   const [localCity, setLocalCity] = useState('')
@@ -102,10 +103,10 @@ const EditAccount = () => {
       setLocalState(data.state)
       setLocalZip(data.zip)
       setLocalFacilityPhone(data.facility_phone)
+      setLocalFacilityFax(data.fax_number)
       setLocalPrimaryContactName(data.primary_contact_name)
       setLocalPrimaryContactMobilePhone(data.primary_contact_mobile_phone)
       setLocalPrimaryContactShift(data.primary_contact_shift)
-
       setLocalSecondaryContactName(data.secondary_contact_name)
       setLocalSecondaryContactMobilePhone(data.secondary_contact_mobile_phone)
       setLocalSecondaryContactShift(data.secondary_contact_shift)
@@ -124,6 +125,7 @@ const EditAccount = () => {
       state: localState,
       zip: localZip,
       facility_phone: formatPhoneNumberE164(localFacilityPhone),
+      fax_number: formatPhoneNumberE164(localFacilityFax),
       primary_contact_name: localPrimaryContactName,
       primary_contact_mobile_phone: formatPhoneNumberE164(
         localPrimaryContactMobilePhone
@@ -281,6 +283,20 @@ const EditAccount = () => {
                 }}
                 helperText="Please use a phone number that can create and receive sms notifications"
               />
+              <TextField
+                className={classes.textFields}
+                fullWidth
+                type="tel"
+                label="Fax Number"
+                variant="outlined"
+                color="secondary"
+                required
+                value={localFacilityFax}
+                onChange={(e) => setLocalFacilityFax(e.target.value)}
+                InputProps={{
+                  inputComponent: PhoneField,
+                }}
+              />
 
               <TextField
                 fullWidth
@@ -386,6 +402,7 @@ const EditAccount = () => {
                     !localState ||
                     !localZip ||
                     !localFacilityPhone ||
+                    !localFacilityFax ||
                     !localCenterName ||
                     !localCity ||
                     !localState ||

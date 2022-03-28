@@ -10,7 +10,11 @@ import {
   Tooltip,
   IconButton,
   Modal,
-  Paper, InputLabel, Select, MenuItem, FormControl
+  Paper,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
 } from '@material-ui/core'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
@@ -23,7 +27,7 @@ import { useRouter } from 'next/router'
 import useStore from '../../zustand/store'
 import Message from 'components/Facility/Message'
 import RefreshIcon from '@material-ui/icons/Refresh'
-
+import EditIcon from '@material-ui/icons/Edit'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -83,7 +87,7 @@ const Profile = () => {
   const [appointmentsLoading, setAppointmentsLoading] = useState(true)
   const [messages, setMessages] = useState([])
   const [messagesLoading, setMessagesLoading] = useState(true)
-  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
 
   const { user } = Auth.useUser()
   const appointmentsWithPatientName = []
@@ -91,8 +95,8 @@ const Profile = () => {
   useEffect(async () => {
     if (user) {
       await fetchProfileInformation().then(() => {
-        setLoading(false);
-      });
+        setLoading(false)
+      })
     }
   }, [user])
 
@@ -100,12 +104,12 @@ const Profile = () => {
 
   useEffect(async () => {
     if (tabValue === 1 && Object.keys(state).length !== 0) {
-      const data = await fetchFacilityAppointments();
-      setAppointments(data);
+      const data = await fetchFacilityAppointments()
+      setAppointments(data)
       setAppointmentsLoading(false)
     }
     if (tabValue === 0 && user?.id) {
-      getFacilityMessages();
+      getFacilityMessages()
     }
   }, [tabValue, state])
 
@@ -171,7 +175,7 @@ const Profile = () => {
     const payload = {
       id: user.id,
     }
-    let returnData = {};
+    let returnData = {}
     await fetch('/api/getFacilityById', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -182,7 +186,7 @@ const Profile = () => {
       .then((data) => {
         if (data) {
           setState({ ...data })
-          returnData = {...data};
+          returnData = { ...data }
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',
@@ -191,7 +195,7 @@ const Profile = () => {
           setLoading(false)
         }
       })
-    return returnData;
+    return returnData
   }
 
   return (
@@ -222,9 +226,19 @@ const Profile = () => {
         <>
           <Container>
             <Box>
-              <Typography variant="h2" className={classes.h2}>
-                {state.name}
-              </Typography>
+              <Box display="flex" alignItems="end">
+                <Typography variant="h2" className={classes.h2}>
+                  {state.name}
+                </Typography>
+                <Tooltip title="Edit Profile">
+                  <IconButton
+                    component="span"
+                    onClick={() => router.push(`/facility/edit-account`)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
               <div style={{ marginTop: '1em' }}>{state.address}</div>
               <div>
                 {state.city}, {state.state} {state.zip}
@@ -285,14 +299,14 @@ const Profile = () => {
               )}
               <Box className="profile-messages">
                 {messages.length > 0 &&
-                !messagesLoading &&
-                messages.map((entry, index) => {
-                  return <Message entry={entry} index={index} />
-                })}
+                  !messagesLoading &&
+                  messages.map((entry, index) => {
+                    return <Message entry={entry} index={index} />
+                  })}
               </Box>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              {appointmentsLoading ?
+              {appointmentsLoading ? (
                 <Box
                   my="8em"
                   display="flex"
@@ -301,9 +315,9 @@ const Profile = () => {
                 >
                   <CircularProgress />
                 </Box>
-                :
+              ) : (
                 <AppointmentTable appointments={appointments} />
-              }
+              )}
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               <MaterialTable
@@ -368,28 +382,31 @@ const Profile = () => {
           }}
         >
           <Paper>
-            <div style={{
-              padding: 40,
-            }}>
+            <div
+              style={{
+                padding: 40,
+              }}
+            >
               <h3>Choose a Resident</h3>
-                <Box mt="1em">
-                  <Select
-                    fullWidth
-                    id="select-patient"
-                    placeholder={'Select Patient'}
-                    variant='outlined'
-                    onChange={handlePatientSelect}
-                  >
-                    <MenuItem selected>Choose A Resident</MenuItem>
-                    {state?.patients && state.patients.map((patient) => {
+              <Box mt="1em">
+                <Select
+                  fullWidth
+                  id="select-patient"
+                  placeholder={'Select Patient'}
+                  variant="outlined"
+                  onChange={handlePatientSelect}
+                >
+                  <MenuItem selected>Choose A Resident</MenuItem>
+                  {state?.patients &&
+                    state.patients.map((patient) => {
                       return (
                         <MenuItem value={patient.id} selected>
                           {patient.first_name} {patient.last_name}
                         </MenuItem>
                       )
                     })}
-                  </Select>
-                </Box>
+                </Select>
+              </Box>
             </div>
           </Paper>
         </div>
