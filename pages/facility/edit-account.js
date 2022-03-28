@@ -103,11 +103,10 @@ const EditAccount = () => {
       setLocalState(data.state)
       setLocalZip(data.zip)
       setLocalFacilityPhone(data.facility_phone)
-      setLocalFacilityFax(data.facility_fax)
+      setLocalFacilityFax(data.fax_number)
       setLocalPrimaryContactName(data.primary_contact_name)
       setLocalPrimaryContactMobilePhone(data.primary_contact_mobile_phone)
       setLocalPrimaryContactShift(data.primary_contact_shift)
-
       setLocalSecondaryContactName(data.secondary_contact_name)
       setLocalSecondaryContactMobilePhone(data.secondary_contact_mobile_phone)
       setLocalSecondaryContactShift(data.secondary_contact_shift)
