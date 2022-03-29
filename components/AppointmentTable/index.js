@@ -1,4 +1,6 @@
 import MaterialTable from 'material-table'
+import { useEffect } from 'react'
+import {useRouter} from 'next/router'
 
 const publicWithName = [
   {
@@ -95,7 +97,20 @@ const adminWithoutName = [
   },
 ]
 
-function AppointmentTable({ appointments, hideName = false, admin = false}) {
+const AppointmentTable = ({ appointments, hideName = false, admin = false, hideCompleted = false, hideNonCompleted}) => {
+
+  const router = useRouter();
+
+  const nonCompleteAppointments = appointments.filter(appointment => {
+    return appointment.completed === false;
+  })
+
+  const completedAppointments = appointments.filter(appointment => {
+    return appointment.completed === true;
+  })
+
+  const displayAppointments = hideCompleted ? nonCompleteAppointments : hideNonCompleted ? completedAppointments : appointments;
+
   let columnData = [];
   if (admin) {
     if (hideName) {
@@ -114,17 +129,17 @@ function AppointmentTable({ appointments, hideName = false, admin = false}) {
     <MaterialTable
       title="Appointments"
       columns={columnData}
-      data={appointments}
+      data={displayAppointments}
       options={{
         paginationType: 'stepped',
         selection: true,
         pageSize: 50,
         pageSizeOptions: [50, 100, 200],
       }}
-      // onRowClick={(event, rowData) => {
-      //   const { id } = rowData
-      //   router.push(`/facility/patient/${id}`)
-      // }}
+      onRowClick={(event, rowData) => {
+        const { id } = rowData
+        router.push(`/facility/admin/appointment/${id}`)
+      }}
     />
   )
 }

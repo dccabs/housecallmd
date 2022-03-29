@@ -14,10 +14,41 @@ import { SnackBarContext } from '../../../components/SnackBar'
 import useStore from '../../../zustand/store'
 import Users from '../../../components/Facility/Users'
 import Centers from '../../../components/Facility/Centers'
-import AppointmentTable from '../../../components/AppointmentTable'
+import AppointmentTable from 'components/AppointmentTable'
 import xhrHeader from '../../../constants/xhrHeader'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../components/Facility/Message'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from 'components/Container'
+
+
+const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
+  facilityLink: {
+    '& a': {
+      textDecoration: 'none',
+      color: theme.palette.secondary.main,
+    },
+  },
+  textFields: {
+    width: '100%',
+    marginTop: '2em',
+    maxWidth: '34rem',
+  },
+  buttonLinks: {
+    '& button': {
+      padding: '1em',
+      fontWeight: 600,
+      width: '16rem',
+
+      '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+  },
+}))
 
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
@@ -30,21 +61,23 @@ function TabPanel(props) {
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
+      //hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
+        <>
+          {children}
+        </>
       )}
     </div>
   )
 }
 
 function UserAdmin(props) {
+  const classes = useStyles()
+
   const [authorized, setAuthorized] = useState(false)
   const [tabValue, setTabValue] = useState(1)
   const [appointments, setAppointments] = useState([])
@@ -192,7 +225,15 @@ function UserAdmin(props) {
   return (
     <>
       {authorized && (
-        <>
+        <Container
+          style={{
+            maxWidth: 1200,
+            margin: '0 auto',
+          }}
+        >
+          <Typography variant="h2" className={classes.h2}>
+            Facility Admin
+          </Typography>
           <Box mt="1em">
             <Tabs
               value={tabValue}
@@ -200,8 +241,9 @@ function UserAdmin(props) {
             >
               <Tab label="Messages" {...a11yProps(0)} wrap />
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Users" {...a11yProps(2)} wrap />
-              <Tab label="Centers" {...a11yProps(3)} />
+              <Tab label="Completed Appointments" {...a11yProps(2)} />
+              <Tab label="Users" {...a11yProps(3)} wrap />
+              <Tab label="Centers" {...a11yProps(4)} />
             </Tabs>
           </Box>
 
@@ -237,15 +279,18 @@ function UserAdmin(props) {
             </Box>
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
-            <AppointmentTable appointments={appointments} admin />
+            <AppointmentTable appointments={appointments} admin hideCompleted />
           </TabPanel>
           <TabPanel value={tabValue} index={2}>
-            <Users user={user} />
+            <AppointmentTable appointments={appointments} admin hideNonCompleted />
           </TabPanel>
           <TabPanel value={tabValue} index={3}>
+            <Users user={user} />
+          </TabPanel>
+          <TabPanel value={tabValue} index={4}>
             <Centers user={user} />
           </TabPanel>
-        </>
+        </Container>
       )}
     </>
   )
