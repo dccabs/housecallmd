@@ -12,7 +12,9 @@ import {
   CircularProgress,
   Tabs,
   Tab,
+
 } from '@material-ui/core'
+import CheckIcon from '@material-ui/icons/Check';
 import { Autocomplete } from '@material-ui/lab'
 import {
   MuiPickersUtilsProvider,
@@ -81,6 +83,7 @@ const AppointmentDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [note, setNote] = useState('');
 
   const classes = useStyles()
   const { user } = Auth.useUser()
@@ -97,6 +100,7 @@ const AppointmentDetailsPage = () => {
         .then((res) => res.json())
         .then((res) => {
           setData(res);
+          setNote(res?.note);
           setLoading(false);
         })
     }
@@ -118,6 +122,15 @@ const AppointmentDetailsPage = () => {
           <Box display="flex" alignItems="end">
             <Typography variant="h2" className={classes.h2}>
               Appointment
+              <Button
+                style={{marginLeft: 30}}
+                size="small"
+                variant="contained"
+              >
+                <Tooltip title={`${data.complete ? 'Mark Incomplete' : 'Mark Complete'}`}>
+                  <CheckIcon />
+                </Tooltip>
+              </Button>
             </Typography>
           </Box>
           <Box style={{margin: '40px 0 0'}}>
@@ -127,6 +140,9 @@ const AppointmentDetailsPage = () => {
               </Box>
               <Box>
                 <strong>Facility:</strong> {facility_info?.name}
+              </Box>
+              <Box>
+                <strong>Facility Phone:</strong> {facility_info?.facility_phone}
               </Box>
               <Box>
                 <strong>Room Number:</strong> {user_info?.room_number}
@@ -143,6 +159,52 @@ const AppointmentDetailsPage = () => {
                   {data?.visitReason}
                 </Box>
               </Box>
+              <Box style={{margin: '40px 0 0px'}}>
+                <Box style={{marginBottom: 10}}>
+                  <strong>HousecallMD Notes:</strong>
+                </Box>
+                <Box>
+                  <TextField
+                    placeholder="Visit Reason"
+                    value={note}
+                    multiline
+                    rows={8}
+                    maxrows={8}
+                    fullWidth
+                    variant="outlined"
+                    onChange={(e) => updateNotes(e.target.value)}
+                    // disabled={messagesLoading}
+                  />
+                  <Button
+                    style={{marginTop: 10}}
+                    size="large"
+                    variant="contained"
+                    color="primary"
+                  >
+                    Update Notes
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+            <Box style={{margin: '40px 0 0px'}}>
+              <Button
+                color="secondary"
+                style={{marginTop: 10}}
+                size="large"
+                variant="contained"
+              >
+                Send Message to {facility_info?.name} about this appointment
+              </Button>
+            </Box>
+            <Box style={{margin: '10px 0 0px'}}>
+              <Button
+                color="secondary"
+                style={{marginTop: 10}}
+                size="large"
+                variant="contained"
+              >
+                Create a video chat room for this appointment
+              </Button>
             </Box>
           </Box>
         </>
