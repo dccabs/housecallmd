@@ -24,20 +24,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 import { Auth } from '@supabase/ui'
 import Link from 'next/link'
-import { supabase } from 'utils/initSupabase'
 
 import Container from 'components/Container'
-import MuiSelect from 'components/MuiSelect'
-import PhoneField from 'components/PhoneField'
-import providerOptions from 'public/constants/providerOptions'
 import { SnackBarContext } from 'components/SnackBar'
-import { v4 as uuidv4 } from 'uuid'
-import AppointmentTable from '../../../../components/AppointmentTable'
 import xhrHeader from '../../../../constants/xhrHeader'
-import RefreshIcon from '@material-ui/icons/Refresh'
-import Message from '../../../../components/Facility/Message'
-const NEXT_PUBLIC_SUPABASE_STORAGE_URL =
-  process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -87,8 +77,9 @@ const TabPanel = (props) => {
   )
 }
 
-const UserDetailsPage = () => {
+const AppointmentDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
 
   const classes = useStyles()
@@ -97,7 +88,6 @@ const UserDetailsPage = () => {
   const { id: appointmentId } = router.query
 
   useEffect(() => {
-    console.log('appointmentId', appointmentId)
     if (user && appointmentId) {
       // setLoading(true)
       fetch('/api/getFacilityAppointmentById', {
@@ -106,23 +96,59 @@ const UserDetailsPage = () => {
       })
         .then((res) => res.json())
         .then((res) => {
-          console.log('res', res)
+          setData(res);
+          setLoading(false);
         })
     }
   }, [user, appointmentId])
 
+  const { user_info, facility_info } = data || {};
 
   return (
     <Container>
-      <Box display="flex" alignItems="end">
-        <Typography variant="h2" className={classes.h2}>
-          Appointment
-        </Typography>
-      </Box>
-      Details
+      {loading ?
+          <Container>
+            <div style={{textAlign: 'center'}}>
+              <CircularProgress />
+            </div>
+          </Container>
 
+        :
+        <>
+          <Box display="flex" alignItems="end">
+            <Typography variant="h2" className={classes.h2}>
+              Appointment
+            </Typography>
+          </Box>
+          <Box style={{margin: '40px 0 0'}}>
+            <Box style={{margin: '40px 0 0'}}>
+              <Box>
+                <strong>Name:</strong> {user_info?.first_name} {user_info?.last_name}
+              </Box>
+              <Box>
+                <strong>Facility:</strong> {facility_info?.name}
+              </Box>
+              <Box>
+                <strong>Room Number:</strong> {user_info?.room_number}
+              </Box>
+              <Box>
+                <strong>Date:</strong> {data?.created_at}
+              </Box>
+
+              <Box style={{margin: '40px 0 0'}}>
+                <Box>
+                  <strong>Visit Reason:</strong>
+                </Box>
+                <Box>
+                  {data?.visitReason}
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </>
+      }
     </Container>
   )
 }
 
-export default UserDetailsPage
+export default AppointmentDetailsPage
