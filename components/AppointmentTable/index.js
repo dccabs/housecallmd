@@ -1,5 +1,6 @@
 import MaterialTable from 'material-table'
 import { useEffect } from 'react'
+import {useRouter} from 'next/router'
 
 const publicWithName = [
   {
@@ -96,8 +97,10 @@ const adminWithoutName = [
   },
 ]
 
-function AppointmentTable({ appointments, hideName = false, admin = false, hideCompleted = false, hideNonCompleted}) {
-  console.log('appointments', appointments);
+const AppointmentTable = ({ appointments, hideName = false, admin = false, hideCompleted = false, hideNonCompleted}) => {
+
+  const router = useRouter();
+
   const nonCompleteAppointments = appointments.filter(appointment => {
     return appointment.completed === false;
   })
@@ -133,10 +136,10 @@ function AppointmentTable({ appointments, hideName = false, admin = false, hideC
         pageSize: 50,
         pageSizeOptions: [50, 100, 200],
       }}
-      // onRowClick={(event, rowData) => {
-      //   const { id } = rowData
-      //   router.push(`/facility/patient/${id}`)
-      // }}
+      onRowClick={(event, rowData) => {
+        const { id } = rowData
+        router.push(`/facility/admin/appointment/${id}`)
+      }}
     />
   )
 }
