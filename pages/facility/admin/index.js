@@ -18,6 +18,36 @@ import AppointmentTable from '../../../components/AppointmentTable'
 import xhrHeader from '../../../constants/xhrHeader'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../components/Facility/Message'
+import { makeStyles } from '@material-ui/core/styles'
+
+
+const useStyles = makeStyles((theme) => ({
+  h2: {
+    marginTop: '.5em',
+  },
+  facilityLink: {
+    '& a': {
+      textDecoration: 'none',
+      color: theme.palette.secondary.main,
+    },
+  },
+  textFields: {
+    width: '100%',
+    marginTop: '2em',
+    maxWidth: '34rem',
+  },
+  buttonLinks: {
+    '& button': {
+      padding: '1em',
+      fontWeight: 600,
+      width: '16rem',
+
+      '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+  },
+}))
 
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
@@ -45,6 +75,8 @@ function TabPanel(props) {
 }
 
 function UserAdmin(props) {
+  const classes = useStyles()
+
   const [authorized, setAuthorized] = useState(false)
   const [tabValue, setTabValue] = useState(1)
   const [appointments, setAppointments] = useState([])
@@ -192,7 +224,15 @@ function UserAdmin(props) {
   return (
     <>
       {authorized && (
-        <>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: '0 auto',
+          }}
+        >
+          <Typography variant="h2" className={classes.h2}>
+            Facility Admin
+          </Typography>
           <Box mt="1em">
             <Tabs
               value={tabValue}
@@ -245,7 +285,7 @@ function UserAdmin(props) {
           <TabPanel value={tabValue} index={3}>
             <Centers user={user} />
           </TabPanel>
-        </>
+        </div>
       )}
     </>
   )
