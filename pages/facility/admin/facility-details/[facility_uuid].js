@@ -12,15 +12,15 @@ import {
   Tooltip,
   IconButton,
 } from '@material-ui/core'
-import xhrHeader from '../../../../constants/xhrHeader'
+import xhrHeader from 'constants/xhrHeader'
 import { SnackBarContext } from 'components/SnackBar'
-import Container from '../../../../components/Container'
-import FacilityDetails from '../../../../components/FacilityDetails'
+import Container from 'components/Container'
+import FacilityDetails from 'components/FacilityDetails'
 import MaterialTable from 'material-table'
-import tableCols from '../../../../components/FacilityDetails/table-cols'
+import tableCols from 'components/FacilityDetails/table-cols'
 import RefreshIcon from '@material-ui/icons/Refresh'
-import Message from '../../../../components/Facility/Message'
-import AppointmentTable from '../../../../components/AppointmentTable'
+import Message from 'components/Facility/Message'
+import AppointmentTable from 'components/AppointmentTable'
 import { Auth } from '@supabase/ui'
 
 const TabPanel = (props) => {
@@ -179,7 +179,8 @@ const FacilityDetailsPage = () => {
   return (
     <>
       {authorized && (
-        <>
+        <Container
+        >
           <NextSeo
             title="My Facility Account | House Call MD"
             description="My Facility Account |  House Call MD."
@@ -210,9 +211,9 @@ const FacilityDetailsPage = () => {
                   <CircularProgress />
                 </Box>
               ) : (
-                <>
+                <div style={{marginBottom: 40}}>
                   <FacilityDetails facility={facility} />
-                </>
+                </div>
               )}
               <Box style={{ padding: 10 }}>
                 <Tabs
@@ -282,7 +283,7 @@ const FacilityDetailsPage = () => {
               </Box>
             </>
           )}
-        </>
+        </Container>
       )}
     </>
   )

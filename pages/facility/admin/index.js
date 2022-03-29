@@ -19,6 +19,7 @@ import xhrHeader from '../../../constants/xhrHeader'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../components/Facility/Message'
 import { makeStyles } from '@material-ui/core/styles'
+import Container from 'components/Container'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -224,7 +225,7 @@ function UserAdmin(props) {
   return (
     <>
       {authorized && (
-        <div
+        <Container
           style={{
             maxWidth: 1200,
             margin: '0 auto',
@@ -285,7 +286,7 @@ function UserAdmin(props) {
           <TabPanel value={tabValue} index={3}>
             <Centers user={user} />
           </TabPanel>
-        </div>
+        </Container>
       )}
     </>
   )
