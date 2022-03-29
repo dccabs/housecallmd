@@ -2580,7 +2580,7 @@ make-dir@^3.0.2:
 
 material-table@^1.69.3:
   version "1.69.3"
-  resolved "https://registry.npmjs.org/material-table/-/material-table-1.69.3.tgz"
+  resolved "https://registry.yarnpkg.com/material-table/-/material-table-1.69.3.tgz#3f282cffecf5461985965cd4a516bebb8069bf2d"
   integrity sha512-UT/eQbUqfAg6XstcnM8dOQNgWmWbH5tbRmwqfGfPKQUQQXq/jb1z2spFHXPJBhEZFmk+Q95HlopiE6nAHymLMw==
   dependencies:
     "@date-io/date-fns" "1.1.0"

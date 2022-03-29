@@ -14,7 +14,7 @@ import { SnackBarContext } from '../../../components/SnackBar'
 import useStore from '../../../zustand/store'
 import Users from '../../../components/Facility/Users'
 import Centers from '../../../components/Facility/Centers'
-import AppointmentTable from '../../../components/AppointmentTable'
+import AppointmentTable from 'components/AppointmentTable'
 import xhrHeader from '../../../constants/xhrHeader'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../components/Facility/Message'
@@ -61,15 +61,15 @@ function TabPanel(props) {
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
+      //hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
+        <>
+          {children}
+        </>
       )}
     </div>
   )
@@ -241,8 +241,9 @@ function UserAdmin(props) {
             >
               <Tab label="Messages" {...a11yProps(0)} wrap />
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Users" {...a11yProps(2)} wrap />
-              <Tab label="Centers" {...a11yProps(3)} />
+              <Tab label="Completed Appointments" {...a11yProps(2)} />
+              <Tab label="Users" {...a11yProps(3)} wrap />
+              <Tab label="Centers" {...a11yProps(4)} />
             </Tabs>
           </Box>
 
@@ -278,12 +279,15 @@ function UserAdmin(props) {
             </Box>
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
-            <AppointmentTable appointments={appointments} admin />
+            <AppointmentTable appointments={appointments} admin hideCompleted />
           </TabPanel>
           <TabPanel value={tabValue} index={2}>
-            <Users user={user} />
+            <AppointmentTable appointments={appointments} admin hideNonCompleted />
           </TabPanel>
           <TabPanel value={tabValue} index={3}>
+            <Users user={user} />
+          </TabPanel>
+          <TabPanel value={tabValue} index={4}>
             <Centers user={user} />
           </TabPanel>
         </Container>
