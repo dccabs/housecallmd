@@ -79,16 +79,21 @@ const TabPanel = (props) => {
   )
 }
 
+
+
 const AppointmentDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [note, setNote] = useState('');
+  const [completed, setCompleted] = useState('');
 
   const classes = useStyles()
   const { user } = Auth.useUser()
   const router = useRouter()
   const { id: appointmentId } = router.query
+ // console.log('id', id);
+  console.log('appointmentId', appointmentId)
 
   useEffect(() => {
     if (user && appointmentId) {
@@ -101,10 +106,49 @@ const AppointmentDetailsPage = () => {
         .then((res) => {
           setData(res);
           setNote(res?.note);
+          setCompleted(res?.completed);
           setLoading(false);
         })
     }
   }, [user, appointmentId])
+
+  const handleStatusClick = ({status}) => {
+    const payload = {
+      id: Number(appointmentId),
+      status,
+    }
+    fetch('/api/updateFacilityAppointmentStatus', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        openSnackBar({
+          message: 'Appointment Status Updated',
+          snackSeverity: 'success',
+        })
+        setCompleted(status);
+      })
+  }
+
+  const handleUpdateNotes = () => {
+    const payload = {
+      id: Number(appointmentId),
+      note,
+    }
+    fetch('/api/updateFacilityAppointmentNote', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        openSnackBar({
+          message: 'Appointment Note Updated',
+          snackSeverity: 'success',
+        })
+      })
+  }
+
 
   const { user_info, facility_info } = data || {};
 
@@ -123,12 +167,13 @@ const AppointmentDetailsPage = () => {
             <Typography variant="h2" className={classes.h2}>
               Appointment
               <Button
-                style={{marginLeft: 30}}
+                style={{marginLeft: 30, backgroundColor: completed ? '#13bb0a' : null}}
                 size="small"
                 variant="contained"
+                onClick={() => { handleStatusClick({status: !completed}) }}
               >
-                <Tooltip title={`${data.complete ? 'Mark Incomplete' : 'Mark Complete'}`}>
-                  <CheckIcon />
+                <Tooltip title={`${completed ? 'Mark Incomplete' : 'Mark Complete'}`}>
+                  <CheckIcon style={{fill: completed ? '#fff' : null}} />
                 </Tooltip>
               </Button>
             </Typography>
@@ -172,7 +217,7 @@ const AppointmentDetailsPage = () => {
                     maxrows={8}
                     fullWidth
                     variant="outlined"
-                    onChange={(e) => updateNotes(e.target.value)}
+                    onChange={(e) => setNote(e.target.value)}
                     // disabled={messagesLoading}
                   />
                   <Button
@@ -180,6 +225,7 @@ const AppointmentDetailsPage = () => {
                     size="large"
                     variant="contained"
                     color="primary"
+                    onClick={handleUpdateNotes}
                   >
                     Update Notes
                   </Button>
