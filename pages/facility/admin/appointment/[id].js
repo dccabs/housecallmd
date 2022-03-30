@@ -95,6 +95,13 @@ const AppointmentDetailsPage = () => {
  // console.log('id', id);
   console.log('appointmentId', appointmentId)
 
+
+  useEffect(() => {
+    console.log('user', user)
+    if (user && appointmentId) {
+
+    }
+  }, [user])
   useEffect(() => {
     if (user && appointmentId) {
       // setLoading(true)

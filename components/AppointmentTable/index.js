@@ -124,7 +124,7 @@ const AppointmentTable = ({ appointments, hideName = false, admin = false, hideC
       columnData = publicWithName;
     }
   }
-  
+
   return (
     <MaterialTable
       title="Appointments"
