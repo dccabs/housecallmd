@@ -53,7 +53,6 @@ const adminWithName = [
   {
     title: 'Last Name',
     field: 'lastName',
-    hidden: true,
     render: (rowData) => rowData.facility_patients.last_name,
   },
   {
