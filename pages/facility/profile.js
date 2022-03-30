@@ -88,6 +88,7 @@ const Profile = () => {
   const [messages, setMessages] = useState([])
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
+  const [patientSelectLoading, setPatientSelectLoading] = useState(false);
 
   const { user } = Auth.useUser()
   const appointmentsWithPatientName = []
@@ -125,6 +126,7 @@ const Profile = () => {
   }
 
   const handlePatientSelect = (e) => {
+    setPatientSelectLoading(true);
     router.push(`/facility/create-appointment/${e.target.value}`)
   }
 
@@ -402,14 +404,25 @@ const Profile = () => {
                 padding: 40,
               }}
             >
-              <h3>Choose a Resident</h3>
+              <h3>Please choose a resident to create an appointment</h3>
               <Box mt="1em">
+                {patientSelectLoading && (
+                  <Box
+                    my="8em"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <CircularProgress />
+                  </Box>
+                )}
                 <Select
                   fullWidth
                   id="select-patient"
                   placeholder={'Select Patient'}
                   variant="outlined"
                   onChange={handlePatientSelect}
+                  disabled={patientSelectLoading}
                 >
                   <MenuItem selected>Choose A Resident</MenuItem>
                   {state?.patients &&

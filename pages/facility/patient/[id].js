@@ -22,6 +22,7 @@ import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import xhrHeader from '../../../constants/xhrHeader'
+import FacilityMessageModal from 'components/FacilityMessageModal';
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -340,48 +341,16 @@ const Patient = () => {
           </Container>
         </>
       )}
-      <Modal open={messageModalOpen} onClose={() => setMessageModalOpen(false)}>
-        <Box
-          style={{
-            backgroundColor: '#fff',
-            maxWidth: 700,
-            width: '90%',
-            margin: '10% auto',
-            padding: 40,
-            borderRadius: 10,
-          }}
-        >
-          <Typography
-            variant="h5"
-            className={classes.h2}
-            style={{ marginBottom: '1em' }}
-          >
-            Send a message to HouseCall MD about {state.first_name}{' '}
-            {state.last_name}
-          </Typography>
-          <TextField
-            placeholder="MultiLine with rows: 2 and rowsMax: 4"
-            multiline
-            rows={8}
-            maxRows={8}
-            fullWidth
-            variant="outlined"
-            onChange={(e) => setMessage(e.target.value)}
-            disabled={messagesLoading}
-          />
-          <Button
-            disabled={!message}
-            onClick={sendMessage}
-            style={{ marginTop: '1em' }}
-            size="small"
-            variant="contained"
-            color="secondary"
-          >
-            Send Message
-          </Button>
-          {messagesLoading && <CircularProgress />}
-        </Box>
-      </Modal>
+      <FacilityMessageModal
+        open={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+        title="Your are sending a message to HouseCall MD about the following patient"
+        patientName={`${state.first_name} ${state.last_name}`}
+        patientId={patientId}
+        recipientId={null}
+        senderId={user?.id}
+        callbackFn={getPatientMessages}
+      />
     </>
   )
 }
