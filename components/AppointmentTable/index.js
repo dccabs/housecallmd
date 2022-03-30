@@ -53,7 +53,6 @@ const adminWithName = [
   {
     title: 'Last Name',
     field: 'lastName',
-    hidden: true,
     render: (rowData) => rowData.facility_patients.last_name,
   },
   {
@@ -125,6 +124,7 @@ const AppointmentTable = ({ appointments, hideName = false, admin = false, hideC
       columnData = publicWithName;
     }
   }
+
   return (
     <MaterialTable
       title="Appointments"
@@ -138,7 +138,8 @@ const AppointmentTable = ({ appointments, hideName = false, admin = false, hideC
       }}
       onRowClick={(event, rowData) => {
         const { id } = rowData
-        router.push(`/facility/admin/appointment/${id}`)
+        const appointmentUrl = admin ? `/facility/admin/appointment/${id}` : `/facility/appointment/${id}`;
+        router.push(appointmentUrl)
       }}
     />
   )

@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = () => {
   const classes = useStyles()
   const store = useStore()
-  const { setFacilityAdminTableTab } = useStore()
+  const { setFacilityAdminTableTab, setIsAdmin } = useStore()
   const router = useRouter()
   const { user, session } = Auth.useUser()
   const openSnackBar = useContext(SnackBarContext)
@@ -103,7 +103,7 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setLocalIsAdmin] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -121,7 +121,8 @@ const Navbar = () => {
           if (res) {
             setFirstName(res?.firstName ? res?.firstName : res?.name)
             setLastName(res?.lastName ?? '')
-            setIsAdmin(res?.role === 'admin')
+            setLocalIsAdmin(res.role === true)
+            setIsAdmin(res.role === true);
             setLoading(false)
           }
         })

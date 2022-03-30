@@ -16,8 +16,6 @@ const getFacilityAppointmentById = async (req, res) => {
     `)
     .eq('id', id)
 
-  console.log('appointments', appointments)
-
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(appointments[0])
 }

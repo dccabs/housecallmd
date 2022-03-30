@@ -89,27 +89,18 @@ function UserAdmin(props) {
 
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
-  const { facilityAdminTableTab, setFacilityAdminTableTab } = useStore()
+  const { facilityAdminTableTab, setFacilityAdminTableTab, isAdmin } = useStore()
+  console.log('isAdmin', isAdmin)
 
   useEffect(() => {
-    if (user) {
-      fetch('/api/getSingleUser', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify({ email: user.email }),
+    if (!isAdmin) {
+      openSnackBar({
+        message: 'You are not authorized to view this page',
+        snackSeverity: 'error',
       })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.role === 'admin') {
-            setAuthorized(true)
-          } else {
-            openSnackBar({
-              message: 'You are not authorized to view this page',
-              snackSeverity: 'error',
-            })
-          }
-        })
+      setAuthorized(false);
+    } else {
+      setAuthorized(true);
     }
   }, [user])
 

@@ -103,7 +103,7 @@ const Profile = () => {
   const { facilityProfileTableTab, setFacilityProfileTableTab } = useStore()
 
   useEffect(async () => {
-    if (tabValue === 1 && Object.keys(state).length !== 0) {
+    if ((tabValue === 1 || tabValue ===2) && Object.keys(state).length !== 0) {
       const data = await fetchFacilityAppointments()
       setAppointments(data)
       setAppointmentsLoading(false)
@@ -265,13 +265,14 @@ const Profile = () => {
               </div>
             </Box>
           </Container>
-          <Box style={{ padding: '0 10px' }}>
+          <Container>
             <Tabs
               value={tabValue}
               onChange={(e, newValue) => setFacilityProfileTableTab(newValue)}
             >
               <Tab label="Messages" {...a11yProps(0)} />
               <Tab label="Appointments" {...a11yProps(1)} />
+              <Tab label="Completed Appointments" {...a11yProps(1)} />
               <Tab label="Residents" {...a11yProps(2)} />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
@@ -316,10 +317,24 @@ const Profile = () => {
                   <CircularProgress />
                 </Box>
               ) : (
-                <AppointmentTable appointments={appointments} />
+                <AppointmentTable appointments={appointments} hideCompleted />
               )}
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
+              {appointmentsLoading ? (
+                <Box
+                  my="8em"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <AppointmentTable appointments={appointments} hideNonCompleted />
+              )}
+            </TabPanel>
+            <TabPanel value={tabValue} index={3}>
               <MaterialTable
                 title="Patients"
                 columns={[
@@ -364,7 +379,7 @@ const Profile = () => {
                 //onRowClick={(event, rowData) => rowSelected(rowData)}
               />
             </TabPanel>
-          </Box>
+          </Container>
         </>
       )}
 

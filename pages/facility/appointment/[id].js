@@ -1,35 +1,21 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-import useStore from '../../../../zustand/store'
+
 import {
   Typography,
   Box,
   Button,
   TextField,
-  MenuItem,
-  IconButton,
   Tooltip,
   CircularProgress,
-  Tabs,
-  Tab,
-
 } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check';
-import { Autocomplete } from '@material-ui/lab'
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers'
-import EditIcon from '@material-ui/icons/Edit'
-import DateFnsUtils from '@date-io/date-fns'
 import { makeStyles } from '@material-ui/core/styles'
-import moment from 'moment'
 import { Auth } from '@supabase/ui'
-import Link from 'next/link'
 
 import Container from 'components/Container'
 import { SnackBarContext } from 'components/SnackBar'
-import xhrHeader from '../../../../constants/xhrHeader'
+import xhrHeader from 'constants/xhrHeader'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -59,28 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  )
-}
-
-
-
 const AppointmentDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
   const [loading, setLoading] = useState(true);
@@ -92,16 +56,7 @@ const AppointmentDetailsPage = () => {
   const { user } = Auth.useUser()
   const router = useRouter()
   const { id: appointmentId } = router.query
- // console.log('id', id);
-  console.log('appointmentId', appointmentId)
 
-
-  useEffect(() => {
-    console.log('user', user)
-    if (user && appointmentId) {
-
-    }
-  }, [user])
   useEffect(() => {
     if (user && appointmentId) {
       // setLoading(true)
@@ -162,28 +117,23 @@ const AppointmentDetailsPage = () => {
   return (
     <Container>
       {loading ?
-          <Container>
-            <div style={{textAlign: 'center'}}>
-              <CircularProgress />
-            </div>
-          </Container>
+        <Container>
+          <div style={{textAlign: 'center'}}>
+            <CircularProgress />
+          </div>
+        </Container>
 
         :
         <>
-          <Box display="flex" alignItems="end">
+          <Box display="flex" alignItems="baseline">
             <Typography variant="h2" className={classes.h2}>
               Appointment
-              <Button
-                style={{marginLeft: 30, backgroundColor: completed ? '#13bb0a' : null}}
-                size="small"
-                variant="contained"
-                onClick={() => { handleStatusClick({status: !completed}) }}
-              >
-                <Tooltip title={`${completed ? 'Mark Incomplete' : 'Mark Complete'}`}>
-                  <CheckIcon style={{fill: completed ? '#fff' : null}} />
-                </Tooltip>
-              </Button>
             </Typography>
+            {completed &&
+            <Box style={{marginLeft: 40, display: 'flex', alignItems: 'center'}}>
+              <CheckIcon style={{fill: completed ? '#13bb0a' : null}} /> <span style={{marginLeft: 10}}>Completed</span>
+            </Box>
+            }
           </Box>
           <Box style={{margin: '40px 0 0'}}>
             <Box style={{margin: '40px 0 0'}}>
@@ -211,33 +161,6 @@ const AppointmentDetailsPage = () => {
                   {data?.visitReason}
                 </Box>
               </Box>
-              <Box style={{margin: '40px 0 0px'}}>
-                <Box style={{marginBottom: 10}}>
-                  <strong>HousecallMD Notes:</strong>
-                </Box>
-                <Box>
-                  <TextField
-                    placeholder="Visit Reason"
-                    value={note}
-                    multiline
-                    rows={8}
-                    maxrows={8}
-                    fullWidth
-                    variant="outlined"
-                    onChange={(e) => setNote(e.target.value)}
-                    // disabled={messagesLoading}
-                  />
-                  <Button
-                    style={{marginTop: 10}}
-                    size="large"
-                    variant="contained"
-                    color="primary"
-                    onClick={handleUpdateNotes}
-                  >
-                    Update Notes
-                  </Button>
-                </Box>
-              </Box>
             </Box>
             <Box style={{margin: '40px 0 0px'}}>
               <Button
@@ -246,17 +169,7 @@ const AppointmentDetailsPage = () => {
                 size="large"
                 variant="contained"
               >
-                Send Message to {facility_info?.name} about this appointment
-              </Button>
-            </Box>
-            <Box style={{margin: '10px 0 0px'}}>
-              <Button
-                color="secondary"
-                style={{marginTop: 10}}
-                size="large"
-                variant="contained"
-              >
-                Create a video chat room for this appointment
+                Send Message to HouseCallMD about this appointment
               </Button>
             </Box>
           </Box>
