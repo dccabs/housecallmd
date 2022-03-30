@@ -296,6 +296,7 @@ const Patient = () => {
               >
                 <Tab label="Messages" {...a11yProps(0)} />
                 <Tab label="Appointments" {...a11yProps(1)} />
+                <Tab label="Completed Appointments" {...a11yProps(2)} />
               </Tabs>
 
               <TabPanel value={tabValue} index={0}>
@@ -330,7 +331,10 @@ const Patient = () => {
                 </Box>
               </TabPanel>
               <TabPanel value={tabValue} index={1}>
-                <AppointmentTable appointments={appointments} hideName hideNote />
+                <AppointmentTable appointments={appointments} hideName hideNote hideCompleted />
+              </TabPanel>
+              <TabPanel value={tabValue} index={2}>
+                <AppointmentTable appointments={appointments} hideName hideNote hideNonCompleted />
               </TabPanel>
             </Box>
           </Container>

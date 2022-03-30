@@ -265,7 +265,7 @@ const Profile = () => {
               </div>
             </Box>
           </Container>
-          <Box style={{ padding: '0 10px' }}>
+          <Container>
             <Tabs
               value={tabValue}
               onChange={(e, newValue) => setFacilityProfileTableTab(newValue)}
@@ -364,7 +364,7 @@ const Profile = () => {
                 //onRowClick={(event, rowData) => rowSelected(rowData)}
               />
             </TabPanel>
-          </Box>
+          </Container>
         </>
       )}
 
