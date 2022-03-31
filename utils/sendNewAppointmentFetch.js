@@ -3,7 +3,7 @@ const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
 
 const sendNewAppointmentFetch = async (props) => {
   const {
-    recepient_email, // email_address to send mail
+    recipient_email, // email_address to send mail
     subject,
     hasInsurance,
     provider,
@@ -27,8 +27,7 @@ const sendNewAppointmentFetch = async (props) => {
     policyHolderRelation,
     insuranceOptOut,
     reason,
-
-  } = props;
+  } = props
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
     headers: {
@@ -40,14 +39,14 @@ const sendNewAppointmentFetch = async (props) => {
         {
           to: [
             {
-              email: recepient_email,
+              email: recipient_email,
             },
           ],
           subject: subject,
         },
       ],
       from: {
-        email: recepient_email,
+        email: recipient_email,
         name: 'HouseCall MD Appointments',
       },
       content: [
@@ -62,7 +61,9 @@ const sendNewAppointmentFetch = async (props) => {
               </div>
               <br><br>
               
-             <div style="font-weight: bold">Patient Using Insurance: ${hasInsurance && !insuranceOptOut}</div>
+             <div style="font-weight: bold">Patient Using Insurance: ${
+               hasInsurance && !insuranceOptOut
+             }</div>
              
              
               <div style="font-weight: bold">Reason for Visit: ${reason}</div>
@@ -86,12 +87,13 @@ const sendNewAppointmentFetch = async (props) => {
               
               <br><br>
               <div style="font-weight: bold">Policy cardholder: ${isPolicyCardHolder}</div>
-              ${!isPolicyCardHolder ?
-                `<div>Policy cardholder first name: ${policyHolderFirstName}</div>
+              ${
+                !isPolicyCardHolder
+                  ? `<div>Policy cardholder first name: ${policyHolderFirstName}</div>
                 <div>Policy card holder last name: ${policyHolderLastName}</div>
                 <div>Policy card holder date of birth: ${policyHolderDob}</div>
                 <div>Gurantor's Relationship to patient: ${policyHolderRelation}</div>`
-               : ''
+                  : ''
               }
               
               <br />
