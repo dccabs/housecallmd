@@ -48,7 +48,6 @@ const CreateAppointment = () => {
 
   useEffect(() => {
     if (patientData) {
-      console.log('patient', patientData)
       !patientData.policy_image_back || !patientData.policy_image_front
         ? setCardImageError(true)
         : setCardImageError(false)
@@ -114,8 +113,8 @@ const CreateAppointment = () => {
           sendMessage()
         } else {
           openSnackBar({
-            message: 'There was an error.  Please try again later',
-            error: 'error',
+            message: 'There was an error. Please try again later',
+            snackSeverity: 'error',
           })
           setLoading(false)
         }
@@ -136,16 +135,45 @@ const CreateAppointment = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.success) {
-          setLoading(false)
+        if (data) {
+          sendMail()
+        } else {
           openSnackBar({
-            message: 'Appointment Sent to HouseCall MD',
-            snackSeverity: 'success',
+            message: 'There was an error. Please try again later',
+            snackSeverity: 'error',
           })
-          setVisitReason(null)
-          router.back()
+          setLoading(false)
         }
       })
+  }
+
+  const sendMail = () => {
+    const subject = `${patientData?.facility_info?.name} has just requested an appointment for ${patientData?.first_name} ${patientData?.last_name}`
+    const recipient_email = process.env.SENDGRID_DEFAULT_EMAIL
+    const email = process.env.SENDGRID_DEFAULT_EMAIL
+    const name = 'House Call MD'
+    const message = `
+      <b>Facility Name:</b> ${patientData?.facility_info?.name}<br />
+      <b>Patient Name:</b> ${patientData?.first_name} ${patientData?.last_name}<br />
+      <b>Visit Reason:</b> ${visitReason}
+    `
+
+    fetch('/api/sendMail', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ subject, recipient_email, email, name, message }),
+    }).then((res) => {
+      setLoading(false)
+      openSnackBar({
+        message: 'Appointment Sent to HouseCall MD',
+        snackSeverity: 'success',
+      })
+      setVisitReason(null)
+      router.back()
+    })
   }
 
   const handleSubmit = () => {
