@@ -196,6 +196,11 @@ const CreateAppointment = () => {
           )}
           {!loading && (
             <div>
+              <Box>
+                <div onClick={() => router.back()} className="link">
+                  Go Back
+                </div>
+              </Box>
               <Typography className={classes.h2} variant="h2">
                 Create An Appointment for {patientData?.first_name}
               </Typography>

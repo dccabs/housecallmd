@@ -5,17 +5,16 @@ import {
   Typography,
   Box,
   Button,
-  TextField,
-  Tooltip,
   CircularProgress,
 } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check';
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
-
+import Message from 'components/Facility/Message'
 import Container from 'components/Container'
 import { SnackBarContext } from 'components/SnackBar'
 import xhrHeader from 'constants/xhrHeader'
+import FacilityMessageModal from '../../../components/FacilityMessageModal'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -50,6 +49,7 @@ const AppointmentDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [note, setNote] = useState('');
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [completed, setCompleted] = useState('');
 
   const classes = useStyles()
@@ -125,6 +125,11 @@ const AppointmentDetailsPage = () => {
 
         :
         <>
+          <Box>
+            <div onClick={() => router.back()} className="link">
+              Go Back
+            </div>
+          </Box>
           <Box display="flex" alignItems="baseline">
             <Typography variant="h2" className={classes.h2}>
               Appointment
@@ -168,11 +173,22 @@ const AppointmentDetailsPage = () => {
                 style={{marginTop: 10}}
                 size="large"
                 variant="contained"
+                onClick={() => setMessageModalOpen(true)}
               >
                 Send Message to HouseCallMD about this appointment
               </Button>
             </Box>
           </Box>
+          <FacilityMessageModal
+            open={messageModalOpen}
+            onClose={() => setMessageModalOpen(false)}
+            title="Your are sending a message to HouseCall MD about the following patient"
+            patientName={`${user_info?.first_name} ${user_info?.last_name}`}
+            patientId={user_info?.id}
+            recipientId={null}
+            senderId={user?.id}
+            callbackFn={() => {}}
+          />
         </>
       }
     </Container>
