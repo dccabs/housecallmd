@@ -5,14 +5,12 @@ import {
   Typography,
   Box,
   Button,
-  TextField,
-  Tooltip,
   CircularProgress,
 } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check';
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
-
+import Message from 'components/Facility/Message'
 import Container from 'components/Container'
 import { SnackBarContext } from 'components/SnackBar'
 import xhrHeader from 'constants/xhrHeader'

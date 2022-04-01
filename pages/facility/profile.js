@@ -28,6 +28,7 @@ import useStore from '../../zustand/store'
 import Message from 'components/Facility/Message'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import EditIcon from '@material-ui/icons/Edit'
+import FacilityMessageModal from '../../components/FacilityMessageModal'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -86,11 +87,14 @@ const Profile = () => {
   const [appointments, setAppointments] = useState([])
   const [appointmentsLoading, setAppointmentsLoading] = useState(true)
   const [messages, setMessages] = useState([])
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
   const [patientSelectLoading, setPatientSelectLoading] = useState(false);
 
   const { user } = Auth.useUser()
+
+  console.log('user', user)
   const appointmentsWithPatientName = []
 
   useEffect(async () => {
@@ -263,6 +267,14 @@ const Profile = () => {
                   variant="contained"
                 >
                   Create New Appointment
+                </Button>
+                <Button
+                  style={{ marginLeft: 20 }}
+                  onClick={() => setMessageModalOpen(true)}
+                  color="secondary"
+                  variant="contained"
+                >
+                  Send A Message To HouseCall
                 </Button>
               </div>
             </Box>
@@ -439,6 +451,16 @@ const Profile = () => {
           </Paper>
         </div>
       </Modal>
+      <FacilityMessageModal
+        open={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+        title="Your are sending general message to HouseCall MD. If this message applies to a resident please send the message through the resident's page."
+        patientName={null}
+        patientId={null}
+        recipientId={null}
+        senderId={user?.id}
+        callbackFn={getFacilityMessages}
+      />
     </>
   )
 }

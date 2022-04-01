@@ -59,7 +59,7 @@ const getAllFacilityMessages = async (req, res) => {
   const newMessages = messages.map(entry => {
     const patient_id = entry.patient_id;
     const patientMatch = patients.find(patient => {
-      return patient.id === patient_id;
+      return patient?.id === patient_id;
     })
 
     let sentFromHouseCall = false;
@@ -107,8 +107,8 @@ const getAllFacilityMessages = async (req, res) => {
 
 
     return {
-      patient_id: patientMatch.id,
-      patient_name: `${patientMatch.first_name} ${patientMatch.last_name}`,
+      patient_id: patientMatch?.id,
+      patient_name: `${patientMatch?.first_name} ${patientMatch?.last_name}`,
       message: entry.message,
       sender: senderObj,
       recipient: recipientObj,

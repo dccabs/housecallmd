@@ -81,8 +81,6 @@ const Patient = () => {
   const [messages, setMessages] = useState([])
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
-  const [message, setMessage] = useState('')
-  const [messageLoading, setMessageLoading] = useState(false)
   const [appointments, setAppointments] = useState([])
   const { facilityPatientTableTab, setFacilityPatientTableTab } = useStore()
 
@@ -197,42 +195,6 @@ const Patient = () => {
             error: 'error',
           })
           setMessagesLoading(false)
-        }
-      })
-  }
-
-  const sendMessage = () => {
-    const payload = {
-      created_at: new Date(),
-      sender: user.id,
-      recipient: null,
-      patient_id: patientId,
-      message,
-      viewed_by_recipient: false,
-    }
-    setMessagesLoading(true)
-
-    fetch('/api/addFacilityMessage', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setMessagesLoading(false)
-        setMessageModalOpen(false)
-        if (data) {
-          openSnackBar({
-            message: 'Message successfully sent',
-            // error: 'error',
-          })
-          getPatientMessages()
-        } else {
-          openSnackBar({
-            message: 'There was an error.  Please try again later',
-            error: 'error',
-          })
         }
       })
   }
