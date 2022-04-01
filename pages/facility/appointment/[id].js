@@ -125,6 +125,11 @@ const AppointmentDetailsPage = () => {
 
         :
         <>
+          <Box>
+            <div onClick={() => router.back()} className="link">
+              Go Back
+            </div>
+          </Box>
           <Box display="flex" alignItems="baseline">
             <Typography variant="h2" className={classes.h2}>
               Appointment
