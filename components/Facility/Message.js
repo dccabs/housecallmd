@@ -14,6 +14,8 @@ const styles = {
     alignItems:
       isAdmin && entry?.sentFromHouseCall
         ? 'flex-end'
+        : isAdmin && !entry.sentFromHouseCall
+        ? 'flex-start'
         : !isAdmin && entry.sentFromHouseCall
         ? 'flex-start'
         : 'flex-end',
@@ -23,11 +25,13 @@ const styles = {
     borderRadius: 12,
     fontSize: 14,
     padding: 16,
-    color: isAdmin && entry?.sentFromHouseCall ? '#fff' : '#000',
+    color: isAdmin && entry?.sentFromHouseCall ? '#000' : '#000',
     marginTop: 5,
     backgroundColor:
       isAdmin && entry?.sentFromHouseCall
         ? 'lightBlue'
+        : isAdmin && !entry.sentFromHouseCall
+        ? '#e3e3e3'
         : !isAdmin && entry.sentFromHouseCall
         ? '#e3e3e3'
         : 'lightBlue',
@@ -35,7 +39,7 @@ const styles = {
 
   timestamp: ({ isAdmin, entry }) => ({
     fontSize: 10,
-    color: isAdmin && entry?.sentFromHouseCall ? '#fff' : 'gray',
+    color: isAdmin && entry?.sentFromHouseCall ? 'gray' : 'gray',
     textAlign: isAdmin && entry?.sentFromHouseCall ? 'right' : 'left',
     paddingTop: 4,
   }),
