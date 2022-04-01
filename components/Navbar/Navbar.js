@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = () => {
   const classes = useStyles()
   const store = useStore()
-  const { setFacilityAdminTableTab, setIsAdmin } = useStore()
+  const { setFacilityAdminTableTab, setIsAdmin, isAdmin } = useStore()
   const router = useRouter()
   const { user, session } = Auth.useUser()
   const openSnackBar = useContext(SnackBarContext)
@@ -103,7 +103,8 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [isAdmin, setLocalIsAdmin] = useState(false)
+  const [isLocalAdmin, setLocalIsAdmin] = useState(false)
+
 
   useEffect(() => {
     if (user) {
@@ -119,10 +120,11 @@ const Navbar = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res) {
+            console.log('res', res.role)
             setFirstName(res?.firstName ? res?.firstName : res?.name)
             setLastName(res?.lastName ?? '')
-            setLocalIsAdmin(res.role === true)
-            setIsAdmin(res.role === true);
+            setLocalIsAdmin(res.role === 'admin')
+            setIsAdmin(res.role === 'admin');
             setLoading(false)
           }
         })
@@ -167,7 +169,7 @@ const Navbar = () => {
                   </strong>
                 </Typography>
 
-                {isAdmin && (
+                {isLocalAdmin && (
                   <Box display="flex">
                     <span style={{ marginLeft: 10 }}>
                       <Link href="/user-admin">
