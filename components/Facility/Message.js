@@ -4,6 +4,8 @@ import {
   makeStyles,
 } from '@material-ui/core'
 
+import Link from 'next/link';
+
 const useStyles = makeStyles((theme) => ({
   author: { fontSize: 10, color: 'gray' },
 }))
@@ -65,14 +67,19 @@ const Message = ({ entry, index, isAdmin, onReplyClick }) => {
         </div>
         {entry?.patient_first_name && entry.patient_last_name &&
         <div>
-          <strong>Patient: </strong> {entry.patient_first_name} {entry.patient_last_name}
+          <strong>Patient: </strong>
+          <Link href={isAdmin ? `/facility/admin/user-details/${entry.patient_id}` : `/facility/patient/${entry.patient_id}`}>
+            <a>
+              {entry.patient_first_name} {entry.patient_last_name}
+            </a>
+          </Link>
         </div>
         }
         <div style={styles.timestamp({ isAdmin, entry })}>
           <strong>Timestamp</strong>: {entry.created_at}
         </div>
         {!isAdmin && entry.sentFromHouseCall && onReplyClick &&
-        <div style={{marginTop: 20}} onClick={onReplyClick}>
+        <div style={{marginTop: 20, cursor: 'pointer', textDecoration: 'underline', color: '#e1215b',}} onClick={onReplyClick}>
           Reply To This Message
         </div>
         }
