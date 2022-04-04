@@ -91,11 +91,16 @@ const Profile = () => {
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
   const [patientSelectLoading, setPatientSelectLoading] = useState(false);
+  const [replyModalOpen, setReplyModalOpen] = useState(false)
+  const [replyModalData, setReplyModalData] = useState({
+    modalOpen: false,
+    title: `You are replying to the following message`,
+    patientName: null,
+    patientId: null,
+    receipientId: null,
+  });
 
   const { user } = Auth.useUser()
-
-  console.log('user', user)
-  const appointmentsWithPatientName = []
 
   useEffect(async () => {
     if (user) {
@@ -132,6 +137,19 @@ const Profile = () => {
   const handlePatientSelect = (e) => {
     setPatientSelectLoading(true);
     router.push(`/facility/create-appointment/${e.target.value}`)
+  }
+
+  const setReply = (entry) => {
+    console.log('entry', entry)
+    setReplyModalOpen(true);
+    const title = entry.patient_first_name ? 'You are sending a message to HouseCallMD about the following patient' : 'You are sending a general message to HouseCallMD';
+
+    const data = Object.assign(replyModalData, {});
+    data.modalOpen = true;
+    data.title = title;
+    data.patientName = `${entry.patient_first_name} ${entry.patient_last_name}`;
+    data.patientId = entry.patient_id;
+    setReplyModalData(data)
   }
 
   const getFacilityMessages = () => {
@@ -316,7 +334,7 @@ const Profile = () => {
                 {messages.length > 0 &&
                   !messagesLoading &&
                   messages.map((entry, index) => {
-                    return <Message entry={entry} index={index} />
+                    return <Message entry={entry} index={index} onReplyClick={() => setReply(entry)} />
                   })}
               </Box>
             </TabPanel>
@@ -457,6 +475,17 @@ const Profile = () => {
         title="Your are sending general message to HouseCall MD. If this message applies to a resident please send the message through the resident's page."
         patientName={null}
         patientId={null}
+        recipientId={null}
+        senderId={user?.id}
+        callbackFn={getFacilityMessages}
+      />
+
+      <FacilityMessageModal
+        open={replyModalOpen}
+        onClose={() => setReplyModalOpen(false)}
+        title={replyModalData.title}
+        patientName={replyModalData.patientName}
+        patientId={replyModalData.patientId}
         recipientId={null}
         senderId={user?.id}
         callbackFn={getFacilityMessages}

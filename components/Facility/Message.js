@@ -45,7 +45,7 @@ const styles = {
   }),
 }
 
-const Message = ({ entry, index, isAdmin }) => {
+const Message = ({ entry, index, isAdmin, onReplyClick }) => {
   const classes = useStyles()
   return (
     <ListItem
@@ -63,12 +63,19 @@ const Message = ({ entry, index, isAdmin }) => {
         <div>
           <strong>Message:</strong> {entry.message}
         </div>
+        {entry?.patient_first_name && entry.patient_last_name &&
         <div>
-          <strong>Patient: </strong> {entry.patient_name}
+          <strong>Patient: </strong> {entry.patient_first_name} {entry.patient_last_name}
         </div>
+        }
         <div style={styles.timestamp({ isAdmin, entry })}>
           <strong>Timestamp</strong>: {entry.created_at}
         </div>
+        {!isAdmin && entry.sentFromHouseCall && onReplyClick &&
+        <div style={{marginTop: 20}} onClick={onReplyClick}>
+          Reply To This Message
+        </div>
+        }
       </div>
     </ListItem>
   )
