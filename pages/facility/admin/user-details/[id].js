@@ -295,7 +295,7 @@ const UserDetailsPage = () => {
   }
 
   useEffect(() => {
-    if (tabValue === 0 && userId) {
+    if ((tabValue === 0 || tabValue === 1) && userId) {
       getPatientMessages()
     }
   }, [tabValue, userId])
@@ -481,7 +481,8 @@ const UserDetailsPage = () => {
             >
               <Tab label="Messages" {...a11yProps(0)} />
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Information" {...a11yProps(2)} />
+              <Tab label="Completed Appointments" {...a11yProps(2)} />
+              <Tab label="Information" {...a11yProps(3)} />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -516,9 +517,12 @@ const UserDetailsPage = () => {
               </Box>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <AppointmentTable appointments={appointments} hideName />
+              <AppointmentTable appointments={appointments} hideName hideCompleted admin />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
+              <AppointmentTable appointments={appointments} hideName hideNonCompleted admin />
+            </TabPanel>
+            <TabPanel value={tabValue} index={3}>
               <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <Box
                   mt="1em"

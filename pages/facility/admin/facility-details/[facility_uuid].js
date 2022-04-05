@@ -143,7 +143,7 @@ const FacilityDetailsPage = () => {
     if (tabValue === 0 && facility) {
       getFacilityMessages()
     }
-    if (tabValue === 1 && facility) {
+    if ((tabValue === 1 || tabValue === 2) && facility) {
       getFacilityAppointments()
     }
   }, [tabValue, facility])
@@ -224,6 +224,7 @@ const FacilityDetailsPage = () => {
                 >
                   <Tab label="Messages" {...a11yProps(0)} />
                   <Tab label="Appointments" {...a11yProps(1)} />
+                  <Tab label="Completed Appointments" {...a11yProps(1)} />
                   <Tab label="Residents" {...a11yProps(2)} />
                 </Tabs>
                 <TabPanel value={tabValue} index={0}>
@@ -261,9 +262,12 @@ const FacilityDetailsPage = () => {
                   </Box>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
-                  <AppointmentTable appointments={appointments} />
+                  <AppointmentTable appointments={appointments} hideCompleted admin />
                 </TabPanel>
                 <TabPanel value={tabValue} index={2}>
+                  <AppointmentTable appointments={appointments} hideNonCompleted admin />
+                </TabPanel>
+                <TabPanel value={tabValue} index={3}>
                   <MaterialTable
                     title="Residents"
                     columns={tableCols}
