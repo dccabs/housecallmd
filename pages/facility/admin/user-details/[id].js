@@ -481,7 +481,7 @@ const UserDetailsPage = () => {
             >
               <Tab label="Messages" {...a11yProps(0)} />
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Patient Information" {...a11yProps(2)} />
+              <Tab label="Information" {...a11yProps(2)} />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
