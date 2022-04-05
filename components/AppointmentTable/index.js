@@ -1,6 +1,7 @@
 import MaterialTable from 'material-table'
 import { useEffect } from 'react'
 import {useRouter} from 'next/router'
+import moment from 'moment';
 
 const publicWithName = [
   {
@@ -20,6 +21,7 @@ const publicWithName = [
   {
     title: 'Date/Time',
     field: 'time',
+    render: (rowData) => moment(rowData.created_at).format('LLL')
   },
   {
     title: 'Status',
@@ -36,6 +38,7 @@ const publicWithoutName = [
   {
     title: 'Date/Time',
     field: 'time',
+    render: (rowData) => moment(rowData.created_at).format('LLL')
   },
   {
     title: 'Status',
@@ -67,6 +70,7 @@ const adminWithName = [
   {
     title: 'Date/Time',
     field: 'time',
+    render: (rowData) => moment(rowData.created_at).format('LLL')
   },
   {
     title: 'Status',
@@ -88,6 +92,7 @@ const adminWithoutName = [
   {
     title: 'Date/Time',
     field: 'time',
+    render: (rowData) => moment(rowData.created_at).format('LLL')
   },
   {
     title: 'Status',

@@ -79,6 +79,8 @@ const getAllFacilityMessages = async (req, res) => {
 
     const senderObj = {
       name: sentFromHouseCall ? `${senderMatch.firstName} ${senderMatch.lastName}` : senderMatch?.name,
+      id: senderMatch?.auth_id ? senderMatch.auth_id : null,
+      //id: sentFromHouseCall ? `${senderMatch.firstName} ${senderMatch.lastName}` : senderMatch?.name,
     }
 
     let sentToHouseCall = false;
@@ -100,15 +102,14 @@ const getAllFacilityMessages = async (req, res) => {
       })
     }
 
-
     const recipientObj = {
       name: sentToHouseCall && recipientMatch?.firstName ? `HouseCall MD - ${recipientMatch?.firstName} ${recipientMatch?.lastName}` : sentToHouseCall && !recipientMatch?.firstName ? 'HouseCall MD' : recipientMatch?.name,
     }
 
-
     return {
       patient_id: patientMatch?.id,
-      patient_name: `${patientMatch?.first_name} ${patientMatch?.last_name}`,
+      patient_first_name: patientMatch?.first_name,
+      patient_last_name: patientMatch?.last_name,
       message: entry.message,
       sender: senderObj,
       recipient: recipientObj,
