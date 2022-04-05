@@ -20,6 +20,7 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../components/Facility/Message'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from 'components/Container'
+import FacilityMessageModal from 'components/FacilityMessageModal'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -86,11 +87,18 @@ function UserAdmin(props) {
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [messageLoading, setMessageLoading] = useState(false)
+  const [replyModalOpen, setReplyModalOpen] = useState(false)
+  const [replyModalData, setReplyModalData] = useState({
+    modalOpen: false,
+    title: `You are replying to the following message`,
+    patientName: null,
+    patientId: null,
+    receipientId: null,
+  });
 
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
   const { facilityAdminTableTab, setFacilityAdminTableTab, isAdmin } = useStore()
-  console.log('isAdmin', isAdmin)
 
   useEffect(() => {
     if (!isAdmin) {
@@ -152,6 +160,20 @@ function UserAdmin(props) {
       getAllMessages()
     }
   }, [tabValue])
+
+  const setReply = (entry) => {
+    setReplyModalOpen(true);
+    const title = entry.patient_first_name ? `You are sending a message to ${entry?.sender?.name} about the following patient` : 'You are sending a general message to HouseCallMD';
+
+    const data = Object.assign(replyModalData, {});
+    data.modalOpen = true;
+    data.title = title;
+    data.patientName = `${entry.patient_first_name} ${entry.patient_last_name}`;
+    data.patientId = entry?.patient_id || null;
+    data.receipientId = entry?.sender?.id;
+    data.senderId = null;
+    setReplyModalData(data)
+  }
 
   const getAllMessages = () => {
     const payload = {}
@@ -265,7 +287,7 @@ function UserAdmin(props) {
               {messages.length > 0 &&
                 !messagesLoading &&
                 messages.map((entry, index) => {
-                  return <Message entry={entry} index={index} isAdmin={true} onReplyClick={() => {console.log('hello world')}} />
+                  return <Message entry={entry} index={index} isAdmin={true} onReplyClick={() => setReply(entry)} />
                 })}
             </Box>
           </TabPanel>
@@ -283,6 +305,16 @@ function UserAdmin(props) {
           </TabPanel>
         </Container>
       )}
+      <FacilityMessageModal
+        open={replyModalOpen}
+        onClose={() => setReplyModalOpen(false)}
+        title={replyModalData.title}
+        patientName={replyModalData.patientName}
+        patientId={replyModalData.patientId}
+        recipientId={replyModalData.receipientId}
+        senderId={user?.id}
+        callbackFn={getAllMessages}
+      />
     </>
   )
 }

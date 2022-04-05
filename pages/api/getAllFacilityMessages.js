@@ -80,6 +80,7 @@ const getAllFacilityMessages = async (req, res) => {
     const senderObj = {
       name: sentFromHouseCall ? `${senderMatch.firstName} ${senderMatch.lastName}` : senderMatch?.name,
       id: senderMatch?.auth_id ? senderMatch.auth_id : null,
+      simpleId: senderMatch?.id ? senderMatch.id : null,
       //id: sentFromHouseCall ? `${senderMatch.firstName} ${senderMatch.lastName}` : senderMatch?.name,
     }
 

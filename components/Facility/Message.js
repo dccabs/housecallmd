@@ -49,7 +49,6 @@ const styles = {
 }
 
 const Message = ({ entry, index, isAdmin, onReplyClick }) => {
-  console.log('entryaa', entry)
   const classes = useStyles()
   return (
     <ListItem
