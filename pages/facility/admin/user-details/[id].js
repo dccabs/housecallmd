@@ -512,7 +512,7 @@ const UserDetailsPage = () => {
                 {messages.length > 0 &&
                   !messagesLoading &&
                   messages.map((entry, index) => {
-                    return <Message entry={entry} index={index} />
+                    return <Message entry={entry} index={index} isAdmin={true} />
                   })}
               </Box>
             </TabPanel>
