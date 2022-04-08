@@ -6,13 +6,11 @@ import moment from 'moment';
 const publicWithName = [
   {
     title: 'First Name',
-    field: 'firstName',
-    render: (rowData) => rowData.facility_patients.first_name,
+    field: 'facility_patients.first_name',
   },
   {
     title: 'Last Name',
-    field: 'lastName',
-    render: (rowData) => rowData.facility_patients.last_name,
+    field: 'facility_patients.last_name',
   },
   {
     title: 'Visit Reason',
@@ -20,7 +18,7 @@ const publicWithName = [
   },
   {
     title: 'Date/Time',
-    field: 'time',
+    field: 'created_at',
     render: (rowData) => moment(rowData.created_at).format('LLL')
   },
   {
@@ -37,7 +35,7 @@ const publicWithoutName = [
   },
   {
     title: 'Date/Time',
-    field: 'time',
+    field: 'created_at',
     render: (rowData) => moment(rowData.created_at).format('LLL')
   },
   {
@@ -50,13 +48,11 @@ const publicWithoutName = [
 const adminWithName = [
   {
     title: 'First Name',
-    field: 'firstName',
-    render: (rowData) => rowData.facility_patients.first_name,
+    field: 'facility_patients.first_name',
   },
   {
     title: 'Last Name',
-    field: 'lastName',
-    render: (rowData) => rowData.facility_patients.last_name,
+    field: 'facility_patients.last_name',
   },
   {
     title: 'Visit Reason',
@@ -69,7 +65,7 @@ const adminWithName = [
   },
   {
     title: 'Date/Time',
-    field: 'time',
+    field: 'created_at',
     render: (rowData) => moment(rowData.created_at).format('LLL')
   },
   {
@@ -113,7 +109,11 @@ const AppointmentTable = ({ appointments, hideName = false, admin = false, hideC
     return appointment.completed === true;
   })
 
-  const displayAppointments = hideCompleted ? nonCompleteAppointments : hideNonCompleted ? completedAppointments : appointments;
+  let displayAppointments = hideCompleted ? nonCompleteAppointments : hideNonCompleted ? completedAppointments : appointments;
+
+  displayAppointments = displayAppointments.sort(function(a,b){
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
 
   let columnData = [];
   if (admin) {
