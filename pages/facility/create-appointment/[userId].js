@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   TextField,
-  CircularProgress,
+  CircularProgress, FormControl, FormControlLabel, Checkbox
 } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
 
@@ -258,7 +258,7 @@ const CreateAppointment = () => {
                 </div>
               )}
 
-              <div style={{ marginBottom: 40 }}>
+              <div style={{ marginBottom: 20 }}>
                 <TextField
                   placeholder="Visit Reason"
                   multiline
@@ -269,6 +269,33 @@ const CreateAppointment = () => {
                   onChange={(e) => setVisitReason(e.target.value)}
                   disabled={cardImageError || idError || seconaryCardImageError}
                   // disabled={messagesLoading}
+                />
+              </div>
+
+              <div style={{ marginBottom: 20 }}>
+                <FormControl component="fieldset">
+                  <FormControlLabel
+                    value="Terms"
+                    control={<Checkbox color="secondary" checked={false} />}
+                    label="Notify Me When HousecallMD replies to this appointment request"
+                    labelPlacement="end"
+                    // onChange={() => setChecked(!checked)}
+                  />
+                </FormControl>
+              </div>
+
+              <div style={{ marginBottom: 30 }}>
+                <TextField
+                  className={classes.textFields}
+                  type="text"
+                  label="Please add a mobile number"
+                  variant="outlined"
+                  color="secondary"
+                  //value={field.value}
+                  // onChange={(e) =>
+                  //   handleUpdate({ val: e.target.value, objKey: key })
+                  // }
+                  // fullWidth
                 />
               </div>
 
