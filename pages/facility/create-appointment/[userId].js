@@ -5,16 +5,17 @@ import {
   Box,
   Button,
   TextField,
-  CircularProgress,
+  CircularProgress, FormControl, FormControlLabel, Checkbox
 } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
-
-import Container from '../../../components/Container'
+import PhoneField from 'components/PhoneField'
+import Container from 'components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { useRouter } from 'next/router'
 import { Auth } from '@supabase/ui'
 import xhrHeader from '../../../constants/xhrHeader'
 import { SnackBarContext } from 'components/SnackBar'
+import formatPhoneNumberE164 from '../../../utils/formatPhoneNumberE164'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -34,6 +35,9 @@ const CreateAppointment = () => {
   const [cardImageError, setCardImageError] = useState(false)
   const [seconaryCardImageError, setSecondaryCardImageError] = useState(false)
   const [idError, setIdError] = useState(false)
+  const [notificationRequest, setNotificationRequest] = useState(false)
+  const [notificationNumber, setNotificationNumber] = useState('');
+
 
   const classes = useStyles()
   const router = useRouter()
@@ -99,6 +103,7 @@ const CreateAppointment = () => {
         time: new Date(),
         note: '',
         created_at: new Date(),
+        notification_phone: notificationNumber ? formatPhoneNumberE164(notificationNumber) : null,
       },
     }
 
@@ -258,7 +263,7 @@ const CreateAppointment = () => {
                 </div>
               )}
 
-              <div style={{ marginBottom: 40 }}>
+              <div style={{ marginBottom: 20 }}>
                 <TextField
                   placeholder="Visit Reason"
                   multiline
@@ -272,13 +277,44 @@ const CreateAppointment = () => {
                 />
               </div>
 
+              <div style={{ marginBottom: 20 }}>
+                <FormControl component="fieldset">
+                  <FormControlLabel
+                    value="Terms"
+                    control={<Checkbox color="secondary" checked={notificationRequest} />}
+                    label="Notify Me When HousecallMD replies to this appointment request"
+                    labelPlacement="end"
+                    onChange={() => setNotificationRequest(!notificationRequest)}
+                  />
+                </FormControl>
+              </div>
+
+              {notificationRequest &&
+              <div style={{ marginBottom: 30 }}>
+                <TextField
+                  className={classes.textFields}
+                  type="text"
+                  label="Add Mobile Number"
+                  variant="outlined"
+                  color="secondary"
+                  InputProps={{
+                    inputComponent: PhoneField,
+                  }}
+                  onChange={(e) =>
+                    setNotificationNumber(e.target.value)
+                  }
+                  // fullWidth
+                />
+              </div>
+              }
+
               <div>
                 <Button
                   color="primary"
                   variant="contained"
                   size="large"
                   onClick={handleSubmit}
-                  disabled={!visitReason}
+                  disabled={!visitReason || (notificationRequest && !notificationNumber)}
                 >
                   Submit
                 </Button>
