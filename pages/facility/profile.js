@@ -390,7 +390,7 @@ const Profile = () => {
                 data={state.patients}
                 options={{
                   paginationType: 'stepped',
-                  selection: true,
+                  selection: false,
                   pageSize: 50,
                   pageSizeOptions: [50, 100, 200],
                 }}

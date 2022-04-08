@@ -137,7 +137,7 @@ const AppointmentTable = ({ appointments, hideName = false, admin = false, hideC
       data={displayAppointments}
       options={{
         paginationType: 'stepped',
-        selection: true,
+        selection: false,
         pageSize: 50,
         pageSizeOptions: [50, 100, 200],
       }}
