@@ -1,35 +1,22 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-import useStore from '../../../../zustand/store'
+
 import {
   Typography,
   Box,
   Button,
   TextField,
-  MenuItem,
-  IconButton,
   Tooltip,
   CircularProgress,
-  Tabs,
-  Tab,
-
 } from '@material-ui/core'
-import CheckIcon from '@material-ui/icons/Check';
-import { Autocomplete } from '@material-ui/lab'
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers'
-import EditIcon from '@material-ui/icons/Edit'
-import DateFnsUtils from '@date-io/date-fns'
-import { makeStyles } from '@material-ui/core/styles'
-import moment from 'moment'
-import { Auth } from '@supabase/ui'
-import Link from 'next/link'
 
+import CheckIcon from '@material-ui/icons/Check';
+import { makeStyles } from '@material-ui/core/styles'
+import { Auth } from '@supabase/ui'
 import Container from 'components/Container'
 import { SnackBarContext } from 'components/SnackBar'
 import xhrHeader from '../../../../constants/xhrHeader'
+import FacilityMessageModal from '../../../../components/FacilityMessageModal'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -87,17 +74,15 @@ const AppointmentDetailsPage = () => {
   const [data, setData] = useState(null);
   const [note, setNote] = useState('');
   const [completed, setCompleted] = useState('');
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
 
   const classes = useStyles()
   const { user } = Auth.useUser()
   const router = useRouter()
   const { id: appointmentId } = router.query
- // console.log('id', id);
-  console.log('appointmentId', appointmentId)
 
 
   useEffect(() => {
-    console.log('user', user)
     if (user && appointmentId) {
 
     }
@@ -202,6 +187,9 @@ const AppointmentDetailsPage = () => {
               <Box>
                 <strong>Date:</strong> {data?.created_at}
               </Box>
+              <Box>
+                <strong>Power of Attorney Info:</strong> {user_info?.poa_name} - {user_info?.poa_phone_number}
+              </Box>
 
               <Box style={{margin: '40px 0 0'}}>
                 <Box>
@@ -245,6 +233,7 @@ const AppointmentDetailsPage = () => {
                 style={{marginTop: 10}}
                 size="large"
                 variant="contained"
+                onClick={() => setMessageModalOpen(true)}
               >
                 Send Message to {facility_info?.name} about this appointment
               </Button>
@@ -262,6 +251,16 @@ const AppointmentDetailsPage = () => {
           </Box>
         </>
       }
+      <FacilityMessageModal
+        open={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+        title="Your are sending a message to HouseCall MD about the following patient"
+        patientName={`${user_info?.first_name} ${user_info?.last_name}`}
+        patientId={user_info?.patient_id}
+        recipientId={null}
+        senderId={user?.id}
+        callbackFn={() => {}}
+      />
     </Container>
   )
 }
