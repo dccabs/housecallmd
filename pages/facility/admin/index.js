@@ -163,7 +163,7 @@ function UserAdmin(props) {
 
   const setReply = (entry) => {
     setReplyModalOpen(true);
-    const title = entry.patient_first_name ? `You are sending a message to ${entry?.sender?.name} about the following patient` : 'You are sending a general message to HouseCallMD';
+    const title = entry.patient_first_name ? `You are sending a message to ${entry?.sender?.name} about the following patient` : `You are sending a general message to ${entry.sender.name}`;
 
     const data = Object.assign(replyModalData, {});
     data.modalOpen = true;

@@ -99,7 +99,7 @@ const Message = ({ entry, index, isAdmin, onReplyClick }) => {
         }
         {!isAdmin && entry.sentFromHouseCall && onReplyClick &&
         <div style={{marginTop: 20, cursor: 'pointer', textDecoration: 'underline', color: '#e1215b',}} onClick={onReplyClick}>
-          Reply To This Message
+          Reply
         </div>
         }
         {isAdmin && !entry.sentFromHouseCall && onReplyClick &&

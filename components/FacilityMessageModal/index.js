@@ -111,8 +111,12 @@ const MessageModal = (
           className={classes.h2}
           style={{ marginBottom: '1em' }}
         >
-          {title}<br /><br />
-          {patientName}
+          <div>
+            {title}:
+          </div>
+          {patientId &&
+            <div style={{marginTop: 20}}>{patientName}</div>
+          }
         </Typography>
         <TextField
           placeholder="Type your message here and click to send button."

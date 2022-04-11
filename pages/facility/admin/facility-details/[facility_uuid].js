@@ -22,6 +22,7 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from 'components/Facility/Message'
 import AppointmentTable from 'components/AppointmentTable'
 import { Auth } from '@supabase/ui'
+import FacilityMessageModal from '../../../../components/FacilityMessageModal'
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props
@@ -55,6 +56,14 @@ const FacilityDetailsPage = () => {
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [appointments, setAppointments] = useState([])
+  const [replyModalOpen, setReplyModalOpen] = useState(false)
+  const [replyModalData, setReplyModalData] = useState({
+    modalOpen: false,
+    title: `You are replying to the following message`,
+    patientName: null,
+    patientId: null,
+    receipientId: null,
+  });
 
   const { facilityDetailsTableTab, setFacilityDetailsTableTab } = useStore()
   const openSnackBar = useContext(SnackBarContext)
@@ -125,6 +134,22 @@ const FacilityDetailsPage = () => {
       })
     }
   }, [user, loading])
+
+  const setReply = (entry) => {
+    console.log('entry', entry)
+    setReplyModalOpen(true);
+    const title = entry.patient_first_name ? `You are sending a message to ${entry.sender.name} about the following patient` : `You are sending a general message to ${entry.sender.name}`;
+
+    const data = Object.assign(replyModalData, {});
+    data.modalOpen = true;
+    data.title = title;
+    data.patientName = `${entry.patient_first_name} ${entry.patient_last_name}`;
+    data.patientId = entry.patient_id;
+    data.receipientId = entry.sender.id;
+    data.sentToHouseCall = false;
+    data.sentFromHouseCall = true;
+    setReplyModalData(data)
+  }
 
   const getFacilityAppointments = () => {
     if (facility) {
@@ -257,7 +282,7 @@ const FacilityDetailsPage = () => {
                     {messages.length > 0 &&
                       !messagesLoading &&
                       messages.map((entry, index) => {
-                        return <Message entry={entry} index={index} />
+                        return <Message isAdmin entry={entry} index={index} onReplyClick={() => { setReply(entry) }} />
                       })}
                   </Box>
                 </TabPanel>
@@ -287,8 +312,19 @@ const FacilityDetailsPage = () => {
               </Box>
             </>
           )}
+
         </Container>
       )}
+      <FacilityMessageModal
+        open={replyModalOpen}
+        onClose={() => setReplyModalOpen(false)}
+        title={replyModalData.title}
+        patientName={replyModalData.patientName}
+        patientId={replyModalData.patientId}
+        recipientId={replyModalData.receipientId}
+        senderId={user?.id}
+        callbackFn={getFacilityMessages}
+      />
     </>
   )
 }

@@ -142,7 +142,7 @@ const Profile = () => {
   const setReply = (entry) => {
     console.log('entry', entry)
     setReplyModalOpen(true);
-    const title = entry.patient_first_name ? 'You are sending a message to HouseCallMD about the following patient' : 'You are sending a general message to HouseCallMD';
+    const title = entry.patient_first_name ? `You are sending a message to ${entry.sender.name} about the following patient` : `You are sending a general message to ${entry.sender.name}`;
 
     const data = Object.assign(replyModalData, {});
     data.modalOpen = true;
