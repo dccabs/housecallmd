@@ -36,6 +36,7 @@ import AppointmentTable from '../../../../components/AppointmentTable'
 import xhrHeader from '../../../../constants/xhrHeader'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import Message from '../../../../components/Facility/Message'
+import FacilityMessageModal from '../../../../components/FacilityMessageModal'
 const NEXT_PUBLIC_SUPABASE_STORAGE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
 
@@ -101,6 +102,7 @@ const UserDetailsPage = () => {
   const [facilityName, setFacilityName] = useState('')
   const [loading, setLoading] = useState(false)
   const [tabValue, setTabValue] = useState(0)
+  const [state, setState] = useState(null);
   const [appointments, setAppointments] = useState([])
   const { userDetailsTableTab, setUserDetailsTableTab } = useStore()
   const [formData, setFormData] = useState({
@@ -276,6 +278,7 @@ const UserDetailsPage = () => {
           })
 
           setFormData(currentData)
+          setState({...res});
           setUserName(
             `${currentData.last_name.value}, ${currentData.first_name.value}`
           )
@@ -512,7 +515,7 @@ const UserDetailsPage = () => {
                 {messages.length > 0 &&
                   !messagesLoading &&
                   messages.map((entry, index) => {
-                    return <Message entry={entry} index={index} isAdmin={true} />
+                    return <Message isAdmin entry={entry} index={index} onReplyClick={() => setMessageModalOpen(true)} />
                   })}
               </Box>
             </TabPanel>
@@ -749,6 +752,16 @@ const UserDetailsPage = () => {
           <CircularProgress />
         </Box>
       ) : null}
+      <FacilityMessageModal
+        open={messageModalOpen}
+        onClose={() => setMessageModalOpen(false)}
+        title="Your are sending a message to HouseCall MD about the following patient"
+        patientName={`${state?.first_name} ${state?.last_name}`}
+        patientId={userId}
+        recipientId={facilityId}
+        senderId={user?.id}
+        callbackFn={getPatientMessages}
+      />
     </Container>
   )
 }
