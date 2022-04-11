@@ -123,6 +123,32 @@ const AppointmentDetailsPage = () => {
       })
   }
 
+  const sendSMSMessage = () => {
+    const phone = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER
+    const message = `HouseCallMD Just sent you a new message.  To view the message please login to your portal at ${process.env.NEXT_PUBLIC_HOST}/facility/profile.`
+
+    fetch('/api/sendMessage', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ to: data?.notification_phone, body: message }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          // sendMail()
+        } else {
+          openSnackBar({
+            message: 'There was an error. Please try again later',
+            snackSeverity: 'error',
+          })
+          setLoading(false)
+        }
+      })
+  }
+
   const handleUpdateNotes = () => {
     const payload = {
       id: Number(appointmentId),
@@ -143,7 +169,8 @@ const AppointmentDetailsPage = () => {
 
 
   const { user_info, facility_info } = data || {};
-
+  console.log('user_info', user_info)
+  console.log('facility_info', facility_info)
   return (
     <Container>
       {loading ?
@@ -256,10 +283,10 @@ const AppointmentDetailsPage = () => {
         onClose={() => setMessageModalOpen(false)}
         title="Your are sending a message to HouseCall MD about the following patient"
         patientName={`${user_info?.first_name} ${user_info?.last_name}`}
-        patientId={user_info?.patient_id}
-        recipientId={null}
+        patientId={user_info?.id}
+        recipientId={facility_info?.auth_id}
         senderId={user?.id}
-        callbackFn={() => {}}
+        callbackFn={sendSMSMessage}
       />
     </Container>
   )
