@@ -1,16 +1,16 @@
 import { sendMailToMe } from '../../utils/sendMailToMe'
 const SENDGRID_DEFAULT_EMAIL = process.env.SENDGRID_DEFAULT_EMAIL
 
-
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     // req.body carries all the data
 
     try {
-      const { email, name, subject, client_message, recepient_email, phone } = req.body
+      const { email, name, subject, message, recipient_email } = req.body
 
       if (
-        typeof (email || name || subject || client_message || recepient_email) === 'undefined'
+        typeof (email || name || subject || message || recipient_email) ===
+        'undefined'
       ) {
         console.log(' ************* Invalid Data received ************ ')
 
@@ -21,14 +21,14 @@ export default async function handler(req, res) {
         //  Data received as expected
         try {
           const payload = {
-            recepient_email: SENDGRID_DEFAULT_EMAIL,
+            recipient_email: SENDGRID_DEFAULT_EMAIL,
             name,
             subject,
-            client_message,
+            message,
             email,
-            phone,
           }
-          const sendGridResponse = await sendMailToMe(payload);
+
+          const sendGridResponse = await sendMailToMe(payload)
 
           return res.status(200).send({
             sg_response: sendGridResponse,

@@ -1,5 +1,4 @@
 const clearStore = (store) => {
-  console.log('store', store)
   const {
     setPolicyHolderFirstName,
     setPolicyHolderLastName,
@@ -20,26 +19,26 @@ const clearStore = (store) => {
     setGroupNumber,
     setVisitChoice,
     setIsAuthenticated,
-  } = store;
+  } = store
 
   setPolicyHolderFirstName(''),
-  setPolicyHolderLastName(''),
-  setPolicyHolderDob(''),
-  setIsPolicyCardHolder(false),
-  setPolicyHolderRelation(''),
-  setFirstName('');
-  setLastName('');
-  setEmail('');
-  setAddress('');
-  setCity('');
-  setState('');
-  setZip('');
-  setPhone('');
-  setProvider('');
-  setPlanNumber('');
-  setGroupNumber('');
-  setVisitChoice('');
-  setHasInsurance(false);
+    setPolicyHolderLastName(''),
+    setPolicyHolderDob(''),
+    setIsPolicyCardHolder(false),
+    setPolicyHolderRelation(''),
+    setFirstName('')
+  setLastName('')
+  setEmail('')
+  setAddress('')
+  setCity('')
+  setState('')
+  setZip('')
+  setPhone('')
+  setProvider('')
+  setPlanNumber('')
+  setGroupNumber('')
+  setVisitChoice('')
+  setHasInsurance(false)
   setIsAuthenticated(false)
 }
 

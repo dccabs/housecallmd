@@ -1,16 +1,14 @@
 const SENDGRID_API_URL = 'https://api.sendgrid.com/v3/mail/send'
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
 
-const sendContactUsFetch = async (
-  {
-    recepient_email, // email_address to send mail
-    name, // from name on email
-    subject = 'sample subject',
-    email,
-    client_message,
-    phone = "",
-  }
-) => {
+const sendContactUsFetch = async ({
+  recipient_email, // email_address to send mail
+  name, // from name on email
+  subject = 'sample subject',
+  email,
+  client_message,
+  phone = '',
+}) => {
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
     headers: {
@@ -22,14 +20,14 @@ const sendContactUsFetch = async (
         {
           to: [
             {
-              email: recepient_email,
+              email: recipient_email,
             },
           ],
           subject: subject,
         },
       ],
       from: {
-        email: recepient_email,
+        email: recipient_email,
         name,
       },
       content: [

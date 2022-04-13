@@ -9,6 +9,7 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 import Container from '../components/Container'
@@ -17,6 +18,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { supabase } from '../utils/initSupabase'
 import { useRouter } from 'next/router'
+import validateEmail from '../utils/validateEmail'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -57,11 +59,61 @@ const login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [localEmail, setLocalEmail] = useState('')
+  const [loading, setLoading] = useState(false)
   const classes = useStyles()
   const router = useRouter()
 
+  const handleUserNameSubmit = () => {
+    const payload = {
+      username: localEmail,
+      password,
+    }
+    fetch('/api/login', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then(async (data) => {
+        if (data.error) {
+          throw Error(data.message)
+        } else {
+          const supabasePayload = {
+            email: data.email,
+            password: payload.password,
+          }
+          supabase.auth
+            .signIn(supabasePayload)
+            .then((response) => {
+              response.error
+                ? openSnackBar({
+                    message: response.error.message,
+                    snackSeverity: 'error',
+                  })
+                : setToken(response)
+              setLoading(false)
+            })
+            .catch((err) => {
+              openSnackBar({ message: err, snackSeverity: 'error' })
+              setLoading(false)
+            })
+        }
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
+        setLoading(false)
+      })
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true)
+    const isValidEmail = validateEmail(localEmail)
+    if (!isValidEmail) {
+      handleUserNameSubmit()
+      return false
+    }
     const payload = {
       email: localEmail,
       password,
@@ -75,15 +127,21 @@ const login = () => {
               snackSeverity: 'error',
             })
           : setToken(response)
+        setLoading(false)
       })
       .catch((err) => {
         openSnackBar({ message: err.response.text, snackSeverity: 'error' })
+        setLoading(false)
       })
   }
 
   const setToken = (response) => {
     openSnackBar({ message: 'Logged in as ' + response.user.email })
-    router.push('/returning-user')
+    if (response?.user?.user_metadata?.facility) {
+      router.push('/facility/profile')
+    } else {
+      router.push('/returning-user')
+    }
   }
 
   const handlePasswordUpdate = (e) => {
@@ -119,12 +177,13 @@ const login = () => {
               value={localEmail}
               className={classes.textFields}
               fullWidth
-              type="email"
-              label="Email"
+              type="text"
+              label="Email or Username"
               variant="outlined"
               color="secondary"
               required
               onChange={handleEmailUpdate}
+              disabled={loading ? loading : false}
             />
             <FormControl className={classes.textFields} variant="outlined">
               <InputLabel
@@ -143,6 +202,7 @@ const login = () => {
                 color="secondary"
                 required
                 onChange={handlePasswordUpdate}
+                disabled={loading ? loading : false}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton onClick={handlePasswordClick} edge="end">
@@ -178,13 +238,16 @@ const login = () => {
           <Box mt="2em" display="flex" justifyContent="center" flexWrap="wrap">
             <Box m="1em" className={classes.buttonLinks}>
               <Button
-                disabled={!password || !localEmail}
+                disabled={!password || !localEmail || loading}
                 type="submit"
                 color="secondary"
                 variant="contained"
                 size="large"
               >
-                Login
+                {loading ? 'Logging In' : 'Log in'}
+                {loading && (
+                  <CircularProgress color="secondary" size="1.3em" style={{color: '#0092b8', position: 'relative', left: 20}} />
+                )}
               </Button>
             </Box>
           </Box>

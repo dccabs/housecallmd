@@ -75,7 +75,7 @@ const UserAdmin = (props) => {
             >
               <Tab label="Users" {...a11yProps(0)}  wrap/>
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Completed Appoitments" {...a11yProps(2)} wrap/>
+              <Tab label="Completed Appointments" {...a11yProps(2)} wrap/>
               <Tab label="Phone Numbers" {...a11yProps(3)} wrap/>
             </Tabs>
           </Box>
