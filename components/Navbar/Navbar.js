@@ -194,7 +194,7 @@ const Navbar = () => {
                             size="small"
                             onClick={() => setFacilityAdminTableTab(0)}
                           >
-                            Assisted Living Admin
+                            Facility Admin
                           </Button>
                         </a>
                       </Link>
