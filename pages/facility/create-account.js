@@ -453,6 +453,9 @@ const Contact = () => {
                 InputProps={{
                   inputComponent: PhoneField,
                 }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 className={classes.textFields}
@@ -461,11 +464,13 @@ const Contact = () => {
                 label="Facility Fax Number"
                 variant="outlined"
                 color="secondary"
-                required
                 value={localFacilityFax}
                 onChange={(e) => setLocalFacilityFax(e.target.value)}
                 InputProps={{
                   inputComponent: PhoneField,
+                }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
 
@@ -494,6 +499,9 @@ const Contact = () => {
                 }
                 InputProps={{
                   inputComponent: PhoneField,
+                }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
 
@@ -537,6 +545,9 @@ const Contact = () => {
                 }
                 InputProps={{
                   inputComponent: PhoneField,
+                }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
 
@@ -588,7 +599,6 @@ const Contact = () => {
                     !localState ||
                     !localZip ||
                     !localFacilityPhone ||
-                    !localFacilityFax ||
                     !localCenterName ||
                     !localCity ||
                     !localState ||
