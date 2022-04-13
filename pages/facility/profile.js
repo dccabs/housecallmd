@@ -103,18 +103,20 @@ const Profile = () => {
 
   const { user } = Auth.useUser()
 
-
   useEffect(async () => {
-    if (user && user?.user_metadata?.facility) {
-      await fetchProfileInformation().then(() => {
+    if (user) {
+      if (user?.user_metadata?.facility) {
+        await fetchProfileInformation().then(() => {
+          setLoading(false)
+          setAuthorized(true)
+        })
+      } else {
+        openSnackBar({
+          message: 'Not authorized to view this page.',
+          snackSeverity: 'error',
+        })
         setLoading(false)
-      })
-    } else {
-      openSnackBar({
-        message: 'Not authorized to view this page.',
-        snackSeverity: 'error',
-      })
-      setLoading(false)
+      }
     }
   }, [user])
 
@@ -258,6 +260,7 @@ const Profile = () => {
           <CircularProgress />
         </Box>
       )}
+
       {!loading && authorized && (
         <>
           <Container>
