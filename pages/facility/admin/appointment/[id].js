@@ -169,8 +169,6 @@ const AppointmentDetailsPage = () => {
 
 
   const { user_info, facility_info } = data || {};
-  console.log('user_info', user_info)
-  console.log('facility_info', facility_info)
   return (
     <Container>
       {loading ?
