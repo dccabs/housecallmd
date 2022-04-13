@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
+const MeetingCreated = ({ name, email, phone, setMeetingContent, facilityName, residentName }) => {
 
   const [roomId, setRoomId] = useState()
   const [roomUrl, setRoomUrl] = useState()
@@ -30,7 +30,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
   const [loadingSMS, setLoadingSMS] = useState(false)
   const [success, setSuccess] = useState(false)
   const classes = useStyles()
-  const message = `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n ${config.default.host}/room/${roomId}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`
+  const [message, setMessage] = useState('Default Message');
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
@@ -59,9 +59,21 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (roomUrl) {
+      if (facilityName) {
+        setMessage(`HousecallMD has set up your meeting room for ${residentName}, please click on the link to join the meeting.\n ${roomUrl}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`);
+      } else {
+        setMessage(`HousecallMD has set up your meeting room, please click on the link to join the meeting.\n ${roomUrl}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`)
+      }
+    }
+  }, [roomUrl])
+
   const sendMeetingLink = () => {
     sendEmail()
-    sendSMS()
+    if (phone) {
+      sendSMS()
+    }
   }
 
   const sendEmail = async () => {
@@ -69,6 +81,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
       name,
       email,
       roomUrl,
+      message: facilityName ? `HousecallMD has set up your meeting room for ${residentName}, please click on the link to join the meeting.` : 'HousecallMD has set up your meeting room, please click on the link to join the meeting.',
     }
 
     try {
@@ -166,14 +179,15 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent }) => {
                 variant="contained"
                 onClick={() => sendMeetingLink()}
               >
-                Send Meeting Link To Patient
+                Send Meeting Link To {facilityName ? facilityName : 'Patient'}
               </Button>
             </Box>
           )}
         </>
       ) : (
         <Box
-          my="1em"
+          fullWidth
+          // my="1em"
           display="flex"
           justifyContent="center"
           alignItems="center"

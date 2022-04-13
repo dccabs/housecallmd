@@ -58,7 +58,6 @@ const Messages = () => {
 
 
   useEffect(() => {
-    console.log('messages')
     getAllMessages();
   }, [])
 
@@ -77,7 +76,6 @@ const Messages = () => {
       body: JSON.stringify(payload),
     }).then((res) => res.json())
       .then((data) => {
-        console.log('data', data)
         if (data) {
           setMessages(data)
           setLoading(false)
@@ -119,7 +117,6 @@ const Messages = () => {
       body: JSON.stringify(payload),
     }).then((res) => res.json())
       .then((data) => {
-        console.log('data', data)
         if (data) {
           //setMessages(data)
           openSnackBar({
@@ -137,7 +134,6 @@ const Messages = () => {
         }
       })
 
-    console.log('payload', payload)
   }
 
   return (

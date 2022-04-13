@@ -17,6 +17,10 @@ import Container from 'components/Container'
 import { SnackBarContext } from 'components/SnackBar'
 import xhrHeader from '../../../../constants/xhrHeader'
 import FacilityMessageModal from '../../../../components/FacilityMessageModal'
+import MeetingCreated from '../../../../components/MeetingCreated'
+import CustomModal from 'components/CustomModal/CustomModal';
+import PersonIcon from '@material-ui/icons/Person'
+import UserInformationContent from '../../../../components/UserInformationContent'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -74,6 +78,7 @@ const AppointmentDetailsPage = () => {
   const [data, setData] = useState(null);
   const [note, setNote] = useState('');
   const [completed, setCompleted] = useState('');
+  const [MeetingContent, setMeetingContent] = useState(false)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
 
   const classes = useStyles()
@@ -167,9 +172,13 @@ const AppointmentDetailsPage = () => {
       })
   }
 
+  const createVideoChat = () => {
+
+  }
+
 
   const { user_info, facility_info } = data || {};
-  console.log('user_info', user_info)
+
   console.log('facility_info', facility_info)
   return (
     <Container>
@@ -271,6 +280,7 @@ const AppointmentDetailsPage = () => {
                 style={{marginTop: 10}}
                 size="large"
                 variant="contained"
+                onClick={() => setMeetingContent(true)}
               >
                 Create a video chat room for this appointment
               </Button>
@@ -286,7 +296,25 @@ const AppointmentDetailsPage = () => {
         patientId={user_info?.id}
         recipientId={facility_info?.auth_id}
         senderId={user?.id}
+        notificationNumber={data?.notification_phone}
         callbackFn={sendSMSMessage}
+      />
+
+      <CustomModal
+        open={MeetingContent}
+        title={'Create new meeting'}
+        onClose={() => setMeetingContent(false)}
+        icon={<PersonIcon fontSize="small" />}
+        component={
+          <MeetingCreated
+            name={facility_info?.name}
+            email={facility_info?.email}
+            phone={data?.notification_phone ? data.notification_phone : null}
+            setMeetingContent={setMeetingContent}
+            facilityName={facility_info?.name}
+            residentName={`${user_info?.first_name} ${user_info?.last_name}`}
+          />
+        }
       />
     </Container>
   )
