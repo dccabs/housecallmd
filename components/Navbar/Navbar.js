@@ -28,7 +28,6 @@ import {
 import { Skeleton } from '@material-ui/lab'
 import clearStore from '../../utils/clearStore'
 
-
 const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: '#fff',
@@ -50,13 +49,13 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.up('sm')]: {
       width: '100%',
-      maxWidth: 1300,
+      maxWidth: 1500,
       margin: 'auto',
     },
   },
   authLinks: {
     color: theme.typography.color,
-
+    alignItems: 'center',
     '& a': {
       fontWeight: 600,
       color: theme.typography.color,
@@ -96,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = () => {
   const classes = useStyles()
   const store = useStore()
+  const { setFacilityAdminTableTab, setIsAdmin, isAdmin } = useStore()
   const router = useRouter()
   const { user, session } = Auth.useUser()
   const openSnackBar = useContext(SnackBarContext)
@@ -103,7 +103,8 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLocalAdmin, setLocalIsAdmin] = useState(false)
+
 
   useEffect(() => {
     if (user) {
@@ -119,10 +120,11 @@ const Navbar = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res) {
-            console.log('res', res)
-            setFirstName(res?.firstName ?? '')
+            console.log('res', res.role)
+            setFirstName(res?.firstName ? res?.firstName : res?.name)
             setLastName(res?.lastName ?? '')
-            setIsAdmin(res?.role === 'admin');
+            setLocalIsAdmin(res.role === 'admin')
+            setIsAdmin(res.role === 'admin');
             setLoading(false)
           }
         })
@@ -147,10 +149,7 @@ const Navbar = () => {
         open={drawerToggle}
         onClose={() => setDrawerToggle(false)}
       >
-        <MobileNavDrawer
-          loading={loading}
-          setDrawerToggle={setDrawerToggle}
-        />
+        <MobileNavDrawer loading={loading} setDrawerToggle={setDrawerToggle} />
       </Drawer>
 
       <AppBar position="static" className={classes.appBar}>
@@ -170,15 +169,38 @@ const Navbar = () => {
                   </strong>
                 </Typography>
 
-                {isAdmin &&
-                <span style={{ marginLeft: 10 }}>
-                  <Link href="/user-admin">
-                    <a>
-                      <Button color="primary" variant="outlined" size="small">Admin</Button>
-                    </a>
-                  </Link>
-                </span>
-                }
+                {isLocalAdmin && (
+                  <Box display="flex">
+                    <span style={{ marginLeft: 10 }}>
+                      <Link href="/user-admin">
+                        <a>
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                          >
+                            Admin
+                          </Button>
+                        </a>
+                      </Link>
+                    </span>
+
+                    <span style={{ marginLeft: 10 }}>
+                      <Link href="/facility/admin">
+                        <a>
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                            onClick={() => setFacilityAdminTableTab(0)}
+                          >
+                            Facility Admin
+                          </Button>
+                        </a>
+                      </Link>
+                    </span>
+                  </Box>
+                )}
               </Box>
             </a>
           </Link>
@@ -229,6 +251,33 @@ const Navbar = () => {
                 <Link href="/login">
                   <Typography align="right" style={{ cursor: 'pointer' }}>
                     <a>Login</a>
+                  </Typography>
+                </Link>
+              </Box>
+            )}
+            {user?.user_metadata?.facility && (
+              <Box style={{ marginLeft: 30 }}>
+                <Link href="/facility/profile">
+                  <Typography align="right" style={{ cursor: 'pointer' }}>
+                    <a>
+                      <Button color="primary" variant="contained">
+                        Dashboard (Beta)
+                      </Button>
+                    </a>
+                  </Typography>
+                </Link>
+              </Box>
+            )}
+
+            {!user && (
+              <Box style={{ marginLeft: 30 }}>
+                <Link href="/facility/create-account">
+                  <Typography align="right" style={{ cursor: 'pointer' }}>
+                    <a>
+                      <Button color="primary" variant="contained">
+                        Facilities (Beta)
+                      </Button>
+                    </a>
                   </Typography>
                 </Link>
               </Box>

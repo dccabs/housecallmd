@@ -16,6 +16,11 @@ export default class MyDocument extends Document {
             div#__next > div {
               height: 100%;
             }
+            .link {
+              color: #0092b8;
+              text-decoration: underline;
+              cursor: pointer;
+            }
           `}</style>
           <link rel="shortcut icon" href="/favicon.png" />
           <meta name="theme-color" content={theme.palette.primary.main} />

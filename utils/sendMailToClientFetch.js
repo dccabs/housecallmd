@@ -3,7 +3,8 @@ const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
 const SENDGRID_DEFAULT_EMAIL = process.env.SENDGRID_DEFAULT_EMAIL
 
 const sendMailToClientFetch = async (props) => {
-  const { name, email, roomUrl } = props
+  const { name, email, roomUrl, message } = props
+  const messageHtml = message || 'Please click on the following link to join the meeting.'
   const sgResponse = await fetch(SENDGRID_API_URL, {
     method: 'POST',
     headers: {
@@ -34,11 +35,8 @@ const sendMailToClientFetch = async (props) => {
 
               <p>Hi ${name},</p>
 
-              <br />
-              <br />
-
               <p>
-                Please click on the following link to join the meeting.
+                ${messageHtml}
               </p>
 
               <p>${roomUrl}</p>
