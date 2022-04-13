@@ -48,6 +48,7 @@ const MessageModal = (
     open,
     onClose,
     callbackFn,
+    notificationNumber,
   }
   ) => {
   const classes = useStyles()
@@ -118,6 +119,17 @@ const MessageModal = (
             <div style={{marginTop: 20}}>{patientName}</div>
           }
         </Typography>
+        {notificationNumber &&
+          <Typography
+            variant="body"
+            className={classes.h2}
+          >
+            <div style={{ marginBottom: '1em' }}
+            >
+              A sms notification will be sent to <strong>{notificationNumber}</strong>.
+            </div>
+          </Typography>
+        }
         <TextField
           placeholder="Type your message here and click to send button."
           multiline

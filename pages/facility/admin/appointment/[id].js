@@ -286,6 +286,7 @@ const AppointmentDetailsPage = () => {
         patientId={user_info?.id}
         recipientId={facility_info?.auth_id}
         senderId={user?.id}
+        notificationNumber={data?.notification_phone}
         callbackFn={sendSMSMessage}
       />
     </Container>

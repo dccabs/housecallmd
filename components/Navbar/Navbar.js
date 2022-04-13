@@ -261,7 +261,7 @@ const Navbar = () => {
                   <Typography align="right" style={{ cursor: 'pointer' }}>
                     <a>
                       <Button color="primary" variant="contained">
-                        Facility Dashboard
+                        Dashboard (Beta)
                       </Button>
                     </a>
                   </Typography>
@@ -275,7 +275,7 @@ const Navbar = () => {
                   <Typography align="right" style={{ cursor: 'pointer' }}>
                     <a>
                       <Button color="primary" variant="contained">
-                        Facilities
+                        Facilities (Beta)
                       </Button>
                     </a>
                   </Typography>
