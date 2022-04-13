@@ -16,6 +16,13 @@ const getFacilityAppointmentById = async (req, res) => {
     `)
     .eq('id', id)
 
+  let { data: facilityAuth, error2 } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', appointments[0]?.facility_info?.auth_id)
+
+  appointments[0].facility_info.email = facilityAuth[0].email;
+
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(appointments[0])
 }
