@@ -87,6 +87,7 @@ const Profile = () => {
   const [appointments, setAppointments] = useState([])
   const [appointmentsLoading, setAppointmentsLoading] = useState(true)
   const [messages, setMessages] = useState([])
+  const [authorized, setAuthorized] = useState(false)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
@@ -102,30 +103,42 @@ const Profile = () => {
 
   const { user } = Auth.useUser()
 
+
   useEffect(async () => {
-    if (user) {
+    if (user && user?.user_metadata?.facility) {
       await fetchProfileInformation().then(() => {
         setLoading(false)
       })
+    } else {
+      openSnackBar({
+        message: 'Not authorized to view this page.',
+        snackSeverity: 'error',
+      })
+      setLoading(false)
     }
   }, [user])
 
   const { facilityProfileTableTab, setFacilityProfileTableTab } = useStore()
 
   useEffect(async () => {
-    if ((tabValue === 1 || tabValue ===2) && Object.keys(state).length !== 0) {
-      const data = await fetchFacilityAppointments()
-      setAppointments(data)
-      setAppointmentsLoading(false)
+    if (user && user?.user_metadata?.facility) {
+      if ((tabValue === 1 || tabValue === 2) && Object.keys(state).length !== 0) {
+        const data = await fetchFacilityAppointments()
+        setAppointments(data)
+        setAuthorized(true);
+        setAppointmentsLoading(false)
+      }
+      if (tabValue === 0 && user?.id) {
+        getFacilityMessages()
+      }
     }
-    if (tabValue === 0 && user?.id) {
-      getFacilityMessages()
-    }
-  }, [tabValue, state])
+  }, [tabValue, state, user])
 
   useEffect(() => {
-    setTabValue(facilityProfileTableTab)
-  }, [facilityProfileTableTab])
+    if (user && user?.user_metadata?.facility) {
+      setTabValue(facilityProfileTableTab)
+    }
+  }, [facilityProfileTableTab, user])
 
   const a11yProps = (index) => {
     return {
@@ -140,7 +153,6 @@ const Profile = () => {
   }
 
   const setReply = (entry) => {
-    console.log('entry', entry)
     setReplyModalOpen(true);
     const title = entry.patient_first_name ? `You are sending a message to ${entry.sender.name} about the following patient` : `You are sending a general message to ${entry.sender.name}`;
 
@@ -246,7 +258,7 @@ const Profile = () => {
           <CircularProgress />
         </Box>
       )}
-      {!loading && (
+      {!loading && authorized && (
         <>
           <Container>
             <Box>
