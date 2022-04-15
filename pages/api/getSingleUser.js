@@ -27,7 +27,9 @@ const getAllUsers = async (req, res) => {
       .select('*')
       .eq('auth_id', users[0].id)
 
+
     if (error2) return res.status(401).json({ error: error2.message })
+    if (!facility.length) return res.status(401).json({ error: "No facility found for this user." })
     return res.status(200).json(facility[0])
   } else {
     if (error) return res.status(401).json({ error: error.message })
