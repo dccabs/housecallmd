@@ -37,6 +37,7 @@ const CreateAppointment = () => {
   const [idError, setIdError] = useState(false)
   const [notificationRequest, setNotificationRequest] = useState(false)
   const [notificationNumber, setNotificationNumber] = useState('');
+  const [override, setOverride] = useState(false)
 
 
   const classes = useStyles()
@@ -233,35 +234,50 @@ const CreateAppointment = () => {
                   <Alert severity="error">
                     Before you can make an appointment for this resident. You
                     need to address the following issues.
-                    <ul>
-                      {cardImageError && (
-                        <li style={{ margin: '20px 0' }}>
-                          Upload front and back images of{' '}
-                          <strong>primary</strong> insurance policy card
-                        </li>
-                      )}
-                      {seconaryCardImageError && (
-                        <li style={{ margin: '20px 0' }}>
-                          Upload front and back images of{' '}
-                          <strong>secondary</strong> insurance policy card
-                        </li>
-                      )}
+                    <div>
+                      <ul>
+                        {cardImageError && (
+                          <li style={{ margin: '20px 0' }}>
+                            Upload front and back images of{' '}
+                            <strong>primary</strong> insurance policy card
+                          </li>
+                        )}
+                        {seconaryCardImageError && (
+                          <li style={{ margin: '20px 0' }}>
+                            Upload front and back images of{' '}
+                            <strong>secondary</strong> insurance policy card
+                          </li>
+                        )}
 
-                      {idError && (
-                        <li style={{ margin: '20px 0' }}>
-                          Upload image of resident identification (Passport,
-                          State id, DL)
-                        </li>
-                      )}
-                    </ul>
-                    <Link
-                      href={`/facility/patient/edit-patient/${patientData.id}`}
-                    >
-                      <a>Click here to add this information.</a>
-                    </Link>
+                        {idError && (
+                          <li style={{ margin: '20px 0' }}>
+                            Upload image of resident identification (Passport,
+                            State id, DL)
+                          </li>
+                        )}
+                      </ul>
+                      <Link
+                        href={`/facility/patient/edit-patient/${patientData.id}`}
+                      >
+                        <a>Click here to add this information.</a>
+                      </Link>
+                    </div>
+
+                    <div style={{ marginTop: 20 }}>
+                      <FormControl component="fieldset">
+                        <FormControlLabel
+                          value="Terms"
+                          control={<Checkbox color="secondary" checked={override} />}
+                          label="Skip uploading information and provide these items later or in person.  They will be required to complete the appointment."
+                          labelPlacement="end"
+                          onChange={() => setOverride(true)}
+                        />
+                      </FormControl>
+                    </div>
                   </Alert>
                 </div>
               )}
+
 
               <div style={{ marginBottom: 20 }}>
                 <TextField
@@ -272,7 +288,7 @@ const CreateAppointment = () => {
                   fullWidth
                   variant="outlined"
                   onChange={(e) => setVisitReason(e.target.value)}
-                  disabled={cardImageError || idError || seconaryCardImageError}
+                  disabled={(cardImageError || idError || seconaryCardImageError) && !override}
                   // disabled={messagesLoading}
                 />
               </div>
@@ -314,7 +330,7 @@ const CreateAppointment = () => {
                   variant="contained"
                   size="large"
                   onClick={handleSubmit}
-                  disabled={!visitReason || (notificationRequest && !notificationNumber)}
+                  disabled={!visitReason || (notificationRequest && !notificationNumber) && !override}
                 >
                   Submit
                 </Button>
