@@ -166,7 +166,10 @@ const Profile = () => {
     setReplyModalData(data)
   }
 
+  let intervalTimeout;
+
   const getFacilityMessages = () => {
+    clearTimeout(intervalTimeout)
     const payload = {
       facilityId: user.id,
     }
@@ -182,6 +185,9 @@ const Profile = () => {
         if (data) {
           setMessages(data)
           setMessagesLoading(false)
+          intervalTimeout = setTimeout(() => {
+            getFacilityMessages();
+          }, 60000)
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',

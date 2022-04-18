@@ -303,7 +303,10 @@ const UserDetailsPage = () => {
     }
   }, [tabValue, userId])
 
+  let intervalTimeout;
+
   const getPatientMessages = () => {
+    clearTimeout(intervalTimeout)
     const payload = {
       // facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
       patientId: userId,
@@ -320,6 +323,9 @@ const UserDetailsPage = () => {
         if (data) {
           setMessages(data)
           setMessagesLoading(false)
+          intervalTimeout = setTimeout(() => {
+            getPatientMessages();
+          }, 60000)
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',
