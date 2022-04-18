@@ -2,6 +2,7 @@ import {
   List,
   ListItem,
   makeStyles,
+  Button,
 } from '@material-ui/core'
 
 import Link from 'next/link';
@@ -98,13 +99,13 @@ const Message = ({ entry, index, isAdmin, onReplyClick }) => {
         </div>
         }
         {!isAdmin && entry.sentFromHouseCall && onReplyClick &&
-        <div style={{marginTop: 20, cursor: 'pointer', textDecoration: 'underline', color: '#e1215b',}} onClick={onReplyClick}>
-          Reply
+        <div style={{marginTop: 20}} onClick={onReplyClick}>
+          <Button size="small" variant="contained" color="secondary">Reply</Button>
         </div>
         }
         {isAdmin && !entry.sentFromHouseCall && onReplyClick &&
-        <div style={{marginTop: 20, cursor: 'pointer', textDecoration: 'underline', color: '#e1215b',}} onClick={onReplyClick}>
-          Reply
+        <div style={{marginTop: 20}} onClick={onReplyClick}>
+          <Button size="small" variant="contained" color="secondary">Reply</Button>
         </div>
         }
       </div>
