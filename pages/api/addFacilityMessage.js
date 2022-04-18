@@ -1,4 +1,5 @@
 import { supabase } from '../../utils/initSupabase'
+import { Auth } from '@supabase/ui'
 
 const addFacilityMessage = async (req, res) => {
   const newMessage = req.body
@@ -15,6 +16,23 @@ const addFacilityMessage = async (req, res) => {
   }
   */
 
+  let { data: houseCallUsers, userListError } = await supabase
+    .from('UserList')
+    .select('*')
+    .eq('uuid', newMessage.recipient)
+
+  let sentToHouseCall = false;
+  if (houseCallUsers) {
+    houseCallUsers.forEach(user => {
+      if (user.role === 'admin') {
+        sentToHouseCall = true;
+      }
+    })
+  }
+
+  if (newMessage.recipient === null) {
+    sentToHouseCall = true;
+  }
 
   if (!newMessage || newMessage === 'undefined') {
     throw Error('null data value')
@@ -23,8 +41,15 @@ const addFacilityMessage = async (req, res) => {
   const { data, error } = await supabase
     .from('facility_messages')
     .insert([{ ...newMessage }])
+
+  const { data: facilityData, facilityDataError } = await supabase
+    .from('facilities')
+    .select('*')
+    .eq('auth_id', data[0].sender)
+
+  data.sentToHouseCall = sentToHouseCall;
   if (error) return res.status(401).json({ error: error.message })
-  return res.status(200).json(data)
+  return res.status(200).json({ sentToHouseCall, data, facilityData })
 }
 
 export default addFacilityMessage

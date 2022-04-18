@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core'
 import { SnackBarContext } from 'components/SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
+import { Auth } from '@supabase/ui'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -56,7 +57,7 @@ const MessageModal = (
   const [message, setMessage] = useState('')
 
   const openSnackBar = useContext(SnackBarContext)
-
+  const { user } = Auth.useUser()
 
   const sendMessage = () => {
     const payload = {
@@ -81,6 +82,9 @@ const MessageModal = (
         onClose()
         callbackFn();
         if (data) {
+          if (data.sentToHouseCall) {
+            sendSMSToHouseCall(data)
+          }
           openSnackBar({
             message: 'Message successfully sent',
             // error: 'error',
@@ -92,6 +96,52 @@ const MessageModal = (
             error: 'error',
           })
         }
+      })
+  }
+
+  const sendSMSToHouseCall = async (data) => {
+    const { facilityData } = data;
+    const message = `${facilityData[0].name} has just sent you a message. Please login to the portal to see it.`
+
+    await fetch('/api/getPhoneNumbers', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        user,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const activePhones = data.filter(phone => {
+          return phone.isActive;
+        })
+
+        const phones = activePhones.map(phone => {
+          return phone.phoneNumber;
+        })
+
+        phones.forEach(async (phone) => {
+          try {
+            await fetch('/api/sendMessage', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                to: phone,
+                body: message,
+              }),
+            })
+          } catch (err) {
+            throw err
+          }
+        })
+
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
       })
   }
 
