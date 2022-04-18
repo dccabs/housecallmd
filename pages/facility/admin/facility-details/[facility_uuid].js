@@ -172,7 +172,10 @@ const FacilityDetailsPage = () => {
     }
   }, [tabValue, facility])
 
+  let intervalTimeout;
+
   const getFacilityMessages = () => {
+    clearTimeout(intervalTimeout)
     const { facility_uuid } = router.query
     const payload = {
       facilityId: facility_uuid,
@@ -190,6 +193,9 @@ const FacilityDetailsPage = () => {
         if (data) {
           setMessages(data)
           setMessagesLoading(false)
+          intervalTimeout = setTimeout(() => {
+            getFacilityMessages();
+          }, 60000)
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',
