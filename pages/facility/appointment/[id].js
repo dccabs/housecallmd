@@ -1,15 +1,11 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 
-import {
-  Typography,
-  Box,
-  Button,
-  CircularProgress,
-} from '@material-ui/core'
-import CheckIcon from '@material-ui/icons/Check';
+import { Typography, Box, Button, CircularProgress } from '@material-ui/core'
+import CheckIcon from '@material-ui/icons/Check'
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
+import { supabase } from 'utils/initSupabaseService'
 import Message from 'components/Facility/Message'
 import Container from 'components/Container'
 import { SnackBarContext } from 'components/SnackBar'
@@ -46,35 +42,49 @@ const useStyles = makeStyles((theme) => ({
 
 const AppointmentDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
-  const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState(null)
+  const [note, setNote] = useState('')
   const [messageModalOpen, setMessageModalOpen] = useState(false)
-  const [completed, setCompleted] = useState('');
+  const [completed, setCompleted] = useState('')
 
   const classes = useStyles()
-  const { user } = Auth.useUser()
+  const user = supabase.auth.user()
   const router = useRouter()
   const { id: appointmentId } = router.query
 
   useEffect(() => {
-    if (user && appointmentId) {
-      // setLoading(true)
-      fetch('/api/getFacilityAppointmentById', {
-        ...xhrHeader,
-        body: JSON.stringify({ id: Number(appointmentId)}),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          setData(res);
-          setNote(res?.note);
-          setCompleted(res?.completed);
-          setLoading(false);
+    if (appointmentId) {
+      if (user) {
+        fetch('/api/getFacilityAppointmentById', {
+          ...xhrHeader,
+          body: JSON.stringify({ id: Number(appointmentId) }),
         })
+          .then((res) => res.json())
+          .then((res) => {
+            if (user.id !== res.user_info.id) {
+              openSnackBar({
+                message: 'You are not authorized to view this page',
+                snackSeverity: 'error',
+              })
+            } else {
+              setData(res)
+              setNote(res?.note)
+              setCompleted(res?.completed)
+            }
+            setLoading(false)
+          })
+      } else {
+        setLoading(false)
+        openSnackBar({
+          message: 'You are not authorized to view this page',
+          snackSeverity: 'error',
+        })
+      }
     }
   }, [user, appointmentId])
 
-  const handleStatusClick = ({status}) => {
+  const handleStatusClick = ({ status }) => {
     const payload = {
       id: Number(appointmentId),
       status,
@@ -89,7 +99,7 @@ const AppointmentDetailsPage = () => {
           message: 'Appointment Status Updated',
           snackSeverity: 'success',
         })
-        setCompleted(status);
+        setCompleted(status)
       })
   }
 
@@ -111,86 +121,95 @@ const AppointmentDetailsPage = () => {
       })
   }
 
-
-  const { user_info, facility_info } = data || {};
+  const { user_info, facility_info } = data || {}
 
   return (
     <Container>
-      {loading ?
+      {loading ? (
         <Container>
-          <div style={{textAlign: 'center'}}>
+          <div style={{ textAlign: 'center' }}>
             <CircularProgress />
           </div>
         </Container>
-
-        :
+      ) : (
         <>
-          <Box>
-            <div onClick={() => router.back()} className="link">
-              Go Back
-            </div>
-          </Box>
-          <Box display="flex" alignItems="baseline">
-            <Typography variant="h2" className={classes.h2}>
-              Appointment
-            </Typography>
-            {completed &&
-            <Box style={{marginLeft: 40, display: 'flex', alignItems: 'center'}}>
-              <CheckIcon style={{fill: completed ? '#13bb0a' : null}} /> <span style={{marginLeft: 10}}>Completed</span>
-            </Box>
-            }
-          </Box>
-          <Box style={{margin: '40px 0 0'}}>
-            <Box style={{margin: '40px 0 0'}}>
+          {user && data && (
+            <>
               <Box>
-                <strong>Name:</strong> {user_info?.first_name} {user_info?.last_name}
+                <div onClick={() => router.back()} className="link">
+                  Go Back
+                </div>
               </Box>
-              <Box>
-                <strong>Facility:</strong> {facility_info?.name}
+              <Box display="flex" alignItems="baseline">
+                <Typography variant="h2" className={classes.h2}>
+                  Appointment
+                </Typography>
+                {completed && (
+                  <Box
+                    style={{
+                      marginLeft: 40,
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <CheckIcon style={{ fill: completed ? '#13bb0a' : null }} />{' '}
+                    <span style={{ marginLeft: 10 }}>Completed</span>
+                  </Box>
+                )}
               </Box>
-              <Box>
-                <strong>Facility Phone:</strong> {facility_info?.facility_phone}
-              </Box>
-              <Box>
-                <strong>Room Number:</strong> {user_info?.room_number}
-              </Box>
-              <Box>
-                <strong>Date:</strong> {data?.created_at}
-              </Box>
+              <Box style={{ margin: '40px 0 0' }}>
+                <Box style={{ margin: '40px 0 0' }}>
+                  <Box>
+                    <strong>Name:</strong> {user_info?.first_name}{' '}
+                    {user_info?.last_name}
+                  </Box>
+                  <Box>
+                    <strong>Facility:</strong> {facility_info?.name}
+                  </Box>
+                  <Box>
+                    <strong>Facility Phone:</strong>{' '}
+                    {facility_info?.facility_phone}
+                  </Box>
+                  <Box>
+                    <strong>Room Number:</strong> {user_info?.room_number}
+                  </Box>
+                  <Box>
+                    <strong>Date:</strong> {data?.created_at}
+                  </Box>
 
-              <Box style={{margin: '40px 0 0'}}>
-                <Box>
-                  <strong>Visit Reason:</strong>
+                  <Box style={{ margin: '40px 0 0' }}>
+                    <Box>
+                      <strong>Visit Reason:</strong>
+                    </Box>
+                    <Box>{data?.visitReason}</Box>
+                  </Box>
                 </Box>
-                <Box>
-                  {data?.visitReason}
+                <Box style={{ margin: '40px 0 0px' }}>
+                  <Button
+                    color="secondary"
+                    style={{ marginTop: 10 }}
+                    size="large"
+                    variant="contained"
+                    onClick={() => setMessageModalOpen(true)}
+                  >
+                    Send Message to HouseCallMD about this appointment
+                  </Button>
                 </Box>
               </Box>
-            </Box>
-            <Box style={{margin: '40px 0 0px'}}>
-              <Button
-                color="secondary"
-                style={{marginTop: 10}}
-                size="large"
-                variant="contained"
-                onClick={() => setMessageModalOpen(true)}
-              >
-                Send Message to HouseCallMD about this appointment
-              </Button>
-            </Box>
-          </Box>
-          <FacilityMessageModal
-            open={messageModalOpen}
-            onClose={() => setMessageModalOpen(false)}
-            title="Your are sending a message to HouseCall MD about the following patient"
-            patientName={`${user_info?.first_name} ${user_info?.last_name}`}
-            patientId={user_info?.id}
-            recipientId={null}
-            senderId={user?.id}
-            callbackFn={() => {}}
-          />
+              <FacilityMessageModal
+                open={messageModalOpen}
+                onClose={() => setMessageModalOpen(false)}
+                title="Your are sending a message to HouseCall MD about the following patient"
+                patientName={`${user_info?.first_name} ${user_info?.last_name}`}
+                patientId={user_info?.id}
+                recipientId={null}
+                senderId={user?.id}
+                callbackFn={() => {}}
+              />
+            </>
+          )}
         </>
-      }
+      )}
     </Container>
   )
 }

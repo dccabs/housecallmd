@@ -17,6 +17,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from 'components/SnackBar'
 import EditIcon from '@material-ui/icons/Edit'
 import { Auth } from '@supabase/ui'
+import { supabase } from 'utils/initSupabaseService'
 import AppointmentTable from '../../../components/AppointmentTable'
 import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
@@ -86,7 +87,7 @@ const Patient = () => {
 
   const openSnackBar = useContext(SnackBarContext)
 
-  const { user } = Auth.useUser()
+  const user = supabase.auth.user()
 
   const patientId = router.query.id
 
