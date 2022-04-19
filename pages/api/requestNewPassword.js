@@ -4,7 +4,7 @@ import { supabase } from '../../utils/initSupabase'
 const requestNewPassword = async (req, res) => {
   const email = req.body.email
 
-  const { data, error } = supabase.auth.api.resetPasswordForEmail(email)
+  const { data, error } = await supabase.auth.api.resetPasswordForEmail(email)
 
   if (error) return res.status(401).json({ error: error.message })
   return res.status(200).json(data)
