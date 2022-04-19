@@ -11,6 +11,7 @@ import Container from 'components/Container'
 import { SnackBarContext } from 'components/SnackBar'
 import xhrHeader from 'constants/xhrHeader'
 import FacilityMessageModal from '../../../components/FacilityMessageModal'
+import getAppointments from 'pages/api/getAppointments'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -47,6 +48,7 @@ const AppointmentDetailsPage = () => {
   const [note, setNote] = useState('')
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [completed, setCompleted] = useState('')
+  const [authorized, setAuthorized] = useState(false)
 
   const classes = useStyles()
   const user = supabase.auth.user()
@@ -56,23 +58,16 @@ const AppointmentDetailsPage = () => {
   useEffect(() => {
     if (appointmentId) {
       if (user) {
-        fetch('/api/getFacilityAppointmentById', {
-          ...xhrHeader,
-          body: JSON.stringify({ id: Number(appointmentId) }),
+        fetch('/api/getSingleUser', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: user.email }),
         })
           .then((res) => res.json())
           .then((res) => {
-            if (user.id !== res.user_info.id) {
-              openSnackBar({
-                message: 'You are not authorized to view this page',
-                snackSeverity: 'error',
-              })
-            } else {
-              setData(res)
-              setNote(res?.note)
-              setCompleted(res?.completed)
-            }
-            setLoading(false)
+            setAuthorized(true)
+            getAppointments(res)
           })
       } else {
         setLoading(false)
@@ -83,6 +78,27 @@ const AppointmentDetailsPage = () => {
       }
     }
   }, [user, appointmentId])
+
+  const getAppointments = (userData) => {
+    fetch('/api/getFacilityAppointmentById', {
+      ...xhrHeader,
+      body: JSON.stringify({ id: Number(appointmentId) }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (userData.role === 'admin' || user.id === res.user_info.id) {
+          setData(res)
+          setNote(res?.note)
+          setCompleted(res?.completed)
+        } else {
+          openSnackBar({
+            message: 'You are not authorized to view this page',
+            snackSeverity: 'error',
+          })
+        }
+        setLoading(false)
+      })
+  }
 
   const handleStatusClick = ({ status }) => {
     const payload = {
@@ -133,7 +149,7 @@ const AppointmentDetailsPage = () => {
         </Container>
       ) : (
         <>
-          {user && data && (
+          {user && data && (user_info.id === user.id || authorized) && (
             <>
               <Box>
                 <div onClick={() => router.back()} className="link">

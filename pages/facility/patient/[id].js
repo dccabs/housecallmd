@@ -83,6 +83,7 @@ const Patient = () => {
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [appointments, setAppointments] = useState([])
+  const [authorized, setAuthorized] = useState(false)
   const { facilityPatientTableTab, setFacilityPatientTableTab } = useStore()
 
   const openSnackBar = useContext(SnackBarContext)
@@ -104,14 +105,33 @@ const Patient = () => {
 
   useEffect(() => {
     if (patientId) {
-      if (user && user.id === patientId) {
-        fetchPatientInformation()
-        if (state) {
-          fetchFacilityAppointments().then((appointments) => {
-            setAppointments(appointments)
+      if (user) {
+        fetch('/api/getSingleUser', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: user.email }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            setAuthorized(true)
+            if (res.role === 'admin' || user.id === patientId) {
+              fetchPatientInformation()
+              if (state) {
+                fetchFacilityAppointments().then((appointments) => {
+                  setAppointments(appointments)
+                })
+              }
+            } else {
+              setLoading(false)
+              openSnackBar({
+                message: 'You are not authorized to view this page',
+                snackSeverity: 'error',
+              })
+            }
           })
-        }
       } else {
+        setLoading(false)
         openSnackBar({
           message: 'You are not authorized to view this page',
           snackSeverity: 'error',
@@ -209,19 +229,18 @@ const Patient = () => {
 
   return (
     <>
-      {user && user.id === patientId && (
+      {loading ? (
+        <Box
+          my="8em"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
         <>
-          {loading && (
-            <Box
-              my="8em"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <CircularProgress />
-            </Box>
-          )}
-          {!loading && (
+          {user && (user.id === patientId || authorized) && (
             <>
               <Container>
                 <Box>
@@ -343,18 +362,19 @@ const Patient = () => {
                   </TabPanel>
                 </Box>
               </Container>
+
+              <FacilityMessageModal
+                open={messageModalOpen}
+                onClose={() => setMessageModalOpen(false)}
+                title="Your are sending a message to HouseCall MD about the following patient"
+                patientName={`${state.first_name} ${state.last_name}`}
+                patientId={patientId}
+                recipientId={null}
+                senderId={user?.id}
+                callbackFn={getPatientMessages}
+              />
             </>
           )}
-          <FacilityMessageModal
-            open={messageModalOpen}
-            onClose={() => setMessageModalOpen(false)}
-            title="Your are sending a message to HouseCall MD about the following patient"
-            patientName={`${state.first_name} ${state.last_name}`}
-            patientId={patientId}
-            recipientId={null}
-            senderId={user?.id}
-            callbackFn={getPatientMessages}
-          />
         </>
       )}
     </>

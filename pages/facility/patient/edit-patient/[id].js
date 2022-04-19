@@ -184,45 +184,21 @@ const UserDetailsPage = () => {
   const { id: userId } = router.query
 
   useEffect(() => {
-    if (user) {
-      fetch('/api/getSingleUser', {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        credentials: 'same-origin',
-        body: JSON.stringify({ email: user.email }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.role === 'admin') {
+    if (userId) {
+      if (user) {
+        // Check if logged in user is admin
+        fetch('/api/getSingleUser', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: user.email }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
             setAuthorized(true)
-          }
 
-          let currentData = {}
-
-          if (userId) {
             if (res.role === 'admin' || user.id === userId) {
-              fetch('/api/getFacilityPatientById', {
-                method: 'POST',
-                headers: new Headers({ 'Content-Type': 'application/json' }),
-                credentials: 'same-origin',
-                body: JSON.stringify({ id: userId }),
-              })
-                .then((res) => res.json())
-                .then((res) => {
-                  Object.keys(formData).forEach((key) => {
-                    currentData[key] = {
-                      ...formData[key],
-                      value: res[key],
-                    }
-                  })
-
-                  getFacility(res.facility_auth_id)
-
-                  setFormData(currentData)
-                  setUserName(
-                    `${currentData.last_name.value}, ${currentData.first_name.value}`
-                  )
-                })
+              getPatient()
             } else {
               setLoading(false)
               openSnackBar({
@@ -230,14 +206,46 @@ const UserDetailsPage = () => {
                 snackSeverity: 'error',
               })
             }
-          }
+          })
+      } else {
+        setLoading(false)
+        openSnackBar({
+          message: 'You are not authorized to view this page',
+          snackSeverity: 'error',
         })
+      }
     }
   }, [user, userId])
 
+  const getPatient = () => {
+    let currentData = {}
+
+    fetch('/api/getFacilityPatientById', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({ id: userId }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        Object.keys(formData).forEach((key) => {
+          currentData[key] = {
+            ...formData[key],
+            value: res[key],
+          }
+        })
+
+        getFacility(res.facility_auth_id)
+
+        setFormData(currentData)
+        setUserName(
+          `${currentData.last_name.value}, ${currentData.first_name.value}`
+        )
+      })
+  }
+
   const getFacility = (id) => {
     if (id) {
-      setLoading(true)
       fetch('/api/getFacilityById', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -355,244 +363,7 @@ const UserDetailsPage = () => {
 
   return (
     <Container>
-      {formData && userName && facilityName && !loading ? (
-        <>
-          <Box>
-            <Box>
-              <div onClick={() => router.back()} className="link">
-                Go Back
-              </div>
-            </Box>
-            <Box>
-              <div>
-                <Typography variant="h2" className={classes.h2}>
-                  Edit Patient - {userName}
-                </Typography>
-              </div>
-              {/*<Typography variant="h3" className={classes.h3}>*/}
-              {/*  {userName}*/}
-              {/*</Typography>*/}
-            </Box>
-
-            {/*<Typography className={classes.facilityLink} variant="h6">*/}
-            {/*  <Link href={`/facility/admin/facility-details/${facilityId}`}>*/}
-            {/*    <a>Member of {facilityName}</a>*/}
-            {/*  </Link>*/}
-            {/*</Typography>*/}
-          </Box>
-
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <Box
-              mt="1em"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
-              {Object.keys(formData).map((key) => {
-                const field = formData[key]
-                if (field.type === 'textField') {
-                  return (
-                    <TextField
-                      className={classes.textFields}
-                      type="text"
-                      label={field.label}
-                      variant="outlined"
-                      color="secondary"
-                      value={field.value}
-                      onChange={(e) =>
-                        handleUpdate({ val: e.target.value, objKey: key })
-                      }
-                      disabled={!editable}
-                      key={key}
-                      fullWidth
-                    />
-                  )
-                } else if (field.type === 'muiPicker') {
-                  return (
-                    <MuiPickersUtilsProvider utils={DateFnsUtils} key={key}>
-                      <KeyboardDatePicker
-                        autoComplete="nope"
-                        className={classes.textFields}
-                        inputVariant="outlined"
-                        margin="normal"
-                        label="Date of birth"
-                        format="MM/dd/yyyy"
-                        value={field.value}
-                        onChange={(value) =>
-                          handleUpdate({
-                            val: moment(value).format('DD/MM/YYYY'),
-                            objKey: key,
-                          })
-                        }
-                        KeyboardButtonProps={{
-                          'aria-label': 'change date',
-                        }}
-                        disabled={!editable}
-                      />
-                    </MuiPickersUtilsProvider>
-                  )
-                } else if (field.type === 'muiSelect') {
-                  return (
-                    <MuiSelect
-                      name="sex"
-                      defaultValue={field.value}
-                      label={field.label}
-                      value={field.value}
-                      onChange={(e) =>
-                        handleUpdate({ val: e.target.value, objKey: key })
-                      }
-                      key={key}
-                      disabled={!editable}
-                    >
-                      {field.options.map((opt, index) => {
-                        return (
-                          <MenuItem key={index} value={opt}>
-                            {opt}
-                          </MenuItem>
-                        )
-                      })}
-                    </MuiSelect>
-                  )
-                } else if (field.type === 'autoComplete') {
-                  return (
-                    <Autocomplete
-                      className={classes.textFields}
-                      options={field.options}
-                      onChange={(e, value) =>
-                        handleUpdate({ val: value, objKey: key })
-                      }
-                      key={key}
-                      value={field.value}
-                      freeSolo
-                      disableClearable
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={field.label}
-                          margin="normal"
-                          color="secondary"
-                          variant="outlined"
-                          value={field.value}
-                          onChange={(e, value) =>
-                            handleUpdate({ val: value, objKey: key })
-                          }
-                          InputProps={{ ...params.InputProps, type: 'search' }}
-                        />
-                      )}
-                      disabled={!editable}
-                    />
-                  )
-                } else if (field.type === 'fileUpload') {
-                  return (
-                    <div style={{ width: '100%', maxWidth: '34rem' }} key={key}>
-                      <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="start"
-                        style={{ marginTop: '2em' }}
-                      >
-                        <Typography
-                          variant="h4"
-                          style={{ marginBottom: '0.5em' }}
-                        >
-                          <strong>{field.label}</strong>
-                        </Typography>
-                        <Box>
-                          <div style={{ flex: 1 }}>
-                            <Button
-                              variant="contained"
-                              component="label"
-                              style={{ marginRight: '0.5em' }}
-                              disabled={!editable}
-                            >
-                              Upload File
-                              <input
-                                type="file"
-                                accept="image/*"
-                                hidden
-                                onChange={(e) =>
-                                  handleUpdate({
-                                    val: e.target.files[0],
-                                    objKey: key,
-                                    type: 'fileUpload',
-                                  })
-                                }
-                              />
-                            </Button>
-                          </div>
-                          <div
-                            style={{
-                              position: 'relative',
-                              width: 500,
-                              marginTop: 10,
-                            }}
-                          >
-                            {field.value ? (
-                              <img
-                                style={{ maxWidth: 500 }}
-                                src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
-                              />
-                            ) : field.loading ? (
-                              <Box my="1em">
-                                <CircularProgress />
-                              </Box>
-                            ) : (
-                              'No file chosen'
-                            )}
-                          </div>
-                        </Box>
-                      </Box>
-                    </div>
-                  )
-                } else if (field.type === 'phoneNumber') {
-                  return (
-                    <TextField
-                      className={classes.textFields}
-                      type="tel"
-                      label={field.label}
-                      variant="outlined"
-                      color="secondary"
-                      value={field.value}
-                      onChange={(e) =>
-                        handleUpdate({ val: e.target.value, objKey: key })
-                      }
-                      InputProps={{
-                        inputComponent: PhoneField,
-                      }}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      key={key}
-                      disabled={!editable}
-                      fullWidth
-                    />
-                  )
-                }
-              })}
-            </Box>
-
-            <Box
-              mt="2em"
-              display="flex"
-              justifyContent="center"
-              flexWrap="wrap"
-            >
-              <Box m="1em" className={classes.buttonLinks}>
-                <Button
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  size="large"
-                  disabled={!editable}
-                >
-                  Save
-                </Button>
-              </Box>
-            </Box>
-          </form>
-        </>
-      ) : (
+      {loading ? (
         <Box
           my="1em"
           display="flex"
@@ -601,6 +372,253 @@ const UserDetailsPage = () => {
         >
           <CircularProgress />
         </Box>
+      ) : (
+        <>
+          {userName && facilityName && (user.id === userId || authorized) && (
+            <>
+              <Box>
+                <Box>
+                  <div onClick={() => router.back()} className="link">
+                    Go Back
+                  </div>
+                </Box>
+                <Box>
+                  <div>
+                    <Typography variant="h2" className={classes.h2}>
+                      Edit Patient - {userName}
+                    </Typography>
+                  </div>
+                  {/*<Typography variant="h3" className={classes.h3}>*/}
+                  {/*  {userName}*/}
+                  {/*</Typography>*/}
+                </Box>
+
+                {/*<Typography className={classes.facilityLink} variant="h6">*/}
+                {/*  <Link href={`/facility/admin/facility-details/${facilityId}`}>*/}
+                {/*    <a>Member of {facilityName}</a>*/}
+                {/*  </Link>*/}
+                {/*</Typography>*/}
+              </Box>
+
+              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <Box
+                  mt="1em"
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {Object.keys(formData).map((key) => {
+                    const field = formData[key]
+                    if (field.type === 'textField') {
+                      return (
+                        <TextField
+                          className={classes.textFields}
+                          type="text"
+                          label={field.label}
+                          variant="outlined"
+                          color="secondary"
+                          value={field.value}
+                          onChange={(e) =>
+                            handleUpdate({ val: e.target.value, objKey: key })
+                          }
+                          disabled={!editable}
+                          key={key}
+                          fullWidth
+                        />
+                      )
+                    } else if (field.type === 'muiPicker') {
+                      return (
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} key={key}>
+                          <KeyboardDatePicker
+                            autoComplete="nope"
+                            className={classes.textFields}
+                            inputVariant="outlined"
+                            margin="normal"
+                            label="Date of birth"
+                            format="MM/dd/yyyy"
+                            value={field.value}
+                            onChange={(value) =>
+                              handleUpdate({
+                                val: moment(value).format('DD/MM/YYYY'),
+                                objKey: key,
+                              })
+                            }
+                            KeyboardButtonProps={{
+                              'aria-label': 'change date',
+                            }}
+                            disabled={!editable}
+                          />
+                        </MuiPickersUtilsProvider>
+                      )
+                    } else if (field.type === 'muiSelect') {
+                      return (
+                        <MuiSelect
+                          name="sex"
+                          defaultValue={field.value}
+                          label={field.label}
+                          value={field.value}
+                          onChange={(e) =>
+                            handleUpdate({ val: e.target.value, objKey: key })
+                          }
+                          key={key}
+                          disabled={!editable}
+                        >
+                          {field.options.map((opt, index) => {
+                            return (
+                              <MenuItem key={index} value={opt}>
+                                {opt}
+                              </MenuItem>
+                            )
+                          })}
+                        </MuiSelect>
+                      )
+                    } else if (field.type === 'autoComplete') {
+                      return (
+                        <Autocomplete
+                          className={classes.textFields}
+                          options={field.options}
+                          onChange={(e, value) =>
+                            handleUpdate({ val: value, objKey: key })
+                          }
+                          key={key}
+                          value={field.value}
+                          freeSolo
+                          disableClearable
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={field.label}
+                              margin="normal"
+                              color="secondary"
+                              variant="outlined"
+                              value={field.value}
+                              onChange={(e, value) =>
+                                handleUpdate({ val: value, objKey: key })
+                              }
+                              InputProps={{
+                                ...params.InputProps,
+                                type: 'search',
+                              }}
+                            />
+                          )}
+                          disabled={!editable}
+                        />
+                      )
+                    } else if (field.type === 'fileUpload') {
+                      return (
+                        <div
+                          style={{ width: '100%', maxWidth: '34rem' }}
+                          key={key}
+                        >
+                          <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="start"
+                            style={{ marginTop: '2em' }}
+                          >
+                            <Typography
+                              variant="h4"
+                              style={{ marginBottom: '0.5em' }}
+                            >
+                              <strong>{field.label}</strong>
+                            </Typography>
+                            <Box>
+                              <div style={{ flex: 1 }}>
+                                <Button
+                                  variant="contained"
+                                  component="label"
+                                  style={{ marginRight: '0.5em' }}
+                                  disabled={!editable}
+                                >
+                                  Upload File
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    onChange={(e) =>
+                                      handleUpdate({
+                                        val: e.target.files[0],
+                                        objKey: key,
+                                        type: 'fileUpload',
+                                      })
+                                    }
+                                  />
+                                </Button>
+                              </div>
+                              <div
+                                style={{
+                                  position: 'relative',
+                                  width: 500,
+                                  marginTop: 10,
+                                }}
+                              >
+                                {field.value ? (
+                                  <img
+                                    style={{ maxWidth: 500 }}
+                                    src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
+                                  />
+                                ) : field.loading ? (
+                                  <Box my="1em">
+                                    <CircularProgress />
+                                  </Box>
+                                ) : (
+                                  'No file chosen'
+                                )}
+                              </div>
+                            </Box>
+                          </Box>
+                        </div>
+                      )
+                    } else if (field.type === 'phoneNumber') {
+                      return (
+                        <TextField
+                          className={classes.textFields}
+                          type="tel"
+                          label={field.label}
+                          variant="outlined"
+                          color="secondary"
+                          value={field.value}
+                          onChange={(e) =>
+                            handleUpdate({ val: e.target.value, objKey: key })
+                          }
+                          InputProps={{
+                            inputComponent: PhoneField,
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          key={key}
+                          disabled={!editable}
+                          fullWidth
+                        />
+                      )
+                    }
+                  })}
+                </Box>
+
+                <Box
+                  mt="2em"
+                  display="flex"
+                  justifyContent="center"
+                  flexWrap="wrap"
+                >
+                  <Box m="1em" className={classes.buttonLinks}>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      size="large"
+                      disabled={!editable}
+                    >
+                      Save
+                    </Button>
+                  </Box>
+                </Box>
+              </form>
+            </>
+          )}
+        </>
       )}
     </Container>
   )
