@@ -87,7 +87,6 @@ const Patient = () => {
 
   const openSnackBar = useContext(SnackBarContext)
 
-  // const user = supabase.auth.user()
   const { user } = Auth.useUser()
 
   const patientId = router.query.id
