@@ -17,7 +17,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from 'components/SnackBar'
 import EditIcon from '@material-ui/icons/Edit'
 import { Auth } from '@supabase/ui'
-import { supabase } from 'utils/initSupabaseService'
 import AppointmentTable from '../../../components/AppointmentTable'
 import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
@@ -201,7 +200,7 @@ const Patient = () => {
     return await getFacilityAppointments.json()
   }
 
-  let intervalTimeout;
+  let intervalTimeout
 
   const getPatientMessages = () => {
     clearTimeout(intervalTimeout)
@@ -223,7 +222,7 @@ const Patient = () => {
           setMessages(data)
           setMessagesLoading(false)
           intervalTimeout = setTimeout(() => {
-            getPatientMessages();
+            getPatientMessages()
           }, 60000)
         } else {
           openSnackBar({
