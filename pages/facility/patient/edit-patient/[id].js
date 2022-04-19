@@ -179,7 +179,8 @@ const UserDetailsPage = () => {
   })
 
   const classes = useStyles()
-  const user = supabase.auth.user()
+  // const user = supabase.auth.user()
+  const { user } = Auth.useUser()
   const router = useRouter()
   const { id: userId } = router.query
 

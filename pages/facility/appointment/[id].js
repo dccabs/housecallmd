@@ -51,7 +51,8 @@ const AppointmentDetailsPage = () => {
   const [authorized, setAuthorized] = useState(false)
 
   const classes = useStyles()
-  const user = supabase.auth.user()
+  // const user = supabase.auth.user()
+  const { user } = Auth.useUser()
   const router = useRouter()
   const { id: appointmentId } = router.query
 
