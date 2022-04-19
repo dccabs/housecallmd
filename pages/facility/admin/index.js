@@ -175,7 +175,11 @@ function UserAdmin(props) {
     setReplyModalData(data)
   }
 
+  let intervalTimeout;
+
   const getAllMessages = () => {
+    clearTimeout(intervalTimeout)
+
     const payload = {}
 
     setMessagesLoading(true)
@@ -189,6 +193,9 @@ function UserAdmin(props) {
         if (data) {
           setMessages(data)
           setMessagesLoading(false)
+          intervalTimeout = setTimeout(() => {
+            getAllMessages();
+          }, 60000)
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',

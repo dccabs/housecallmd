@@ -156,7 +156,7 @@ const Profile = () => {
 
   const setReply = (entry) => {
     setReplyModalOpen(true);
-    const title = entry.patient_first_name ? `You are sending a message to ${entry.sender.name} about the following patient` : `You are sending a general message to ${entry.sender.name}`;
+    const title = entry.patient_first_name ? `You are sending a message to ${entry.sender.name} at HouseCallMD about the following patient` : `You are sending a general message to ${entry.sender.name} at HouseCallMD`;
 
     const data = Object.assign(replyModalData, {});
     data.modalOpen = true;
@@ -166,7 +166,10 @@ const Profile = () => {
     setReplyModalData(data)
   }
 
+  let intervalTimeout;
+
   const getFacilityMessages = () => {
+    clearTimeout(intervalTimeout)
     const payload = {
       facilityId: user.id,
     }
@@ -182,6 +185,9 @@ const Profile = () => {
         if (data) {
           setMessages(data)
           setMessagesLoading(false)
+          intervalTimeout = setTimeout(() => {
+            getFacilityMessages();
+          }, 60000)
         } else {
           openSnackBar({
             message: 'There was an error.  Please try again later',

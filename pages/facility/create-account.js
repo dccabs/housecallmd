@@ -238,12 +238,10 @@ const Contact = () => {
         city: localCity,
         state: localState,
         zip: localZip,
-        facility_phone: formatPhoneNumberE164(localFacilityPhone),
-        fax_number: formatPhoneNumberE164(localFacilityFax),
+        facility_phone: localFacilityPhone ? formatPhoneNumberE164(localFacilityPhone): '',
+        fax_number: localFacilityFax ? formatPhoneNumberE164(localFacilityFax) : '',
         primary_contact_name: localPrimaryContactName,
-        primary_contact_mobile_phone: formatPhoneNumberE164(
-          localPrimaryContactMobilePhone
-        ),
+        primary_contact_mobile_phone: localPrimaryContactMobilePhone ? formatPhoneNumberE164(localPrimaryContactMobilePhone) : '',
         primary_contact_shift: localPrimaryContactShift,
         secondary_contact_name: localSecondaryContactName,
         secondary_contact_mobile_phone: localSecondaryContactMobilePhone

@@ -120,7 +120,6 @@ const Navbar = () => {
         .then((res) => res.json())
         .then((res) => {
           if (res) {
-            console.log('res', res.role)
             setFirstName(res?.firstName ? res?.firstName : res?.name)
             setLastName(res?.lastName ?? '')
             setLocalIsAdmin(res.role === 'admin')
