@@ -65,7 +65,8 @@ const UserDetailsPage = () => {
   const [userName, setUserName] = useState('')
   const [facilityId, setFacilityId] = useState('')
   const [facilityName, setFacilityName] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [authorized, setAuthorized] = useState(false)
   const [formData, setFormData] = useState({
     id: {
       type: null,
@@ -178,36 +179,58 @@ const UserDetailsPage = () => {
   })
 
   const classes = useStyles()
-  const { user } = Auth.useUser()
+  const user = supabase.auth.user()
   const router = useRouter()
   const { id: userId } = router.query
 
   useEffect(() => {
-    let currentData = {}
-
-    if (user && userId) {
-      setLoading(true)
-      fetch('/api/getFacilityPatientById', {
+    if (user) {
+      fetch('/api/getSingleUser', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
         credentials: 'same-origin',
-        body: JSON.stringify({ id: userId }),
+        body: JSON.stringify({ email: user.email }),
       })
         .then((res) => res.json())
         .then((res) => {
-          Object.keys(formData).forEach((key) => {
-            currentData[key] = {
-              ...formData[key],
-              value: res[key],
+          if (res.role === 'admin') {
+            setAuthorized(true)
+          }
+
+          let currentData = {}
+
+          if (userId) {
+            if (res.role === 'admin' || user.id === userId) {
+              fetch('/api/getFacilityPatientById', {
+                method: 'POST',
+                headers: new Headers({ 'Content-Type': 'application/json' }),
+                credentials: 'same-origin',
+                body: JSON.stringify({ id: userId }),
+              })
+                .then((res) => res.json())
+                .then((res) => {
+                  Object.keys(formData).forEach((key) => {
+                    currentData[key] = {
+                      ...formData[key],
+                      value: res[key],
+                    }
+                  })
+
+                  getFacility(res.facility_auth_id)
+
+                  setFormData(currentData)
+                  setUserName(
+                    `${currentData.last_name.value}, ${currentData.first_name.value}`
+                  )
+                })
+            } else {
+              setLoading(false)
+              openSnackBar({
+                message: 'You are not authorized to view this page',
+                snackSeverity: 'error',
+              })
             }
-          })
-
-          getFacility(res.facility_auth_id)
-
-          setFormData(currentData)
-          setUserName(
-            `${currentData.last_name.value}, ${currentData.first_name.value}`
-          )
+          }
         })
     }
   }, [user, userId])
@@ -336,9 +359,9 @@ const UserDetailsPage = () => {
         <>
           <Box>
             <Box>
-              <div
-                onClick={() => router.back()}
-                className="link">Go Back</div>
+              <div onClick={() => router.back()} className="link">
+                Go Back
+              </div>
             </Box>
             <Box>
               <div>
@@ -539,7 +562,7 @@ const UserDetailsPage = () => {
                       }}
                       InputLabelProps={{
                         shrink: true,
-                    }}
+                      }}
                       key={key}
                       disabled={!editable}
                       fullWidth
