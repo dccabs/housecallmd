@@ -12,10 +12,15 @@ import {
   Modal,
   Paper,
   InputLabel,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
   Select,
   MenuItem,
   FormControl,
 } from '@material-ui/core'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from '../../components/SnackBar'
@@ -29,6 +34,7 @@ import Message from 'components/Facility/Message'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import EditIcon from '@material-ui/icons/Edit'
 import FacilityMessageModal from '../../components/FacilityMessageModal'
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -92,6 +98,7 @@ const Profile = () => {
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
   const [patientSelectLoading, setPatientSelectLoading] = useState(false);
+  const [deleteReason, setDeleteReason] = useState('');
   const [replyModalOpen, setReplyModalOpen] = useState(false)
   const [replyModalData, setReplyModalData] = useState({
     modalOpen: false,
@@ -100,6 +107,8 @@ const Profile = () => {
     patientId: null,
     receipientId: null,
   });
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [deletePatientData, setDeletePatientData] = useState(false);
 
   const { user } = Auth.useUser()
 
@@ -200,6 +209,10 @@ const Profile = () => {
 
   const openSnackBar = useContext(SnackBarContext)
 
+  const handleDeleteReason = (e) => {
+    setDeleteReason(e.target.value);
+  }
+
   const fetchFacilityAppointments = async () => {
     const payload = {
       user,
@@ -215,9 +228,31 @@ const Profile = () => {
     return await getFacilityAppointments.json()
   }
 
+  const archivePatient = ({id, archived}) => {
+    const payload = {
+      id: Number(id),
+      archived,
+      deleteReason,
+    }
+    fetch('/api/archiveFacilityUser', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        openSnackBar({
+          message: 'Patient Archived',
+          snackSeverity: 'success',
+        })
+        setDeleteModalOpen(false);
+        fetchProfileInformation();
+      })
+  }
+
   const fetchProfileInformation = async () => {
     const payload = {
       id: user.id,
+      hideArchived: true,
     }
     let returnData = {}
     await fetch('/api/getFacilityById', {
@@ -407,6 +442,25 @@ const Profile = () => {
                     title: 'Date of Birth',
                     field: 'date_of_birth',
                   },
+                  {
+                    title: '',
+                    field: 'archived',
+                    render: (rowData) => {
+                      return (
+                        <div>
+                          <Tooltip title={`Remove ${rowData.first_name} ${rowData.last_name} From Account`}>
+                            <HighlightOffIcon
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteModalOpen(true);
+                                setDeletePatientData(rowData);
+                              }}
+                            />
+                          </Tooltip>
+                        </div>
+                      )
+                    }
+                  },
                 ]}
                 data={state.patients}
                 options={{
@@ -511,6 +565,57 @@ const Profile = () => {
         senderId={user?.id}
         callbackFn={getFacilityMessages}
       />
+
+      <Modal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        // onClick={() => setAppointmentModalOpen(false)}
+      >
+        <div
+          style={{
+            width: '50%',
+            margin: 'auto',
+            minWidth: 350,
+            paddingTop: '20%',
+          }}
+        >
+          <Paper>
+            <div
+              style={{
+                padding: 40,
+              }}
+            >
+              <h3>You have chosen to remove {deletePatientData.first_name} {deletePatientData.last_name} from your HouseCallMD Account:</h3>
+              <Box mt="1em">
+                Please select a reason below and hit submit.  This action cannot be undone.
+              </Box>
+              <Box mt="1em">
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="reason" name="reason" value={deleteReason} onChange={handleDeleteReason}>
+                    <FormControlLabel value="deceased" control={<Radio />} label="Resident deceased" />
+                    <FormControlLabel value="left_facility" control={<Radio />} label="Resident left facility" />
+                    <FormControlLabel value="error" control={<Radio />} label="Entered in error" />
+                  </RadioGroup>
+                </FormControl>
+              </Box>
+              <Box mt="1em">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() => archivePatient({id: deletePatientData.id, archived: true })}
+                  disabled={!deleteReason}
+                >Submit</Button>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  style={{marginLeft: 10}}
+                  onClick={() => setDeleteModalOpen(false)}
+                >Cancel</Button>
+              </Box>
+            </div>
+          </Paper>
+        </div>
+      </Modal>
     </>
   )
 }
