@@ -65,7 +65,6 @@ const AppointmentDetailsPage = () => {
         })
           .then((res) => res.json())
           .then((res) => {
-            setAuthorized(true)
             getAppointments(res)
           })
       } else {
@@ -85,7 +84,8 @@ const AppointmentDetailsPage = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (userData.role === 'admin' || user.id === res.user_info.id) {
+        if (userData.role === 'admin' || userData.id === res.facilityId) {
+          setAuthorized(true)
           setData(res)
           setNote(res?.note)
           setCompleted(res?.completed)
@@ -148,7 +148,7 @@ const AppointmentDetailsPage = () => {
         </Container>
       ) : (
         <>
-          {user && data && (user_info.id === user.id || authorized) && (
+          {user && data && authorized && (
             <>
               <Box>
                 <div onClick={() => router.back()} className="link">
