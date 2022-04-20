@@ -467,7 +467,7 @@ const UserDetailsPage = () => {
                 <IconButton
                   component="span"
                   onClick={() => {
-                    setTabValue(2)
+                    setTabValue(3)
                     setEditable(true)
                   }}
                 >
