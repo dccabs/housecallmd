@@ -1,15 +1,16 @@
 import { supabase } from 'utils/initSupabase'
 import { sendMailToMe } from 'utils/sendMailToMe'
+import sendMessage from './lib/services/sendMessage'
 const SENDGRID_DEFAULT_EMAIL = process.env.SENDGRID_DEFAULT_EMAIL
 
-const sendMessage = async () => {
+const sendEmail = async () => {
   try {
     const payload = {
       recipient_email: SENDGRID_DEFAULT_EMAIL,
-      name,
-      subject,
+      name: 'HousecallMD',
+      subject: 'HouseCall Message Summary',
       message: `You have messages in the past two hours`,
-      email,
+      email: SENDGRID_DEFAULT_EMAIL,
     }
 
     return await sendMailToMe(payload)
@@ -18,16 +19,38 @@ const sendMessage = async () => {
   }
 }
 
+const sendSMS = async () => {
+  try {
+    const adminPhones = await supabase
+      .from('adminPhones')
+      .select(`*`)
+      .eq('isActive', true)
+
+    return adminPhones.map(async (phone) => {
+      const result = await sendMessage({
+        to: phone,
+        body: `You have messages in the past two hours`,
+      })
+
+      if (result.success)
+        return { message: `SMS successfuly sent to ${phone}`, result }
+      else return { message: `Error sending SMS to ${phone}`, result }
+    })
+  } catch (err) {
+    console.log('Error sending sms ', err)
+  }
+}
+
 const getNewFacilityMessages = async (req, res) => {
   if (req.method === 'POST') {
     const { id } = req.body
 
     if (id) {
-      sendMessage().then((sendGridResponse) => {
-        return res.status(200).send({
-          sg_response: sendGridResponse,
-        })
-      })
+      const sgResponse = await sendEmail()
+
+      const smsResponses = await sendSMS()
+
+      res.status(200).send({ sgResponse, smsResponses })
     } else {
       let { data: user, error } = await supabase
         .from('UserList')
@@ -38,11 +61,11 @@ const getNewFacilityMessages = async (req, res) => {
         return res.status(401).json({ error: error.message })
       } else {
         if (user.role === 'admin') {
-          sendMessage().then((sendGridResponse) => {
-            return res.status(200).send({
-              sg_response: sendGridResponse,
-            })
-          })
+          const sgResponse = await sendEmail()
+
+          const smsResponses = await sendSMS()
+
+          res.status(200).send({ sgResponse, smsResponses })
         }
       }
     }
