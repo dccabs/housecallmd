@@ -37,13 +37,12 @@ const index = ({ user }) => {
           title="Users"
           columns={[
             {
-              title: 'Name',
-              field: 'name',
-              render: (rowData) => (
-                <>
-                  {rowData.last_name}, {rowData.first_name}
-                </>
-              ),
+              title: 'Last Name',
+              field: 'last_name',
+            },
+            {
+              title: 'First Name',
+              field: 'first_name',
             },
             {
               title: 'Sex',
@@ -76,6 +75,19 @@ const index = ({ user }) => {
             {
               title: 'Power of Attorney Phone',
               field: 'poa_phone_number',
+            },
+            {
+              title: 'Archived',
+              field: 'archived',
+              render: (rowData) => {
+                return (
+                  <div>{rowData.archived.toString()}</div>
+                )
+              }
+            },
+            {
+              title: 'Archive Reason',
+              field: 'archive_reason',
             },
           ]}
           data={users}
