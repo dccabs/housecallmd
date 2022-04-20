@@ -45,7 +45,7 @@ const getNewFacilityMessages = async (req, res) => {
   if (req.method === 'POST') {
     const { id } = req.body
 
-    if (id) {
+    if (!id) {
       const sgResponse = await sendEmail()
 
       const smsResponses = await sendSMS()
