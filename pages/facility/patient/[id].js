@@ -75,7 +75,7 @@ const TabPanel = (props) => {
 const Patient = () => {
   const router = useRouter()
   const classes = useStyles()
-  const [state, setState] = useState({})
+  const [state, setState] = useState()
   const [tabValue, setTabValue] = useState(0)
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState([])
@@ -113,21 +113,7 @@ const Patient = () => {
         })
           .then((res) => res.json())
           .then((res) => {
-            setAuthorized(true)
-            if (res.role === 'admin' || user.id === patientId) {
-              fetchPatientInformation()
-              if (state) {
-                fetchFacilityAppointments().then((appointments) => {
-                  setAppointments(appointments)
-                })
-              }
-            } else {
-              setLoading(false)
-              openSnackBar({
-                message: 'You are not authorized to view this page',
-                snackSeverity: 'error',
-              })
-            }
+            fetchPatientInformation(res)
           })
       } else {
         setLoading(false)
@@ -160,7 +146,15 @@ const Patient = () => {
     }
   }, [tabValue, patientId])
 
-  const fetchPatientInformation = () => {
+  useEffect(() => {
+    if (state) {
+      fetchFacilityAppointments().then((appointments) => {
+        setAppointments(appointments)
+      })
+    }
+  }, [state])
+
+  const fetchPatientInformation = (userData) => {
     const payload = {
       id: patientId,
     }
@@ -172,11 +166,19 @@ const Patient = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data) {
-          setState({ ...data })
+          if (userData.role === 'admin' || user.id === data.facility_auth_id) {
+            setAuthorized(true)
+            setState({ ...data })
+          } else {
+            openSnackBar({
+              message: 'You are not authorized to view this page',
+              snackSeverity: 'error',
+            })
+          }
           setLoading(false)
         } else {
           openSnackBar({
-            message: 'There was an error.  Please try again later',
+            message: 'There was an error. Please try again later',
             error: 'error',
           })
           setLoading(false)
@@ -205,7 +207,6 @@ const Patient = () => {
     clearTimeout(intervalTimeout)
 
     const payload = {
-      // facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
       patientId,
     }
 
@@ -246,7 +247,7 @@ const Patient = () => {
         </Box>
       ) : (
         <>
-          {user && (user.id === patientId || authorized) && (
+          {user && authorized && (
             <>
               <Container>
                 <Box>
@@ -345,6 +346,7 @@ const Patient = () => {
                               entry={entry}
                               index={index}
                               onReplyClick={() => setMessageModalOpen(true)}
+                              key={index}
                             />
                           )
                         })}
