@@ -22,7 +22,7 @@ import { useRouter } from 'next/router'
 import Message from 'components/Facility/Message'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import xhrHeader from '../../../constants/xhrHeader'
-import FacilityMessageModal from 'components/FacilityMessageModal';
+import FacilityMessageModal from 'components/FacilityMessageModal'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -75,13 +75,14 @@ const TabPanel = (props) => {
 const Patient = () => {
   const router = useRouter()
   const classes = useStyles()
-  const [state, setState] = useState({})
+  const [state, setState] = useState()
   const [tabValue, setTabValue] = useState(0)
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState([])
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [appointments, setAppointments] = useState([])
+  const [authorized, setAuthorized] = useState(false)
   const { facilityPatientTableTab, setFacilityPatientTableTab } = useStore()
 
   const openSnackBar = useContext(SnackBarContext)
@@ -103,10 +104,22 @@ const Patient = () => {
 
   useEffect(() => {
     if (patientId) {
-      fetchPatientInformation();
-      if (state) {
-        fetchFacilityAppointments().then((appointments) => {
-          setAppointments(appointments)
+      if (user) {
+        fetch('/api/getSingleUser', {
+          method: 'POST',
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          credentials: 'same-origin',
+          body: JSON.stringify({ email: user.email }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            fetchPatientInformation(res)
+          })
+      } else {
+        setLoading(false)
+        openSnackBar({
+          message: 'You are not authorized to view this page',
+          snackSeverity: 'error',
         })
       }
     }
@@ -133,7 +146,15 @@ const Patient = () => {
     }
   }, [tabValue, patientId])
 
-  const fetchPatientInformation = () => {
+  useEffect(() => {
+    if (state) {
+      fetchFacilityAppointments().then((appointments) => {
+        setAppointments(appointments)
+      })
+    }
+  }, [state])
+
+  const fetchPatientInformation = (userData) => {
     const payload = {
       id: patientId,
     }
@@ -145,11 +166,19 @@ const Patient = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data) {
-          setState({ ...data })
+          if (userData.role === 'admin' || user.id === data.facility_auth_id) {
+            setAuthorized(true)
+            setState({ ...data })
+          } else {
+            openSnackBar({
+              message: 'You are not authorized to view this page',
+              snackSeverity: 'error',
+            })
+          }
           setLoading(false)
         } else {
           openSnackBar({
-            message: 'There was an error.  Please try again later',
+            message: 'There was an error. Please try again later',
             error: 'error',
           })
           setLoading(false)
@@ -172,13 +201,12 @@ const Patient = () => {
     return await getFacilityAppointments.json()
   }
 
-  let intervalTimeout;
+  let intervalTimeout
 
   const getPatientMessages = () => {
     clearTimeout(intervalTimeout)
 
     const payload = {
-      // facilityId: '2bcc2d5d-7ddf-4b6a-86cb-714f1d348213',
       patientId,
     }
 
@@ -194,7 +222,7 @@ const Patient = () => {
           setMessages(data)
           setMessagesLoading(false)
           intervalTimeout = setTimeout(() => {
-            getPatientMessages();
+            getPatientMessages()
           }, 60000)
         } else {
           openSnackBar({
@@ -208,7 +236,7 @@ const Patient = () => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <Box
           my="8em"
           display="flex"
@@ -217,109 +245,146 @@ const Patient = () => {
         >
           <CircularProgress />
         </Box>
-      )}
-      {!loading && (
+      ) : (
         <>
-          <Container>
-            <Box>
-              <Box>
-                <div onClick={() => router.back()} className="link">
-                  Go Back
-                </div>
-              </Box>
-              <Typography variant="h2" className={classes.h2}>
-                {state.first_name} {state.last_name}
-                <Tooltip title="Edit Patient Details">
-                  <IconButton
-                    component="span"
-                    onClick={() =>
-                      router.push(`/facility/patient/edit-patient/${patientId}`)
-                    }
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-            </Box>
-            {state.room_number && <Box>Room Number: {state.room_number}</Box>}
-            <Box style={{ display: 'flex', marginTop: 40 }}>
-              <Box style={{ marginRight: 20 }}>
-                <Button variant="contained" color="secondary" size="large" onClick={() => router.push(`/facility/create-appointment/${patientId}`)}>
-                  Request New Appointment
-                </Button>
-              </Box>
-              <Box>
-                <Button
-                  onClick={() => setMessageModalOpen(true)}
-                  variant="contained"
-                  color="secondary"
-                  size="large"
-                >
-                  Send a Message About This Patient
-                </Button>
-              </Box>
-            </Box>
-            <Box style={{ marginTop: 40 }}>
-              <Tabs
-                value={tabValue}
-                onChange={(e, newValue) => setFacilityPatientTableTab(newValue)}
-              >
-                <Tab label="Messages" {...a11yProps(0)} />
-                <Tab label="Appointments" {...a11yProps(1)} />
-                <Tab label="Completed Appointments" {...a11yProps(2)} />
-              </Tabs>
-
-              <TabPanel value={tabValue} index={0}>
-                {messagesLoading && (
-                  <Box
-                    my="8em"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <CircularProgress />
+          {user && authorized && (
+            <>
+              <Container>
+                <Box>
+                  <Box>
+                    <div onClick={() => router.back()} className="link">
+                      Go Back
+                    </div>
                   </Box>
-                )}
-                {!messagesLoading && (
-                  <Box style={{ marginBottom: '1em' }}>
-                    <Tooltip title="Check for new messages">
-                      <IconButton component="span" onClick={getPatientMessages}>
-                        <RefreshIcon />
+                  <Typography variant="h2" className={classes.h2}>
+                    {state.first_name} {state.last_name}
+                    <Tooltip title="Edit Patient Details">
+                      <IconButton
+                        component="span"
+                        onClick={() =>
+                          router.push(
+                            `/facility/patient/edit-patient/${patientId}`
+                          )
+                        }
+                      >
+                        <EditIcon />
                       </IconButton>
                     </Tooltip>
-                  </Box>
-                )}
-                {messages.length === 0 && !messagesLoading && (
-                  <div>No messages for this user</div>
-                )}
-                <Box>
-                  {messages.length > 0 &&
-                    !messagesLoading &&
-                    messages.map((entry, index) => {
-                      return <Message entry={entry} index={index} onReplyClick={() => setMessageModalOpen(true)} />
-                    })}
+                  </Typography>
                 </Box>
-              </TabPanel>
-              <TabPanel value={tabValue} index={1}>
-                <AppointmentTable appointments={appointments} hideName hideNote hideCompleted />
-              </TabPanel>
-              <TabPanel value={tabValue} index={2}>
-                <AppointmentTable appointments={appointments} hideName hideNote hideNonCompleted />
-              </TabPanel>
-            </Box>
-          </Container>
+                {state.room_number && (
+                  <Box>Room Number: {state.room_number}</Box>
+                )}
+                <Box style={{ display: 'flex', marginTop: 40 }}>
+                  <Box style={{ marginRight: 20 }}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="large"
+                      onClick={() =>
+                        router.push(`/facility/create-appointment/${patientId}`)
+                      }
+                    >
+                      Request New Appointment
+                    </Button>
+                  </Box>
+                  <Box>
+                    <Button
+                      onClick={() => setMessageModalOpen(true)}
+                      variant="contained"
+                      color="secondary"
+                      size="large"
+                    >
+                      Send a Message About This Patient
+                    </Button>
+                  </Box>
+                </Box>
+                <Box style={{ marginTop: 40 }}>
+                  <Tabs
+                    value={tabValue}
+                    onChange={(e, newValue) =>
+                      setFacilityPatientTableTab(newValue)
+                    }
+                  >
+                    <Tab label="Messages" {...a11yProps(0)} />
+                    <Tab label="Appointments" {...a11yProps(1)} />
+                    <Tab label="Completed Appointments" {...a11yProps(2)} />
+                  </Tabs>
+
+                  <TabPanel value={tabValue} index={0}>
+                    {messagesLoading && (
+                      <Box
+                        my="8em"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <CircularProgress />
+                      </Box>
+                    )}
+                    {!messagesLoading && (
+                      <Box style={{ marginBottom: '1em' }}>
+                        <Tooltip title="Check for new messages">
+                          <IconButton
+                            component="span"
+                            onClick={getPatientMessages}
+                          >
+                            <RefreshIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    )}
+                    {messages.length === 0 && !messagesLoading && (
+                      <div>No messages for this user</div>
+                    )}
+                    <Box>
+                      {messages.length > 0 &&
+                        !messagesLoading &&
+                        messages.map((entry, index) => {
+                          return (
+                            <Message
+                              entry={entry}
+                              index={index}
+                              onReplyClick={() => setMessageModalOpen(true)}
+                              key={index}
+                            />
+                          )
+                        })}
+                    </Box>
+                  </TabPanel>
+                  <TabPanel value={tabValue} index={1}>
+                    <AppointmentTable
+                      appointments={appointments}
+                      hideName
+                      hideNote
+                      hideCompleted
+                    />
+                  </TabPanel>
+                  <TabPanel value={tabValue} index={2}>
+                    <AppointmentTable
+                      appointments={appointments}
+                      hideName
+                      hideNote
+                      hideNonCompleted
+                    />
+                  </TabPanel>
+                </Box>
+              </Container>
+
+              <FacilityMessageModal
+                open={messageModalOpen}
+                onClose={() => setMessageModalOpen(false)}
+                title="Your are sending a message to HouseCall MD about the following patient"
+                patientName={`${state.first_name} ${state.last_name}`}
+                patientId={patientId}
+                recipientId={null}
+                senderId={user?.id}
+                callbackFn={getPatientMessages}
+              />
+            </>
+          )}
         </>
       )}
-      <FacilityMessageModal
-        open={messageModalOpen}
-        onClose={() => setMessageModalOpen(false)}
-        title="Your are sending a message to HouseCall MD about the following patient"
-        patientName={`${state.first_name} ${state.last_name}`}
-        patientId={patientId}
-        recipientId={null}
-        senderId={user?.id}
-        callbackFn={getPatientMessages}
-      />
     </>
   )
 }
