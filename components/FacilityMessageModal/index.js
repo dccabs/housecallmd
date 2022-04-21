@@ -61,7 +61,7 @@ const MessageModal = (
 
   const sendMessage = () => {
     const payload = {
-      created_at: new Date(),
+      // created_at: new Date(),
       sender: senderId,
       recipient: recipientId,
       patient_id: patientId,
