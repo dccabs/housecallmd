@@ -16,8 +16,6 @@ const addFacilityMessage = async (req, res) => {
   }
   */
 
-  console.log('newMessage', newMessage)
-
   let { data: houseCallUsers, userListError } = await supabase
     .from('UserList')
     .select('*')
