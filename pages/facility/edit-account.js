@@ -86,15 +86,19 @@ const EditAccount = () => {
   )
   const { setEmail } = useStore()
 
-  const getFacilities = async () => {
-    const fetchData = await fetch('/api/getFacilities', {
+  const getFacilities = async ({auth_id}) => {
+    const payload = {
+      user,
+      auth_id,
+    }
+    const fetchData = await fetch('/api/getFacilityAccountByAuthId', {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       credentials: 'same-origin',
-      body: JSON.stringify({ user }),
+      body: JSON.stringify(payload),
     })
     const json = await fetchData.json()
-    const data = json[0]
+    const data = json;
     setDataFetched(true)
     if (!isEmpty(data)) {
       setLocalCenterName(data.name)
@@ -168,7 +172,10 @@ const EditAccount = () => {
 
   useEffect(() => {
     if (user && !dataFetched) {
-      getFacilities()
+      console.log('user', user)
+      getFacilities({
+        auth_id: user.id,
+      })
     }
   })
 
