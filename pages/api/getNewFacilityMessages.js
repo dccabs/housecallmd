@@ -41,37 +41,48 @@ const sendSMS = async () => {
   }
 }
 
-const getNewFacilityMessages = async (req, res) => {
-  if (req.method === 'POST') {
-    const { id } = req.body
+const getNewFacilityMessages = async () => {
+  const now = new Date()
+  const date = new Date()
+  const timeOffset = date.setHours(date.getHours() - 2)
+  const delay = new Date(timeOffset)
 
-    if (!id) {
-      const sgResponse = await sendEmail()
-
-      const smsResponses = await sendSMS()
-
-      res.status(200).send({ sgResponse, smsResponses })
-    } else {
-      let { data: user, error } = await supabase
-        .from('UserList')
+  try {
+    setInterval(async () => {
+      const newMessages = await supabase
+        .from('facility_messages')
         .select('*')
-        .eq('id', id)
+        .lt('created_at', now.toUTCString())
+        .gt('created_at', delay.toUTCString())
 
-      if (error) {
-        return res.status(401).json({ error: error.message })
-      } else {
-        if (user.role === 'admin') {
-          const sgResponse = await sendEmail()
+      if (newMessages.length) {
+        newMessages.forEach(async (msg) => {
+          if (!msg.recipient) {
+            const sgResponse = await sendEmail()
+            const smsResponses = await sendSMS()
+            console.log(`${sgResponse}\n${smsResponses}`)
+          } else {
+            let { data: user, error } = await supabase
+              .from('UserList')
+              .select('*')
+              .eq('id', msg.recipient)
 
-          const smsResponses = await sendSMS()
-
-          res.status(200).send({ sgResponse, smsResponses })
-        }
+            if (error) {
+              console.log(error)
+            } else {
+              if (user.role === 'admin') {
+                const sgResponse = await sendEmail()
+                const smsResponses = await sendSMS()
+                console.log(`${sgResponse}\n${smsResponses}`)
+              }
+            }
+          }
+        })
       }
-    }
+    }, 1000 * 60 * 120)
+  } catch (err) {
+    console.log(err)
   }
-
-  res.status(400).send({ error: 'Bad request' })
 }
 
 export default getNewFacilityMessages
