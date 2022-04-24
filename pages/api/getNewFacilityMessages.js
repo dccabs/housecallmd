@@ -48,38 +48,36 @@ const getNewFacilityMessages = async () => {
   const delay = new Date(timeOffset)
 
   try {
-    setInterval(async () => {
-      const newMessages = await supabase
-        .from('facility_messages')
-        .select('*')
-        .lt('created_at', now.toUTCString())
-        .gt('created_at', delay.toUTCString())
+    const newMessages = await supabase
+      .from('facility_messages')
+      .select('*')
+      .lt('created_at', now.toUTCString())
+      .gt('created_at', delay.toUTCString())
 
-      if (newMessages.length) {
-        newMessages.forEach(async (msg) => {
-          if (!msg.recipient) {
-            const sgResponse = await sendEmail()
-            const smsResponses = await sendSMS()
-            console.log(`${sgResponse}\n${smsResponses}`)
+    if (newMessages.length) {
+      newMessages.forEach(async (msg) => {
+        if (!msg.recipient) {
+          const sgResponse = await sendEmail()
+          const smsResponses = await sendSMS()
+          console.log(`${sgResponse}\n${smsResponses}`)
+        } else {
+          let { data: user, error } = await supabase
+            .from('UserList')
+            .select('*')
+            .eq('id', msg.recipient)
+
+          if (error) {
+            console.log(error)
           } else {
-            let { data: user, error } = await supabase
-              .from('UserList')
-              .select('*')
-              .eq('id', msg.recipient)
-
-            if (error) {
-              console.log(error)
-            } else {
-              if (user.role === 'admin') {
-                const sgResponse = await sendEmail()
-                const smsResponses = await sendSMS()
-                console.log(`${sgResponse}\n${smsResponses}`)
-              }
+            if (user.role === 'admin') {
+              const sgResponse = await sendEmail()
+              const smsResponses = await sendSMS()
+              console.log(`${sgResponse}\n${smsResponses}`)
             }
           }
-        })
-      }
-    }, 1000 * 60 * 120)
+        }
+      })
+    }
   } catch (err) {
     console.log(err)
   }
