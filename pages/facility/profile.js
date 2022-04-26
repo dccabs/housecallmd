@@ -109,6 +109,9 @@ const Profile = () => {
   });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deletePatientData, setDeletePatientData] = useState(false);
+  const [chooseMessageModalOpen, setChooseMessageModalOpen] = useState(false)
+  const [isResidentMessage, setIsResidentMessage] = useState(false);
+
 
   const { user } = Auth.useUser()
 
@@ -158,9 +161,14 @@ const Profile = () => {
     }
   }
 
-  const handlePatientSelect = (e) => {
+  const handlePatientSelect = (e, type) => {
     setPatientSelectLoading(true);
-    router.push(`/facility/create-appointment/${e.target.value}`)
+    if (type === 'message') {
+      router.push(`/facility/patient/${e.target.value}`)
+    } else {
+      router.push(`/facility/create-appointment/${e.target.value}`)
+      setIsResidentMessage(false)
+    }
   }
 
   const setReply = (entry) => {
@@ -344,7 +352,7 @@ const Profile = () => {
                 </Button>
                 <Button
                   style={{ marginLeft: 20 }}
-                  onClick={() => setMessageModalOpen(true)}
+                  onClick={() => setChooseMessageModalOpen(true)}
                   color="secondary"
                   variant="contained"
                 >
@@ -500,13 +508,13 @@ const Profile = () => {
             width: '50%',
             margin: 'auto',
             minWidth: 350,
-            paddingTop: '30%',
+            paddingTop: '10%',
           }}
         >
           <Paper>
             <div
               style={{
-                padding: 40,
+                padding: '100px 40px',
               }}
             >
               <h3>Please choose a resident to create an appointment</h3>
@@ -544,6 +552,101 @@ const Profile = () => {
           </Paper>
         </div>
       </Modal>
+
+      <Modal
+        open={chooseMessageModalOpen}
+        onClose={() => {
+          setChooseMessageModalOpen(false);
+          setIsResidentMessage(false);
+        }}
+      >
+        <div
+          style={{
+            width: '50%',
+            margin: 'auto',
+            minWidth: 350,
+            paddingTop: '10%',
+          }}
+        >
+          <Paper>
+            <div
+              style={{
+                padding: '100px 40px',
+              }}
+            >
+              {isResidentMessage &&
+              <>
+                <h2>Please choose a resident for your message</h2>
+                <Box mt="1em">
+                  {patientSelectLoading && (
+                    <Box
+                      my="8em"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <CircularProgress />
+                    </Box>
+                  )}
+                  <Select
+                    fullWidth
+                    id="select-patient"
+                    placeholder={'Select Patient'}
+                    variant="outlined"
+                    onChange={(e) => {handlePatientSelect(e, 'message')}}
+                    disabled={patientSelectLoading}
+                  >
+                    <MenuItem selected>Choose A Resident</MenuItem>
+                    {state?.patients &&
+                      state.patients.map((patient) => {
+                        return (
+                          <MenuItem value={patient.id} selected>
+                            {patient.first_name} {patient.last_name}
+                          </MenuItem>
+                        )
+                      })}
+                  </Select>
+                </Box>
+              </>
+              }
+              {!isResidentMessage &&
+              <>
+                <h2>Is this message about a specific resident?</h2>
+                <Box
+                  mt="1em"
+                  style={{
+                    display: 'flex',
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="large"
+                    style={{
+                      marginRight: '20px'
+                    }}
+                    onClick={() => {
+                      setIsResidentMessage(true);
+                    }}
+                  >Yes</Button>
+                  <Button
+                    size="large"
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => {
+                      setChooseMessageModalOpen(false);
+                      setMessageModalOpen(true);
+                    }}
+                  >No</Button>
+                </Box>
+              </>
+              }
+            </div>
+          </Paper>
+        </div>
+      </Modal>
+
+
       <FacilityMessageModal
         open={messageModalOpen}
         onClose={() => setMessageModalOpen(false)}
