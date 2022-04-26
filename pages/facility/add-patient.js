@@ -263,7 +263,6 @@ const addPatientPage = () => {
         }
       })
       .catch((error) => {
-        console.log('error', error)
         openSnackBar({ message: error.toString(), snackSeverity: 'error' })
       })
   }
@@ -507,8 +506,8 @@ const addPatientPage = () => {
                   <Autocomplete
                     className={classes.textFields}
                     options={field.options}
-                    onChange={(e, value) =>
-                      handleUpdate({ val: e.target.value, objKey: key })
+                    onChange={(e, values, value) =>
+                      handleUpdate({ val: values, objKey: key })
                     }
                     key={key}
                     freeSolo
