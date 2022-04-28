@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 
-import { Typography, Box, Button, CircularProgress } from '@material-ui/core'
+import { Typography, Box, Button, CircularProgress, TextField } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
@@ -45,6 +45,7 @@ const AppointmentDetailsPage = () => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
   const [note, setNote] = useState('')
+  const [orders, setOrders] = useState('')
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [completed, setCompleted] = useState('')
   const [authorized, setAuthorized] = useState(false)
@@ -88,6 +89,7 @@ const AppointmentDetailsPage = () => {
           setAuthorized(true)
           setData(res)
           setNote(res?.note)
+          setOrders(res?.orders)
           setCompleted(res?.completed)
         } else {
           openSnackBar({
@@ -96,43 +98,6 @@ const AppointmentDetailsPage = () => {
           })
         }
         setLoading(false)
-      })
-  }
-
-  const handleStatusClick = ({ status }) => {
-    const payload = {
-      id: Number(appointmentId),
-      status,
-    }
-    fetch('/api/updateFacilityAppointmentStatus', {
-      ...xhrHeader,
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        openSnackBar({
-          message: 'Appointment Status Updated',
-          snackSeverity: 'success',
-        })
-        setCompleted(status)
-      })
-  }
-
-  const handleUpdateNotes = () => {
-    const payload = {
-      id: Number(appointmentId),
-      note,
-    }
-    fetch('/api/updateFacilityAppointmentNote', {
-      ...xhrHeader,
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        openSnackBar({
-          message: 'Appointment Note Updated',
-          snackSeverity: 'success',
-        })
       })
   }
 
@@ -209,6 +174,30 @@ const AppointmentDetailsPage = () => {
                   >
                     Send Message to HouseCallMD about this appointment
                   </Button>
+                </Box>
+                <Box style={{margin: '40px 0 0px'}}>
+                  <Box style={{marginBottom: 10}}>
+                    <strong>HousecallMD Orders for {user_info?.first_name} {user_info?.last_name}:</strong>
+                  </Box>
+                  <Box>
+                    <TextField
+                      style={{
+                        color: 'red'
+                      }}
+                      placeholder="Enter Orders"
+                      value={orders}
+                      multiline
+                      rows={8}
+                      maxrows={8}
+                      fullWidth
+                      variant="outlined"
+                      onChange={(e) => setOrders(e.target.value)}
+                      readOnly
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Box>
                 </Box>
               </Box>
               <FacilityMessageModal

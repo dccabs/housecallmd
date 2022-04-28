@@ -77,6 +77,7 @@ const AppointmentDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [note, setNote] = useState('');
+  const [orders, setOrders] = useState('');
   const [completed, setCompleted] = useState('');
   const [MeetingContent, setMeetingContent] = useState(false)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
@@ -103,6 +104,7 @@ const AppointmentDetailsPage = () => {
         .then((res) => {
           setData(res);
           setNote(res?.note);
+          setOrders(res?.orders);
           setCompleted(res?.completed);
           setLoading(false);
         })
@@ -167,6 +169,24 @@ const AppointmentDetailsPage = () => {
       .then((res) => {
         openSnackBar({
           message: 'Appointment Note Updated',
+          snackSeverity: 'success',
+        })
+      })
+  }
+
+  const handleUpdateOrders = () => {
+    const payload = {
+      id: Number(appointmentId),
+      orders,
+    }
+    fetch('/api/updateFacilityAppointmentOrders', {
+      ...xhrHeader,
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        openSnackBar({
+          message: 'Appointment Orders Updated',
           snackSeverity: 'success',
         })
       })
@@ -241,7 +261,7 @@ const AppointmentDetailsPage = () => {
                 </Box>
                 <Box>
                   <TextField
-                    placeholder="Visit Reason"
+                    placeholder="Enter Notes"
                     value={note}
                     multiline
                     rows={8}
@@ -259,6 +279,33 @@ const AppointmentDetailsPage = () => {
                     onClick={handleUpdateNotes}
                   >
                     Update Notes
+                  </Button>
+                </Box>
+              </Box>
+              <Box style={{margin: '40px 0 0px'}}>
+                <Box style={{marginBottom: 10}}>
+                  <strong>HousecallMD Orders for {user_info?.first_name} {user_info?.last_name}:</strong>
+                </Box>
+                <Box>
+                  <TextField
+                    placeholder="Enter Orders"
+                    value={orders}
+                    multiline
+                    rows={8}
+                    maxrows={8}
+                    fullWidth
+                    variant="outlined"
+                    onChange={(e) => setOrders(e.target.value)}
+                    // disabled={messagesLoading}
+                  />
+                  <Button
+                    style={{marginTop: 10}}
+                    size="large"
+                    variant="contained"
+                    color="primary"
+                    onClick={handleUpdateOrders}
+                  >
+                    Update Orders
                   </Button>
                 </Box>
               </Box>
