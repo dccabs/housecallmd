@@ -368,7 +368,7 @@ const Profile = () => {
             >
               <Tab label="Messages" {...a11yProps(0)} />
               <Tab label="Appointments" {...a11yProps(1)} />
-              <Tab label="Completed Appointments" {...a11yProps(1)} />
+              <Tab label="Completed Appts and Orders" {...a11yProps(1)} />
               <Tab label="Residents" {...a11yProps(2)} />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
