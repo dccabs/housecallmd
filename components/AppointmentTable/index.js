@@ -2,6 +2,7 @@ import MaterialTable from 'material-table'
 import { useEffect } from 'react'
 import {useRouter} from 'next/router'
 import moment from 'moment';
+import { findIndex } from 'lodash'
 
 const publicWithName = [
   {
@@ -15,6 +16,10 @@ const publicWithName = [
   {
     title: 'Visit Reason',
     field: 'visitReason',
+  },
+  {
+    title: 'Visit Summary / Orders',
+    field: 'orders',
   },
   {
     title: 'Date/Time',
@@ -32,6 +37,10 @@ const publicWithoutName = [
   {
     title: 'Visit Reason',
     field: 'visitReason',
+  },
+  {
+    title: 'Visit Summary / Orders',
+    field: 'orders',
   },
   {
     title: 'Date/Time',
@@ -105,7 +114,7 @@ const adminWithoutName = [
   },
 ]
 
-const AppointmentTable = ({ appointments, hideName = false, admin = false, hideCompleted = false, hideNonCompleted}) => {
+const AppointmentTable = ({ appointments, hideName = false, admin = false, hideCompleted = false, hideNonCompleted, hideOrders = false}) => {
 
   const router = useRouter();
 
@@ -136,6 +145,11 @@ const AppointmentTable = ({ appointments, hideName = false, admin = false, hideC
     } else {
       columnData = publicWithName;
     }
+    const index = columnData.findIndex(item => {
+      return item.field === 'orders';
+    })
+
+    columnData[index].hidden = hideOrders ? true : false;
   }
 
   return (
