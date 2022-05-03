@@ -50,28 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  )
-}
-
-
-
 const AppointmentDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
   const [loading, setLoading] = useState(true);
@@ -131,7 +109,6 @@ const AppointmentDetailsPage = () => {
   }
 
   const sendSMSMessage = () => {
-    const phone = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER
     const message = `HouseCallMD Just sent you a new message.  To view the message please login to your portal at ${process.env.NEXT_PUBLIC_HOST}/facility/profile.`
 
     fetch('/api/sendMessage', {
@@ -199,7 +176,6 @@ const AppointmentDetailsPage = () => {
 
   const { user_info, facility_info } = data || {};
 
-  console.log('facility_info', facility_info)
   return (
     <Container>
       {loading ?
@@ -284,11 +260,11 @@ const AppointmentDetailsPage = () => {
               </Box>
               <Box style={{margin: '40px 0 0px'}}>
                 <Box style={{marginBottom: 10}}>
-                  <strong>HousecallMD Orders for {user_info?.first_name} {user_info?.last_name}:</strong>
+                  <strong>Completed Visit Summary / New Orders for {user_info?.first_name} {user_info?.last_name}:</strong>
                 </Box>
                 <Box>
                   <TextField
-                    placeholder="Enter Orders"
+                    placeholder="Completed Visit Summary / New Orders"
                     value={orders}
                     multiline
                     rows={8}
@@ -305,7 +281,7 @@ const AppointmentDetailsPage = () => {
                     color="primary"
                     onClick={handleUpdateOrders}
                   >
-                    Update Orders
+                    Update Completed Visit Summary / New Orders
                   </Button>
                 </Box>
               </Box>
