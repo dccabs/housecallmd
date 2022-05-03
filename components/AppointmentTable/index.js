@@ -64,6 +64,10 @@ const adminWithName = [
     field: 'note',
   },
   {
+    title: 'Visit Summary / Orders',
+    field: 'orders',
+  },
+  {
     title: 'Date/Time',
     field: 'created_at',
     render: (rowData) => moment(rowData.created_at).format('LLL')
@@ -84,6 +88,10 @@ const adminWithoutName = [
   {
     title: 'Note',
     field: 'note',
+  },
+  {
+    title: 'Visit Summary / Orders',
+    field: 'orders',
   },
   {
     title: 'Date/Time',
