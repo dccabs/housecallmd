@@ -176,8 +176,7 @@ const CreateAppointment = () => {
 
   const sendMail = () => {
     const subject = `${patientData?.facility_info?.name} has just requested an appointment for ${patientData?.first_name} ${patientData?.last_name}`
-    const recipient_email = process.env.SENDGRID_DEFAULT_EMAIL
-    console.log('process.env', process.env)
+    const recipient_email = process.env.NEXT_PUBLIC_DEFAULT_EMAIL
     const email = process.env.NEXT_PUBLIC_DEFAULT_EMAIL
     const name = 'House Call MD'
     const message = `
