@@ -114,9 +114,11 @@ const CreateAppointment = () => {
       body: JSON.stringify(payload),
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         if (data) {
-          sendMessage()
+          sendSMSToHouseCall()
+          console.log('send mail')
+          sendMail();
         } else {
           openSnackBar({
             message: 'There was an error. Please try again later',
@@ -127,42 +129,65 @@ const CreateAppointment = () => {
       })
   }
 
-  const sendMessage = () => {
-    const phone = process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER
+  const sendSMSToHouseCall = () => {
     const message = `${patientData?.facility_info?.name} has just requested an appointment for ${patientData?.first_name} ${patientData?.last_name}.`
 
-    fetch('/api/sendMessage', {
+    fetch('/api/getPhoneNumbers', {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ to: phone, body: message }),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        user,
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data) {
-          sendMail()
-        } else {
-          openSnackBar({
-            message: 'There was an error. Please try again later',
-            snackSeverity: 'error',
-          })
-          setLoading(false)
-        }
+        const activePhones = data.filter(phone => {
+          return phone.isActive;
+        })
+
+        const phones = activePhones.map(phone => {
+          return phone.phoneNumber;
+        })
+
+        phones.forEach(async (phone) => {
+          try {
+            await fetch('/api/sendMessage', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                to: phone,
+                body: message,
+              }),
+            })
+          } catch (err) {
+            throw err
+          }
+        })
+
+      })
+      .catch((error) => {
+        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
       })
   }
 
   const sendMail = () => {
     const subject = `${patientData?.facility_info?.name} has just requested an appointment for ${patientData?.first_name} ${patientData?.last_name}`
     const recipient_email = process.env.SENDGRID_DEFAULT_EMAIL
-    const email = process.env.SENDGRID_DEFAULT_EMAIL
+    console.log('process.env', process.env)
+    const email = process.env.NEXT_PUBLIC_DEFAULT_EMAIL
     const name = 'House Call MD'
     const message = `
       <b>Facility Name:</b> ${patientData?.facility_info?.name}<br />
       <b>Patient Name:</b> ${patientData?.first_name} ${patientData?.last_name}<br />
-      <b>Visit Reason:</b> ${visitReason}
+      <b>Visit Reason:</b> ${visitReason}      
     `
+
+    console.log('recipient_email', recipient_email);
+
 
     fetch('/api/sendMail', {
       method: 'POST',
@@ -177,6 +202,7 @@ const CreateAppointment = () => {
         message: 'Appointment Sent to HouseCall MD',
         snackSeverity: 'success',
       })
+      setLoading(false)
       setVisitReason(null)
       router.back()
     })
