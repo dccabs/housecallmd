@@ -186,9 +186,6 @@ const CreateAppointment = () => {
       <b>Visit Reason:</b> ${visitReason}      
     `
 
-    console.log('recipient_email', recipient_email);
-
-
     fetch('/api/sendMail', {
       method: 'POST',
       headers: {
