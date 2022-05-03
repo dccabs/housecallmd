@@ -60,6 +60,7 @@ const MessageModal = (
   const { user } = Auth.useUser()
 
   const sendMessage = () => {
+
     const payload = {
       // created_at: new Date(),
       sender: senderId,
