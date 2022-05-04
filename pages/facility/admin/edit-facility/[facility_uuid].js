@@ -10,14 +10,13 @@ import {
   MenuItem,
   CircularProgress,
 } from '@material-ui/core'
-import Container from '../../../../components/Container'
-import PhoneField from '../../../../components/PhoneField'
-import MuiSelect from '../../../../components/MuiSelect'
-import STATES from '../../../../public/constants/states'
-import formatPhoneNumberE164 from '../../../../utils/formatPhoneNumberE164'
-import { SnackBarContext } from '../../../../components/SnackBar'
+import Container from 'components/Container'
+import PhoneField from 'components/PhoneField'
+import MuiSelect from 'components/MuiSelect'
+import STATES from 'public/constants/states'
+import formatPhoneNumberE164 from 'utils/formatPhoneNumberE164'
+import { SnackBarContext } from 'components/SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
-import { supabase } from '../../../../utils/initSupabase'
 import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
@@ -152,7 +151,7 @@ const EditFacilityPage = () => {
       city: localCity,
       state: localState,
       zip: localZip,
-      facility_phone: localFacilityPhone,
+      facility_phone: formatPhoneNumberE164(localFacilityPhone),
       primary_contact_name: localPrimaryContactName,
       primary_contact_mobile_phone: localPrimaryContactMobilePhone,
       primary_contact_shift: localPrimaryContactShift,
@@ -304,6 +303,9 @@ const EditFacilityPage = () => {
                     InputProps={{
                       inputComponent: PhoneField,
                     }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
 
                   <TextField
@@ -317,6 +319,9 @@ const EditFacilityPage = () => {
                     onChange={(e) => setLocalFacilityFax(e.target.value)}
                     InputProps={{
                       inputComponent: PhoneField,
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
                   />
 
@@ -343,6 +348,9 @@ const EditFacilityPage = () => {
                     }
                     InputProps={{
                       inputComponent: PhoneField,
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
                   />
 
@@ -393,6 +401,9 @@ const EditFacilityPage = () => {
                     }
                     InputProps={{
                       inputComponent: PhoneField,
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
                   />
 
