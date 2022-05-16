@@ -5,16 +5,22 @@ import pusher from '../../utils/pusher';
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 const smsResponder = async (req, res) => {
+
   try {
-    const { From, Body } = req.body;
+    const { From, Body, MediaUrl0, NumMedia } = req.body;
+    const mediaItems = [];
+
+    for (var i = 0; i < NumMedia; i++) {  // eslint-disable-line
+      const mediaUrl = req.body[`MediaUrl${i}`];
+      mediaItems.push(mediaUrl);
+    }
+
     const logMessage = {
       message: Body,
       from_phone_number: From,
       to_phone_number: process.env.NEXT_PUBLIC_PHONE_NUMBER
     }
 
-    console.log('log Message', logMessage)
-    
     const twiml = new MessagingResponse();
     
     let message = '';
@@ -59,6 +65,7 @@ const smsResponder = async (req, res) => {
             body: adminMsg,
             from: process.env.NEXT_PUBLIC_PHONE_NUMBER,
             to: user.phoneNumber,
+            mediaUrl: mediaItems
           }).then((message) => {
             return message;
           }).catch((err) => {
