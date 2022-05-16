@@ -12,6 +12,8 @@ const smsResponder = async (req, res) => {
       from_phone_number: From,
       to_phone_number: process.env.NEXT_PUBLIC_PHONE_NUMBER
     }
+
+    console.log('log Message', logMessage)
     
     const twiml = new MessagingResponse();
     
@@ -29,10 +31,7 @@ const smsResponder = async (req, res) => {
       .select('sms_enabled')
       .eq('phone', From)
 
-    console.log('sms_enabled', smsStatus)
-
     if (smsStatus?.data[0].sms_enabled) {
-      console.log('allow sms');
       const userId = appointments.data[0].id;
       const senderName = `${appointments.data[0].firstName} ${appointments.data[0].lastName}`;
       const smsHistoryPath = `${process.env.NEXT_PUBLIC_HOST}/smsHistory/${userId}`;
