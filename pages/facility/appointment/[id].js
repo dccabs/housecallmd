@@ -1,8 +1,13 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-
-import { Typography, Box, Button, CircularProgress, TextField } from '@material-ui/core'
-import CheckIcon from '@material-ui/icons/Check'
+import {
+  Typography,
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+} from '@material-ui/core'
+import { Check as CheckIcon, Print as PrintIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
 import Message from 'components/Facility/Message'
@@ -36,6 +41,14 @@ const useStyles = makeStyles((theme) => ({
       '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
+    },
+  },
+  printButton: {
+    marginTop: '1em',
+    textDecoration: 'underline',
+   
+    'span span.textButton': {
+      marginRight: '0.2em',
     },
   },
 }))
@@ -85,7 +98,7 @@ const AppointmentDetailsPage = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (userData.role === 'admin' || userData.id === res.facilityId) {
+        if (userData?.role === 'admin' || userData?.id === res?.facilityId) {
           setAuthorized(true)
           setData(res)
           setNote(res?.note)
@@ -137,6 +150,14 @@ const AppointmentDetailsPage = () => {
                   </Box>
                 )}
               </Box>
+              <Button
+                color="secondary"
+                onClick={() => window.print()}
+                className={classes.printButton}
+              >
+                <span className='textButton'>Print this page</span>
+                <PrintIcon />
+              </Button>
               <Box style={{ margin: '40px 0 0' }}>
                 <Box style={{ margin: '40px 0 0' }}>
                   <Box>
@@ -175,14 +196,17 @@ const AppointmentDetailsPage = () => {
                     Send Message to HouseCallMD about this appointment
                   </Button>
                 </Box>
-                <Box style={{margin: '40px 0 0px'}}>
-                  <Box style={{marginBottom: 10}}>
-                    <strong>HousecallMD Orders for {user_info?.first_name} {user_info?.last_name}:</strong>
+                <Box style={{ margin: '40px 0 0px' }}>
+                  <Box style={{ marginBottom: 10 }}>
+                    <strong>
+                      HousecallMD Orders for {user_info?.first_name}{' '}
+                      {user_info?.last_name}:
+                    </strong>
                   </Box>
                   <Box>
                     <TextField
                       style={{
-                        color: 'red'
+                        color: 'red',
                       }}
                       placeholder="Enter Orders"
                       value={orders}
