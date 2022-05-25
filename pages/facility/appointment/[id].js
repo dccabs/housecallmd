@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core'
 import { Check as CheckIcon, Print as PrintIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import { Auth } from '@supabase/ui'
 import Message from 'components/Facility/Message'
 import Container from 'components/Container'
@@ -18,6 +19,11 @@ import FacilityMessageModal from '../../../components/FacilityMessageModal'
 import getAppointments from 'pages/api/getAppointments'
 
 const useStyles = makeStyles((theme) => ({
+  hideOnPrintPage: {
+    '@media print': {
+      display: 'none',
+    },
+  },
   h2: {
     marginTop: '.5em',
   },
@@ -46,10 +52,7 @@ const useStyles = makeStyles((theme) => ({
   printButton: {
     marginTop: '1em',
     textDecoration: 'underline',
-   
-    'span span.textButton': {
-      marginRight: '0.2em',
-    },
+    fontSize: '0.8em',
   },
 }))
 
@@ -128,7 +131,7 @@ const AppointmentDetailsPage = () => {
         <>
           {user && data && authorized && (
             <>
-              <Box>
+              <Box className={classes.hideOnPrintPage}>
                 <div onClick={() => router.back()} className="link">
                   Go Back
                 </div>
@@ -145,17 +148,25 @@ const AppointmentDetailsPage = () => {
                       alignItems: 'center',
                     }}
                   >
-                    <CheckIcon style={{ fill: completed ? '#13bb0a' : null }} />{' '}
-                    <span style={{ marginLeft: 10 }}>Completed</span>
+                    <CheckIcon
+                      className={classes.hideOnPrintPage}
+                      style={{ fill: completed ? '#13bb0a' : null }}
+                    />{' '}
+                    <span
+                      className={classes.hideOnPrintPage}
+                      style={{ marginLeft: 10 }}
+                    >
+                      Completed
+                    </span>
                   </Box>
                 )}
               </Box>
               <Button
                 color="secondary"
                 onClick={() => window.print()}
-                className={classes.printButton}
+                className={clsx(classes.printButton, classes.hideOnPrintPage)}
               >
-                <span className='textButton'>Print this page</span>
+                <span style={{ marginRight: 5 }}>Print this page</span>
                 <PrintIcon />
               </Button>
               <Box style={{ margin: '40px 0 0' }}>
@@ -185,7 +196,10 @@ const AppointmentDetailsPage = () => {
                     <Box>{data?.visitReason}</Box>
                   </Box>
                 </Box>
-                <Box style={{ margin: '40px 0 0px' }}>
+                <Box
+                  className={classes.hideOnPrintPage}
+                  style={{ margin: '40px 0 0px' }}
+                >
                   <Button
                     color="secondary"
                     style={{ marginTop: 10 }}
