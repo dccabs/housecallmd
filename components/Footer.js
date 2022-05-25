@@ -14,10 +14,12 @@ const useStyles = makeStyles((theme) => ({
       color: '#fff',
       margin: '0 2rem',
     },
+
+    '@media print': {
+      display: 'none',
+    },
   },
 }))
-
-
 
 const Footer = () => {
   const classes = useStyles()

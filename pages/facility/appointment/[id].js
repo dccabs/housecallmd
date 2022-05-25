@@ -26,6 +26,15 @@ const useStyles = makeStyles((theme) => ({
   },
   h2: {
     marginTop: '.5em',
+    '@media print': {
+      fontSize: '1.5em',
+      fontWeight: 600,
+    },
+  },
+  printOrders: {
+    '@media print': {
+      display: 'block !important',
+    },
   },
   facilityLink: {
     '& a': {
@@ -137,7 +146,10 @@ const AppointmentDetailsPage = () => {
                 </div>
               </Box>
               <Box display="flex" alignItems="baseline">
-                <Typography variant="h2" className={classes.h2}>
+                <Typography
+                  variant="h2"
+                  className={clsx(classes.h2, classes.onPrintPage)}
+                >
                   Appointment
                 </Typography>
                 {completed && (
@@ -218,6 +230,7 @@ const AppointmentDetailsPage = () => {
                     </strong>
                   </Box>
                   <Box>
+                    {/* onScreen Display */}
                     <TextField
                       style={{
                         color: 'red',
@@ -234,7 +247,21 @@ const AppointmentDetailsPage = () => {
                       InputProps={{
                         readOnly: true,
                       }}
+                      className={classes.hideOnPrintPage}
                     />
+                  </Box>
+                  {/* on Print Display */}
+                  <Box
+                    className={classes.printOrders}
+                    component="span"
+                    style={{
+                      borderRadius: '5px',
+                      padding: '18px 14px',
+                      border: '1px solid #c2c2c2',
+                      display: 'none',
+                    }}
+                  >
+                    <Typography variant="body2">{orders}</Typography>
                   </Box>
                 </Box>
               </Box>
