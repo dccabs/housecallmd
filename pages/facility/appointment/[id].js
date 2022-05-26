@@ -1,9 +1,15 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-
-import { Typography, Box, Button, CircularProgress, TextField } from '@material-ui/core'
-import CheckIcon from '@material-ui/icons/Check'
+import {
+  Typography,
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+} from '@material-ui/core'
+import { Check as CheckIcon, Print as PrintIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import { Auth } from '@supabase/ui'
 import Message from 'components/Facility/Message'
 import Container from 'components/Container'
@@ -13,8 +19,22 @@ import FacilityMessageModal from '../../../components/FacilityMessageModal'
 import getAppointments from 'pages/api/getAppointments'
 
 const useStyles = makeStyles((theme) => ({
+  hideOnPrintPage: {
+    '@media print': {
+      display: 'none',
+    },
+  },
   h2: {
     marginTop: '.5em',
+    '@media print': {
+      fontSize: '1.5em',
+      fontWeight: 600,
+    },
+  },
+  printOrders: {
+    '@media print': {
+      display: 'block !important',
+    },
   },
   facilityLink: {
     '& a': {
@@ -37,6 +57,11 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.main,
       },
     },
+  },
+  printButton: {
+    marginTop: '1em',
+    textDecoration: 'underline',
+    fontSize: '0.8em',
   },
 }))
 
@@ -85,7 +110,7 @@ const AppointmentDetailsPage = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (userData.role === 'admin' || userData.id === res.facilityId) {
+        if (userData?.role === 'admin' || userData?.id === res?.facilityId) {
           setAuthorized(true)
           setData(res)
           setNote(res?.note)
@@ -115,13 +140,16 @@ const AppointmentDetailsPage = () => {
         <>
           {user && data && authorized && (
             <>
-              <Box>
+              <Box className={classes.hideOnPrintPage}>
                 <div onClick={() => router.back()} className="link">
                   Go Back
                 </div>
               </Box>
               <Box display="flex" alignItems="baseline">
-                <Typography variant="h2" className={classes.h2}>
+                <Typography
+                  variant="h2"
+                  className={clsx(classes.h2, classes.onPrintPage)}
+                >
                   Appointment
                 </Typography>
                 {completed && (
@@ -132,11 +160,27 @@ const AppointmentDetailsPage = () => {
                       alignItems: 'center',
                     }}
                   >
-                    <CheckIcon style={{ fill: completed ? '#13bb0a' : null }} />{' '}
-                    <span style={{ marginLeft: 10 }}>Completed</span>
+                    <CheckIcon
+                      className={classes.hideOnPrintPage}
+                      style={{ fill: completed ? '#13bb0a' : null }}
+                    />{' '}
+                    <span
+                      className={classes.hideOnPrintPage}
+                      style={{ marginLeft: 10 }}
+                    >
+                      Completed
+                    </span>
                   </Box>
                 )}
               </Box>
+              <Button
+                color="secondary"
+                onClick={() => window.print()}
+                className={clsx(classes.printButton, classes.hideOnPrintPage)}
+              >
+                <span style={{ marginRight: 5 }}>Print this page</span>
+                <PrintIcon />
+              </Button>
               <Box style={{ margin: '40px 0 0' }}>
                 <Box style={{ margin: '40px 0 0' }}>
                   <Box>
@@ -164,7 +208,10 @@ const AppointmentDetailsPage = () => {
                     <Box>{data?.visitReason}</Box>
                   </Box>
                 </Box>
-                <Box style={{ margin: '40px 0 0px' }}>
+                <Box
+                  className={classes.hideOnPrintPage}
+                  style={{ margin: '40px 0 0px' }}
+                >
                   <Button
                     color="secondary"
                     style={{ marginTop: 10 }}
@@ -175,14 +222,18 @@ const AppointmentDetailsPage = () => {
                     Send Message to HouseCallMD about this appointment
                   </Button>
                 </Box>
-                <Box style={{margin: '40px 0 0px'}}>
-                  <Box style={{marginBottom: 10}}>
-                    <strong>HousecallMD Orders for {user_info?.first_name} {user_info?.last_name}:</strong>
+                <Box style={{ margin: '40px 0 0px' }}>
+                  <Box style={{ marginBottom: 10 }}>
+                    <strong>
+                      HousecallMD Orders for {user_info?.first_name}{' '}
+                      {user_info?.last_name}:
+                    </strong>
                   </Box>
                   <Box>
+                    {/* onScreen Display */}
                     <TextField
                       style={{
-                        color: 'red'
+                        color: 'red',
                       }}
                       placeholder="Enter Orders"
                       value={orders}
@@ -196,7 +247,21 @@ const AppointmentDetailsPage = () => {
                       InputProps={{
                         readOnly: true,
                       }}
+                      className={classes.hideOnPrintPage}
                     />
+                  </Box>
+                  {/* on Print Display */}
+                  <Box
+                    className={classes.printOrders}
+                    component="span"
+                    style={{
+                      borderRadius: '5px',
+                      padding: '18px 14px',
+                      border: '1px solid #c2c2c2',
+                      display: 'none',
+                    }}
+                  >
+                    <Typography variant="body2">{orders}</Typography>
                   </Box>
                 </Box>
               </Box>
