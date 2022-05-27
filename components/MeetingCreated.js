@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
 import { Auth } from '@supabase/ui'
 import { SnackBarContext } from '../components/SnackBar'
-import config from '../utils/config';
+import config from '../utils/config'
 
 const useStyles = makeStyles((theme) => ({
   buttonLinks: {
@@ -22,7 +22,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MeetingCreated = ({ name, email, phone, setMeetingContent, facilityName, residentName }) => {
+const MeetingCreated = ({
+  name,
+  email,
+  phone,
+  setMeetingContent,
+  facilityName,
+  residentName,
+}) => {
 
   const [roomId, setRoomId] = useState()
   const [roomUrl, setRoomUrl] = useState()
@@ -30,7 +37,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent, facilityName, r
   const [loadingSMS, setLoadingSMS] = useState(false)
   const [success, setSuccess] = useState(false)
   const classes = useStyles()
-  const [message, setMessage] = useState('Default Message');
+  const [message, setMessage] = useState('Default Message')
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
@@ -62,9 +69,13 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent, facilityName, r
   useEffect(() => {
     if (roomUrl) {
       if (facilityName) {
-        setMessage(`HousecallMD has set up your meeting room for ${residentName}, please click on the link to join the meeting.\n ${roomUrl}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`);
+        setMessage(
+          `HousecallMD has set up your meeting room for ${residentName}, please click on the link to join the meeting.\n ${roomUrl}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`
+        )
       } else {
-        setMessage(`HousecallMD has set up your meeting room, please click on the link to join the meeting.\n ${roomUrl}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`)
+        setMessage(
+          `HousecallMD has set up your meeting room, please click on the link to join the meeting.\n ${roomUrl}\n\nDO NOT REPLY TO THIS TEXT MESSAGE. MESSAGES TO THIS NUMBER ARE NOT MONITORED.`
+        )
       }
     }
   }, [roomUrl])
@@ -73,7 +84,7 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent, facilityName, r
     sendEmail()
     if (phone) {
       sendSMS()
-    }
+    } 
   }
 
   const sendEmail = async () => {
@@ -81,7 +92,9 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent, facilityName, r
       name,
       email,
       roomUrl,
-      message: facilityName ? `HousecallMD has set up your meeting room for ${residentName}, please click on the link to join the meeting.` : 'HousecallMD has set up your meeting room, please click on the link to join the meeting.',
+      message: facilityName
+        ? `HousecallMD has set up your meeting room for ${residentName}, please click on the link to join the meeting.`
+        : 'HousecallMD has set up your meeting room, please click on the link to join the meeting.',
     }
 
     try {
@@ -97,8 +110,10 @@ const MeetingCreated = ({ name, email, phone, setMeetingContent, facilityName, r
       throw err
     }
   }
- 
+
   const sendSMS = async () => {
+    const message = `Housecall has created a video chat appointment for ${residentName}, please click on this link to join the meeting. \n\n${roomUrl}`
+    
     try {
       setLoadingSMS(true)
       const res = await fetch('/api/sendMessage', {

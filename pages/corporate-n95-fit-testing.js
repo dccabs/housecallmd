@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import Container from '../components/Container'
 import { NextSeo } from 'next-seo'
 import { Box, Grid, Typography, makeStyles } from '@material-ui/core'

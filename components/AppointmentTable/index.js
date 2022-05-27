@@ -1,7 +1,8 @@
 import MaterialTable from 'material-table'
 import { useEffect } from 'react'
-import {useRouter} from 'next/router'
-import moment from 'moment';
+import { useRouter } from 'next/router'
+import moment from 'moment'
+import { makeStyles } from '@material-ui/core/styles'
 import { findIndex } from 'lodash'
 
 const publicWithName = [
@@ -24,7 +25,7 @@ const publicWithName = [
   {
     title: 'Date/Time',
     field: 'created_at',
-    render: (rowData) => moment(rowData.created_at).format('LLL')
+    render: (rowData) => moment(rowData.created_at).format('LLL'),
   },
   {
     title: 'Status',
@@ -45,7 +46,7 @@ const publicWithoutName = [
   {
     title: 'Date/Time',
     field: 'created_at',
-    render: (rowData) => moment(rowData.created_at).format('LLL')
+    render: (rowData) => moment(rowData.created_at).format('LLL'),
   },
   {
     title: 'Status',
@@ -79,7 +80,7 @@ const adminWithName = [
   {
     title: 'Date/Time',
     field: 'created_at',
-    render: (rowData) => moment(rowData.created_at).format('LLL')
+    render: (rowData) => moment(rowData.created_at).format('LLL'),
   },
   {
     title: 'Status',
@@ -105,7 +106,7 @@ const adminWithoutName = [
   {
     title: 'Date/Time',
     field: 'time',
-    render: (rowData) => moment(rowData.created_at).format('LLL')
+    render: (rowData) => moment(rowData.created_at).format('LLL'),
   },
   {
     title: 'Status',
@@ -114,48 +115,66 @@ const adminWithoutName = [
   },
 ]
 
-const AppointmentTable = ({ appointments, hideName = false, admin = false, hideCompleted = false, hideNonCompleted, hideOrders = false}) => {
+const useStyles = makeStyles((theme) => ({
+  materialTable: {
+    display: 'none'
+  }
+}))
 
-  const router = useRouter();
+const AppointmentTable = ({
+  appointments,
+  hideName = false,
+  admin = false,
+  hideCompleted = false,
+  hideNonCompleted,
+  hideOrders = false,
+}) => {
+  const classes = useStyles()
+  const router = useRouter()
 
-  const nonCompleteAppointments = appointments.filter(appointment => {
-    return appointment.completed === false;
+  const nonCompleteAppointments = appointments.filter((appointment) => {
+    return appointment.completed === false
   })
 
-  const completedAppointments = appointments.filter(appointment => {
-    return appointment.completed === true;
+  const completedAppointments = appointments.filter((appointment) => {
+    return appointment.completed === true
   })
 
-  let displayAppointments = hideCompleted ? nonCompleteAppointments : hideNonCompleted ? completedAppointments : appointments;
+  let displayAppointments = hideCompleted
+    ? nonCompleteAppointments
+    : hideNonCompleted
+    ? completedAppointments
+    : appointments
 
-  displayAppointments = displayAppointments.sort(function(a,b){
-    return new Date(b.created_at) - new Date(a.created_at);
-  });
+  displayAppointments = displayAppointments.sort(function (a, b) {
+    return new Date(b.created_at) - new Date(a.created_at)
+  })
 
-  let columnData = [];
+  let columnData = []
   if (admin) {
     if (hideName) {
-      columnData = adminWithoutName;
+      columnData = adminWithoutName
     } else {
-      columnData = adminWithName;
+      columnData = adminWithName
     }
   } else {
     if (hideName) {
-      columnData = publicWithoutName;
+      columnData = publicWithoutName
     } else {
-      columnData = publicWithName;
+      columnData = publicWithName
     }
-    const index = columnData.findIndex(item => {
-      return item.field === 'orders';
+    const index = columnData.findIndex((item) => {
+      return item.field === 'orders'
     })
 
-    columnData[index].hidden = hideOrders ? true : false;
+    columnData[index].hidden = hideOrders ? true : false
   }
 
   return (
     <MaterialTable
       title="Appointments"
       columns={columnData}
+      className={classes.materialTable}
       data={displayAppointments}
       options={{
         paginationType: 'stepped',
@@ -165,7 +184,9 @@ const AppointmentTable = ({ appointments, hideName = false, admin = false, hideC
       }}
       onRowClick={(event, rowData) => {
         const { id } = rowData
-        const appointmentUrl = admin ? `/facility/admin/appointment/${id}` : `/facility/appointment/${id}`;
+        const appointmentUrl = admin
+          ? `/facility/admin/appointment/${id}`
+          : `/facility/appointment/${id}`
         router.push(appointmentUrl)
       }}
     />
