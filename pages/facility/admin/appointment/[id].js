@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 
-import CheckIcon from '@material-ui/icons/Check';
+import CheckIcon from '@material-ui/icons/Check'
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
 import Container from 'components/Container'
@@ -18,7 +18,7 @@ import { SnackBarContext } from 'components/SnackBar'
 import xhrHeader from '../../../../constants/xhrHeader'
 import FacilityMessageModal from '../../../../components/FacilityMessageModal'
 import MeetingCreated from '../../../../components/MeetingCreated'
-import CustomModal from 'components/CustomModal/CustomModal';
+import CustomModal from 'components/CustomModal/CustomModal'
 import PersonIcon from '@material-ui/icons/Person'
 import UserInformationContent from '../../../../components/UserInformationContent'
 
@@ -52,11 +52,11 @@ const useStyles = makeStyles((theme) => ({
 
 const AppointmentDetailsPage = () => {
   const openSnackBar = useContext(SnackBarContext)
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
-  const [note, setNote] = useState('');
-  const [orders, setOrders] = useState('');
-  const [completed, setCompleted] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState(null)
+  const [note, setNote] = useState('')
+  const [orders, setOrders] = useState('')
+  const [completed, setCompleted] = useState('')
   const [MeetingContent, setMeetingContent] = useState(false)
   const [messageModalOpen, setMessageModalOpen] = useState(false)
 
@@ -65,10 +65,8 @@ const AppointmentDetailsPage = () => {
   const router = useRouter()
   const { id: appointmentId } = router.query
 
-
   useEffect(() => {
     if (user && appointmentId) {
-
     }
   }, [user])
   useEffect(() => {
@@ -76,20 +74,20 @@ const AppointmentDetailsPage = () => {
       // setLoading(true)
       fetch('/api/getFacilityAppointmentById', {
         ...xhrHeader,
-        body: JSON.stringify({ id: Number(appointmentId)}),
+        body: JSON.stringify({ id: Number(appointmentId) }),
       })
         .then((res) => res.json())
         .then((res) => {
-          setData(res);
-          setNote(res?.note);
-          setOrders(res?.orders);
-          setCompleted(res?.completed);
-          setLoading(false);
+          setData(res)
+          setNote(res?.note)
+          setOrders(res?.orders)
+          setCompleted(res?.completed)
+          setLoading(false)
         })
     }
   }, [user, appointmentId])
 
-  const handleStatusClick = ({status}) => {
+  const handleStatusClick = ({ status }) => {
     const payload = {
       id: Number(appointmentId),
       status,
@@ -104,7 +102,7 @@ const AppointmentDetailsPage = () => {
           message: 'Appointment Status Updated',
           snackSeverity: 'success',
         })
-        setCompleted(status);
+        setCompleted(status)
       })
   }
 
@@ -169,43 +167,49 @@ const AppointmentDetailsPage = () => {
       })
   }
 
-  const createVideoChat = () => {
+  const createVideoChat = () => {}
 
-  }
+  console.log('data--->', data)
 
-
-  const { user_info, facility_info } = data || {};
+  const { user_info, facility_info } = data || {}
 
   return (
     <Container>
-      {loading ?
-          <Container>
-            <div style={{textAlign: 'center'}}>
-              <CircularProgress />
-            </div>
-          </Container>
-
-        :
+      {loading ? (
+        <Container>
+          <div style={{ textAlign: 'center' }}>
+            <CircularProgress />
+          </div>
+        </Container>
+      ) : (
         <>
           <Box display="flex" alignItems="end">
             <Typography variant="h2" className={classes.h2}>
               Appointment
               <Button
-                style={{marginLeft: 30, backgroundColor: completed ? '#13bb0a' : null}}
+                style={{
+                  marginLeft: 30,
+                  backgroundColor: completed ? '#13bb0a' : null,
+                }}
                 size="small"
                 variant="contained"
-                onClick={() => { handleStatusClick({status: !completed}) }}
+                onClick={() => {
+                  handleStatusClick({ status: !completed })
+                }}
               >
-                <Tooltip title={`${completed ? 'Mark Incomplete' : 'Mark Complete'}`}>
-                  <CheckIcon style={{fill: completed ? '#fff' : null}} />
+                <Tooltip
+                  title={`${completed ? 'Mark Incomplete' : 'Mark Complete'}`}
+                >
+                  <CheckIcon style={{ fill: completed ? '#fff' : null }} />
                 </Tooltip>
               </Button>
             </Typography>
           </Box>
-          <Box style={{margin: '40px 0 0'}}>
-            <Box style={{margin: '40px 0 0'}}>
+          <Box style={{ margin: '40px 0 0' }}>
+            <Box style={{ margin: '40px 0 0' }}>
               <Box>
-                <strong>Name:</strong> {user_info?.first_name} {user_info?.last_name}
+                <strong>Name:</strong> {user_info?.first_name}{' '}
+                {user_info?.last_name}
               </Box>
               <Box>
                 <strong>Facility:</strong> {facility_info?.name}
@@ -220,19 +224,18 @@ const AppointmentDetailsPage = () => {
                 <strong>Date:</strong> {data?.created_at}
               </Box>
               <Box>
-                <strong>Power of Attorney Info:</strong> {user_info?.poa_name} - {user_info?.poa_phone_number}
+                <strong>Power of Attorney Info:</strong> {user_info?.poa_name} -{' '}
+                {user_info?.poa_phone_number}
               </Box>
 
-              <Box style={{margin: '40px 0 0'}}>
+              <Box style={{ margin: '40px 0 0' }}>
                 <Box>
                   <strong>Visit Reason:</strong>
                 </Box>
-                <Box>
-                  {data?.visitReason}
-                </Box>
+                <Box>{data?.visitReason}</Box>
               </Box>
-              <Box style={{margin: '40px 0 0px'}}>
-                <Box style={{marginBottom: 10}}>
+              <Box style={{ margin: '40px 0 0px' }}>
+                <Box style={{ marginBottom: 10 }}>
                   <strong>HousecallMD Notes:</strong>
                 </Box>
                 <Box>
@@ -248,7 +251,7 @@ const AppointmentDetailsPage = () => {
                     // disabled={messagesLoading}
                   />
                   <Button
-                    style={{marginTop: 10}}
+                    style={{ marginTop: 10 }}
                     size="large"
                     variant="contained"
                     color="primary"
@@ -258,9 +261,12 @@ const AppointmentDetailsPage = () => {
                   </Button>
                 </Box>
               </Box>
-              <Box style={{margin: '40px 0 0px'}}>
-                <Box style={{marginBottom: 10}}>
-                  <strong>Completed Visit Summary / New Orders for {user_info?.first_name} {user_info?.last_name}:</strong>
+              <Box style={{ margin: '40px 0 0px' }}>
+                <Box style={{ marginBottom: 10 }}>
+                  <strong>
+                    Completed Visit Summary / New Orders for{' '}
+                    {user_info?.first_name} {user_info?.last_name}:
+                  </strong>
                 </Box>
                 <Box>
                   <TextField
@@ -275,7 +281,7 @@ const AppointmentDetailsPage = () => {
                     // disabled={messagesLoading}
                   />
                   <Button
-                    style={{marginTop: 10}}
+                    style={{ marginTop: 10 }}
                     size="large"
                     variant="contained"
                     color="primary"
@@ -286,10 +292,10 @@ const AppointmentDetailsPage = () => {
                 </Box>
               </Box>
             </Box>
-            <Box style={{margin: '40px 0 0px'}}>
+            <Box style={{ margin: '40px 0 0px' }}>
               <Button
                 color="secondary"
-                style={{marginTop: 10}}
+                style={{ marginTop: 10 }}
                 size="large"
                 variant="contained"
                 onClick={() => setMessageModalOpen(true)}
@@ -297,10 +303,10 @@ const AppointmentDetailsPage = () => {
                 Send Message to {facility_info?.name} about this appointment
               </Button>
             </Box>
-            <Box style={{margin: '10px 0 0px'}}>
+            <Box style={{ margin: '10px 0 0px' }}>
               <Button
                 color="secondary"
-                style={{marginTop: 10}}
+                style={{ marginTop: 10 }}
                 size="large"
                 variant="contained"
                 onClick={() => setMeetingContent(true)}
@@ -310,7 +316,7 @@ const AppointmentDetailsPage = () => {
             </Box>
           </Box>
         </>
-      }
+      )}
       <FacilityMessageModal
         open={messageModalOpen}
         onClose={() => setMessageModalOpen(false)}
@@ -332,7 +338,8 @@ const AppointmentDetailsPage = () => {
           <MeetingCreated
             name={facility_info?.name}
             email={facility_info?.email}
-            phone={data?.notification_phone ? data.notification_phone : null}
+            // phone={data?.notification_phone ? data.notification_phone : null}
+            phone={data?.notification_phone ?? null}
             setMeetingContent={setMeetingContent}
             facilityName={facility_info?.name}
             residentName={`${user_info?.first_name} ${user_info?.last_name}`}
