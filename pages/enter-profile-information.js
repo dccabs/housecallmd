@@ -15,6 +15,7 @@ import PhoneField from '../components/PhoneField';
 import { useRouter } from 'next/router'
 import useStore from '../zustand/store';
 import { useState } from 'react'
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -153,7 +154,7 @@ const Contact = () => {
               id="date-picker-dialog"
               label="Date of birth"
               format="MM/dd/yyyy"
-              value={localDob}
+              value={moment(localDob)}
               onChange={(value) => {
                 setLocalDob(value)
               }}

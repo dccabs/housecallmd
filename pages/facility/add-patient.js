@@ -467,7 +467,7 @@ const addPatientPage = () => {
                       margin="normal"
                       label="Date of birth"
                       format="MM/dd/yyyy"
-                      value={field.value}
+                      value={moment(field.value)}
                       onChange={(value) =>
                         handleUpdate({
                           val: value,

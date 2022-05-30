@@ -436,7 +436,7 @@ const UserDetailsPage = () => {
                             margin="normal"
                             label="Date of birth"
                             format="MM/dd/yyyy"
-                            value={field.value}
+                            value={moment(field.value)}
                             onChange={(value) =>
                               handleUpdate({
                                 val: moment(value).format('DD/MM/YYYY'),
