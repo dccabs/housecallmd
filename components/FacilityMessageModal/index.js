@@ -60,6 +60,7 @@ const MessageModal = ({
 }) => {
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
+  const [loadingUploadImage, setLoadingUploadImage] = useState(true)
   const [message, setMessage] = useState('')
   const [imageData, setImageData] = useState({})
   const [isImageUploadSuccess, setIsImageUploadSuccess] = useState(false)
@@ -69,13 +70,14 @@ const MessageModal = ({
 
   const sendMessage = () => {
     const payload = {
-      // created_at: new Date(),
       sender: senderId,
       recipient: recipientId,
       patient_id: patientId,
       message,
       viewed_by_recipient: false,
+      media_url: imageData?.value ?? null,
     }
+
     setLoading(true)
 
     fetch('/api/addFacilityMessage', {
@@ -163,10 +165,12 @@ const MessageModal = ({
       ...imageData,
     }
     setIsImageUploadSuccess(true)
+    setMessage(newImageData?.value)
     setImageData(newImageData)
   }
 
   const uploadPhoto = async (args) => {
+    setLoadingUploadImage(true)
     console.log('args', args)
     const { val } = args
     const type = val.type.split('/')[1]
@@ -190,9 +194,8 @@ const MessageModal = ({
         ...imageData,
         loading: false,
       })
-
+      setLoadingUploadImage(false)
       return error
-      // return res.status(401).json({ error: error.message })
     } else {
       const newFormData = {
         ...imageData,
@@ -200,31 +203,11 @@ const MessageModal = ({
         value: data.Key,
       }
       setImageData(newFormData)
-      saveImageKeyData(newFormData?.value)
+      setLoadingUploadImage(false)
       setIsImageUploadSuccess(true)
     }
   }
 
-  const saveImageKeyData = async (data) => {
-    fetch('/api/addFacilityMessagesMediaUrl', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-
-        if (data.error) {
-          throw Error(data.error)
-        } else {
-          console.log('Image Url successfully save')
-        }
-      })
-      .catch((error) => {
-        openSnackBar({ message: error.toString(), snackSeverity: 'error' })
-      })
-  }
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -271,7 +254,7 @@ const MessageModal = ({
             color="primary"
             component="label"
           >
-            Upload Image
+            Upload Image {loadingUploadImage && <CircularProgress color="#fff" />}
             <input
               type="file"
               accept="image/*"
