@@ -561,27 +561,29 @@ const UserDetailsPage = () => {
                       )
                     } else if (field.type === 'muiPicker') {
                       return (
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} key={key}>
-                          <KeyboardDatePicker
-                            autoComplete="nope"
-                            className={classes.textFields}
-                            inputVariant="outlined"
-                            margin="normal"
-                            label="Date of birth"
-                            format="MM/dd/yyyy"
-                            value={field.value}
-                            onChange={(value) =>
-                              handleUpdate({
-                                val: moment(value).format('DD/MM/YYYY'),
-                                objKey: key,
-                              })
-                            }
-                            KeyboardButtonProps={{
-                              'aria-label': 'change date',
-                            }}
-                            disabled={!editable}
-                          />
-                        </MuiPickersUtilsProvider>
+                        <>
+                          <MuiPickersUtilsProvider utils={DateFnsUtils} key={key}>
+                            <KeyboardDatePicker
+                              autoComplete="nope"
+                              className={classes.textFields}
+                              inputVariant="outlined"
+                              margin="normal"
+                              label="Date of birth"
+                              format="MM/dd/yyyy"
+                              value={moment(field.value)}
+                              onChange={(value) =>
+                                handleUpdate({
+                                  val: moment(value).format('DD/MM/YYYY'),
+                                  objKey: key,
+                                })
+                              }
+                              KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                              }}
+                              disabled={!editable}
+                            />
+                          </MuiPickersUtilsProvider>
+                        </>
                       )
                     } else if (field.type === 'muiSelect') {
                       return (

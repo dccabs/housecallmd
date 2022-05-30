@@ -442,7 +442,7 @@ const EditInformationPage = () => {
               variant="outlined"
               color="secondary"
               fullWidth
-              value={dob}
+              value={moment(dob)}
               onChange={(e) => setDob(e.target.value)}
               InputLabelProps={{
                 shrink: true,
