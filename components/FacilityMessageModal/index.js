@@ -10,10 +10,18 @@ import {
 import { SnackBarContext } from 'components/SnackBar'
 import { makeStyles } from '@material-ui/core/styles'
 import { Auth } from '@supabase/ui'
+import { v4 as uuidv4 } from 'uuid'
+import { supabase } from '../../utils/initSupabase'
+const NEXT_PUBLIC_SUPABASE_STORAGE_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
 
 const useStyles = makeStyles((theme) => ({
   h2: {
     marginTop: '.5em',
+  },
+  success: {
+    color: '#008000',
+    fontStyle: 'italic',
   },
   textFields: {
     width: '100%',
@@ -39,36 +47,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const MessageModal = (
-  {
-    title,
-    senderId,
-    recipientId,
-    patientId,
-    patientName,
-    open,
-    onClose,
-    callbackFn,
-    notificationNumber,
-  }
-  ) => {
+const MessageModal = ({
+  title,
+  senderId,
+  recipientId,
+  patientId,
+  patientName,
+  open,
+  onClose,
+  callbackFn,
+  notificationNumber,
+}) => {
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
+  const [loadingUploadImage, setLoadingUploadImage] = useState(false)
   const [message, setMessage] = useState('')
+  const [imageData, setImageData] = useState({})
+  const [isImageUploadSuccess, setIsImageUploadSuccess] = useState(false)
 
   const openSnackBar = useContext(SnackBarContext)
   const { user } = Auth.useUser()
 
   const sendMessage = () => {
-
     const payload = {
-      // created_at: new Date(),
       sender: senderId,
       recipient: recipientId,
       patient_id: patientId,
       message,
       viewed_by_recipient: false,
+      media_url: imageData?.value ?? null,
     }
+
     setLoading(true)
 
     fetch('/api/addFacilityMessage', {
@@ -81,7 +90,7 @@ const MessageModal = (
       .then((data) => {
         setLoading(false)
         onClose()
-        callbackFn();
+        callbackFn()
         if (data) {
           if (data.sentToHouseCall) {
             sendSMSToHouseCall(data)
@@ -101,7 +110,7 @@ const MessageModal = (
   }
 
   const sendSMSToHouseCall = async (data) => {
-    const { facilityData } = data;
+    const { facilityData } = data
     const message = `${facilityData[0].name} has just sent you a message. Please login to the portal to see it.`
 
     await fetch('/api/getPhoneNumbers', {
@@ -114,12 +123,12 @@ const MessageModal = (
     })
       .then((res) => res.json())
       .then((data) => {
-        const activePhones = data.filter(phone => {
-          return phone.isActive;
+        const activePhones = data.filter((phone) => {
+          return phone.isActive
         })
 
-        const phones = activePhones.map(phone => {
-          return phone.phoneNumber;
+        const phones = activePhones.map((phone) => {
+          return phone.phoneNumber
         })
 
         phones.forEach(async (phone) => {
@@ -139,15 +148,67 @@ const MessageModal = (
             throw err
           }
         })
-
       })
       .catch((error) => {
         openSnackBar({ message: error.toString(), snackSeverity: 'error' })
       })
   }
 
+  const handleAdd = (args) => {
+    const { val, type } = args
+    if (type === 'fileUpload') {
+      uploadPhoto(args)
+      return false
+    }
+
+    const newImageData = {
+      ...imageData,
+    }
+    setIsImageUploadSuccess(true)
+    setMessage(newImageData?.value)
+    setImageData(newImageData)
+  }
+
+  const uploadPhoto = async (args) => {
+    setLoadingUploadImage(true)
+    const { val } = args
+    const type = val.type.split('/')[1]
+    const uuid = uuidv4()
+    const photo = val
+
+    // set loading true
+    setImageData({
+      ...imageData,
+      loading: true,
+    })
+    const { data, error } = await supabase.storage
+      .from('card-information')
+      .upload(`facility-message-images/${uuid}.${type}`, photo, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+    if (error) {
+      setImageData({
+        ...imageData,
+        loading: false,
+      })
+      setLoadingUploadImage(false)
+      return error
+    } else {
+      const newFormData = {
+        ...imageData,
+        loading: false,
+        value: data.Key,
+      }
+      setImageData(newFormData)
+      setLoadingUploadImage(false)
+      setIsImageUploadSuccess(true)
+    }
+  }
+
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} style={{ overflowY: 'scroll' }}>
       <Box
         style={{
           backgroundColor: '#fff',
@@ -163,24 +224,17 @@ const MessageModal = (
           className={classes.h2}
           style={{ marginBottom: '1em' }}
         >
-          <div>
-            {title}:
-          </div>
-          {patientId &&
-            <div style={{marginTop: 20}}>{patientName}</div>
-          }
+          <div>{title}:</div>
+          {patientId && <div style={{ marginTop: 20 }}>{patientName}</div>}
         </Typography>
-        {notificationNumber &&
-          <Typography
-            variant="body"
-            className={classes.h2}
-          >
-            <div style={{ marginBottom: '1em' }}
-            >
-              A sms notification will be sent to <strong>{notificationNumber}</strong>.
+        {notificationNumber && (
+          <Typography variant="body" className={classes.h2}>
+            <div style={{ marginBottom: '1em' }}>
+              A sms notification will be sent to{' '}
+              <strong>{notificationNumber}</strong>.
             </div>
           </Typography>
-        }
+        )}
         <TextField
           placeholder="Type your message here and click to send button."
           multiline
@@ -191,16 +245,64 @@ const MessageModal = (
           onChange={(e) => setMessage(e.target.value)}
           disabled={loading}
         />
-        <Button
-          disabled={!message || loading}
-          onClick={sendMessage}
-          style={{ marginTop: '1em' }}
-          size="small"
-          variant="contained"
-          color="secondary"
-        >
-          Send Message
-        </Button>
+        <Box mb="1em" mt="1em">
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            component="label"
+          >
+            Upload Image{' '}
+            {loadingUploadImage && <CircularProgress color="#fff" />}
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) =>
+                handleAdd({
+                  val: e.target.files[0],
+                  type: 'fileUpload',
+                })
+              }
+            />
+          </Button>
+        </Box>
+        {isImageUploadSuccess && (
+          <Box>
+            <Typography className={classes.success} variant="body2">
+              *Image uploaded successfully
+            </Typography>
+          </Box>
+        )}
+        <Box>
+          <div
+            style={{
+              position: 'relative',
+              width: 500,
+              marginTop: 10,
+            }}
+          >
+            {imageData?.value && (
+              <img
+                style={{ maxWidth: 500 }}
+                src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${imageData.value}`}
+              />
+            )}
+          </div>
+        </Box>
+
+        <Box mt="2em">
+          <Button
+            disabled={!message || loading}
+            onClick={sendMessage}
+            style={{ marginTop: '1em' }}
+            size="small"
+            variant="contained"
+            color="secondary"
+          >
+            Send Message
+          </Button>
+        </Box>
         <div>
           {loading && (
             <Box
@@ -209,7 +311,8 @@ const MessageModal = (
               justifyContent="center"
               alignItems="center"
             >
-              <span style={{marginRight: 10}}>Sending Message</span> <CircularProgress />
+              <span style={{ marginRight: 10 }}>Sending Message</span>{' '}
+              <CircularProgress />
             </Box>
           )}
         </div>

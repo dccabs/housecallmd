@@ -112,6 +112,7 @@ const getAllFacilityMessages = async (req, res) => {
       patient_first_name: patientMatch?.first_name,
       patient_last_name: patientMatch?.last_name,
       message: entry.message,
+      mediaUrl: entry.media_url,
       sender: senderObj,
       recipient: recipientObj,
       sentToHouseCall,
