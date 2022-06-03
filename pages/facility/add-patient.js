@@ -573,10 +573,10 @@ const addPatientPage = () => {
                                 marginTop: 10,
                               }}
                             >
-                              {field.value ? (
+                              {field?.value ? (
                                 <img
                                   style={{ maxWidth: 500 }}
-                                  src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field.value}`}
+                                  src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${field?.value}`}
                                 />
                               ) : field.loading ? (
                                 <Box my="1em">

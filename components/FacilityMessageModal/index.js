@@ -171,7 +171,6 @@ const MessageModal = ({
 
   const uploadPhoto = async (args) => {
     setLoadingUploadImage(true)
-    console.log('args', args)
     const { val } = args
     const type = val.type.split('/')[1]
     const uuid = uuidv4()
