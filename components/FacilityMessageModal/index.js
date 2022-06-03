@@ -60,7 +60,7 @@ const MessageModal = ({
 }) => {
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
-  const [loadingUploadImage, setLoadingUploadImage] = useState(true)
+  const [loadingUploadImage, setLoadingUploadImage] = useState(false)
   const [message, setMessage] = useState('')
   const [imageData, setImageData] = useState({})
   const [isImageUploadSuccess, setIsImageUploadSuccess] = useState(false)
@@ -208,9 +208,8 @@ const MessageModal = ({
     }
   }
 
-
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} style={{ overflowY: 'scroll' }}>
       <Box
         style={{
           backgroundColor: '#fff',
@@ -254,7 +253,8 @@ const MessageModal = ({
             color="primary"
             component="label"
           >
-            Upload Image {loadingUploadImage && <CircularProgress color="#fff" />}
+            Upload Image{' '}
+            {loadingUploadImage && <CircularProgress color="#fff" />}
             <input
               type="file"
               accept="image/*"
@@ -275,6 +275,23 @@ const MessageModal = ({
             </Typography>
           </Box>
         )}
+        <Box>
+          <div
+            style={{
+              position: 'relative',
+              width: 500,
+              marginTop: 10,
+            }}
+          >
+            {imageData?.value && (
+              <img
+                style={{ maxWidth: 500 }}
+                src={`${NEXT_PUBLIC_SUPABASE_STORAGE_URL}${imageData.value}`}
+              />
+            )}
+          </div>
+        </Box>
+
         <Box mt="2em">
           <Button
             disabled={!message || loading}
