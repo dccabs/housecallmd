@@ -20,7 +20,7 @@ import {
   MenuItem,
   FormControl,
 } from '@material-ui/core'
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import Container from '../../components/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { SnackBarContext } from '../../components/SnackBar'
@@ -97,8 +97,8 @@ const Profile = () => {
   const [messageModalOpen, setMessageModalOpen] = useState(false)
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [appointmentModalOpen, setAppointmentModalOpen] = useState(false)
-  const [patientSelectLoading, setPatientSelectLoading] = useState(false);
-  const [deleteReason, setDeleteReason] = useState('');
+  const [patientSelectLoading, setPatientSelectLoading] = useState(false)
+  const [deleteReason, setDeleteReason] = useState('')
   const [replyModalOpen, setReplyModalOpen] = useState(false)
   const [replyModalData, setReplyModalData] = useState({
     modalOpen: false,
@@ -106,12 +106,13 @@ const Profile = () => {
     patientName: null,
     patientId: null,
     receipientId: null,
-  });
+  })
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [deletePatientData, setDeletePatientData] = useState(false);
+  const [deletePatientData, setDeletePatientData] = useState(false)
   const [chooseMessageModalOpen, setChooseMessageModalOpen] = useState(false)
-  const [isResidentMessage, setIsResidentMessage] = useState(false);
-
+  const [isResidentMessage, setIsResidentMessage] = useState(false)
+  const [showOption, setShowOption] = useState(false)
+  const [patientId, setPatientId] = useState('')
 
   const { user } = Auth.useUser()
 
@@ -136,10 +137,13 @@ const Profile = () => {
 
   useEffect(async () => {
     if (user && user?.user_metadata?.facility) {
-      if ((tabValue === 1 || tabValue === 2) && Object.keys(state).length !== 0) {
+      if (
+        (tabValue === 1 || tabValue === 2) &&
+        Object.keys(state).length !== 0
+      ) {
         const data = await fetchFacilityAppointments()
         setAppointments(data)
-        setAuthorized(true);
+        setAuthorized(true)
         setAppointmentsLoading(false)
       }
       if (tabValue === 0 && user?.id) {
@@ -162,28 +166,37 @@ const Profile = () => {
   }
 
   const handlePatientSelect = (e, type) => {
-    setPatientSelectLoading(true);
+    setPatientSelectLoading(true)
     if (type === 'message') {
-      router.push(`/facility/patient/${e.target.value}`)
+      setPatientSelectLoading(false)
+      setShowOption(true)
+      setPatientId(`${e.target.value}`)
+      // router.push(`/facility/patient/${e.target.value}`)
     } else {
       router.push(`/facility/create-appointment/${e.target.value}`)
       setIsResidentMessage(false)
     }
   }
 
-  const setReply = (entry) => {
-    setReplyModalOpen(true);
-    const title = entry.patient_first_name ? `You are sending a message to ${entry.sender.name} at HouseCallMD about the following patient` : `You are sending a general message to ${entry.sender.name} at HouseCallMD`;
+  const handleRedirect = ({ url, id }) => {
+    router.push(`${url}${id}`)
+  }
 
-    const data = Object.assign(replyModalData, {});
-    data.modalOpen = true;
-    data.title = title;
-    data.patientName = `${entry.patient_first_name} ${entry.patient_last_name}`;
-    data.patientId = entry.patient_id;
+  const setReply = (entry) => {
+    setReplyModalOpen(true)
+    const title = entry.patient_first_name
+      ? `You are sending a message to ${entry.sender.name} at HouseCallMD about the following patient`
+      : `You are sending a general message to ${entry.sender.name} at HouseCallMD`
+
+    const data = Object.assign(replyModalData, {})
+    data.modalOpen = true
+    data.title = title
+    data.patientName = `${entry.patient_first_name} ${entry.patient_last_name}`
+    data.patientId = entry.patient_id
     setReplyModalData(data)
   }
 
-  let intervalTimeout;
+  let intervalTimeout
 
   const getFacilityMessages = () => {
     clearTimeout(intervalTimeout)
@@ -203,7 +216,7 @@ const Profile = () => {
           setMessages(data)
           setMessagesLoading(false)
           intervalTimeout = setTimeout(() => {
-            getFacilityMessages();
+            getFacilityMessages()
           }, 60000)
         } else {
           openSnackBar({
@@ -218,7 +231,7 @@ const Profile = () => {
   const openSnackBar = useContext(SnackBarContext)
 
   const handleDeleteReason = (e) => {
-    setDeleteReason(e.target.value);
+    setDeleteReason(e.target.value)
   }
 
   const fetchFacilityAppointments = async () => {
@@ -236,7 +249,7 @@ const Profile = () => {
     return await getFacilityAppointments.json()
   }
 
-  const archivePatient = ({id, archived}) => {
+  const archivePatient = ({ id, archived }) => {
     const payload = {
       id: Number(id),
       archived,
@@ -252,8 +265,8 @@ const Profile = () => {
           message: 'Patient Archived',
           snackSeverity: 'success',
         })
-        setDeleteModalOpen(false);
-        fetchProfileInformation();
+        setDeleteModalOpen(false)
+        fetchProfileInformation()
       })
   }
 
@@ -398,7 +411,13 @@ const Profile = () => {
                 {messages.length > 0 &&
                   !messagesLoading &&
                   messages.map((entry, index) => {
-                    return <Message entry={entry} index={index} onReplyClick={() => setReply(entry)} />
+                    return (
+                      <Message
+                        entry={entry}
+                        index={index}
+                        onReplyClick={() => setReply(entry)}
+                      />
+                    )
                   })}
               </Box>
             </TabPanel>
@@ -413,7 +432,11 @@ const Profile = () => {
                   <CircularProgress />
                 </Box>
               ) : (
-                <AppointmentTable appointments={appointments} hideCompleted hideOrders />
+                <AppointmentTable
+                  appointments={appointments}
+                  hideCompleted
+                  hideOrders
+                />
               )}
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
@@ -427,7 +450,10 @@ const Profile = () => {
                   <CircularProgress />
                 </Box>
               ) : (
-                <AppointmentTable appointments={appointments} hideNonCompleted />
+                <AppointmentTable
+                  appointments={appointments}
+                  hideNonCompleted
+                />
               )}
             </TabPanel>
             <TabPanel value={tabValue} index={3}>
@@ -456,18 +482,20 @@ const Profile = () => {
                     render: (rowData) => {
                       return (
                         <div>
-                          <Tooltip title={`Remove ${rowData.first_name} ${rowData.last_name} From Account`}>
+                          <Tooltip
+                            title={`Remove ${rowData.first_name} ${rowData.last_name} From Account`}
+                          >
                             <HighlightOffIcon
                               onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteModalOpen(true);
-                                setDeletePatientData(rowData);
+                                e.stopPropagation()
+                                setDeleteModalOpen(true)
+                                setDeletePatientData(rowData)
                               }}
                             />
                           </Tooltip>
                         </div>
                       )
-                    }
+                    },
                   },
                 ]}
                 data={state.patients}
@@ -537,7 +565,7 @@ const Profile = () => {
                   onChange={handlePatientSelect}
                   disabled={patientSelectLoading}
                 >
-                  <MenuItem selected>Choose A Resident</MenuItem>
+                  <MenuItem selected>Choose a Resident</MenuItem>
                   {state?.patients &&
                     state.patients.map((patient) => {
                       return (
@@ -556,8 +584,8 @@ const Profile = () => {
       <Modal
         open={chooseMessageModalOpen}
         onClose={() => {
-          setChooseMessageModalOpen(false);
-          setIsResidentMessage(false);
+          setChooseMessageModalOpen(false)
+          setIsResidentMessage(false)
         }}
       >
         <div
@@ -574,78 +602,127 @@ const Profile = () => {
                 padding: '100px 40px',
               }}
             >
-              {isResidentMessage &&
-              <>
-                <h2>Please choose a resident for your message</h2>
-                <Box mt="1em">
-                  {patientSelectLoading && (
-                    <Box
-                      my="8em"
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
+              {isResidentMessage && (
+                <>
+                  <h2>Please choose a resident for your message</h2>
+                  <Box mt="1em">
+                    {patientSelectLoading && (
+                      <Box
+                        my="8em"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <CircularProgress />
+                      </Box>
+                    )}
+                    <Select
+                      fullWidth
+                      id="select-patient"
+                      placeholder={'Select Patient'}
+                      variant="outlined"
+                      onChange={(e) => {
+                        handlePatientSelect(e, 'message')
+                      }}
+                      disabled={patientSelectLoading}
                     >
-                      <CircularProgress />
+                      <MenuItem selected>Choose a Resident</MenuItem>
+                      {state?.patients &&
+                        state.patients.map((patient) => {
+                          return (
+                            <MenuItem value={patient.id} selected>
+                              {patient.first_name} {patient.last_name}
+                            </MenuItem>
+                          )
+                        })}
+                    </Select>
+                  </Box>
+                  {showOption && (
+                    <Box my="1em">
+                      <Typography>
+                        Is this regarding a new/worsening symptom or illness,
+                        event (ie. fall/injury), or order request?
+                      </Typography>
+                      <Box
+                        mt="1em"
+                        style={{
+                          display: 'flex',
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          size="large"
+                          style={{
+                            marginRight: '20px',
+                          }}
+                          onClick={() => {
+                            handleRedirect({
+                              url: '/facility/create-appointment/',
+                              id: patientId,
+                            })
+                          }}
+                        >
+                          Yes
+                        </Button>
+                        <Button
+                          size="large"
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            handleRedirect({
+                              url: '/facility/patient/',
+                              id: patientId,
+                            })
+                          }}
+                        >
+                          No
+                        </Button>
+                      </Box>
                     </Box>
                   )}
-                  <Select
-                    fullWidth
-                    id="select-patient"
-                    placeholder={'Select Patient'}
-                    variant="outlined"
-                    onChange={(e) => {handlePatientSelect(e, 'message')}}
-                    disabled={patientSelectLoading}
-                  >
-                    <MenuItem selected>Choose A Resident</MenuItem>
-                    {state?.patients &&
-                      state.patients.map((patient) => {
-                        return (
-                          <MenuItem value={patient.id} selected>
-                            {patient.first_name} {patient.last_name}
-                          </MenuItem>
-                        )
-                      })}
-                  </Select>
-                </Box>
-              </>
-              }
-              {!isResidentMessage &&
-              <>
-                <h2>Is this message about a specific resident?</h2>
-                <Box
-                  mt="1em"
-                  style={{
-                    display: 'flex',
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    size="large"
+                </>
+              )}
+              {!isResidentMessage && (
+                <>
+                  <h2>Is this message about a specific resident?</h2>
+                  <Box
+                    mt="1em"
                     style={{
-                      marginRight: '20px'
+                      display: 'flex',
                     }}
-                    onClick={() => {
-                      setIsResidentMessage(true);
-                    }}
-                  >Yes</Button>
-                  <Button
-                    size="large"
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                      setChooseMessageModalOpen(false);
-                      setMessageModalOpen(true);
-                    }}
-                  >No</Button>
-                </Box>
-              </>
-              }
+                  >
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="large"
+                      style={{
+                        marginRight: '20px',
+                      }}
+                      onClick={() => {
+                        setIsResidentMessage(true)
+                      }}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      size="large"
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => {
+                        setChooseMessageModalOpen(false)
+                        setMessageModalOpen(true)
+                      }}
+                    >
+                      No
+                    </Button>
+                  </Box>
+                </>
+              )}
             </div>
           </Paper>
         </div>
       </Modal>
-
 
       <FacilityMessageModal
         open={messageModalOpen}
@@ -688,16 +765,37 @@ const Profile = () => {
                 padding: 40,
               }}
             >
-              <h3>You have chosen to remove {deletePatientData.first_name} {deletePatientData.last_name} from your HouseCallMD Account:</h3>
+              <h3>
+                You have chosen to remove {deletePatientData.first_name}{' '}
+                {deletePatientData.last_name} from your HouseCallMD Account:
+              </h3>
               <Box mt="1em">
-                Please select a reason below and hit submit.  This action cannot be undone.
+                Please select a reason below and hit submit. This action cannot
+                be undone.
               </Box>
               <Box mt="1em">
                 <FormControl component="fieldset">
-                  <RadioGroup aria-label="reason" name="reason" value={deleteReason} onChange={handleDeleteReason}>
-                    <FormControlLabel value="deceased" control={<Radio />} label="Resident deceased" />
-                    <FormControlLabel value="left_facility" control={<Radio />} label="Resident left facility" />
-                    <FormControlLabel value="error" control={<Radio />} label="Entered in error" />
+                  <RadioGroup
+                    aria-label="reason"
+                    name="reason"
+                    value={deleteReason}
+                    onChange={handleDeleteReason}
+                  >
+                    <FormControlLabel
+                      value="deceased"
+                      control={<Radio />}
+                      label="Resident deceased"
+                    />
+                    <FormControlLabel
+                      value="left_facility"
+                      control={<Radio />}
+                      label="Resident left facility"
+                    />
+                    <FormControlLabel
+                      value="error"
+                      control={<Radio />}
+                      label="Entered in error"
+                    />
                   </RadioGroup>
                 </FormControl>
               </Box>
@@ -705,15 +803,21 @@ const Profile = () => {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={() => archivePatient({id: deletePatientData.id, archived: true })}
+                  onClick={() =>
+                    archivePatient({ id: deletePatientData.id, archived: true })
+                  }
                   disabled={!deleteReason}
-                >Submit</Button>
+                >
+                  Submit
+                </Button>
                 <Button
                   color="primary"
                   variant="outlined"
-                  style={{marginLeft: 10}}
+                  style={{ marginLeft: 10 }}
                   onClick={() => setDeleteModalOpen(false)}
-                >Cancel</Button>
+                >
+                  Cancel
+                </Button>
               </Box>
             </div>
           </Paper>
